@@ -11,7 +11,7 @@
 #include "entity.h"
 #include "qtableview.h"
 #include "treemodel.h"
-
+#include "qmessagebox.h"
 #include "qmenu.h"
 #include <QGraphicsSceneContextMenuEvent>
 #include "plotWindow.h"
@@ -606,10 +606,14 @@ void GraphWidget::updateNodeCoordinates()
 }
 void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QString colorTheme, vector<double> predifinedMinMax)
 {
+	if (!results)
+	{
+		QMessageBox::information(0, "GIFMod", "There is no results available, please run the model first.");
+		return;
+	}
 	vector<CBTC> data;
 	vector<float> factors;
 	vector<float> shifts;
-
 	QStringList nodeNames = this->nodeNames();
 	for (int i = 0; i < nodeNames.size(); i++)
 	{

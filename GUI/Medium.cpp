@@ -2066,7 +2066,7 @@ void CMedium::solve_fts_m2(double dt)
 		{
 			if (int(t / controllers()[i].interval) > int((t - dtt) / controllers()[i].interval))
 			{
-				controllers()[i].calc_value(t, lookup_experiment(name));
+//				controllers()[i].calc_value(t, lookup_experiment(name));
 			}
 
 		}

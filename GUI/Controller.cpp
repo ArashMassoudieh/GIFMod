@@ -19,6 +19,8 @@ CController::CController(const CController &M)
 	type = M.type;
 	value = M.value;
 	interval = M.interval;
+	min_val = M.min_val;
+	max_val = M.max_val;
 }
 
 CController& CController::operator=(const CController &M)
@@ -28,13 +30,17 @@ CController& CController::operator=(const CController &M)
 	type = M.type;
 	value = M.value;
 	interval = M.interval;
+	min_val = M.min_val;
+	max_val = M.max_val;
 	return *this;
 
 }
 
-double CController::calc_value(double t, int experiment_id)
+double CController::calc_value(double t, double dt, int experiment_id)
 {
-	value += params[0] * P(t, experiment_id) + params[1] * I(t, experiment_id) + params[2] * D(t, experiment_id);
+	value += dt*(params[0] * P(t, experiment_id) + params[1] * I(t, experiment_id) + params[2] * D(t, experiment_id));
+	value = min(value, max_val);
+	value = max(value, min_val);
 	append(t, value);
 	return value;
 }

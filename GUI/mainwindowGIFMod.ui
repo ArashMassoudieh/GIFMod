@@ -138,12 +138,30 @@
     <addaction name="actionClimateSettings"/>
     <addaction name="actionSolverSettings"/>
    </widget>
+   <widget class="QMenu" name="menuPost_Processing">
+    <property name="title">
+     <string>Post Processing</string>
+    </property>
+    <widget class="QMenu" name="menuBlocks">
+     <property name="title">
+      <string>Blocks</string>
+     </property>
+     <addaction name="actioncolorCodeHead"/>
+     <addaction name="actioncolorCodeStorage"/>
+     <addaction name="actioncolorCodeWaterDepth"/>
+     <addaction name="actioncolorCodeMoistureContent"/>
+     <addaction name="actioncolorCodeEvaporationRate"/>
+    </widget>
+    <addaction name="menuBlocks"/>
+    <addaction name="actionConnectors_2"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
    <addaction name="menu_Window"/>
    <addaction name="menu_Model"/>
    <addaction name="menuPreferences"/>
    <addaction name="menu_Help"/>
+   <addaction name="menuPost_Processing"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <property name="mouseTracking">
@@ -705,6 +723,36 @@
    </property>
   </action>
   <action name="actionEvaporationRate">
+   <property name="text">
+    <string>Evaporation rate</string>
+   </property>
+  </action>
+  <action name="actionConnectors_2">
+   <property name="text">
+    <string>Connectors</string>
+   </property>
+  </action>
+  <action name="actioncolorCodeHead">
+   <property name="text">
+    <string>Head</string>
+   </property>
+  </action>
+  <action name="actioncolorCodeStorage">
+   <property name="text">
+    <string>Storage</string>
+   </property>
+  </action>
+  <action name="actioncolorCodeWaterDepth">
+   <property name="text">
+    <string>Water depth</string>
+   </property>
+  </action>
+  <action name="actioncolorCodeMoistureContent">
+   <property name="text">
+    <string>Moisture content</string>
+   </property>
+  </action>
+  <action name="actioncolorCodeEvaporationRate">
    <property name="text">
     <string>Evaporation rate</string>
    </property>

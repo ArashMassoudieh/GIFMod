@@ -192,11 +192,11 @@ private slots:
 
 	void on_actionAbout_triggered();
 	void on_actioncolorCodedResults_triggered();
-	void on_actionStorage_triggered();
-	void on_actionHead_triggered();
-	void on_actionMoistureContent_triggered();
-	void on_actionWaterDepth_triggered();
-	void on_actionEvaporationRate_triggered();
+	void on_actioncolorCodeStorage_triggered();
+	void on_actioncolorCodeHead_triggered();
+	void on_actioncolorCodeMoistureContent_triggered();
+	void on_actioncolorCodeWaterDepth_triggered();
+	void on_actioncolorCodeEvaporationRate_triggered();
 
 
 

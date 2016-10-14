@@ -2076,27 +2076,27 @@ void MainWindow::on_actionAbout_triggered()
 void MainWindow::on_actioncolorCodedResults_triggered()
 {
 }
-void MainWindow::on_actionStorage_triggered()
+void MainWindow::on_actioncolorCodeStorage_triggered()
 {
 	mainGraphWidget->updateNodesColorCodes("Storage", false, "Green");
 
 }
-void MainWindow::on_actionHead_triggered()
+void MainWindow::on_actioncolorCodeHead_triggered()
 {
 	mainGraphWidget->updateNodesColorCodes("Head", false, "Green");
 
 }
-void MainWindow::on_actionMoistureContent_triggered()
+void MainWindow::on_actioncolorCodeMoistureContent_triggered()
 {
 	mainGraphWidget->updateNodesColorCodes("Moisture content", false, "Green");
 
 }
-void MainWindow::on_actionWaterDepth_triggered()
+void MainWindow::on_actioncolorCodeWaterDepth_triggered()
 {
 	mainGraphWidget->updateNodesColorCodes("Water depth", false, "Green");
 
 }
-void MainWindow::on_actionEvaporationRate_triggered()
+void MainWindow::on_actioncolorCodeEvaporationRate_triggered()
 {
 	mainGraphWidget->updateNodesColorCodes("Evaporation rate", false, "Green");
 
