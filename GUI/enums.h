@@ -1,6 +1,6 @@
 #pragma once
 #include "QColor.h";
-
+class GraphWidget;
 enum Operation_Modes{ Draw_Connector, Node1_selected, Pan, NormalMode, resizeNode };
 enum Object_Types { Void, Block, Connector, RayLine };
 enum mListReadStatus{fileNotValid, readSuccessfully, readBefore, errorInContents};
@@ -68,6 +68,7 @@ struct percentileData{
 	std::string parameter;
 	double p25, p50, p975, mean, std;
 };
+
 QStringList percentile2List(percentileData p);
 percentileData percentileFromList(QStringList r);
 //template <class T> const T& min(const T& a, const T& b);
@@ -91,3 +92,4 @@ QString operator&(const QString &, const QString &);
 //QString and(const QString &, const QString &);
 //QStringList QSplit(const QString &QS, QChar del = ',');
 QString QMerge(const QStringList &QSL, QChar del = ';');
+std::string convertstringtoStringOP(const QString& s, GraphWidget *gWidget);

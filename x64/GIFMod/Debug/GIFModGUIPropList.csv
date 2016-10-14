@@ -358,11 +358,11 @@
 1,Entity,Controller,*,!,Name,!,!,!,string,!,TextBox,Global,Input,No,100350,,,
 1,Block,*,*,!,Width,width,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100342,!=0; >=0,W;W,Width is assigned to be zero; Width must be positive and non-zero
 1,Block,*,*,!,Length,d,m;cm;ft;in,m,float,!,UnitBox,Geometry,Input,Yes,100339,!=0; >=0,W;W,Length is assigned to be zero; Length must be positive and non-zero
-1,Entity,Controller,*,!,Type,type,!,!,string,populate at runtime; Type,ComboBox,Global,Select,No,100351,,,
+1,Entity,Controller,*,!,Type,type,!,!,string,populate at runtime; SubType,ComboBox,Global,Select,No,100351,,,
 1,Entity,Controller,*,!,Sensor,sensor,!,!,string,populate at runtime;Blank+Sensor,ComboBox,Global,Select,No,100352,,,
 1,Entity,Controller,PID,!,Setpoint,setpoint,!,!,float,!,TextBox,Global,Input,No,100353,,,
 1,Entity,Controller,PID,!,P,k_p,!,!,float,!,TextBox,Global,Input,No,100354,,,
 1,Entity,Controller,PID,!,I,K_i,!,!,float,!,TextBox,Global,Input,No,100355,,,
 1,Entity,Controller,PID,!,D,k_d,!,!,float,!,TextBox,Global,Input,No,100356,,,
 1,Entity,Controller,PID,!,Interval,interval,!,!,float,!,TextBox,Global,Input,No,100357,,,
-1,Connector,Controlled,*,!,Controller,contoller_id,!,!,string,populate at runtime;Contoller,ComboBox,Geometry,Select,Yes,100252,,,
+1,Connector,Controlled,*,!,Controller,contoller_id,!,!,string,populate at runtime;Blank+Controller,ComboBox,Geometry,Select,Yes,100252,,,

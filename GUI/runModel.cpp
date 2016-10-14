@@ -1044,7 +1044,8 @@ void CMediumSet::g_get_sensors()
 		M.error_structure = 0;
 		M.name = e->Name().toStdString();
 		M.loc_type = (e->val("loc_type") == "Block") ? 0 : 1; //OBSERVED SUBTYPE
-		M.quan = CStringOP(e->val("quan").toQString().toStdString());
+		string equation = convertstringtoStringOP(e->val("quan").toQString(), gw);
+		M.quan = CStringOP(equation);
 		//				if (gw->EntityNames("Particle").contains(e->val("quan").toQString().split(':')[0]))
 		//					M.quan = QString("g[%1]").arg(e->val("quan").toQString()).toStdString();
 		//				else if (gw->EntityNames("Constituent").contains(e->val("quan").toQString().split(':')[0]))
@@ -2346,6 +2347,43 @@ int CBTCSet::indexOf(const string& name) const
 		if (name == BTC[i].name) 
 			return i;
 	return -1;
+}
+std::string convertstringtoStringOP(const QString& s, GraphWidget *gWidget)
+{
+	QStringList Constituents = gWidget->EntityNames("Constituent");
+	QStringList Parameters = gWidget->EntityNames("Reaction parameter");
+	QStringList Physicals = gWidget->PhysicalCharacteristicsList;
+	QStringList Functions = gWidget->functionList;
+	QString d;
+	int l = 0, r = s.length();
+	for (int i = 0; i < s.length();) {
+		if (s[i].isSpace()) {
+			i++;  continue;
+		}
+		l = i;
+		// the first char must start with a letter or underscore
+		if (s[i].isLetter() || s[i] == QChar('_')) {
+			while (i < s.length() && (s[i].isLetter() || s[i] == QChar('_') || s[i].isNumber())) i++;
+		}
+		r = i;
+		if (l == r) {
+			d.append(s[i]); i++;
+		}
+		else {
+			QString var = s.mid(l, r - l);
+			if (Constituents.contains(var))
+				d.append(QString("c[%1]").arg(var));
+			else if (Parameters.contains(var))
+				d.append(QString("p[%1]").arg(var));
+			else if (Functions.contains(var))
+				d.append(QString("f[%1]").arg(var));
+			else if (Physicals.contains(var))
+				d.append(QString("f[%1]").arg(var)); // ASK
+			else
+				d.append(var);
+		}
+	}
+	return d.toStdString();
 }
 
 #ifdef GWA	

@@ -20,7 +20,7 @@
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
     QByteArrayData data[108];
-    char stringdata0[2459];
+    char stringdata0[2504];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -118,25 +118,25 @@ QT_MOC_LITERAL(85, 1838, 27), // "on_actionAdd_Well_triggered"
 QT_MOC_LITERAL(86, 1866, 29), // "on_actionAdd_Tracer_triggered"
 QT_MOC_LITERAL(87, 1896, 24), // "on_actionAbout_triggered"
 QT_MOC_LITERAL(88, 1921, 36), // "on_actioncolorCodedResults_tr..."
-QT_MOC_LITERAL(89, 1958, 26), // "on_actionStorage_triggered"
-QT_MOC_LITERAL(90, 1985, 23), // "on_actionHead_triggered"
-QT_MOC_LITERAL(91, 2009, 34), // "on_actionMoistureContent_trig..."
-QT_MOC_LITERAL(92, 2044, 29), // "on_actionWaterDepth_triggered"
-QT_MOC_LITERAL(93, 2074, 34), // "on_actionEvaporationRate_trig..."
-QT_MOC_LITERAL(94, 2109, 34), // "on_actionProjectSettings_trig..."
-QT_MOC_LITERAL(95, 2144, 34), // "on_actionClimateSettings_trig..."
-QT_MOC_LITERAL(96, 2179, 33), // "on_actionSolverSettings_trigg..."
-QT_MOC_LITERAL(97, 2213, 32), // "on_actionNewExperiment_triggered"
-QT_MOC_LITERAL(98, 2246, 44), // "on_actionCopyFromCurrentExper..."
-QT_MOC_LITERAL(99, 2291, 13), // "addExperiment"
-QT_MOC_LITERAL(100, 2305, 16), // "sourceExperiment"
-QT_MOC_LITERAL(101, 2322, 42), // "on_actionremoveCurrentExperim..."
-QT_MOC_LITERAL(102, 2365, 36), // "on_actionShowRuntimeWindow_tr..."
-QT_MOC_LITERAL(103, 2402, 9), // "loadModel"
-QT_MOC_LITERAL(104, 2412, 13), // "modelfilename"
-QT_MOC_LITERAL(105, 2426, 14), // "gwidgetChanged"
-QT_MOC_LITERAL(106, 2441, 9), // "getNumber"
-QT_MOC_LITERAL(107, 2451, 7) // "initial"
+QT_MOC_LITERAL(89, 1958, 35), // "on_actioncolorCodeStorage_tri..."
+QT_MOC_LITERAL(90, 1994, 32), // "on_actioncolorCodeHead_triggered"
+QT_MOC_LITERAL(91, 2027, 43), // "on_actioncolorCodeMoistureCon..."
+QT_MOC_LITERAL(92, 2071, 38), // "on_actioncolorCodeWaterDepth_..."
+QT_MOC_LITERAL(93, 2110, 43), // "on_actioncolorCodeEvaporation..."
+QT_MOC_LITERAL(94, 2154, 34), // "on_actionProjectSettings_trig..."
+QT_MOC_LITERAL(95, 2189, 34), // "on_actionClimateSettings_trig..."
+QT_MOC_LITERAL(96, 2224, 33), // "on_actionSolverSettings_trigg..."
+QT_MOC_LITERAL(97, 2258, 32), // "on_actionNewExperiment_triggered"
+QT_MOC_LITERAL(98, 2291, 44), // "on_actionCopyFromCurrentExper..."
+QT_MOC_LITERAL(99, 2336, 13), // "addExperiment"
+QT_MOC_LITERAL(100, 2350, 16), // "sourceExperiment"
+QT_MOC_LITERAL(101, 2367, 42), // "on_actionremoveCurrentExperim..."
+QT_MOC_LITERAL(102, 2410, 36), // "on_actionShowRuntimeWindow_tr..."
+QT_MOC_LITERAL(103, 2447, 9), // "loadModel"
+QT_MOC_LITERAL(104, 2457, 13), // "modelfilename"
+QT_MOC_LITERAL(105, 2471, 14), // "gwidgetChanged"
+QT_MOC_LITERAL(106, 2486, 9), // "getNumber"
+QT_MOC_LITERAL(107, 2496, 7) // "initial"
 
     },
     "MainWindow\0Mouse_Pos\0\0"
@@ -198,11 +198,11 @@ QT_MOC_LITERAL(107, 2451, 7) // "initial"
     "on_actionAdd_Tracer_triggered\0"
     "on_actionAbout_triggered\0"
     "on_actioncolorCodedResults_triggered\0"
-    "on_actionStorage_triggered\0"
-    "on_actionHead_triggered\0"
-    "on_actionMoistureContent_triggered\0"
-    "on_actionWaterDepth_triggered\0"
-    "on_actionEvaporationRate_triggered\0"
+    "on_actioncolorCodeStorage_triggered\0"
+    "on_actioncolorCodeHead_triggered\0"
+    "on_actioncolorCodeMoistureContent_triggered\0"
+    "on_actioncolorCodeWaterDepth_triggered\0"
+    "on_actioncolorCodeEvaporationRate_triggered\0"
     "on_actionProjectSettings_triggered\0"
     "on_actionClimateSettings_triggered\0"
     "on_actionSolverSettings_triggered\0"
@@ -602,11 +602,11 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 104: _t->on_actionAdd_Tracer_triggered(); break;
         case 105: _t->on_actionAbout_triggered(); break;
         case 106: _t->on_actioncolorCodedResults_triggered(); break;
-        case 107: _t->on_actionStorage_triggered(); break;
-        case 108: _t->on_actionHead_triggered(); break;
-        case 109: _t->on_actionMoistureContent_triggered(); break;
-        case 110: _t->on_actionWaterDepth_triggered(); break;
-        case 111: _t->on_actionEvaporationRate_triggered(); break;
+        case 107: _t->on_actioncolorCodeStorage_triggered(); break;
+        case 108: _t->on_actioncolorCodeHead_triggered(); break;
+        case 109: _t->on_actioncolorCodeMoistureContent_triggered(); break;
+        case 110: _t->on_actioncolorCodeWaterDepth_triggered(); break;
+        case 111: _t->on_actioncolorCodeEvaporationRate_triggered(); break;
         case 112: _t->on_actionProjectSettings_triggered(); break;
         case 113: _t->on_actionClimateSettings_triggered(); break;
         case 114: _t->on_actionSolverSettings_triggered(); break;
