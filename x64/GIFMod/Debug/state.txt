@@ -1,0 +1,17 @@
+dtt=9.313226e-012
+t=0.000000e+000
+S-0=0.000000e+000
+S-1=0.000000e+000
+S-2=3.000000e+003
+S-3=3.000000e+001
+S-4=0.000000e+000
+outflow_corr_factor-0=1.000000e+000
+outflow_corr_factor-1=1.000000e+000
+outflow_corr_factor-2=1.000000e+000
+outflow_corr_factor-3=1.000000e+000
+outflow_corr_factor-4=1.000000e+000
+fixed_status-0=0
+fixed_status-1=0
+fixed_status-2=0
+fixed_status-3=0
+fixed_status-4=0
