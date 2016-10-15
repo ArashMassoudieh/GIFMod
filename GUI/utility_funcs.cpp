@@ -2,6 +2,7 @@
 //	return !(b<a) ? a : b;     // or: return !comp(b,a)?a:b; for version (2)
 //}
 
+
 double min(double x, double y)
 {
 	if (x > y) return y; else return x;
@@ -29,3 +30,5 @@ int max(int x, int y)
 {
 	return -min(-x, -y);
 }
+
+

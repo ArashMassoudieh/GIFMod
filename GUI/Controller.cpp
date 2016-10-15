@@ -5,6 +5,7 @@
 CController::CController()
 {
 	params.resize(10);
+	value = 0;
 }
 
 
@@ -79,9 +80,10 @@ double CController::D(double t, int experiment_id)
 
 void CController::set_val(string S, double val)
 {
-	if (tolower(S) == "kp") params[0] = val;
-	if (tolower(S) == "ki") params[1] = val;
-	if (tolower(S) == "kd") params[2] = val;
-	if (tolower(S) == "set_point") params[3] = val;
+	if ((tolower(S) == "kp") || (tolower(S) == "k_p")) params[0] = val;
+	if ((tolower(S) == "ki") || (tolower(S) == "k_i")) params[1] = val;
+	if ((tolower(S) == "kd") || (tolower(S) == "k_d")) params[2] = val;
+	if (tolower(S) == "interval") interval = val;
+	if ((tolower(S) == "set_point") || (tolower(S)=="setpoint")) params[3] = val;
 
 }
