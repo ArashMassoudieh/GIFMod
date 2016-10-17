@@ -1,50 +1,22 @@
-GeneratedFiles/GIFMOD/Debug/moc_mainwindow.cpp
-GeneratedFiles/GIFMOD/Release/moc_mainwindow.cpp
-GeneratedFiles/GIFMOD/ui_mainwindowGIFMod.h
+GeneratedFiles/GIFMOD/Debug/*.*
+GeneratedFiles/GIFMOD/Release/*.*
+GeneratedFiles/GIFMOD/*.*
 GIFMod - Sassan.VC.db
 GIFMod - Sassan.VC.VC.opendb
 *.tlog
+moc_*.cpp
 <<<<<<< HEAD
-*.db
-GIFMod - Jamal.VC.db
 *.db
 *.dll
 *.lib
-x64/GIFMod/Debug/Binary.obj
 *.obj
 *.exe
-x64/GIFMod/Debug/GIFMod.pch
+x64/GIFMod/Debug/*.*
+x64/GIFMod/Release/*.*
 *.pdb
-x64/GIFMod/Debug/GIFMod.ilk
-*.log
-x64/GIFMod/Debug/GIFMod.tlog/CL.command.1.tlog
-*.db
-GIFMod - Jamal.vcxproj.filters
-*.db
-x64/GIFMod/Debug/GIFMod.tlog/link.write.1.tlog
-*.db
+*.tlog
+*.filters
 GIFMod - Jamal.VC.db
 =======
-*.tlog
-*.tlog
 *.opendb
-x64/GIFMod/Debug/GIFMod.tlog/CL.command.1.tlog
-*.tlog
-x64/GIFMod/Debug/GIFMod.tlog/CL.write.1.tlog
-*.tlog
-x64/GIFMod/Debug/GIFMod.tlog/custombuild.read.1.tlog
-*.tlog
 *.opensdf
->>>>>>> origin/master
-*.filters
-GIFMod - Arash.vcxproj.filters
-GIFMod - Arash.vcxproj.filters
-*.db
-GIFMod - Jamal.vcxproj.user
-*.tlog
-*.db
-*.tlog
-*.tlog
-*.lastbuildstate
-*.tlog
-*.tlog
