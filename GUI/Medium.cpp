@@ -1133,7 +1133,12 @@ void CMedium::setQ_star()
 	for (int i=0; i<Connector.size(); i++)	
 	{
 		if (Connector[i].control)
-			Connector[i].Q = Connector[i].Controller->output.interpol(t);
+		{
+			if (Connector[i].Controller->output.n>0)
+				Connector[i].set_val("q*", Connector[i].Controller->output.interpol(t));
+			else
+				Connector[i].set_val("q*", Connector[i].Controller->value);
+		}
 		else if (!Connector[i].presc_flow)
 			Connector[i].set_val("q*", Connector[i].calc_star(Connector[i].flow_expression));
 		else
@@ -2335,7 +2340,7 @@ void CMedium::finalize_set_param()
 			Connector[i].dispersion_star.resize(RXN().cons.size());
 			Connector[i].RXN = &RXN();
 			if ((lookup_controllers(Connector[i].controller_id) != -1) && Connector[i].control == true)
-				Connector[i].Controller == &controllers()[lookup_controllers(Connector[i].controller_id)];
+				Connector[i].Controller = &controllers()[lookup_controllers(Connector[i].controller_id)];
 	}
 }
 
@@ -3515,16 +3520,6 @@ int CMedium::lookup_parameters(string S)
 	return out;
 }
 
-int CMedium::lookup_controllers_(string S)
-{
-	int out = -1;
-	for (int i = 0; i < controllers_().size(); i++)
-		if (tolower(S) == tolower(controllers_()[i].name))
-
-			return i;
-
-	return out;
-}
 
 int CMedium::lookup_sensors(string S)
 {
@@ -3887,10 +3882,7 @@ vector<range>& CMedium::parameters()
 {
 	return parent->parameters;
 }
-vector<range>& CMedium::controllers_()
-{
-	return parent->controllers;
-}
+
 vector<CSensor>& CMedium::sensors()
 {
 	return parent->Control.Sensors;
@@ -4126,8 +4118,8 @@ int CMedium::lookup_experiment(string S)
 int CMedium::lookup_controllers(string S)
 {
 	int out = -1;
-	for (int i = 0; i < sensors().size(); i++)
-		if (tolower(S) == tolower(sensors()[i].name))
+	for (int i = 0; i < controllers().size(); i++)
+		if (tolower(S) == tolower(controllers()[i].name))
 			return i;
 
 	return out;

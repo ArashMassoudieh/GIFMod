@@ -93,7 +93,7 @@ public:
 	vector<CMedium> Medium;
 	Solver_parameters SP; //current time weight for CN solution
 	vector<CSolid_Phase> Solid_phase;
-	vector<range> parameters, controllers;
+	vector<range> parameters;
 	vector<measured_chrc> measured_quan;
 	CBTCSet measured_data; //measured data
 	vector<double> std;
@@ -123,7 +123,7 @@ public:
 	_set_features set_features;
 	void CMediumSet::writetolog(string S);
 	int CMediumSet::lookup_parameters(string S);
-	int CMediumSet::lookup_controllers_(string S);
+	int CMediumSet::lookup_controllers(string S);
 	//	int CMediumSet::lookup_external_flux(string S);
 //	int CMediumSet::lookup_particle_type(string S);
 //	int CMediumSet::lookup_buildup(string S);
