@@ -1057,7 +1057,7 @@ void CMediumSet::g_get_sensors()
 
 		M.error_std = e->val("error_std").toFloat();
 		M.error_structure = (e->val("error_structure") == "Normal") ? 0 : 1; //NORM 0 ; LOg 1
-		M.interval = e->val("interval").toInt();
+		M.interval = e->val("interval").toFloat();
 
 
 		Control.Sensors.push_back(M);
