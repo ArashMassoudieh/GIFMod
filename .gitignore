@@ -34,8 +34,7 @@ x64/GIFMod/Debug/GIFMod.tlog/CL.write.1.tlog
 *.tlog
 x64/GIFMod/Debug/GIFMod.tlog/custombuild.read.1.tlog
 *.tlog
-*.tlog
-*.tlog
+*.opensdf
 >>>>>>> origin/master
 *.filters
 GIFMod - Arash.vcxproj.filters
