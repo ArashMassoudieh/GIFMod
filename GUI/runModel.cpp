@@ -1047,7 +1047,7 @@ void CMediumSet::g_get_sensors()
 		M.id = (e->val("id").toStdString());
 		M.error_std = e->val("error_std").toFloat();
 		M.error_structure = (e->val("error_structure") == "Normal") ? 0 : 1; //NORM 0 ; LOg 1
-		M.interval = e->val("interval").toFloatDefaultUnit();
+		M.interval = e->val("interval").toFloat();
 
 
 		Control.Sensors.push_back(M);
@@ -1066,7 +1066,7 @@ void CMediumSet::g_get_controllers()
 			if (e->val(key).toQString() != "")
 				M.set_val(key.toStdString(), e->val(key).toFloat());
 
-		M.interval = e->val("interval").toFloatDefaultUnit();
+//		M.interval = e->val("interval").toFloatDefaultUnit();
 
 		Control.Controllers.push_back(M);
 	}
