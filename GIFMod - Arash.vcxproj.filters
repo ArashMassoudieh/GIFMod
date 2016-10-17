@@ -195,7 +195,7 @@
     <ClInclude Include="GUI\Well.h" />
     <ClInclude Include="GUI\XString.h" />
     <ClInclude Include="utility_funcs.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
