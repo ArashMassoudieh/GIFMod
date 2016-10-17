@@ -5,6 +5,10 @@ CSensor::CSensor()
 {
 }
 
+CSensor::CSensor(int numberofExperiments)
+{
+	setNumberofExperiments(numberofExperiments);
+}
 
 CSensor::~CSensor()
 {
