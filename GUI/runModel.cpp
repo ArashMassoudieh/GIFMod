@@ -1377,7 +1377,7 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 				C.pre_flow_filename = e->val("pre_flow_filename").toFileName(gw->modelPathname()).toStdString();
 				C.presc_flow = true;
 			}
-		if (e->objectType.ObjectType == "Controller")
+		if (e->objectType.ObjectType == "Controlled")
 		{
 			C.control = true;
 			C.controller_id = e->val("contoller_id").toStdString();
