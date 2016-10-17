@@ -606,7 +606,7 @@ void GraphWidget::updateNodeCoordinates()
 }
 void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QString colorTheme, vector<double> predifinedMinMax)
 {
-	if (!results)
+	if (!hasResults)
 	{
 		QMessageBox::information(0, "GIFMod", "There is no results available, please run the model first.");
 		return;
@@ -1165,6 +1165,7 @@ void GraphWidget::clear()
 	//	delete modelSet;
 	model = 0; modelSet = 0; results = 0;
 	experimentsComboClear();
+	hasResults = false;
 
 }
 void GraphWidget::experimentsComboClear(bool addExperiment1)
