@@ -4,6 +4,7 @@ GeneratedFiles/GIFMOD/ui_mainwindowGIFMod.h
 GIFMod - Sassan.VC.db
 GIFMod - Sassan.VC.VC.opendb
 *.tlog
+<<<<<<< HEAD
 *.db
 GIFMod - Jamal.VC.db
 *.db
@@ -23,3 +24,19 @@ GIFMod - Jamal.vcxproj.filters
 x64/GIFMod/Debug/GIFMod.tlog/link.write.1.tlog
 *.db
 GIFMod - Jamal.VC.db
+=======
+*.tlog
+*.tlog
+*.opendb
+x64/GIFMod/Debug/GIFMod.tlog/CL.command.1.tlog
+*.tlog
+x64/GIFMod/Debug/GIFMod.tlog/CL.write.1.tlog
+*.tlog
+x64/GIFMod/Debug/GIFMod.tlog/custombuild.read.1.tlog
+*.tlog
+*.tlog
+*.tlog
+>>>>>>> origin/master
+*.filters
+GIFMod - Arash.vcxproj.filters
+GIFMod - Arash.vcxproj.filters
