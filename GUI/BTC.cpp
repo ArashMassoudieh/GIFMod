@@ -20,7 +20,7 @@ using namespace std;
 
 CBTC::CBTC()
 {
-	n=0;
+	n = 0;
 	structured = true;
 	max_fabs = 0;
 }

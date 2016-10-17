@@ -627,12 +627,11 @@ int CMediumSet::lookup_parameters(string S)
 	return out;
 }
 
-int CMediumSet::lookup_controllers_(string S)
+int CMediumSet::lookup_controllers(string S)
 {
 	int out = -1;
-	for (int i = 0; i < controllers.size(); i++)
-		if (tolower(S) == tolower(controllers[i].name))
-
+	for (int i = 0; i < Control.Controllers.size(); i++)
+		if (tolower(S) == tolower(Control.Controllers[i].name))
 			return i;
 
 	return out;

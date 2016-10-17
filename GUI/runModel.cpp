@@ -24,6 +24,8 @@ CMediumSet::CMediumSet(GraphWidget* gw, runtimeWindow *rtw)
 	set_default();
 	g_get_environmental_params();
 	g_get_params();
+	g_get_sensors();
+	g_get_controllers();
 	g_get_observed();
 	g_get_particle_types();
 	g_get_constituents();
@@ -31,8 +33,7 @@ CMediumSet::CMediumSet(GraphWidget* gw, runtimeWindow *rtw)
 	g_get_buildup();
 	g_get_external_flux();
 	g_get_evapotranspiration();
-	g_get_sensors();
-	g_get_controllers();
+	
 
 	for (int i = 0; i<parameters.size(); i++)
 		set_param(i, parameters[i].value);
@@ -1321,11 +1322,11 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 			if (gw->EntityNames("Controller").contains(n->val(code).toQString()))
 			{
 				if (lookup_controllers(n->val(code).toStdString()) != -1) {
-					controllers_()[lookup_controllers(n->val(code).toStdString())].location.push_back(Blocks.size() - 1);  // Check for everything
-					controllers_()[lookup_controllers(n->val(code).toStdString())].conversion_factor.push_back(n->val(code).conversionCoefficient(n->val(code).unit, n->val(code).defaultUnit));
-					controllers_()[lookup_controllers(n->val(code).toStdString())].quan.push_back(code.toStdString());
-					controllers_()[lookup_controllers(n->val(code).toStdString())].location_type.push_back(0);
-					controllers_()[lookup_controllers(n->val(code).toStdString())].experiment_id.push_back("");
+					controllers()[lookup_controllers(n->val(code).toStdString())].application_spec.location.push_back(Blocks.size() - 1);  // Check for everything
+					controllers()[lookup_controllers(n->val(code).toStdString())].application_spec.conversion_factor.push_back(n->val(code).conversionCoefficient(n->val(code).unit, n->val(code).defaultUnit));
+					controllers()[lookup_controllers(n->val(code).toStdString())].application_spec.quan.push_back(code.toStdString());
+					controllers()[lookup_controllers(n->val(code).toStdString())].application_spec.location_type.push_back(0);
+					controllers()[lookup_controllers(n->val(code).toStdString())].application_spec.experiment_id.push_back("");
 				}
 			}
 		}
@@ -1395,11 +1396,11 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 			if (gw->EntityNames("Controller").contains(e->val(code).toQString()))
 			{
 				if (lookup_controllers(e->val(code).toStdString()) != -1) {
-					controllers_()[lookup_controllers(e->val(code).toStdString())].location.push_back(Connector.size() - 1);  // Check for everything
-					controllers_()[lookup_controllers(e->val(code).toStdString())].conversion_factor.push_back(e->val(code).conversionCoefficient(e->val(code).unit, e->val(code).defaultUnit));
-					controllers_()[lookup_controllers(e->val(code).toStdString())].quan.push_back(code.toStdString());
-					controllers_()[lookup_controllers(e->val(code).toStdString())].location_type.push_back(1);
-					controllers_()[lookup_controllers(e->val(code).toStdString())].experiment_id.push_back("");
+					controllers()[lookup_controllers(e->val(code).toStdString())].application_spec.location.push_back(Connector.size() - 1);  // Check for everything
+					controllers()[lookup_controllers(e->val(code).toStdString())].application_spec.conversion_factor.push_back(e->val(code).conversionCoefficient(e->val(code).unit, e->val(code).defaultUnit));
+					controllers()[lookup_controllers(e->val(code).toStdString())].application_spec.quan.push_back(code.toStdString());
+					controllers()[lookup_controllers(e->val(code).toStdString())].application_spec.location_type.push_back(1);
+					controllers()[lookup_controllers(e->val(code).toStdString())].application_spec.experiment_id.push_back("");
 				}
 			}
 		}
@@ -1638,12 +1639,12 @@ void CMediumSet::g_get_particle_types()
 		{
 			if (gw->EntityNames("Controller").contains(e->val(code).toQString()))
 			{
-				if (lookup_controllers_(e->val(code).toStdString()) != -1) {
-					controllers[lookup_controllers_(e->val(code).toStdString())].location.push_back(Solid_phase.size() - 1);  // Check for everything
-					controllers[lookup_controllers_(e->val(code).toStdString())].conversion_factor.push_back(e->val(code).conversionCoefficient(e->val(code).unit, e->val(code).defaultUnit));
-					controllers[lookup_controllers_(e->val(code).toStdString())].quan.push_back(code.toStdString());
-					controllers[lookup_controllers_(e->val(code).toStdString())].location_type.push_back(7);
-					controllers[lookup_controllers_(e->val(code).toStdString())].experiment_id.push_back("");
+				if (lookup_controllers(e->val(code).toStdString()) != -1) {
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.location.push_back(Solid_phase.size() - 1);  // Check for everything
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.conversion_factor.push_back(e->val(code).conversionCoefficient(e->val(code).unit, e->val(code).defaultUnit));
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.quan.push_back(code.toStdString());
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.location_type.push_back(7);
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.experiment_id.push_back("");
 				}
 			}
 		}
@@ -1701,12 +1702,12 @@ void CMediumSet::g_get_constituents()
 		{
 			if (gw->EntityNames("Controller").contains(e->val(code).toQString()))
 			{
-				if (lookup_controllers_(e->val(code).toStdString()) != -1) {
-					controllers[lookup_controllers_(e->val(code).toStdString())].location.push_back(RXN.cons.size() - 1);  // Check for everything
-					controllers[lookup_controllers_(e->val(code).toStdString())].conversion_factor.push_back(e->val(code).conversionCoefficient(e->val(code).unit, e->val(code).defaultUnit));
-					controllers[lookup_controllers_(e->val(code).toStdString())].quan.push_back(code.toStdString());
-					controllers[lookup_controllers_(e->val(code).toStdString())].location_type.push_back(4);
-					controllers[lookup_controllers_(e->val(code).toStdString())].experiment_id.push_back("");
+				if (lookup_controllers(e->val(code).toStdString()) != -1) {
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.location.push_back(RXN.cons.size() - 1);  // Check for everything
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.conversion_factor.push_back(e->val(code).conversionCoefficient(e->val(code).unit, e->val(code).defaultUnit));
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.quan.push_back(code.toStdString());
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.location_type.push_back(4);
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.experiment_id.push_back("");
 				}
 			}
 		}
@@ -1744,12 +1745,12 @@ void CMediumSet::g_get_reactions()
 		{
 			if (gw->EntityNames("Controller").contains(e->val(code).toQString()))
 			{
-				if (lookup_controllers_(e->val(code).toStdString()) != -1) {
-					controllers[lookup_controllers_(e->val(code).toStdString())].location.push_back(RXN.parameters.size() - 1);  // Check for everything
-					controllers[lookup_controllers_(e->val(code).toStdString())].conversion_factor.push_back(e->val(code).conversionCoefficient(e->val(code).unit, e->val(code).defaultUnit));
-					controllers[lookup_controllers_(e->val(code).toStdString())].quan.push_back(code.toStdString());
-					controllers[lookup_controllers_(e->val(code).toStdString())].location_type.push_back(3);
-					controllers[lookup_controllers_(e->val(code).toStdString())].experiment_id.push_back("");
+				if (lookup_controllers(e->val(code).toStdString()) != -1) {
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.location.push_back(RXN.parameters.size() - 1);  // Check for everything
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.conversion_factor.push_back(e->val(code).conversionCoefficient(e->val(code).unit, e->val(code).defaultUnit));
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.quan.push_back(code.toStdString());
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.location_type.push_back(3);
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.experiment_id.push_back("");
 				}
 			}
 		}
@@ -1822,12 +1823,12 @@ void CMediumSet::g_get_buildup()
 		{
 			if (gw->EntityNames("Controller").contains(e->val(code).toQString()))
 			{
-				if (lookup_controllers_(e->val(code).toStdString()) != -1) {
-					controllers[lookup_controllers_(e->val(code).toStdString())].location.push_back(buildup.size() - 1);  // Check for everything
-					controllers[lookup_controllers_(e->val(code).toStdString())].conversion_factor.push_back(e->val(code).conversionCoefficient(e->val(code).unit, e->val(code).defaultUnit));
-					controllers[lookup_controllers_(e->val(code).toStdString())].quan.push_back(code.toStdString());
-					controllers[lookup_controllers_(e->val(code).toStdString())].location_type.push_back(5);
-					controllers[lookup_controllers_(e->val(code).toStdString())].experiment_id.push_back("");
+				if (lookup_controllers(e->val(code).toStdString()) != -1) {
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.location.push_back(buildup.size() - 1);  // Check for everything
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.conversion_factor.push_back(e->val(code).conversionCoefficient(e->val(code).unit, e->val(code).defaultUnit));
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.quan.push_back(code.toStdString());
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.location_type.push_back(5);
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.experiment_id.push_back("");
 				}
 			}
 		}
@@ -1879,12 +1880,12 @@ void CMediumSet::g_get_external_flux()
 		{
 			if (gw->EntityNames("Controller").contains(e->val(code).toQString()))
 			{
-				if (lookup_controllers_(e->val(code).toStdString()) != -1) {
-					controllers[lookup_controllers_(e->val(code).toStdString())].location.push_back(externalflux.size() - 1);  // Check for everything
-					controllers[lookup_controllers_(e->val(code).toStdString())].conversion_factor.push_back(e->val(code).conversionCoefficient(e->val(code).unit, e->val(code).defaultUnit));
-					controllers[lookup_controllers_(e->val(code).toStdString())].quan.push_back(code.toStdString());
-					controllers[lookup_controllers_(e->val(code).toStdString())].location_type.push_back(6);
-					controllers[lookup_controllers_(e->val(code).toStdString())].experiment_id.push_back("");
+				if (lookup_controllers(e->val(code).toStdString()) != -1) {
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.location.push_back(externalflux.size() - 1);  // Check for everything
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.conversion_factor.push_back(e->val(code).conversionCoefficient(e->val(code).unit, e->val(code).defaultUnit));
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.quan.push_back(code.toStdString());
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.location_type.push_back(6);
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.experiment_id.push_back("");
 				}
 			}
 		}
@@ -1937,12 +1938,12 @@ void CMediumSet::g_get_evapotranspiration()
 		{
 			if (gw->EntityNames("Controller").contains(e->val(code).toQString()))
 			{
-				if (lookup_controllers_(e->val(code).toStdString()) != -1) {
-					controllers[lookup_controllers_(e->val(code).toStdString())].location.push_back(evaporation_model.size() - 1);  // Check for everything
-					controllers[lookup_controllers_(e->val(code).toStdString())].conversion_factor.push_back(e->val(code).conversionCoefficient(e->val(code).unit, e->val(code).defaultUnit));
-					controllers[lookup_controllers_(e->val(code).toStdString())].quan.push_back(code.toStdString());
-					controllers[lookup_controllers_(e->val(code).toStdString())].location_type.push_back(7);
-					controllers[lookup_controllers_(e->val(code).toStdString())].experiment_id.push_back("");
+				if (lookup_controllers(e->val(code).toStdString()) != -1) {
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.location.push_back(evaporation_model.size() - 1);  // Check for everything
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.conversion_factor.push_back(e->val(code).conversionCoefficient(e->val(code).unit, e->val(code).defaultUnit));
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.quan.push_back(code.toStdString());
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.location_type.push_back(7);
+					Control.Controllers[lookup_controllers(e->val(code).toStdString())].application_spec.experiment_id.push_back("");
 				}
 			}
 		}

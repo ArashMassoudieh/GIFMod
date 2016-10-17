@@ -22,6 +22,7 @@ CController::CController(const CController &M)
 	interval = M.interval;
 	min_val = M.min_val;
 	max_val = M.max_val;
+	output = M.output;
 }
 
 CController& CController::operator=(const CController &M)
@@ -33,6 +34,7 @@ CController& CController::operator=(const CController &M)
 	interval = M.interval;
 	min_val = M.min_val;
 	max_val = M.max_val;
+	output = M.output;
 	return *this;
 
 }

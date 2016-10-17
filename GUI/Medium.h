@@ -137,7 +137,6 @@ public:
 	CLIDconfig lid_config;
 	double& dt();
 	vector<range>& parameters(); // properties of unknown parameters
-	vector<range>& controllers_(); // controllers
 	vector<CSensor>& sensors(); // properties of sensors
 	vector<CController>& controllers(); //propoerties of controllers;
 	void CMedium::getparams(string filename);
