@@ -4,3 +4,22 @@ GeneratedFiles/GIFMOD/ui_mainwindowGIFMod.h
 GIFMod - Sassan.VC.db
 GIFMod - Sassan.VC.VC.opendb
 *.tlog
+*.db
+GIFMod - Jamal.VC.db
+*.db
+*.dll
+*.lib
+x64/GIFMod/Debug/Binary.obj
+*.obj
+*.exe
+x64/GIFMod/Debug/GIFMod.pch
+*.pdb
+x64/GIFMod/Debug/GIFMod.ilk
+*.log
+x64/GIFMod/Debug/GIFMod.tlog/CL.command.1.tlog
+*.db
+GIFMod - Jamal.vcxproj.filters
+*.db
+x64/GIFMod/Debug/GIFMod.tlog/link.write.1.tlog
+*.db
+GIFMod - Jamal.VC.db
