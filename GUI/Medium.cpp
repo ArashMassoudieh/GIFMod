@@ -1683,7 +1683,7 @@ void CMedium::solve_fts_m2(double dt)
 	dt_fail = 10000;
 	ANS = CBTCSet(3*Blocks.size()+3*Connector.size());
 	ANS_colloids = CBTCSet(Blocks.size()*Blocks[0].n_phases);
-	ANS_constituents = CBTCSet(Blocks.size()*(Blocks[0].n_phases+2)*RXN().cons.size()); // JA: shouldn't be  Blocks[0].n_phases*RXN().cons.size()+2
+	ANS_constituents = CBTCSet(Blocks.size()*(Blocks[0].n_phases+2)*RXN().cons.size());
 	if (mass_balance_check()) ANS_MB = CBTCSet(Blocks.size());
 	char buffer[33];
 	epoch_count = 0;
@@ -1692,7 +1692,7 @@ void CMedium::solve_fts_m2(double dt)
 
 	ANS_MB.names.clear();
 
-	mass_balance_check(); 
+	mass_balance_check();
 
 	for (int i=0; i<Blocks.size(); i++)
 		ANS_MB.pushBackName("S_"+Blocks[i].ID);
@@ -1700,12 +1700,13 @@ void CMedium::solve_fts_m2(double dt)
 	double redo_time = t;
 	double redo_dt = 10000;
 	double redo_to_time = t;
-	int in_redo = false;  // JA: bool or int?
+	int in_redo = false;
 	for (int i = 0; i<Blocks.size(); i++) ANS.pushBackName("S_" + Blocks[i].ID);
 	for (int i = 0; i<Connector.size(); i++) ANS.pushBackName("Q_" + Connector[i].ID);
 	for (int i = 0; i<Blocks.size(); i++) ANS.pushBackName("H_" + Blocks[i].ID);
 	for (int i = 0; i<Blocks.size(); i++) ANS.pushBackName("E_" + Blocks[i].ID);
 	for (int i = 0; i<Connector.size(); i++) ANS.pushBackName("A_" + Connector[i].ID);
+
 	for (int i = 0; i<Connector.size(); i++) ANS.pushBackName("Qv_" + Connector[i].ID);
 
 	for (int j=0; j<Blocks[0].Solid_phase.size(); j++) 
@@ -1759,14 +1760,15 @@ void CMedium::solve_fts_m2(double dt)
 	setH();      
 	if (steady_state_hydro())
 	{
-		string failed_res = create_hydro_steady_matrix_inv();  //JA: ?
+		string failed_res = create_hydro_steady_matrix_inv();
 		if (failed_res != "")
 		{
 			fail_reason = failed_res;
 			return;
 		}
 	}
-	setQ0();     	// JA: from here on we have the Qs 
+	setQ0();     
+	
 
 	vector<CRestoreInfo> Res;
 	Res.push_back(getrestoreinfo());
@@ -2064,7 +2066,7 @@ void CMedium::solve_fts_m2(double dt)
 		{
 			if (int(t / controllers()[i].interval) > int((t - dtt) / controllers()[i].interval))
 			{
-//				controllers()[i].calc_value(t, lookup_experiment(name));
+				controllers()[i].calc_value(t, dtt, lookup_experiment(name));
 			}
 
 		}
