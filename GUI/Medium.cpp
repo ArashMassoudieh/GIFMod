@@ -1132,7 +1132,9 @@ void CMedium::setQ_star()
 {
 	for (int i=0; i<Connector.size(); i++)	
 	{
-		if (!Connector[i].presc_flow)
+		if (Connector[i].control)
+			Connector[i].Q = Connector[i].Controller->output.interpol(t);
+		else if (!Connector[i].presc_flow)
 			Connector[i].set_val("q*", Connector[i].calc_star(Connector[i].flow_expression));
 		else
 			Connector[i].set_val("q*", Connector[i].presc_flowrate.interpol(t));

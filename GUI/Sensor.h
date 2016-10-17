@@ -11,6 +11,7 @@ class CSensor
 public:
 	CSensor();
 	~CSensor();
+	CSensor(int numberofExperiments);
 	CSensor(const CSensor &M);
 	CSensor& CSensor::operator=(const CSensor &BB);
 	void append_output(double t, double C, int experiment_id);
@@ -22,6 +23,8 @@ public:
 	double error_std;
 	double interval;
 	vector<CBTC> output;
-
+	void setNumberofExperiments(int n) {
+		output.resize(n);
+	}
 };
 

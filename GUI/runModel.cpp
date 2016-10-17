@@ -1040,7 +1040,7 @@ void CMediumSet::g_get_sensors()
 {
 	for each (Entity *e in gw->entitiesByType("Sensor"))
 	{
-		CSensor M;
+		CSensor M(gw->experimentsList().count());
 		M.error_structure = 0;
 		M.name = e->Name().toStdString();
 		M.loc_type = (e->val("loc_type") == "Block") ? 0 : 1; //OBSERVED SUBTYPE
@@ -1054,7 +1054,7 @@ void CMediumSet::g_get_sensors()
 		//					M.quan = e->val("quan").toStdString();
 
 
-
+		M.id = (e->val("id").toStdString());
 		M.error_std = e->val("error_std").toFloat();
 		M.error_structure = (e->val("error_structure") == "Normal") ? 0 : 1; //NORM 0 ; LOg 1
 		M.interval = e->val("interval").toFloat();
