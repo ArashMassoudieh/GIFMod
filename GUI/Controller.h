@@ -1,5 +1,7 @@
 #pragma once
 #include "Sensor.h"
+#include "utility_funcs.h"
+//test
 
 class CController
 {
@@ -23,5 +25,6 @@ public:
 	double interval;
 	double min_val = 0;
 	double max_val = 1e12;
+	range application_spec;
 };
 
