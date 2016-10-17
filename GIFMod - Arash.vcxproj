@@ -439,6 +439,7 @@ copy *.txt $(OutDir)
     <ClInclude Include="GUI\treeitem.h" />
     <ClInclude Include="GUI\UnitTextBox.h" />
     <ClInclude Include="GUI\UnitTextBox2.h" />
+    <ClInclude Include="GUI\utility_funcs.h" />
     <ClInclude Include="GUI\variant.h" />
     <ClInclude Include="GUI\Vector.h" />
     <ClInclude Include="GUI\Well.h" />

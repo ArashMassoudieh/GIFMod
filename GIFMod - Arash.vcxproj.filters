@@ -194,9 +194,7 @@
     <ClInclude Include="GUI\Vector.h" />
     <ClInclude Include="GUI\Well.h" />
     <ClInclude Include="GUI\XString.h" />
-    <ClInclude Include="utility_funcs.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
+    <ClInclude Include="GUI\utility_funcs.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="GUI\expEditor.h" />

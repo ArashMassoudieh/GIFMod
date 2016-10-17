@@ -1,6 +1,2 @@
-#TargetFrameworkVersion=v4.0:PlatformToolSet=v140:EnableManagedIncrementalBuild=false:VCToolArchitecture=Native32Bit:WindowsTargetPlatformVersion=8.1
-<<<<<<< HEAD
-Debug|x64|E:\GIFMOD\GIFMod\|
-=======
-Debug|x64|C:\Users\Jamal\Documents\GIFMod-GitHub\GIFMod\|
->>>>>>> ae455f5ef918ca16404d6ec0ebebe59a904cec2c
+#TargetFrameworkVersion=v4.0:PlatformToolSet=v140:EnableManagedIncrementalBuild=false:VCToolArchitecture=Native32Bit
+Debug|x64|E:\GitHub\|
