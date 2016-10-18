@@ -94,6 +94,7 @@ public:
     QWidget *centralWidget;
     QMenuBar *menuBar;
     QMenu *menu_File;
+    QMenu *menuRecent;
     QMenu *menu_Help;
     QMenu *menu_Edit;
     QMenu *menu_Window;
@@ -363,6 +364,8 @@ public:
         menuBar->setGeometry(QRect(0, 0, 1177, 21));
         menu_File = new QMenu(menuBar);
         menu_File->setObjectName(QStringLiteral("menu_File"));
+        menuRecent = new QMenu(menu_File);
+        menuRecent->setObjectName(QStringLiteral("menuRecent"));
         menu_Help = new QMenu(menuBar);
         menu_Help->setObjectName(QStringLiteral("menu_Help"));
         menu_Edit = new QMenu(menuBar);
@@ -417,11 +420,14 @@ public:
         menu_File->addAction(action_Save);
         menu_File->addAction(actionSave_As);
         menu_File->addSeparator();
+        menu_File->addAction(menuRecent->menuAction());
+        menu_File->addSeparator();
         menu_File->addAction(actionClear_Reaction_Network);
         menu_File->addAction(actionLoad_Reaction_Network);
         menu_File->addAction(actionSave_Reaction_Network);
         menu_File->addSeparator();
         menu_File->addAction(actionE_xit);
+        menuRecent->addSeparator();
         menu_Help->addAction(actionContact_Us);
         menu_Help->addAction(actionAbout);
         menu_Edit->addAction(action_Undo);
@@ -586,6 +592,7 @@ public:
         actioncolorCodeMoistureContent->setText(QApplication::translate("MainWindow", "Moisture content", 0));
         actioncolorCodeEvaporationRate->setText(QApplication::translate("MainWindow", "Evaporation rate", 0));
         menu_File->setTitle(QApplication::translate("MainWindow", "&File", 0));
+        menuRecent->setTitle(QApplication::translate("MainWindow", "Recent", 0));
         menu_Help->setTitle(QApplication::translate("MainWindow", "&Help", 0));
         menu_Edit->setTitle(QApplication::translate("MainWindow", "&Edit", 0));
         menu_Window->setTitle(QApplication::translate("MainWindow", "&View", 0));

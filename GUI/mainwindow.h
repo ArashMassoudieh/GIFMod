@@ -56,6 +56,8 @@ public:
 
 	explicit MainWindow(QWidget *parent, QString applicationName, QString shortName, QString extension, QString metafilename, QString modeltoLoad = "");
 	~MainWindow();
+	int recentFiles = 0;
+
 #ifdef GIFMOD
 	void forwardRun(CMediumSet *model, runtimeWindow *runtimewindow);
 	void inverseRun(CMediumSet *model, runtimeWindow* progress);
@@ -144,6 +146,8 @@ private slots:
 	void on_projectExplorer_clicked(const QModelIndex &index);
 
 	void on_projectExplorer_customContextMenuRequested(const QPoint &pos);
+	
+	void on_actionmenuRecent_triggered(QAction *act);
 
 //	void on_tableProp_customContextMenuRequested(const QPoint &pos);
 

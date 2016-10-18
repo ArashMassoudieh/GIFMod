@@ -1,6 +1,7 @@
 #ifndef GIFMOD_VERSION
 #define GIFMOD_VERSION "0.1"
 #endif
+#define RECENT "recentFiles.txt"
 #include "mainwindow.h"
 #ifdef GIFMOD
 #include "ui_mainwindowGIFMod.h"
@@ -84,6 +85,22 @@ ui(new Ui::MainWindow)
 //	log->append(a);
 	log->show();
 	log->append("Program started.");
+	ifstream file(RECENT);
+	recentFiles = 0;
+	if (file.good())
+	{
+		string line;
+		while (!file.eof())
+		{
+			getline(file, line);
+			QString fileName = QString::fromStdString(line);
+			qDebug() << fileName; QString::fromStdString(line);
+			//QAction * a= new QAction()
+			ui->menuRecent->addAction(fileName);
+			recentFiles++;
+		}
+		file.close();
+	}
 
 	mainGraphWidget = new GraphWidget(this, applicationShortName, metafilename, log, this);
 	QObject::connect(mainGraphWidget, SIGNAL(Mouse_Pos(int, int, QString)), this, SLOT(Mouse_Pos(int, int, QString)));
@@ -815,6 +832,11 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 		menu->exec(projectExplorer->mapToGlobal(pos));
 	}
 }
+void MainWindow::on_actionmenuRecent_triggered(QAction * act)
+{
+	qDebug() << act->text();
+}
+
 void MainWindow::tablePropShowContextMenu(const QPoint&pos)
 {
 	QModelIndex i1 = tableProp->indexAt(pos);
