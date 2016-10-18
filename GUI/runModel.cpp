@@ -971,10 +971,6 @@ void MainWindow::inverseRun(CMediumSet *modelSet, runtimeWindow* rtw)
 	mainGraphWidget->experimentSelect(mainGraphWidget->experimentsList()[0]);
 	mainGraphWidget->hasResults = true;
 
-//	mainGraphWidget->log("ANS_obs.nvars = " + QString::number(mainGraphWidget->modelSet->ANS_obs.nvars));
-//	for (int i = 0; i < mainGraphWidget->modelSet->ANS_obs.nvars; i++)
-//		mainGraphWidget->log(QString::fromStdString(mainGraphWidget->modelSet->ANS_obs[i].name));
-
 }
 
 void CMediumSet::g_get_observed()
@@ -1047,13 +1043,6 @@ void CMediumSet::g_get_sensors()
 		M.loc_type = (e->val("loc_type") == "Block") ? 0 : 1; //OBSERVED SUBTYPE
 		string equation = convertstringtoStringOP(e->val("quan").toQString(), gw);
 		M.quan = CStringOP(equation);
-		//				if (gw->EntityNames("Particle").contains(e->val("quan").toQString().split(':')[0]))
-		//					M.quan = QString("g[%1]").arg(e->val("quan").toQString()).toStdString();
-		//				else if (gw->EntityNames("Constituent").contains(e->val("quan").toQString().split(':')[0]))
-		//					M.quan = QString("cg[%1]").arg(e->val("quan").toQString()).toStdString();
-		//				else
-		//					M.quan = e->val("quan").toStdString();
-
 
 		M.id = (e->val("id").toStdString());
 		M.error_std = e->val("error_std").toFloat();
@@ -1077,7 +1066,7 @@ void CMediumSet::g_get_controllers()
 			if (e->val(key).toQString() != "")
 				M.set_val(key.toStdString(), e->val(key).toFloat());
 
-		M.interval = e->val("interval").toFloat();
+//		M.interval = e->val("interval").toFloatDefaultUnit();
 
 		Control.Controllers.push_back(M);
 	}

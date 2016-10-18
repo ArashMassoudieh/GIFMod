@@ -183,7 +183,6 @@
     <ClInclude Include="GUI\Crxtterm.h" />
     <ClInclude Include="GUI\Distribution.h" />
     <ClInclude Include="GUI\DistributionNUnif.h" />
-    <ClInclude Include="GUI\edge.h" />
     <ClInclude Include="GUI\entity.h" />
     <ClInclude Include="GUI\enums.h" />
     <ClInclude Include="GUI\EnvExchange.h" />
@@ -277,6 +276,9 @@
     <ClInclude Include="GUI\utility_funcs.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
+    <ClInclude Include="GUI\edge.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="GUI\expEditor.h" />
@@ -349,6 +351,11 @@
       <UniqueIdentifier>{175f5cf6-d558-47cb-ad3f-d8deee9e2772}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h</Extensions>
+      <ParseFiles>true</ParseFiles>
     </Filter>
   </ItemGroup>
 </Project>
