@@ -113,9 +113,7 @@
     <ClCompile Include="GUI\Well.cpp" />
     <ClCompile Include="GUI\wizardDialog.cpp" />
     <ClCompile Include="GUI\Sensor.cpp" />
-    <ClCompile Include="GUI\Controller.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <ClCompile Include="GUI\Controller.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_ConstituentWindow.h" />
