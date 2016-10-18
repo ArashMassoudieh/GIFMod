@@ -18,6 +18,7 @@ CController::CController(const CController &M)
 	name = M.name;
 	params = M.params;
 	type = M.type;
+	sensor_id = M.sensor_id;
 	value = M.value;
 	interval = M.interval;
 	min_val = M.min_val;
@@ -30,6 +31,7 @@ CController& CController::operator=(const CController &M)
 	params = M.params;
 	name = M.name;
 	type = M.type;
+	sensor_id = M.sensor_id;
 	value = M.value;
 	interval = M.interval;
 	min_val = M.min_val;
@@ -54,7 +56,6 @@ void CController::append(double t, double C)
 	for (int i = output.n - 1; i >= 0; i--)
 	{
 		if (output.t[i] == t) output.C[i] = C;
-		return;
 	}
 	output.append(t, C);
 	return;
@@ -76,7 +77,11 @@ double CController::I(double t, int experiment_id)
 double CController::D(double t, int experiment_id)
 {
 	if (tolower(type) == "pid")
-		return (Sensor->output[experiment_id].slope(t));
+		if (Sensor->output[experiment_id].n > 1)
+			return (Sensor->output[experiment_id].slope(t));
+		else
+			return 0;
+
 
 }
 

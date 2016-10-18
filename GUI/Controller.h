@@ -14,6 +14,7 @@ public:
 	CBTC output;
 	string type;
 	CSensor *Sensor;
+	string sensor_id;
 	double calc_value(double t, double dt, int experiment_id);
 	void append(double t, double C); 
 	vector<double> params; // for PID controller params[0] = k_p, params[1] = k_i, params[2] = k_d; params[3] = set point

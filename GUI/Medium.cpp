@@ -2342,6 +2342,9 @@ void CMedium::finalize_set_param()
 			if ((lookup_controllers(Connector[i].controller_id) != -1) && Connector[i].control == true)
 				Connector[i].Controller = &controllers()[lookup_controllers(Connector[i].controller_id)];
 	}
+
+	for (int i = 0; i < controllers().size(); i++)
+		controllers()[i].Sensor = &sensors()[lookup_sensors(controllers()[i].sensor_id)];
 }
 
 void CMedium::set_default_params()
