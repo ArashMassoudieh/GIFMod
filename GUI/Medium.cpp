@@ -2015,7 +2015,7 @@ void CMedium::solve_fts_m2(double dt)
 			else
 				dtt = min(base_dtt,1000*avg_redo_dtt*1.2);
 
-
+			dtt = min(dtt, get_nextcontrolinterval(t) - t);
 			
 
 		}
@@ -3650,6 +3650,17 @@ void CMedium::update_light_temperature()
 	else
 		current_relative_humidity = 0;
 
+}
+
+double CMedium::get_nextcontrolinterval(double _t)
+{
+	double t_min = 1e100;
+	for (int i = 0; controllers().size(); i++)
+	{
+		double t_1 = (int((_t - Timemin) / controllers()[i].interval) + 1)*controllers()[i].interval;
+		t_min = min(t_min, t_1);
+	}
+	return t_min;
 }
 
 vector<CRestoreInfo> CMedium::clean_up_restore_points(vector<CRestoreInfo> &Res, double t)
