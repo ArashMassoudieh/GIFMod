@@ -55,8 +55,9 @@ public:
 	TreeModel *projModel;
 
 	explicit MainWindow(QWidget *parent, QString applicationName, QString shortName, QString extension, QString metafilename, QString modeltoLoad = "");
+	void addToRecentFiles(QString fileName, bool addToFile=true);
 	~MainWindow();
-	int recentFiles = 0;
+	QStringList recentFiles;
 
 #ifdef GIFMOD
 	void forwardRun(CMediumSet *model, runtimeWindow *runtimewindow);
@@ -77,7 +78,10 @@ public:
 	runtimeWindow * rtw = 0;
 	QList<QMap<QString, QVariant>>* dataMap;
 	QList<QMap<QString, QVariant>>* dataHash;
-
+	void afterInit() {
+		readRecentFilesList();
+	}
+	void readRecentFilesList();
 protected:
 	void paintEvent(QPaintEvent *e);
 
@@ -86,7 +90,7 @@ public slots:
 	void Mouse_Pos(int, int, QString);
 
 	void on_dockWidget_dockLocationChanged(const Qt::DockWidgetArea &area);
-
+	
 private slots:
 
 	void on_actionAdd_Pond_triggered();
@@ -113,7 +117,6 @@ private slots:
 
 
 	void MainWindow::updateToolbarToggles(Operation_Modes OMode = Operation_Modes::NormalMode);
-
 	void on_action_New_triggered();
 
 	void on_action_Open_triggered();
@@ -147,7 +150,7 @@ private slots:
 
 	void on_projectExplorer_customContextMenuRequested(const QPoint &pos);
 	
-	void on_actionmenuRecent_triggered(QAction *act);
+	void on_actionmenuRecent_triggered();// QString fileName);
 
 //	void on_tableProp_customContextMenuRequested(const QPoint &pos);
 
@@ -220,6 +223,11 @@ private slots:
 	void gwidgetChanged();
 	void MainWindow::closeEvent(QCloseEvent *event);
 	void getNumber(double initial = -1);
+	void recentItem()
+	{
+		int i = 0;
+	}
+
 
 private:
 //	QString modelFilename = "";
