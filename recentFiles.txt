@@ -1,0 +1,2 @@
+c:\file1.gifmod
+c:\file2.txt
