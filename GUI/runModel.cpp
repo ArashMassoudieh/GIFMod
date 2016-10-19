@@ -1063,8 +1063,8 @@ void CMediumSet::g_get_controllers()
 
 		M.name = e->Name().toStdString();
 		M.type = e->val("type").toStdString(); //Added by Arash, please check
-		M.zn_controller_type = e->val("zn_controller_type").toStdString();
 		M.sensor_id = e->val("sensor").toStdString(); //Added by Arash, please check
+		M.zn_controller_type = e->val("zn_controller_type").toStdString();
 		for each (QString key in e->codes())
 			if (e->val(key).toQString() != "")
 				M.set_val(key.toStdString(), e->val(key).toFloat());
