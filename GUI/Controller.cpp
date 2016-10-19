@@ -1,6 +1,8 @@
 #include "Controller.h"
 #include "StringOP.h"
 
+enum controller_param {k_p, k_i, k_d, setpoint, k_u, T_u};
+enum controller_type { P = 0, PI = 1, PD = 2, PID = 3, PID_NoOvershoot = 4 };
 
 CController::CController()
 {
@@ -24,6 +26,7 @@ CController::CController(const CController &M)
 	min_val = M.min_val;
 	max_val = M.max_val;
 	output = M.output;
+	zn_controller_type = M.zn_controller_type;
 }
 
 CController& CController::operator=(const CController &M)
@@ -37,13 +40,14 @@ CController& CController::operator=(const CController &M)
 	min_val = M.min_val;
 	max_val = M.max_val;
 	output = M.output;
+	zn_controller_type = M.zn_controller_type;
 	return *this;
 
 }
 
-double CController::calc_value(double t, double dt, int experiment_id)
+double CController::calc_value(double t, int experiment_id)
 {
-	value += dt*(params[0] * P(t, experiment_id) + params[1] * I(t, experiment_id) + params[2] * D(t, experiment_id));
+	value += params[k_p] * ( P(t, experiment_id) + params[k_i] * I(t, experiment_id) + params[k_d] * D(t, experiment_id));
 	value = min(value, max_val);
 	value = max(value, min_val);
 	append(t, value);
@@ -87,10 +91,16 @@ double CController::D(double t, int experiment_id)
 
 void CController::set_val(string S, double val)
 {
-	if ((tolower(S) == "kp") || (tolower(S) == "k_p")) params[0] = val;
-	if ((tolower(S) == "ki") || (tolower(S) == "k_i")) params[1] = val;
-	if ((tolower(S) == "kd") || (tolower(S) == "k_d")) params[2] = val;
+	if ((tolower(S) == "kp") || (tolower(S) == "k_p")) params[k_p] = val;
+	if ((tolower(S) == "ki") || (tolower(S) == "k_i")) params[k_i] = val;
+	if ((tolower(S) == "kd") || (tolower(S) == "k_d")) params[k_d] = val;
+	if ((tolower(S) == "value") || (tolower(S) == "inivalue")) value = val;
 	if (tolower(S) == "interval") interval = val;
-	if ((tolower(S) == "set_point") || (tolower(S)=="setpoint")) params[3] = val;
+	if ((tolower(S) == "min_value") || (tolower(S) == "min")) min_val = val;
+	if ((tolower(S) == "max_value") || (tolower(S) == "max")) max_val = val;
+	if ((tolower(S) == "set_point") || (tolower(S)=="setpoint")) params[setpoint] = val;
+	if ((tolower(S) == "k_u") || (tolower(S) == "setpoint")) params[k_u] = val;
+	if ((tolower(S) == "T_u") || (tolower(S) == "setpoint")) params[T_u] = val;
+
 
 }
