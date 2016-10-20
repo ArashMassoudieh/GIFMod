@@ -68,7 +68,6 @@
      <property name="title">
       <string>Recent</string>
      </property>
-     <addaction name="separator"/>
     </widget>
     <addaction name="action_New"/>
     <addaction name="action_Open"/>
@@ -763,6 +762,21 @@
   <action name="actioncolorCodeEvaporationRate">
    <property name="text">
     <string>Evaporation rate</string>
+   </property>
+  </action>
+  <action name="action123">
+   <property name="text">
+    <string>123</string>
+   </property>
+  </action>
+  <action name="actionAbout2">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionRecent">
+   <property name="text">
+    <string>Recent</string>
    </property>
   </action>
  </widget>

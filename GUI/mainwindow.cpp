@@ -246,6 +246,7 @@ MainWindow::MainWindow(QWidget *parent, QString applicationName, QString shortNa
 	mainGraphWidget->add_to_undo_list();
 	mainGraphWidget->trackingUndo = true;
 }
+
 void MainWindow::readRecentFilesList()
 {
 	ifstream file(RECENT);
@@ -261,6 +262,9 @@ void MainWindow::readRecentFilesList()
 			//QAction * a= new QAction()
 		}
 		file.close();
+//		QAction * selected = ui->menuRecent->exec();
+//		if (selected)
+//			qDebug() << selected->text();
 	}
 }
 void MainWindow::addToRecentFiles(QString fileName, bool addToFile) 
@@ -268,8 +272,9 @@ void MainWindow::addToRecentFiles(QString fileName, bool addToFile)
 	if (!recentFiles.contains(fileName.toLower()) && fileName.trimmed()!="")
 	{
 		recentFiles.append(fileName.toLower());
-//		ui->menuRecent->addAction(fileName, this, SLOT(on_actionmenuRecent_triggered()));
-		ui->menuRecent->addAction(fileName, this, SLOT(recentItem()));
+		QAction * a = ui->menuRecent->addAction(fileName);// , this, SLOT(recentItem()));
+		QObject::connect(a, SIGNAL(triggered()), this, SLOT(on_actionRecent_triggered()));
+
 		if (addToFile)
 		{
 			ofstream file(RECENT, fstream::app);
@@ -483,6 +488,8 @@ void MainWindow::on_action_Save_triggered()
 		tr("Model (*.").append(fileExtension).append(");;All Files (*)"));
 	saveModel(fileName);
 	setModelFileName(fileName);
+	addToRecentFiles(fileName);
+
 }
 void MainWindow::on_actionSave_As_triggered()
 {
@@ -497,6 +504,8 @@ void MainWindow::on_actionSave_As_triggered()
 	qDebug() << "**************************model saved";
 
 	setModelFileName(fileName);
+	addToRecentFiles(fileName);
+
 	}
 
 
@@ -2100,6 +2109,34 @@ void MainWindow::on_actionShowRuntimeWindow_triggered()
 {
 	if (rtw)
 		rtw->show();
+}
+
+void MainWindow::on_actionRecent_triggered()
+{
+	QAction* a = static_cast<QAction*> (QObject::sender());
+	QString fileName = a->text();
+	if (loadModel(fileName))
+	{
+		on_actionZoom_All_triggered();
+		mainGraphWidget->updateNodeCoordinates();
+	}
+	else
+		removeFromRecentList(a);
+}
+
+void MainWindow::removeFromRecentList(QAction* selectedFileAction)
+{
+	recentFiles.removeAll(selectedFileAction->text());
+	ui->menuRecent->removeAction(selectedFileAction);
+	writeRecentFilesList();
+}
+void MainWindow::writeRecentFilesList()
+{
+	ofstream file(RECENT);
+	if (file.good())
+		for each (QString fileName in recentFiles)
+			file << fileName.toStdString() << endl;
+	file.close();
 }
 
 void MainWindow::on_actionAbout_triggered()

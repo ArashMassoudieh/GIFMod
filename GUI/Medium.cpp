@@ -2219,9 +2219,10 @@ void CMedium::finalize_set_param()
 		for (int jj = 0; jj<Blocks[ii].evaporation_id.size(); jj++) if (lookup_evaporation(Blocks[ii].evaporation_id[jj]) != -1) Blocks[ii].evaporation_m.push_back(&(evaporation_model()[lookup_evaporation(Blocks[ii].evaporation_id[jj])])); //newly added
 		
 		Blocks[ii].Solid_phase_id.clear();
-		for (int i = 0; i < Solid_phase().size(); i++) Blocks[ii].Solid_phase_id.push_back(i);
+		for (int i = 0; i < Solid_phase().size(); i++) 
+			Blocks[ii].Solid_phase_id.push_back(i);
 				
-		Blocks[ii].Solid_phase_id.clear();
+		Blocks[ii].Solid_phase.clear();
 		//Resizing G and CG vectors
 		for (int jj = 0; jj<Blocks[ii].Solid_phase_id.size(); jj++) Blocks[ii].Solid_phase.push_back(&(Solid_phase()[Blocks[ii].Solid_phase_id[jj]]));
 		Blocks[ii].n_phases = Blocks[ii].get_tot_num_phases();

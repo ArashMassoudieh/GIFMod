@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[110];
-    char stringdata0[2545];
+    QByteArrayData data[113];
+    char stringdata0[2613];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -133,12 +133,15 @@ QT_MOC_LITERAL(100, 2366, 13), // "addExperiment"
 QT_MOC_LITERAL(101, 2380, 16), // "sourceExperiment"
 QT_MOC_LITERAL(102, 2397, 42), // "on_actionremoveCurrentExperim..."
 QT_MOC_LITERAL(103, 2440, 36), // "on_actionShowRuntimeWindow_tr..."
-QT_MOC_LITERAL(104, 2477, 9), // "loadModel"
-QT_MOC_LITERAL(105, 2487, 13), // "modelfilename"
-QT_MOC_LITERAL(106, 2501, 14), // "gwidgetChanged"
-QT_MOC_LITERAL(107, 2516, 9), // "getNumber"
-QT_MOC_LITERAL(108, 2526, 7), // "initial"
-QT_MOC_LITERAL(109, 2534, 10) // "recentItem"
+QT_MOC_LITERAL(104, 2477, 25), // "on_actionRecent_triggered"
+QT_MOC_LITERAL(105, 2503, 20), // "removeFromRecentList"
+QT_MOC_LITERAL(106, 2524, 20), // "writeRecentFilesList"
+QT_MOC_LITERAL(107, 2545, 9), // "loadModel"
+QT_MOC_LITERAL(108, 2555, 13), // "modelfilename"
+QT_MOC_LITERAL(109, 2569, 14), // "gwidgetChanged"
+QT_MOC_LITERAL(110, 2584, 9), // "getNumber"
+QT_MOC_LITERAL(111, 2594, 7), // "initial"
+QT_MOC_LITERAL(112, 2602, 10) // "recentItem"
 
     },
     "MainWindow\0Mouse_Pos\0\0"
@@ -214,6 +217,8 @@ QT_MOC_LITERAL(109, 2534, 10) // "recentItem"
     "addExperiment\0sourceExperiment\0"
     "on_actionremoveCurrentExperiment_triggered\0"
     "on_actionShowRuntimeWindow_triggered\0"
+    "on_actionRecent_triggered\0"
+    "removeFromRecentList\0writeRecentFilesList\0"
     "loadModel\0modelfilename\0gwidgetChanged\0"
     "getNumber\0initial\0recentItem"
 };
@@ -225,7 +230,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-     127,   14, // methods
+     130,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -233,133 +238,136 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    3,  649,    2, 0x0a /* Public */,
-       3,    1,  656,    2, 0x0a /* Public */,
-       6,    0,  659,    2, 0x08 /* Private */,
-       7,    0,  660,    2, 0x08 /* Private */,
-       8,    0,  661,    2, 0x08 /* Private */,
-       9,    0,  662,    2, 0x08 /* Private */,
-      10,    0,  663,    2, 0x08 /* Private */,
-      11,    0,  664,    2, 0x08 /* Private */,
-      12,    1,  665,    2, 0x08 /* Private */,
-      14,    1,  668,    2, 0x08 /* Private */,
-      15,    1,  671,    2, 0x08 /* Private */,
-      16,    1,  674,    2, 0x08 /* Private */,
-      17,    0,  677,    2, 0x08 /* Private */,
-      18,    0,  678,    2, 0x08 /* Private */,
-      19,    0,  679,    2, 0x08 /* Private */,
-      20,    0,  680,    2, 0x08 /* Private */,
-      21,    1,  681,    2, 0x08 /* Private */,
-      23,    0,  684,    2, 0x08 /* Private */,
-      24,    0,  685,    2, 0x08 /* Private */,
-      25,    0,  686,    2, 0x08 /* Private */,
-      26,    0,  687,    2, 0x08 /* Private */,
-      27,    0,  688,    2, 0x08 /* Private */,
-      28,    0,  689,    2, 0x08 /* Private */,
-      29,    0,  690,    2, 0x08 /* Private */,
-      30,    0,  691,    2, 0x08 /* Private */,
-      31,    0,  692,    2, 0x08 /* Private */,
-      32,    0,  693,    2, 0x08 /* Private */,
-      33,    1,  694,    2, 0x08 /* Private */,
-      35,    1,  697,    2, 0x08 /* Private */,
-      37,    0,  700,    2, 0x08 /* Private */,
-      38,    1,  701,    2, 0x08 /* Private */,
-      39,    1,  704,    2, 0x08 /* Private */,
-      41,    1,  707,    2, 0x08 /* Private */,
-      41,    0,  710,    2, 0x28 /* Private | MethodCloned */,
-      42,    0,  711,    2, 0x08 /* Private */,
-      43,    3,  712,    2, 0x08 /* Private */,
-      43,    2,  719,    2, 0x28 /* Private | MethodCloned */,
-      43,    1,  724,    2, 0x28 /* Private | MethodCloned */,
-      43,    0,  727,    2, 0x28 /* Private | MethodCloned */,
-      47,    2,  728,    2, 0x08 /* Private */,
-      47,    1,  733,    2, 0x28 /* Private | MethodCloned */,
-      47,    0,  736,    2, 0x28 /* Private | MethodCloned */,
-      48,    2,  737,    2, 0x08 /* Private */,
-      48,    1,  742,    2, 0x28 /* Private | MethodCloned */,
-      48,    0,  745,    2, 0x28 /* Private | MethodCloned */,
-      49,    2,  746,    2, 0x08 /* Private */,
-      49,    1,  751,    2, 0x28 /* Private | MethodCloned */,
-      49,    0,  754,    2, 0x28 /* Private | MethodCloned */,
-      50,    2,  755,    2, 0x08 /* Private */,
-      50,    1,  760,    2, 0x28 /* Private | MethodCloned */,
-      50,    0,  763,    2, 0x28 /* Private | MethodCloned */,
-      53,    3,  764,    2, 0x08 /* Private */,
-      53,    2,  771,    2, 0x28 /* Private | MethodCloned */,
-      53,    1,  776,    2, 0x28 /* Private | MethodCloned */,
-      53,    0,  779,    2, 0x28 /* Private | MethodCloned */,
-      56,    3,  780,    2, 0x08 /* Private */,
-      56,    2,  787,    2, 0x28 /* Private | MethodCloned */,
-      56,    1,  792,    2, 0x28 /* Private | MethodCloned */,
-      56,    0,  795,    2, 0x28 /* Private | MethodCloned */,
-      57,    3,  796,    2, 0x08 /* Private */,
-      57,    2,  803,    2, 0x28 /* Private | MethodCloned */,
-      57,    1,  808,    2, 0x28 /* Private | MethodCloned */,
-      57,    0,  811,    2, 0x28 /* Private | MethodCloned */,
-      59,    2,  812,    2, 0x08 /* Private */,
-      59,    1,  817,    2, 0x28 /* Private | MethodCloned */,
-      59,    0,  820,    2, 0x28 /* Private | MethodCloned */,
-      61,    2,  821,    2, 0x08 /* Private */,
-      61,    1,  826,    2, 0x28 /* Private | MethodCloned */,
-      61,    0,  829,    2, 0x28 /* Private | MethodCloned */,
-      63,    2,  830,    2, 0x08 /* Private */,
-      63,    1,  835,    2, 0x28 /* Private | MethodCloned */,
-      63,    0,  838,    2, 0x28 /* Private | MethodCloned */,
-      65,    2,  839,    2, 0x08 /* Private */,
-      65,    1,  844,    2, 0x28 /* Private | MethodCloned */,
-      65,    0,  847,    2, 0x28 /* Private | MethodCloned */,
-      66,    2,  848,    2, 0x08 /* Private */,
-      66,    1,  853,    2, 0x28 /* Private | MethodCloned */,
-      66,    0,  856,    2, 0x28 /* Private | MethodCloned */,
-      68,    2,  857,    2, 0x08 /* Private */,
-      68,    1,  862,    2, 0x28 /* Private | MethodCloned */,
-      68,    0,  865,    2, 0x28 /* Private | MethodCloned */,
-      69,    2,  866,    2, 0x08 /* Private */,
-      69,    1,  871,    2, 0x28 /* Private | MethodCloned */,
-      69,    0,  874,    2, 0x28 /* Private | MethodCloned */,
-      70,    2,  875,    2, 0x08 /* Private */,
-      70,    1,  880,    2, 0x28 /* Private | MethodCloned */,
-      70,    0,  883,    2, 0x28 /* Private | MethodCloned */,
-      71,    5,  884,    2, 0x08 /* Private */,
-      71,    4,  895,    2, 0x28 /* Private | MethodCloned */,
-      71,    3,  904,    2, 0x28 /* Private | MethodCloned */,
-      71,    2,  911,    2, 0x28 /* Private | MethodCloned */,
-      71,    1,  916,    2, 0x28 /* Private | MethodCloned */,
-      74,    0,  919,    2, 0x08 /* Private */,
-      75,    0,  920,    2, 0x08 /* Private */,
-      76,    0,  921,    2, 0x08 /* Private */,
-      77,    2,  922,    2, 0x08 /* Private */,
-      77,    1,  927,    2, 0x28 /* Private | MethodCloned */,
-      77,    0,  930,    2, 0x28 /* Private | MethodCloned */,
-      80,    0,  931,    2, 0x08 /* Private */,
-      81,    0,  932,    2, 0x08 /* Private */,
-      82,    0,  933,    2, 0x08 /* Private */,
-      83,    0,  934,    2, 0x08 /* Private */,
-      84,    0,  935,    2, 0x08 /* Private */,
-      85,    0,  936,    2, 0x08 /* Private */,
-      86,    0,  937,    2, 0x08 /* Private */,
-      87,    0,  938,    2, 0x08 /* Private */,
-      88,    0,  939,    2, 0x08 /* Private */,
-      89,    0,  940,    2, 0x08 /* Private */,
-      90,    0,  941,    2, 0x08 /* Private */,
-      91,    0,  942,    2, 0x08 /* Private */,
-      92,    0,  943,    2, 0x08 /* Private */,
-      93,    0,  944,    2, 0x08 /* Private */,
-      94,    0,  945,    2, 0x08 /* Private */,
-      95,    0,  946,    2, 0x08 /* Private */,
-      96,    0,  947,    2, 0x08 /* Private */,
-      97,    0,  948,    2, 0x08 /* Private */,
-      98,    0,  949,    2, 0x08 /* Private */,
-      99,    0,  950,    2, 0x08 /* Private */,
-     100,    1,  951,    2, 0x08 /* Private */,
-     100,    0,  954,    2, 0x28 /* Private | MethodCloned */,
-     102,    0,  955,    2, 0x08 /* Private */,
-     103,    0,  956,    2, 0x08 /* Private */,
-     104,    1,  957,    2, 0x08 /* Private */,
-     106,    0,  960,    2, 0x08 /* Private */,
-     107,    1,  961,    2, 0x08 /* Private */,
-     107,    0,  964,    2, 0x28 /* Private | MethodCloned */,
-     109,    0,  965,    2, 0x08 /* Private */,
+       1,    3,  664,    2, 0x0a /* Public */,
+       3,    1,  671,    2, 0x0a /* Public */,
+       6,    0,  674,    2, 0x08 /* Private */,
+       7,    0,  675,    2, 0x08 /* Private */,
+       8,    0,  676,    2, 0x08 /* Private */,
+       9,    0,  677,    2, 0x08 /* Private */,
+      10,    0,  678,    2, 0x08 /* Private */,
+      11,    0,  679,    2, 0x08 /* Private */,
+      12,    1,  680,    2, 0x08 /* Private */,
+      14,    1,  683,    2, 0x08 /* Private */,
+      15,    1,  686,    2, 0x08 /* Private */,
+      16,    1,  689,    2, 0x08 /* Private */,
+      17,    0,  692,    2, 0x08 /* Private */,
+      18,    0,  693,    2, 0x08 /* Private */,
+      19,    0,  694,    2, 0x08 /* Private */,
+      20,    0,  695,    2, 0x08 /* Private */,
+      21,    1,  696,    2, 0x08 /* Private */,
+      23,    0,  699,    2, 0x08 /* Private */,
+      24,    0,  700,    2, 0x08 /* Private */,
+      25,    0,  701,    2, 0x08 /* Private */,
+      26,    0,  702,    2, 0x08 /* Private */,
+      27,    0,  703,    2, 0x08 /* Private */,
+      28,    0,  704,    2, 0x08 /* Private */,
+      29,    0,  705,    2, 0x08 /* Private */,
+      30,    0,  706,    2, 0x08 /* Private */,
+      31,    0,  707,    2, 0x08 /* Private */,
+      32,    0,  708,    2, 0x08 /* Private */,
+      33,    1,  709,    2, 0x08 /* Private */,
+      35,    1,  712,    2, 0x08 /* Private */,
+      37,    0,  715,    2, 0x08 /* Private */,
+      38,    1,  716,    2, 0x08 /* Private */,
+      39,    1,  719,    2, 0x08 /* Private */,
+      41,    1,  722,    2, 0x08 /* Private */,
+      41,    0,  725,    2, 0x28 /* Private | MethodCloned */,
+      42,    0,  726,    2, 0x08 /* Private */,
+      43,    3,  727,    2, 0x08 /* Private */,
+      43,    2,  734,    2, 0x28 /* Private | MethodCloned */,
+      43,    1,  739,    2, 0x28 /* Private | MethodCloned */,
+      43,    0,  742,    2, 0x28 /* Private | MethodCloned */,
+      47,    2,  743,    2, 0x08 /* Private */,
+      47,    1,  748,    2, 0x28 /* Private | MethodCloned */,
+      47,    0,  751,    2, 0x28 /* Private | MethodCloned */,
+      48,    2,  752,    2, 0x08 /* Private */,
+      48,    1,  757,    2, 0x28 /* Private | MethodCloned */,
+      48,    0,  760,    2, 0x28 /* Private | MethodCloned */,
+      49,    2,  761,    2, 0x08 /* Private */,
+      49,    1,  766,    2, 0x28 /* Private | MethodCloned */,
+      49,    0,  769,    2, 0x28 /* Private | MethodCloned */,
+      50,    2,  770,    2, 0x08 /* Private */,
+      50,    1,  775,    2, 0x28 /* Private | MethodCloned */,
+      50,    0,  778,    2, 0x28 /* Private | MethodCloned */,
+      53,    3,  779,    2, 0x08 /* Private */,
+      53,    2,  786,    2, 0x28 /* Private | MethodCloned */,
+      53,    1,  791,    2, 0x28 /* Private | MethodCloned */,
+      53,    0,  794,    2, 0x28 /* Private | MethodCloned */,
+      56,    3,  795,    2, 0x08 /* Private */,
+      56,    2,  802,    2, 0x28 /* Private | MethodCloned */,
+      56,    1,  807,    2, 0x28 /* Private | MethodCloned */,
+      56,    0,  810,    2, 0x28 /* Private | MethodCloned */,
+      57,    3,  811,    2, 0x08 /* Private */,
+      57,    2,  818,    2, 0x28 /* Private | MethodCloned */,
+      57,    1,  823,    2, 0x28 /* Private | MethodCloned */,
+      57,    0,  826,    2, 0x28 /* Private | MethodCloned */,
+      59,    2,  827,    2, 0x08 /* Private */,
+      59,    1,  832,    2, 0x28 /* Private | MethodCloned */,
+      59,    0,  835,    2, 0x28 /* Private | MethodCloned */,
+      61,    2,  836,    2, 0x08 /* Private */,
+      61,    1,  841,    2, 0x28 /* Private | MethodCloned */,
+      61,    0,  844,    2, 0x28 /* Private | MethodCloned */,
+      63,    2,  845,    2, 0x08 /* Private */,
+      63,    1,  850,    2, 0x28 /* Private | MethodCloned */,
+      63,    0,  853,    2, 0x28 /* Private | MethodCloned */,
+      65,    2,  854,    2, 0x08 /* Private */,
+      65,    1,  859,    2, 0x28 /* Private | MethodCloned */,
+      65,    0,  862,    2, 0x28 /* Private | MethodCloned */,
+      66,    2,  863,    2, 0x08 /* Private */,
+      66,    1,  868,    2, 0x28 /* Private | MethodCloned */,
+      66,    0,  871,    2, 0x28 /* Private | MethodCloned */,
+      68,    2,  872,    2, 0x08 /* Private */,
+      68,    1,  877,    2, 0x28 /* Private | MethodCloned */,
+      68,    0,  880,    2, 0x28 /* Private | MethodCloned */,
+      69,    2,  881,    2, 0x08 /* Private */,
+      69,    1,  886,    2, 0x28 /* Private | MethodCloned */,
+      69,    0,  889,    2, 0x28 /* Private | MethodCloned */,
+      70,    2,  890,    2, 0x08 /* Private */,
+      70,    1,  895,    2, 0x28 /* Private | MethodCloned */,
+      70,    0,  898,    2, 0x28 /* Private | MethodCloned */,
+      71,    5,  899,    2, 0x08 /* Private */,
+      71,    4,  910,    2, 0x28 /* Private | MethodCloned */,
+      71,    3,  919,    2, 0x28 /* Private | MethodCloned */,
+      71,    2,  926,    2, 0x28 /* Private | MethodCloned */,
+      71,    1,  931,    2, 0x28 /* Private | MethodCloned */,
+      74,    0,  934,    2, 0x08 /* Private */,
+      75,    0,  935,    2, 0x08 /* Private */,
+      76,    0,  936,    2, 0x08 /* Private */,
+      77,    2,  937,    2, 0x08 /* Private */,
+      77,    1,  942,    2, 0x28 /* Private | MethodCloned */,
+      77,    0,  945,    2, 0x28 /* Private | MethodCloned */,
+      80,    0,  946,    2, 0x08 /* Private */,
+      81,    0,  947,    2, 0x08 /* Private */,
+      82,    0,  948,    2, 0x08 /* Private */,
+      83,    0,  949,    2, 0x08 /* Private */,
+      84,    0,  950,    2, 0x08 /* Private */,
+      85,    0,  951,    2, 0x08 /* Private */,
+      86,    0,  952,    2, 0x08 /* Private */,
+      87,    0,  953,    2, 0x08 /* Private */,
+      88,    0,  954,    2, 0x08 /* Private */,
+      89,    0,  955,    2, 0x08 /* Private */,
+      90,    0,  956,    2, 0x08 /* Private */,
+      91,    0,  957,    2, 0x08 /* Private */,
+      92,    0,  958,    2, 0x08 /* Private */,
+      93,    0,  959,    2, 0x08 /* Private */,
+      94,    0,  960,    2, 0x08 /* Private */,
+      95,    0,  961,    2, 0x08 /* Private */,
+      96,    0,  962,    2, 0x08 /* Private */,
+      97,    0,  963,    2, 0x08 /* Private */,
+      98,    0,  964,    2, 0x08 /* Private */,
+      99,    0,  965,    2, 0x08 /* Private */,
+     100,    1,  966,    2, 0x08 /* Private */,
+     100,    0,  969,    2, 0x28 /* Private | MethodCloned */,
+     102,    0,  970,    2, 0x08 /* Private */,
+     103,    0,  971,    2, 0x08 /* Private */,
+     104,    0,  972,    2, 0x08 /* Private */,
+     105,    1,  973,    2, 0x08 /* Private */,
+     106,    0,  976,    2, 0x08 /* Private */,
+     107,    1,  977,    2, 0x08 /* Private */,
+     109,    0,  980,    2, 0x08 /* Private */,
+     110,    1,  981,    2, 0x08 /* Private */,
+     110,    0,  984,    2, 0x28 /* Private | MethodCloned */,
+     112,    0,  985,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void, QMetaType::Int, QMetaType::Int, QMetaType::QString,    2,    2,    2,
@@ -484,9 +492,12 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Bool, QMetaType::QString,  105,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Double,  108,
+    QMetaType::Void, 0x80000000 | 40,    2,
+    QMetaType::Void,
+    QMetaType::Bool, QMetaType::QString,  108,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::Double,  111,
     QMetaType::Void,
     QMetaType::Void,
 
@@ -624,12 +635,15 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 119: _t->addExperiment(); break;
         case 120: _t->on_actionremoveCurrentExperiment_triggered(); break;
         case 121: _t->on_actionShowRuntimeWindow_triggered(); break;
-        case 122: { bool _r = _t->loadModel((*reinterpret_cast< QString(*)>(_a[1])));
+        case 122: _t->on_actionRecent_triggered(); break;
+        case 123: _t->removeFromRecentList((*reinterpret_cast< QAction*(*)>(_a[1]))); break;
+        case 124: _t->writeRecentFilesList(); break;
+        case 125: { bool _r = _t->loadModel((*reinterpret_cast< QString(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
-        case 123: _t->gwidgetChanged(); break;
-        case 124: _t->getNumber((*reinterpret_cast< double(*)>(_a[1]))); break;
-        case 125: _t->getNumber(); break;
-        case 126: _t->recentItem(); break;
+        case 126: _t->gwidgetChanged(); break;
+        case 127: _t->getNumber((*reinterpret_cast< double(*)>(_a[1]))); break;
+        case 128: _t->getNumber(); break;
+        case 129: _t->recentItem(); break;
         default: ;
         }
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
@@ -685,13 +699,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 127)
+        if (_id < 130)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 127;
+        _id -= 130;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 127)
+        if (_id < 130)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 127;
+        _id -= 130;
     }
     return _id;
 }

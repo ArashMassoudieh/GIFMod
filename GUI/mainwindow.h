@@ -217,6 +217,10 @@ private slots:
 	void on_actionremoveCurrentExperiment_triggered();
 	
 	void on_actionShowRuntimeWindow_triggered();
+	void on_actionRecent_triggered();
+	void removeFromRecentList(QAction*);
+
+	void writeRecentFilesList();
 
 	bool loadModel(QString modelfilename);
 
@@ -227,7 +231,6 @@ private slots:
 	{
 		int i = 0;
 	}
-
 
 private:
 //	QString modelFilename = "";
