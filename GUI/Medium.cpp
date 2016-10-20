@@ -2075,6 +2075,7 @@ void CMedium::solve_fts_m2(double dt)
 			if (int(t / controllers()[i].interval) > int((t - dtt) / controllers()[i].interval))
 			{
 				controllers()[i].calc_value(t, lookup_experiment(name));
+				parent->set_control_param(i, lookup_experiment(name));
 			}
 
 		}
@@ -3664,6 +3665,25 @@ double CMedium::get_nextcontrolinterval(double _t)
 	}
 	
 	return t_min;
+}
+
+void CMedium::set_control_params(int controller_no)
+{
+	for (int i = 0; i<controllers()[controller_no].application_spec.location.size(); i++)
+	{
+		if (controllers()[controller_no].application_spec.location_type[i] == 2)
+
+		{
+			Blocks[controllers()[controller_no].application_spec.location[i]].set_val(controllers()[controller_no].application_spec.quan[i], controllers()[controller_no].value);
+			Connector[controllers()[controller_no].application_spec.location[i]].set_val(controllers()[controller_no].application_spec.quan[i], controllers()[controller_no].value);
+		}
+		else if (controllers()[controller_no].application_spec.location_type[i] == 0)
+			Blocks[controllers()[controller_no].application_spec.location[i]].set_val(controllers()[controller_no].application_spec.quan[i], controllers()[controller_no].value);
+		else if (controllers()[controller_no].application_spec.location_type[i] == 1)
+			Connector[controllers()[controller_no].application_spec.location[i]].set_val(controllers()[controller_no].application_spec.quan[i], controllers()[controller_no].value);
+
+	}
+
 }
 
 vector<CRestoreInfo> CMedium::clean_up_restore_points(vector<CRestoreInfo> &Res, double t)
