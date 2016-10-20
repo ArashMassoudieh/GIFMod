@@ -59,6 +59,8 @@ public:
 	double CBTC::mean_log(int limit);
 	double CBTC::integrate();
 	double CBTC::integrate(double t);
+	double CBTC::integrate(double t1, double t2);
+	int CBTC::lookupt(double t);
 	double CBTC::average();
 	double CBTC::average(double t);
 	double CBTC::slope(double tt);

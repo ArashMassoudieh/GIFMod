@@ -159,6 +159,7 @@ public:
 	QMap<string, int> blockIndex;
 	QMap<string, int> connectorIndex;
 	_control Control;
+	
 
 };
 

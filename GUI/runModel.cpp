@@ -2077,6 +2077,7 @@ void CMediumSet::solve(runtimeWindow *rtw)
 	gw->log("Simulation ended.");
 
 }
+
 /*
 bool CMedium::solve(runtimeWindow *rtw)
 {
