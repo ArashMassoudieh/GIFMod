@@ -28,5 +28,6 @@ public:
 	double max_val = 1e12;
 	range application_spec;
 	string zn_controller_type;
+	double integral = 0; 
 };
 

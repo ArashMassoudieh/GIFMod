@@ -2017,6 +2017,7 @@ void CMedium::solve_fts_m2(double dt)
 
 			dtt = min(dtt, get_nextcontrolinterval(t) - t);
 			
+			
 
 		}
 		if (iii%max_J_interval()==0) 
@@ -3655,11 +3656,13 @@ void CMedium::update_light_temperature()
 double CMedium::get_nextcontrolinterval(double _t)
 {
 	double t_min = 1e100;
-	for (int i = 0; controllers().size(); i++)
+	for (int i = 0; i<controllers().size(); i++)
 	{
 		double t_1 = (int((_t - Timemin) / controllers()[i].interval) + 1)*controllers()[i].interval;
+		if (t_1 == _t) t_1 = _t+controllers()[i].interval;
 		t_min = min(t_min, t_1);
 	}
+	
 	return t_min;
 }
 
