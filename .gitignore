@@ -37,6 +37,10 @@ GIFMod - Jamal.VC.db
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
+Debug/
+debug/
+Release/
+release/
 x64/
 x86/
 bld/
