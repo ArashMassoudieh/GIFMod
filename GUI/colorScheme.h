@@ -8,8 +8,8 @@
 using namespace std;
 struct colorlegend
 {
-	vector<QColor> colors;
-	vector<QString> legends;
+	vector<QColor> colors, legendColors;
+	vector<QString> legendTexts;
 };
 class colorScheme
 {
@@ -74,7 +74,10 @@ public:
 	
 	static colorlegend colorandLegend(vector<CBTC> data, float t, QString theme = "Green", bool logType = false, int numberofGroups = 8, vector<float> factors = vector<float>(), vector<float> shifts = vector<float>()) {
 		colorlegend r;
-		vector<QColor> colors(numberofGroups);
+		r.legendColors.resize(numberofGroups);
+		r.legendTexts.resize(numberofGroups);
+		r.colors.resize(data.size());
+
 		bool factor = factors.size();
 		bool shift = shifts.size();
 
@@ -82,12 +85,10 @@ public:
 			for (int i = 0; i < numberofGroups; i++)
 			{
 				QColor c = QColor(0, i * 255 / numberofGroups, 0, 128);
-				r.colors[i] = c.toRgb();
+				r.legendColors[i] = c.toRgb();
 			}
 		float min = -1e100, max = 1e100;
 
-		r.colors.resize(data.size());
-		r.legends.resize(data.size());
 		vector <double> values(data.size());
 
 		for (int i = 0; i < data.size(); i++)
@@ -105,11 +106,11 @@ public:
 			if (values[i] > max) max = values[i];
 		}
 
-		//updatring legend
+		//updating legend
 		for (int i = 0; i < numberofGroups; i++)
 		{
 			float groupRange = (max - min) / numberofGroups;
-			r.legends[i] = QString ("%1-%2").arg(min + groupRange *i).arg(min + groupRange *(i+1));
+			r.legendTexts[i] = QString ("%1-%2").arg(min + groupRange *i).arg(min + groupRange *(i+1));
 		}
 		for (int i = 0; i < data.size(); i++)
 		{
@@ -118,7 +119,7 @@ public:
 				g = numberofGroups - 1;
 			else
 				g = (min - values[i]) / (max - min) * (numberofGroups);
-			r.colors[i] = colors[g];
+			r.colors[i] = r.legendColors[g];
 		}
 		return r;
 	}

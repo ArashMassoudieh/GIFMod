@@ -1,5 +1,7 @@
 #pragma once
 #include "Sensor.h"
+#include "utility_funcs.h"
+//test
 
 class CController
 {
@@ -12,7 +14,8 @@ public:
 	CBTC output;
 	string type;
 	CSensor *Sensor;
-	double calc_value(double t, double dt, int experiment_id);
+	string sensor_id;
+	double calc_value(double t, int experiment_id);
 	void append(double t, double C); 
 	vector<double> params; // for PID controller params[0] = k_p, params[1] = k_i, params[2] = k_d; params[3] = set point
 	double P(double t, int experiment_id);
@@ -23,5 +26,8 @@ public:
 	double interval;
 	double min_val = 0;
 	double max_val = 1e12;
+	range application_spec;
+	string zn_controller_type;
+	double integral = 0; 
 };
 

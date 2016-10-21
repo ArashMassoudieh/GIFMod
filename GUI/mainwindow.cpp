@@ -1,6 +1,7 @@
 #ifndef GIFMOD_VERSION
 #define GIFMOD_VERSION "0.1"
 #endif
+#define RECENT "recentFiles.txt"
 #include "mainwindow.h"
 #ifdef GIFMOD
 #include "ui_mainwindowGIFMod.h"
@@ -59,29 +60,29 @@ void MainWindow::on_actionAdd_Tracer_triggered()
 	new Node(mainGraphWidget, "Tracer", QString("Tracer (%1)").arg(Tracers++), -1, 1300, 700, 80, 80);
 }
 
-MainWindow::MainWindow(QWidget *parent, QString applicationName, QString shortName, QString extension, QString metafilename, QString modelfilename):
-QMainWindow(parent),
-ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent, QString applicationName, QString shortName, QString extension, QString metafilename, QString modelfilename) :
+	QMainWindow(parent),
+	ui(new Ui::MainWindow)
 {
 	this->metafilename = metafilename;
-	this->applicationName = applicationName; 
+	this->applicationName = applicationName;
 	this->fileExtension = extension;
 	this->applicationShortName = shortName;
 	log = new logWindow(this);
-//	QDesktopWidget *d = QApplication::desktop();
-/*	if (d->screenCount() > 1)
-	{
-		int left = d->screen(0)->width() + 35;
-		int width = d->screen(1)->width() * 0.4;
-		int height = d->screen(1)->height() * 0.9;
-		int top = 35;
-		log->setFixedHeight(height);
-		log->setFixedWidth(width);
-		log->move(left, top);
-	}
-*/
-//	QString a = QString("Screen 0 width(%1), height(%2), Screen 1 width(%3), height(%4)").arg(d->screen(0)->width()).arg(d->screen(0)->height()).arg(d->screen(1)->width()).arg(d->screen(1)->height());
-//	log->append(a);
+	//	QDesktopWidget *d = QApplication::desktop();
+	/*	if (d->screenCount() > 1)
+		{
+			int left = d->screen(0)->width() + 35;
+			int width = d->screen(1)->width() * 0.4;
+			int height = d->screen(1)->height() * 0.9;
+			int top = 35;
+			log->setFixedHeight(height);
+			log->setFixedWidth(width);
+			log->move(left, top);
+		}
+	*/
+	//	QString a = QString("Screen 0 width(%1), height(%2), Screen 1 width(%3), height(%4)").arg(d->screen(0)->width()).arg(d->screen(0)->height()).arg(d->screen(1)->width()).arg(d->screen(1)->height());
+	//	log->append(a);
 	log->show();
 	log->append("Program started.");
 
@@ -190,7 +191,7 @@ ui(new Ui::MainWindow)
 	//	projectExplorer->setItemDelegate(mDelegate);
 
 	Qt::WindowFlags flags = this->windowFlags();
-	qDebug() << 3.2; 
+	qDebug() << 3.2;
 	qDebug() << 3.3;
 	setWindowFlags(windowFlags() | Qt::WindowMaximizeButtonHint);
 
@@ -219,14 +220,14 @@ ui(new Ui::MainWindow)
 	//projectExplorer->.setChildIndicatorPolicy(QTreeWidgetItem.ShowIndicator)
 	setWindowTitle(applicationName);
 	centerWidget();
-//	if (modelfilename != "")
-//		loadModel(modelfilename);
+	//	if (modelfilename != "")
+	//		loadModel(modelfilename);
 	qDebug() << 5;
 	ui->setupUi(this);
 	mainGraphWidget->experiments = new QComboBox(ui->experimentsToolbar);
 	mainGraphWidget->experiments->addItem("All experiments");
 	mainGraphWidget->experiments->addItem("experiment1");
-//	mainGraphWidget->experiments->addItem("experiment2");
+	//	mainGraphWidget->experiments->addItem("experiment2");
 	connect(mainGraphWidget->experiments, SIGNAL(currentIndexChanged(const QString&)), mainGraphWidget, SLOT(experimentSelect(const QString&)));
 	if (ui->experimentsToolbar->height() < mainGraphWidget->experiments->height())
 		ui->experimentsToolbar->setMinimumHeight(mainGraphWidget->experiments->height());
@@ -238,13 +239,52 @@ ui(new Ui::MainWindow)
 	int j = mainGraphWidget->experiments->height();
 	int k = (ui->experimentsToolbar->height() - mainGraphWidget->experiments->height()) / 2;
 	rect.setTop((ui->experimentsToolbar->height() - mainGraphWidget->experiments->height()) / 2 + 8);
-	
+
 	mainGraphWidget->experiments->setGeometry(rect);
 	mainGraphWidget->experiments->show();
-//	ui->experimantsToolbar->insertWidget()
+	//	ui->experimantsToolbar->insertWidget()
 	mainGraphWidget->add_to_undo_list();
 	mainGraphWidget->trackingUndo = true;
 }
+
+void MainWindow::readRecentFilesList()
+{
+	ifstream file(RECENT);
+	if (file.good())
+	{
+		string line;
+		while (!file.eof())
+		{
+			getline(file, line);
+			QString fileName = QString::fromStdString(line);
+			qDebug() << fileName; QString::fromStdString(line);
+			addToRecentFiles(fileName, false);
+			//QAction * a= new QAction()
+		}
+		file.close();
+//		QAction * selected = ui->menuRecent->exec();
+//		if (selected)
+//			qDebug() << selected->text();
+	}
+}
+void MainWindow::addToRecentFiles(QString fileName, bool addToFile) 
+{
+	if (!recentFiles.contains(fileName.toLower()) && fileName.trimmed()!="")
+	{
+		recentFiles.append(fileName.toLower());
+		QAction * a = ui->menuRecent->addAction(fileName);// , this, SLOT(recentItem()));
+		QObject::connect(a, SIGNAL(triggered()), this, SLOT(on_actionRecent_triggered()));
+
+		if (addToFile)
+		{
+			ofstream file(RECENT, fstream::app);
+			if (file.good())
+				file << fileName.toStdString() << endl;
+			file.close();
+		}
+	}
+}
+
 void MainWindow::centerWidget()
 {
 	if (isFullScreen())
@@ -316,6 +356,7 @@ void MainWindow::on_action_Open_triggered()
 	loadModel(fileName);
 	on_actionZoom_All_triggered();
 	mainGraphWidget->updateNodeCoordinates();
+	addToRecentFiles(fileName);
 }
 bool MainWindow::loadModel(QString modelfilename)
 {
@@ -447,6 +488,8 @@ void MainWindow::on_action_Save_triggered()
 		tr("Model (*.").append(fileExtension).append(");;All Files (*)"));
 	saveModel(fileName);
 	setModelFileName(fileName);
+	addToRecentFiles(fileName);
+
 }
 void MainWindow::on_actionSave_As_triggered()
 {
@@ -461,6 +504,8 @@ void MainWindow::on_actionSave_As_triggered()
 	qDebug() << "**************************model saved";
 
 	setModelFileName(fileName);
+	addToRecentFiles(fileName);
+
 	}
 
 
@@ -815,6 +860,11 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 		menu->exec(projectExplorer->mapToGlobal(pos));
 	}
 }
+void MainWindow::on_actionmenuRecent_triggered()//QString fileName)
+{
+	qDebug() << "fileName";// act->text();
+}
+
 void MainWindow::tablePropShowContextMenu(const QPoint&pos)
 {
 	QModelIndex i1 = tableProp->indexAt(pos);
@@ -2059,6 +2109,34 @@ void MainWindow::on_actionShowRuntimeWindow_triggered()
 {
 	if (rtw)
 		rtw->show();
+}
+
+void MainWindow::on_actionRecent_triggered()
+{
+	QAction* a = static_cast<QAction*> (QObject::sender());
+	QString fileName = a->text();
+	if (loadModel(fileName))
+	{
+		on_actionZoom_All_triggered();
+		mainGraphWidget->updateNodeCoordinates();
+	}
+	else
+		removeFromRecentList(a);
+}
+
+void MainWindow::removeFromRecentList(QAction* selectedFileAction)
+{
+	recentFiles.removeAll(selectedFileAction->text());
+	ui->menuRecent->removeAction(selectedFileAction);
+	writeRecentFilesList();
+}
+void MainWindow::writeRecentFilesList()
+{
+	ofstream file(RECENT);
+	if (file.good())
+		for each (QString fileName in recentFiles)
+			file << fileName.toStdString() << endl;
+	file.close();
 }
 
 void MainWindow::on_actionAbout_triggered()

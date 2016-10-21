@@ -1132,7 +1132,14 @@ void CMedium::setQ_star()
 {
 	for (int i=0; i<Connector.size(); i++)	
 	{
-		if (!Connector[i].presc_flow)
+		if (Connector[i].control)
+		{
+			if (Connector[i].Controller->output.n>0)
+				Connector[i].set_val("q*", Connector[i].Controller->output.interpol(t));
+			else
+				Connector[i].set_val("q*", Connector[i].Controller->value);
+		}
+		else if (!Connector[i].presc_flow)
 			Connector[i].set_val("q*", Connector[i].calc_star(Connector[i].flow_expression));
 		else
 			Connector[i].set_val("q*", Connector[i].presc_flowrate.interpol(t));
@@ -1683,7 +1690,7 @@ void CMedium::solve_fts_m2(double dt)
 	dt_fail = 10000;
 	ANS = CBTCSet(3*Blocks.size()+3*Connector.size());
 	ANS_colloids = CBTCSet(Blocks.size()*Blocks[0].n_phases);
-	ANS_constituents = CBTCSet(Blocks.size()*(Blocks[0].n_phases+2)*RXN().cons.size()); // JA: shouldn't be  Blocks[0].n_phases*RXN().cons.size()+2
+	ANS_constituents = CBTCSet(Blocks.size()*(Blocks[0].n_phases+2)*RXN().cons.size());
 	if (mass_balance_check()) ANS_MB = CBTCSet(Blocks.size());
 	char buffer[33];
 	epoch_count = 0;
@@ -1692,7 +1699,7 @@ void CMedium::solve_fts_m2(double dt)
 
 	ANS_MB.names.clear();
 
-	mass_balance_check(); 
+	mass_balance_check();
 
 	for (int i=0; i<Blocks.size(); i++)
 		ANS_MB.pushBackName("S_"+Blocks[i].ID);
@@ -1700,12 +1707,13 @@ void CMedium::solve_fts_m2(double dt)
 	double redo_time = t;
 	double redo_dt = 10000;
 	double redo_to_time = t;
-	int in_redo = false;  // JA: bool or int?
+	int in_redo = false;
 	for (int i = 0; i<Blocks.size(); i++) ANS.pushBackName("S_" + Blocks[i].ID);
 	for (int i = 0; i<Connector.size(); i++) ANS.pushBackName("Q_" + Connector[i].ID);
 	for (int i = 0; i<Blocks.size(); i++) ANS.pushBackName("H_" + Blocks[i].ID);
 	for (int i = 0; i<Blocks.size(); i++) ANS.pushBackName("E_" + Blocks[i].ID);
 	for (int i = 0; i<Connector.size(); i++) ANS.pushBackName("A_" + Connector[i].ID);
+
 	for (int i = 0; i<Connector.size(); i++) ANS.pushBackName("Qv_" + Connector[i].ID);
 
 	for (int j=0; j<Blocks[0].Solid_phase.size(); j++) 
@@ -1759,14 +1767,15 @@ void CMedium::solve_fts_m2(double dt)
 	setH();      
 	if (steady_state_hydro())
 	{
-		string failed_res = create_hydro_steady_matrix_inv();  //JA: ?
+		string failed_res = create_hydro_steady_matrix_inv();
 		if (failed_res != "")
 		{
 			fail_reason = failed_res;
 			return;
 		}
 	}
-	setQ0();     	// JA: from here on we have the Qs 
+	setQ0();     
+	
 
 	vector<CRestoreInfo> Res;
 	Res.push_back(getrestoreinfo());
@@ -2006,7 +2015,8 @@ void CMedium::solve_fts_m2(double dt)
 			else
 				dtt = min(base_dtt,1000*avg_redo_dtt*1.2);
 
-
+			dtt = min(dtt, get_nextcontrolinterval(t) - t);
+			
 			
 
 		}
@@ -2064,7 +2074,8 @@ void CMedium::solve_fts_m2(double dt)
 		{
 			if (int(t / controllers()[i].interval) > int((t - dtt) / controllers()[i].interval))
 			{
-//				controllers()[i].calc_value(t, lookup_experiment(name));
+				controllers()[i].calc_value(t, lookup_experiment(name));
+				parent->set_control_param(i, lookup_experiment(name));
 			}
 
 		}
@@ -2210,9 +2221,10 @@ void CMedium::finalize_set_param()
 		for (int jj = 0; jj<Blocks[ii].evaporation_id.size(); jj++) if (lookup_evaporation(Blocks[ii].evaporation_id[jj]) != -1) Blocks[ii].evaporation_m.push_back(&(evaporation_model()[lookup_evaporation(Blocks[ii].evaporation_id[jj])])); //newly added
 		
 		Blocks[ii].Solid_phase_id.clear();
-		for (int i = 0; i < Solid_phase().size(); i++) Blocks[ii].Solid_phase_id.push_back(i);
+		for (int i = 0; i < Solid_phase().size(); i++) 
+			Blocks[ii].Solid_phase_id.push_back(i);
 				
-		Blocks[ii].Solid_phase_id.clear();
+		Blocks[ii].Solid_phase.clear();
 		//Resizing G and CG vectors
 		for (int jj = 0; jj<Blocks[ii].Solid_phase_id.size(); jj++) Blocks[ii].Solid_phase.push_back(&(Solid_phase()[Blocks[ii].Solid_phase_id[jj]]));
 		Blocks[ii].n_phases = Blocks[ii].get_tot_num_phases();
@@ -2331,8 +2343,11 @@ void CMedium::finalize_set_param()
 			Connector[i].dispersion_star.resize(RXN().cons.size());
 			Connector[i].RXN = &RXN();
 			if ((lookup_controllers(Connector[i].controller_id) != -1) && Connector[i].control == true)
-				Connector[i].Controller == &controllers()[lookup_controllers(Connector[i].controller_id)];
+				Connector[i].Controller = &controllers()[lookup_controllers(Connector[i].controller_id)];
 	}
+
+	for (int i = 0; i < controllers().size(); i++)
+		controllers()[i].Sensor = &sensors()[lookup_sensors(controllers()[i].sensor_id)];
 }
 
 void CMedium::set_default_params()
@@ -3511,16 +3526,6 @@ int CMedium::lookup_parameters(string S)
 	return out;
 }
 
-int CMedium::lookup_controllers_(string S)
-{
-	int out = -1;
-	for (int i = 0; i < controllers_().size(); i++)
-		if (tolower(S) == tolower(controllers_()[i].name))
-
-			return i;
-
-	return out;
-}
 
 int CMedium::lookup_sensors(string S)
 {
@@ -3647,6 +3652,38 @@ void CMedium::update_light_temperature()
 		current_relative_humidity = r_humidity[0].interpol(t);
 	else
 		current_relative_humidity = 0;
+
+}
+
+double CMedium::get_nextcontrolinterval(double _t)
+{
+	double t_min = 1e100;
+	for (int i = 0; i<controllers().size(); i++)
+	{
+		double t_1 = (int((_t - Timemin) / controllers()[i].interval) + 1)*controllers()[i].interval;
+		if (t_1 == _t) t_1 = _t+controllers()[i].interval;
+		t_min = min(t_min, t_1);
+	}
+	
+	return t_min;
+}
+
+void CMedium::set_control_params(int controller_no)
+{
+	for (int i = 0; i<controllers()[controller_no].application_spec.location.size(); i++)
+	{
+		if (controllers()[controller_no].application_spec.location_type[i] == 2)
+
+		{
+			Blocks[controllers()[controller_no].application_spec.location[i]].set_val(controllers()[controller_no].application_spec.quan[i], controllers()[controller_no].value);
+			Connector[controllers()[controller_no].application_spec.location[i]].set_val(controllers()[controller_no].application_spec.quan[i], controllers()[controller_no].value);
+		}
+		else if (controllers()[controller_no].application_spec.location_type[i] == 0)
+			Blocks[controllers()[controller_no].application_spec.location[i]].set_val(controllers()[controller_no].application_spec.quan[i], controllers()[controller_no].value);
+		else if (controllers()[controller_no].application_spec.location_type[i] == 1)
+			Connector[controllers()[controller_no].application_spec.location[i]].set_val(controllers()[controller_no].application_spec.quan[i], controllers()[controller_no].value);
+
+	}
 
 }
 
@@ -3883,10 +3920,7 @@ vector<range>& CMedium::parameters()
 {
 	return parent->parameters;
 }
-vector<range>& CMedium::controllers_()
-{
-	return parent->controllers;
-}
+
 vector<CSensor>& CMedium::sensors()
 {
 	return parent->Control.Sensors;
@@ -4122,8 +4156,8 @@ int CMedium::lookup_experiment(string S)
 int CMedium::lookup_controllers(string S)
 {
 	int out = -1;
-	for (int i = 0; i < sensors().size(); i++)
-		if (tolower(S) == tolower(sensors()[i].name))
+	for (int i = 0; i < controllers().size(); i++)
+		if (tolower(S) == tolower(controllers()[i].name))
 			return i;
 
 	return out;

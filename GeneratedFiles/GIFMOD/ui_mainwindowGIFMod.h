@@ -91,9 +91,13 @@ public:
     QAction *actioncolorCodeWaterDepth;
     QAction *actioncolorCodeMoistureContent;
     QAction *actioncolorCodeEvaporationRate;
+    QAction *action123;
+    QAction *actionAbout2;
+    QAction *actionRecent;
     QWidget *centralWidget;
     QMenuBar *menuBar;
     QMenu *menu_File;
+    QMenu *menuRecent;
     QMenu *menu_Help;
     QMenu *menu_Edit;
     QMenu *menu_Window;
@@ -355,6 +359,12 @@ public:
         actioncolorCodeMoistureContent->setObjectName(QStringLiteral("actioncolorCodeMoistureContent"));
         actioncolorCodeEvaporationRate = new QAction(MainWindow);
         actioncolorCodeEvaporationRate->setObjectName(QStringLiteral("actioncolorCodeEvaporationRate"));
+        action123 = new QAction(MainWindow);
+        action123->setObjectName(QStringLiteral("action123"));
+        actionAbout2 = new QAction(MainWindow);
+        actionAbout2->setObjectName(QStringLiteral("actionAbout2"));
+        actionRecent = new QAction(MainWindow);
+        actionRecent->setObjectName(QStringLiteral("actionRecent"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         MainWindow->setCentralWidget(centralWidget);
@@ -363,6 +373,8 @@ public:
         menuBar->setGeometry(QRect(0, 0, 1177, 21));
         menu_File = new QMenu(menuBar);
         menu_File->setObjectName(QStringLiteral("menu_File"));
+        menuRecent = new QMenu(menu_File);
+        menuRecent->setObjectName(QStringLiteral("menuRecent"));
         menu_Help = new QMenu(menuBar);
         menu_Help->setObjectName(QStringLiteral("menu_Help"));
         menu_Edit = new QMenu(menuBar);
@@ -416,6 +428,8 @@ public:
         menu_File->addAction(action_Open);
         menu_File->addAction(action_Save);
         menu_File->addAction(actionSave_As);
+        menu_File->addSeparator();
+        menu_File->addAction(menuRecent->menuAction());
         menu_File->addSeparator();
         menu_File->addAction(actionClear_Reaction_Network);
         menu_File->addAction(actionLoad_Reaction_Network);
@@ -585,7 +599,11 @@ public:
         actioncolorCodeWaterDepth->setText(QApplication::translate("MainWindow", "Water depth", 0));
         actioncolorCodeMoistureContent->setText(QApplication::translate("MainWindow", "Moisture content", 0));
         actioncolorCodeEvaporationRate->setText(QApplication::translate("MainWindow", "Evaporation rate", 0));
+        action123->setText(QApplication::translate("MainWindow", "123", 0));
+        actionAbout2->setText(QApplication::translate("MainWindow", "About", 0));
+        actionRecent->setText(QApplication::translate("MainWindow", "Recent", 0));
         menu_File->setTitle(QApplication::translate("MainWindow", "&File", 0));
+        menuRecent->setTitle(QApplication::translate("MainWindow", "Recent", 0));
         menu_Help->setTitle(QApplication::translate("MainWindow", "&Help", 0));
         menu_Edit->setTitle(QApplication::translate("MainWindow", "&Edit", 0));
         menu_Window->setTitle(QApplication::translate("MainWindow", "&View", 0));

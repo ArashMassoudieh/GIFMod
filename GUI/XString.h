@@ -67,6 +67,7 @@ public:
 		else return convertTo(unit).toDouble();
 	};
 	double toFloat(QString unit = "") const {return toDouble(unit);};
+	double toFloatDefaultUnit() const { return convertToDefaultUnit().toDouble(); };
 	bool toBool() const {
 		QStringList trueList, falseList;
 		trueList << "true" << "yes" << "on" << "1";

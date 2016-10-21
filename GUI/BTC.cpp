@@ -20,7 +20,7 @@ using namespace std;
 
 CBTC::CBTC()
 {
-	n=0;
+	n = 0;
 	structured = true;
 	max_fabs = 0;
 }
@@ -828,6 +828,31 @@ double CBTC::integrate(double tt)
 	return sum;
 }
 
+double CBTC::integrate(double t1, double t2)
+{
+	if (structured)
+	{
+		int i1 = int(t1 - t[0]) / (t[1] - t[0]);
+		int i2 = int(t1 - t[0]) / (t[1] - t[0]);
+		double sum;
+		for (int i = i1; i <= i2; i++)
+			sum += C[i] / (i2+1 - i1)*(t2-t1);
+		return sum;
+	}
+	else
+	{
+
+
+	}
+}
+
+int CBTC::lookupt(double _t)
+{
+	for (int i = 0; i < n - 1; i++)
+		if ((t[i]<_t) && (t[i + 1]>_t))
+			return i;
+}
+
 double CBTC::average()
 {
 	if (n>0)
@@ -846,10 +871,7 @@ double CBTC::average(double tt)
 
 double CBTC::slope(double tt)
 {
-	for (int i = 0; i < n; i++)
-		if (tt <= t[i] && tt>t[i - 1])
-			return (C[i] - C[i - 1]) / (t[i] - t[i - 1]);
-	return (C[n-1]-C[n-2])/(t[n-1]-t[n-2]);
+	return (C[n - 1] - C[n - 2]) / (t[n - 1] - t[n - 2]);
 }
 
 

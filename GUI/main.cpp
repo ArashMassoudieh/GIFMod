@@ -13,6 +13,7 @@ int main(int argc, char *argv[])
 //	MainWindow mainGUIwindow(0, "Versatile Water Quality Modeling System", "GIFModers", "GIFMod", "GIFModGUIPropList.csv", q+"  "+ modelfilename.replace("\\","/"));
 	MainWindow mainGUIwindow(0, "Green Infrastructure Flexible Modeling System", "GIFMod", "GIFM", "GIFModGUIPropList.csv");
 	mainGUIwindow.show();
+	mainGUIwindow.afterInit();
 	QEventLoop loop;
 	return GUI.exec();
 }

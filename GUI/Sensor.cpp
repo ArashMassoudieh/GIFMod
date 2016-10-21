@@ -5,6 +5,10 @@ CSensor::CSensor()
 {
 }
 
+CSensor::CSensor(int numberofExperiments)
+{
+	setNumberofExperiments(numberofExperiments);
+}
 
 CSensor::~CSensor()
 {
@@ -39,11 +43,7 @@ CSensor& CSensor::operator=(const CSensor &M)
 
 void CSensor::append_output(double t, double C, int experiment_id)
 {
-	for (int i = output[experiment_id].n-1; i >= 0; i--)
-	{
-		if (output[experiment_id].t[i] == t) output[experiment_id].C[i] = C;
-		return;
-	}
+	output[experiment_id].knock_out(t - interval / 10);
 	output[experiment_id].append(t, C);
 	return;
 }

@@ -41,7 +41,6 @@
     <ClCompile Include="GUI\Matrix.cpp" />
     <ClCompile Include="GUI\MBBlock.cpp" />
     <ClCompile Include="GUI\MCMC.cpp" />
-    <ClCompile Include="GUI\Medium.cpp" />
     <ClCompile Include="GUI\MediumSet.cpp" />
     <ClCompile Include="GUI\mProp.cpp" />
     <ClCompile Include="GUI\mProplist.cpp" />
@@ -86,89 +85,86 @@
     <ClCompile Include="GUI\Well.cpp" />
     <ClCompile Include="GUI\wizardDialog.cpp" />
     <ClCompile Include="GUI\Sensor.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ConstituentDelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ConstituentWindow.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_delegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ExchangeParametersWindow.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_expEditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_expressioneditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_freezetablewidget.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_gridWindow.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_GWidget.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_logwindow.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_mainwindow.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_observedcombobox.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ObservedConstituentWindow.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ParticleDelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ParticleWindow.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_plotWindow.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_qcustomplot.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_reactiontablemodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_reactiontablewidget.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_reactionwindow.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_runtimeWindow.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_statusviewer.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_treemodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_helpWindow.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_helpWindow.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="GUI\Controller.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_wizardDialog.cpp">
-      <Filter>Generated Files\Debug</Filter>
+    <ClCompile Include="GUI\Medium.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_wizardDialog.cpp">
-      <Filter>Generated Files\Release</Filter>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_ConstituentDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_ConstituentWindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_delegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_ExchangeParametersWindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_expEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_expressioneditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_freezetablewidget.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_gridWindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_GWidget.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_helpWindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_logwindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_mainwindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_observedcombobox.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_ObservedConstituentWindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_ParticleDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_ParticleWindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_plotWindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_qcustomplot.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_reactiontablemodel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_reactiontablewidget.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_reactionwindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_runtimeWindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_statusviewer.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_treemodel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_wizardDialog.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -183,7 +179,6 @@
     <ClInclude Include="GUI\Crxtterm.h" />
     <ClInclude Include="GUI\Distribution.h" />
     <ClInclude Include="GUI\DistributionNUnif.h" />
-    <ClInclude Include="GUI\edge.h" />
     <ClInclude Include="GUI\entity.h" />
     <ClInclude Include="GUI\enums.h" />
     <ClInclude Include="GUI\EnvExchange.h" />
@@ -235,8 +230,14 @@
     <ClInclude Include="GUI\Vector.h" />
     <ClInclude Include="GUI\Well.h" />
     <ClInclude Include="GUI\XString.h" />
-    <ClInclude Include="GeneratedFiles\GIFMOD\ui_mainwindowGIFMod.h">
+    <ClInclude Include="GUI\Controller.h">
       <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\utility_funcs.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\edge.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_ConstituentWindow.h">
       <Filter>Generated Files</Filter>
@@ -251,6 +252,9 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_logwindow.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\GIFMOD\ui_mainwindowGIFMod.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_ObservedConstituentWindow.h">
@@ -269,9 +273,6 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_wizardDialog.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GUI\Controller.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -346,6 +347,16 @@
       <UniqueIdentifier>{175f5cf6-d558-47cb-ad3f-d8deee9e2772}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;cxx;c;def</Extensions>
+      <ParseFiles>true</ParseFiles>
     </Filter>
   </ItemGroup>
 </Project>

@@ -606,7 +606,7 @@ void GraphWidget::updateNodeCoordinates()
 }
 void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QString colorTheme, vector<double> predifinedMinMax)
 {
-	if (!results)
+	if (!hasResults)
 	{
 		QMessageBox::information(0, "GIFMod", "There is no results available, please run the model first.");
 		return;
@@ -889,6 +889,57 @@ bool GraphWidget::select(const QString &name, const QString type) const
 
 	return r;
 }
+/*bool GraphWidget::select(const QStringList &names, const QString type, bool reset) const
+{
+	bool r = false;
+	if (type == "Block")
+		for each (Node* node in Nodes())
+			if (node->Name() == name)
+			{
+				deselectAll();
+				node->setSelected(true);
+				r = true;
+				return r;
+			}
+
+	if (type == "Connector")
+		for each (Edge* edge in Edges())
+			if (edge->Name() == name)
+			{
+				deselectAll();
+				edge->setSelected(true);
+				r = true;
+				return r;
+			}
+	for each (Entity* entity in Entities)
+		if (entity->objectType.ObjectType == type && entity->Name() == name)
+		{
+			deselectAll();
+			tableProp->setModel(entity->model);
+			entity->setSelected(true);
+			r = true;
+			return r;
+		}
+	for each (Entity* entity in Entities)
+		if (entity->objectType.ObjectType == name && entity->Name() == name)
+		{
+			deselectAll();
+			tableProp->setModel(entity->model);
+			r = true;
+			return r;
+		}
+	if (type == "Well" || type == "Tracer")
+		for each (Node* node in Nodes())
+			if (node->objectType.ObjectType == type && node->Name() == name)
+			{
+				deselectAll();
+				node->setSelected(true);
+				r = true;
+				return r;
+			}
+
+	return r;
+}*/
 QStringList GraphWidget::EntityNames(const QString &type) const
 {
 	QStringList r;
@@ -1114,6 +1165,7 @@ void GraphWidget::clear()
 	//	delete modelSet;
 	model = 0; modelSet = 0; results = 0;
 	experimentsComboClear();
+	hasResults = false;
 
 }
 void GraphWidget::experimentsComboClear(bool addExperiment1)
