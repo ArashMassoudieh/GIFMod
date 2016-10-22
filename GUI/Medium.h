@@ -311,7 +311,7 @@ public:
 	void update_light_temperature();
 	void update_wind_humidity();
 	double get_nextcontrolinterval(double _t);
-	
+	void set_control_params(int);
 	
 
 

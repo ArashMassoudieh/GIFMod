@@ -134,6 +134,7 @@ public:
 	vector<CEnvExchange> externalflux;
 	vector<CEvaporation> evaporation_model;
 	void CMediumSet::set_param(int param_no, double _value);
+	void CMediumSet::set_control_param(int controller_no, int experiment_id); //setting control parameters
 	int CMediumSet::lookup_medium(string S);
 	double CMediumSet::calc_log_likelihood(); //calculate sum log likelihood for time series data ts
 	double CMediumSet::calc_log_likelihood(int i); //calculate sum log likelihood for observed quantity i
@@ -160,6 +161,7 @@ public:
 	QMap<string, int> connectorIndex;
 	_control Control;
 	
+
 
 };
 

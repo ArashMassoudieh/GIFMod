@@ -29,5 +29,6 @@ public:
 	range application_spec;
 	string zn_controller_type;
 	double integral = 0; 
+	void set_zn();
 };
 
