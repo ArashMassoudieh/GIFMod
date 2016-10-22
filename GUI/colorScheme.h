@@ -131,12 +131,22 @@ public:
 		int x = 10;
 		int y = 10;
 		int dy = 20;
+		int columnOffset = 100;
+		int boxHeight = 20;
+		int boxWidth = 50;
 		for (int i = 0; i < legend.legendTexts.size(); i++)
 		{
 			QGraphicsTextItem * t = s->addText(legend.legendTexts[i]);
 			t->setX(x);
 			t->setY(y + i*dy);
-			//s->addRect()
+			QRect rect;
+			rect.setLeft(x + columnOffset);
+			rect.setTop(y + i*dy);
+			rect.setHeight(boxHeight);
+			rect.setWidth(boxWidth);
+			QPen pen;
+			QBrush brush = QBrush(legend.legendColors[i]);
+			s->addRect(rect, pen, brush);
 		}
 		r->show();
 		return r;
