@@ -279,7 +279,6 @@ public:
 	int CMedium::lookup_buildup(string S);
 	int CMedium::lookup_evaporation(string S);
 	int CMedium::lookup_parameters(string S);
-	int CMedium::lookup_controllers_(string S);
 	int CMedium::lookup_sensors(string S);
 	int CMedium::lookup_controllers(string S);
 //	int CMedium::lookup_observation(string S);
@@ -311,7 +310,8 @@ public:
 	double current_relative_humidity;
 	void update_light_temperature();
 	void update_wind_humidity();
-	
+	double get_nextcontrolinterval(double _t);
+	void set_control_params(int);
 	
 
 

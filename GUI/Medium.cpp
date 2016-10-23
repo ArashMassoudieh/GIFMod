@@ -2015,7 +2015,8 @@ void CMedium::solve_fts_m2(double dt)
 			else
 				dtt = min(base_dtt,1000*avg_redo_dtt*1.2);
 
-
+			dtt = min(dtt, get_nextcontrolinterval(t) - t);
+			
 			
 
 		}
@@ -2073,7 +2074,8 @@ void CMedium::solve_fts_m2(double dt)
 		{
 			if (int(t / controllers()[i].interval) > int((t - dtt) / controllers()[i].interval))
 			{
-				controllers()[i].calc_value(t, dtt, lookup_experiment(name));
+				controllers()[i].calc_value(t, lookup_experiment(name));
+				parent->set_control_param(i, lookup_experiment(name));
 			}
 
 		}
@@ -2219,9 +2221,10 @@ void CMedium::finalize_set_param()
 		for (int jj = 0; jj<Blocks[ii].evaporation_id.size(); jj++) if (lookup_evaporation(Blocks[ii].evaporation_id[jj]) != -1) Blocks[ii].evaporation_m.push_back(&(evaporation_model()[lookup_evaporation(Blocks[ii].evaporation_id[jj])])); //newly added
 		
 		Blocks[ii].Solid_phase_id.clear();
-		for (int i = 0; i < Solid_phase().size(); i++) Blocks[ii].Solid_phase_id.push_back(i);
+		for (int i = 0; i < Solid_phase().size(); i++) 
+			Blocks[ii].Solid_phase_id.push_back(i);
 				
-		Blocks[ii].Solid_phase_id.clear();
+		Blocks[ii].Solid_phase.clear();
 		//Resizing G and CG vectors
 		for (int jj = 0; jj<Blocks[ii].Solid_phase_id.size(); jj++) Blocks[ii].Solid_phase.push_back(&(Solid_phase()[Blocks[ii].Solid_phase_id[jj]]));
 		Blocks[ii].n_phases = Blocks[ii].get_tot_num_phases();
@@ -3649,6 +3652,38 @@ void CMedium::update_light_temperature()
 		current_relative_humidity = r_humidity[0].interpol(t);
 	else
 		current_relative_humidity = 0;
+
+}
+
+double CMedium::get_nextcontrolinterval(double _t)
+{
+	double t_min = 1e100;
+	for (int i = 0; i<controllers().size(); i++)
+	{
+		double t_1 = (int((_t - Timemin) / controllers()[i].interval) + 1)*controllers()[i].interval;
+		if (t_1 == _t) t_1 = _t+controllers()[i].interval;
+		t_min = min(t_min, t_1);
+	}
+	
+	return t_min;
+}
+
+void CMedium::set_control_params(int controller_no)
+{
+	for (int i = 0; i<controllers()[controller_no].application_spec.location.size(); i++)
+	{
+		if (controllers()[controller_no].application_spec.location_type[i] == 2)
+
+		{
+			Blocks[controllers()[controller_no].application_spec.location[i]].set_val(controllers()[controller_no].application_spec.quan[i], controllers()[controller_no].value);
+			Connector[controllers()[controller_no].application_spec.location[i]].set_val(controllers()[controller_no].application_spec.quan[i], controllers()[controller_no].value);
+		}
+		else if (controllers()[controller_no].application_spec.location_type[i] == 0)
+			Blocks[controllers()[controller_no].application_spec.location[i]].set_val(controllers()[controller_no].application_spec.quan[i], controllers()[controller_no].value);
+		else if (controllers()[controller_no].application_spec.location_type[i] == 1)
+			Connector[controllers()[controller_no].application_spec.location[i]].set_val(controllers()[controller_no].application_spec.quan[i], controllers()[controller_no].value);
+
+	}
 
 }
 

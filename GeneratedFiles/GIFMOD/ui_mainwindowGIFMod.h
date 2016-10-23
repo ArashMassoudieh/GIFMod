@@ -91,6 +91,9 @@ public:
     QAction *actioncolorCodeWaterDepth;
     QAction *actioncolorCodeMoistureContent;
     QAction *actioncolorCodeEvaporationRate;
+    QAction *action123;
+    QAction *actionAbout2;
+    QAction *actionRecent;
     QWidget *centralWidget;
     QMenuBar *menuBar;
     QMenu *menu_File;
@@ -356,6 +359,12 @@ public:
         actioncolorCodeMoistureContent->setObjectName(QStringLiteral("actioncolorCodeMoistureContent"));
         actioncolorCodeEvaporationRate = new QAction(MainWindow);
         actioncolorCodeEvaporationRate->setObjectName(QStringLiteral("actioncolorCodeEvaporationRate"));
+        action123 = new QAction(MainWindow);
+        action123->setObjectName(QStringLiteral("action123"));
+        actionAbout2 = new QAction(MainWindow);
+        actionAbout2->setObjectName(QStringLiteral("actionAbout2"));
+        actionRecent = new QAction(MainWindow);
+        actionRecent->setObjectName(QStringLiteral("actionRecent"));
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         MainWindow->setCentralWidget(centralWidget);
@@ -427,7 +436,6 @@ public:
         menu_File->addAction(actionSave_Reaction_Network);
         menu_File->addSeparator();
         menu_File->addAction(actionE_xit);
-        menuRecent->addSeparator();
         menu_Help->addAction(actionContact_Us);
         menu_Help->addAction(actionAbout);
         menu_Edit->addAction(action_Undo);
@@ -591,6 +599,9 @@ public:
         actioncolorCodeWaterDepth->setText(QApplication::translate("MainWindow", "Water depth", 0));
         actioncolorCodeMoistureContent->setText(QApplication::translate("MainWindow", "Moisture content", 0));
         actioncolorCodeEvaporationRate->setText(QApplication::translate("MainWindow", "Evaporation rate", 0));
+        action123->setText(QApplication::translate("MainWindow", "123", 0));
+        actionAbout2->setText(QApplication::translate("MainWindow", "About", 0));
+        actionRecent->setText(QApplication::translate("MainWindow", "Recent", 0));
         menu_File->setTitle(QApplication::translate("MainWindow", "&File", 0));
         menuRecent->setTitle(QApplication::translate("MainWindow", "Recent", 0));
         menu_Help->setTitle(QApplication::translate("MainWindow", "&Help", 0));

@@ -1,2 +1,6 @@
-c:\file1.gifmod
-c:\file2.txt
+C:/Users/user/Dropbox/GUI/Arash_dropbucket/PID_pool_test/PID_pool_test.GIFMC:/Users/user/Documents/GIFMod Projects/Examples/2-ponds-pcb/2ponds.GIFM
+C:/Users/user/Documents/GIFMod Projects/Examples/2-ponds-pcb/2ponds.GIFM
+C:/Users/user/Documents/GIFMod Projects/Examples/Aeration/Aeration.GIFM
+C:/Users/ArashComp/Documents/GIFMod Projects/PID_pool_test/PID_pool_test.GIFM
+C:/Users/user/Documents/GIFMod Projects/test color.GIFM
+C:/Users/user/Documents/GIFMod Projects/test color.temp

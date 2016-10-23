@@ -849,6 +849,35 @@ void CMediumSet::set_param(int param_no, double _value)
 			std[measured_quan[i].std_no] = _value;
 }
 
+void CMediumSet::set_control_param(int controller_no, int experiment_id)
+{
+	for (int i = 0; i<Control.Controllers[controller_no].application_spec.location.size(); i++)
+	{
+		double value;
+		if (Control.Controllers[controller_no].application_spec.conversion_factor.size())
+			value = Control.Controllers[controller_no].value*Control.Controllers[controller_no].application_spec.conversion_factor[i];
+		else
+			value = Control.Controllers[controller_no].value;
+
+		if ((Control.Controllers[controller_no].application_spec.location_type[i] == 2) || (Control.Controllers[controller_no].application_spec.location_type[i] == 1) || (Control.Controllers[controller_no].application_spec.location_type[i] == 0))
+		{
+			if (Control.Controllers[controller_no].application_spec.experiment_id[i] == Medium[experiment_id].name)
+				Medium[experiment_id].set_control_params(controller_no);
+		}
+		else if (Control.Controllers[controller_no].application_spec.location_type[i] == 3)
+			RXN.parameters[RXN.look_up_rxn_parameters(Control.Controllers[controller_no].application_spec.quan[i])].value = Control.Controllers[controller_no].value;
+		else if (Control.Controllers[controller_no].application_spec.location_type[i] == 4)
+			RXN.cons[Control.Controllers[controller_no].application_spec.location[i]].set_val(Control.Controllers[controller_no].application_spec.quan[i], Control.Controllers[controller_no].value);
+		else if (Control.Controllers[controller_no].application_spec.location_type[i] == 5)
+			buildup[Control.Controllers[controller_no].application_spec.location[i]].set_val(Control.Controllers[controller_no].application_spec.quan[i], Control.Controllers[controller_no].value);
+		else if (Control.Controllers[controller_no].application_spec.location_type[i] == 6)
+			externalflux[Control.Controllers[controller_no].application_spec.location[i]].set_val(Control.Controllers[controller_no].application_spec.quan[i], Control.Controllers[controller_no].value);
+		else if (Control.Controllers[controller_no].application_spec.location_type[i] == 7)
+			evaporation_model[Control.Controllers[controller_no].application_spec.location[i]].set_val(Control.Controllers[controller_no].application_spec.quan[i], Control.Controllers[controller_no].value);
+	}
+
+}
+
 int CMediumSet::lookup_medium(string S)
 {
 	int j = -1;
