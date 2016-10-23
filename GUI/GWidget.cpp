@@ -656,6 +656,9 @@ void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QStri
 		n->color.color1 = colors.colors[i];
 		n->color.color2 = colors.colors[i];
 	}
+	colorCode.nodes = true;
+	colorScheme::showColorandLegend(colors);
+	
 }
 void GraphWidget::settableProp(QTableView*_tableProp)
 {

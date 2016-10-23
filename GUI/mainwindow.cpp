@@ -1,5 +1,5 @@
 #ifndef GIFMOD_VERSION
-#define GIFMOD_VERSION "0.1"
+#define GIFMOD_VERSION "0.1.1"
 #endif
 #define RECENT "recentFiles.txt"
 #include "mainwindow.h"
@@ -486,10 +486,12 @@ void MainWindow::on_action_Save_triggered()
 	QString fileName = (!mainGraphWidget->modelFilename.isEmpty()) ? mainGraphWidget->modelFilename : QFileDialog::getSaveFileName(this,
 		tr("Save ").append(applicationName), mainGraphWidget->modelPathname(),
 		tr("Model (*.").append(fileExtension).append(");;All Files (*)"));
-	saveModel(fileName);
-	setModelFileName(fileName);
-	addToRecentFiles(fileName);
-
+	if (saveModel(fileName))
+	{
+		setModelFileName(fileName);
+		if (fileName.right(4) != "temp")
+			addToRecentFiles(fileName);
+	}
 }
 void MainWindow::on_actionSave_As_triggered()
 {
@@ -497,16 +499,18 @@ void MainWindow::on_actionSave_As_triggered()
 		tr("Save ").append(applicationName), mainGraphWidget->modelPathname(),
 		tr("Model (*.").append(fileExtension).append(");;All Files (*)"));
 	Entity *e = mainGraphWidget->entityByName("Project settings (1)");
-//	delete e;
+	//	delete e;
 	mainGraphWidget->Entities.removeOne(e);
 	qDebug() << "**************************start saving model";
 	saveModel(fileName);
 	qDebug() << "**************************model saved";
-
-	setModelFileName(fileName);
-	addToRecentFiles(fileName);
-
+	if (saveModel(fileName))
+	{
+		setModelFileName(fileName);
+		if (fileName.right(4) != "temp")
+			addToRecentFiles(fileName);
 	}
+}
 
 
 void MainWindow::on_actionZoom_In_triggered()
