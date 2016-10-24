@@ -132,6 +132,7 @@ public:
 	CBTCSet ANS_obs; //Solutions containing correspondents to the observed data
 	CBTCSet ANS_obs_noise; ////Solutions containing correspondents to the observed data with added noise
 	CBTCSet ANS_MB;//mass balance check timeseries
+	CBTCSet ANS_control; //control outputs
 	CBTCSet Solution_dt;
 	double Timemin,Timemax;
 	CLIDconfig lid_config;
@@ -154,6 +155,7 @@ public:
 	string& PE_info_filename(); //file name containing parameter estimation configuration
 	string detoutfilename_hydro; //file name where the deterministic hydraulic output is saved
 	string detoutfilename_wq; //file name where the deterministic water quality output is saved
+	string detoutfilename_control; //file name where the controller values are saved
 	string detoutfilename_prtcle; //file name where the deterministic partcile output is saved
 	string& detoutfilename_obs(); ////file name where the deterministic outputs corresponding to the observed data is saved
 	int& writeinterval(); //the interval at which the output are save in output files (default = 1)
