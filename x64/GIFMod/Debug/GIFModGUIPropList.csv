@@ -49,7 +49,7 @@
 1,Block,Darcy,*,!,Precipitation,precipitation,!,!,integer,No;Yes,ComboBox,Environment,Select,Yes,100041,,,
 1,Block,Soil,Sand,!,Residual moisture content (~thetar),theta_r,!,!,float+Estimate,0.045,TextBox,Material,Input,Yes,100047,[0:{theta_s}),E,Residual moisure content must be between zero and ~thetas
 1,Block,Darcy,Darcy,!,Saturated hydraulic conductivity (ks),ks,m/day;cm/day;cm/s;mm/s;ft/day;in/day;in/s,m/day,float+Estimate,1,UnitBox,Material,Input,Yes,100048,!=0; >=0,W;E,Hydraulic conductivity is zero; Hydraulic conductivity must me non-negative
-1,Block,Storage,Storage,!,Saturated hydraulic conductivity (ks),Ks,m/day;cm/day;cm/s;mm/s;ft/day;in/day;in/s,m/day,float+Estimate,1,UnitBox,Material,Input,Yes,100333,!=0; >=0,W;E,Hydraulic conductivity is zero; Hydraulic conductivity must me non-negative
+1,Block,Storage,Storage,!,Saturated hydraulic conductivity (ks),ks,m/day;cm/day;cm/s;mm/s;ft/day;in/day;in/s,m/day,float+Estimate,1,UnitBox,Material,Input,Yes,100333,!=0; >=0,W;E,Hydraulic conductivity is zero; Hydraulic conductivity must me non-negative
 //1,Block,Pond,Pond,!,Saturated moisture content (~thetas),theta_s,!,!,float+Estimate,1,TextBox,Material,Input,Yes,100051,(0:1],E,Saturation moisure content must be between zero and one
 1,Block,Stream,Stream,!,Saturated moisture content (~thetas),theta_s,!,!,float+Estimate,1,TextBox,Material,Input,Yes,100051,(0:1],E,Saturation moisure content must be between zero and one
 1,Block,Darcy,Darcy,!,Saturated moisture content (~thetas),Theta_s,!,!,float+Estimate,!,TextBox,Material,Input,Yes,100328,(0:1],E,Saturation moisure content must be between zero and one
@@ -57,7 +57,7 @@
 1,Block,*,*,!,Vapor diffusion coefficient,vapor_diffusion,m~^2/day; m~^2/s; cm~^2/s; cm~^2/day ,m~^2/day,float+Estimate,0,UnitBox,Material,Input,Yes,100059,>=0,E,Vapor Diffusion Coefficient must be non-negative
 1,Connector,Default,non-Porous,!,Flow exponent,exponent,!,!,float+Estimate,!,TextBox,Geometry,Input,Yes,100061,,,
 1,Connector,Default,non-Porous,!,Manning's roughness coefficient,nmanning,s/~^3~radicm,day/~^3~radicm,float+Estimate,!,UnitBox,Material,Input,Yes,100062,>0,E,Manning's roughness coefficient must be positive
-1,Connector,Default,non-Porous,!,Width,width,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100063,!=0; >=0,W;E,Width is assigned to be zero; Width must be positive and non-zero
+1,Connector,Default,*,!,Width,width,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100063,!=0; >=0,W;E,Width is assigned to be zero; Width must be positive and non-zero
 1,Connector,Default,non-Porous,!,Dam elevation,dam,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100064,,,
 1,Connector,Default,Porous,!,Saturated hydraulic conductivity (ks),ks,m/day; cm/day;cm/s;mm/s;ft/day;in/day;in/s,m/day,float+Estimate,!,UnitBox,Material,Input,Yes,100066,>=0;!=0,E;W,Hydraulic conductivity must me non-negative;Saturated hydraulic conductivity will be assigned based on the connected blocks
 1,Connector,*,*,!,Interface/cross sectional area,a,m~^2;ft~^2,m~^2,float+Estimate,!,UnitBox,Geometry,Input,Yes,100067,!=0;>=0,W;E,"The interface area is not specified, the area will be calculated based on the connected blocks;Area must be greater than zero"

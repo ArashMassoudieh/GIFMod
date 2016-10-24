@@ -87,7 +87,7 @@ public:
 				QColor c = QColor(0, i * 255 / numberofGroups, 0, 128);
 				r.legendColors[i] = c.toRgb();
 			}
-		float min = -1e100, max = 1e100;
+		float min = 1e100, max = -1e100;
 
 		vector <double> values(data.size());
 
@@ -118,9 +118,37 @@ public:
 			if (values[i] == max)
 				g = numberofGroups - 1;
 			else
-				g = (min - values[i]) / (max - min) * (numberofGroups);
+				g = (values[i] - min) / (max - min) * (numberofGroups);
 			r.colors[i] = r.legendColors[g];
 		}
+		return r;
+	}
+	static QGraphicsView* showColorandLegend(colorlegend legend) {
+		QGraphicsView * r = new QGraphicsView;
+		QGraphicsScene * s = new QGraphicsScene;
+		r->setScene(s);
+		
+		int x = 10;
+		int y = 10;
+		int dy = 20;
+		int columnOffset = 100;
+		int boxHeight = 20;
+		int boxWidth = 50;
+		for (int i = 0; i < legend.legendTexts.size(); i++)
+		{
+			QGraphicsTextItem * t = s->addText(legend.legendTexts[i]);
+			t->setX(x);
+			t->setY(y + i*dy);
+			QRect rect;
+			rect.setLeft(x + columnOffset);
+			rect.setTop(y + i*dy);
+			rect.setHeight(boxHeight);
+			rect.setWidth(boxWidth);
+			QPen pen;
+			QBrush brush = QBrush(legend.legendColors[i]);
+			s->addRect(rect, pen, brush);
+		}
+		r->show();
 		return r;
 	}
 private:
