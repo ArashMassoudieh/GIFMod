@@ -89,6 +89,7 @@ void MainWindow::forwardRun(CMediumSet *model, runtimeWindow* progress)
 		model->Medium[i].ANS.writetofile(model->Medium[i].detoutfilename_hydro, true);
 		model->Medium[i].ANS_colloids.writetofile(model->Medium[i].detoutfilename_prtcle, true);
 		model->Medium[i].ANS_constituents.writetofile(model->Medium[i].detoutfilename_wq, true);
+		model->Medium[i].ANS_control.writetofile(model->Medium[i].detoutfilename_control, true);
 		if (model->SP.mass_balance_check) model->Medium[i].ANS_MB.writetofile(model->FI.outputpathname + "output_MB" + model->Medium[i].name + ".txt", true);
 		/*			model->Medium[i].ANS.writetofile(model->FI.outputpathname + model->Medium[i].detoutfilename_hydro);
 					model->Medium[i].ANS_colloids.writetofile(model->FI.outputpathname + model->Medium[i].detoutfilename_prtcle);
@@ -98,7 +99,7 @@ void MainWindow::forwardRun(CMediumSet *model, runtimeWindow* progress)
 	}
 
 	model->ANS_obs.writetofile(model->FI.detoutfilename_obs, true);
-
+	
 	//system.Solution_dt.writetofile(system.outputpathname()+"dt.txt");
 	runtime_file.close();
 
@@ -745,6 +746,7 @@ void MainWindow::inverseRun(CMediumSet *modelSet, runtimeWindow* rtw)
 			GA.Sys_out.ANS_hyd[i]->writetofile(GA.Sys.Medium[i].detoutfilename_hydro, modelSet->FI.write_interval);
 			GA.Sys_out.ANS_colloids[i]->writetofile(GA.Sys.Medium[i].detoutfilename_prtcle, modelSet->FI.write_interval);
 			GA.Sys_out.ANS_constituents[i]->writetofile(GA.Sys.Medium[i].detoutfilename_wq, modelSet->FI.write_interval);
+			GA.Sys_out.ANS_control[i]->writetofile(GA.Sys.Medium[i].detoutfilename_control, modelSet->FI.write_interval);
 //			GA.Sys_out.ANS_hyd[i]->writetofile(modelSet->FI.outputpathname + GA.Sys.Medium[i].detoutfilename_hydro, modelSet->FI.write_interval);
 //			GA.Sys_out.ANS_colloids[i]->writetofile(modelSet->FI.outputpathname + GA.Sys.Medium[i].detoutfilename_prtcle, modelSet->FI.write_interval);
 //			GA.Sys_out.ANS_constituents[i]->writetofile(modelSet->FI.outputpathname + GA.Sys.Medium[i].detoutfilename_wq, modelSet->FI.write_interval);
@@ -1070,7 +1072,7 @@ void CMediumSet::g_get_controllers()
 				M.set_val(key.toStdString(), e->val(key).toFloat());
 
 //		M.interval = e->val("interval").toFloatDefaultUnit();
-
+		if (M.type == "ziegler-nichols") M.set_zn();
 		Control.Controllers.push_back(M);
 	}
 }
@@ -1206,6 +1208,7 @@ void CMedium::g_get_environmental_params()
 	if (detoutfilename_wq.size() == 0) detoutfilename_wq = outputpathname() +"wq_output_" + name + ".txt";
 	if (detoutfilename_prtcle.size() == 0) detoutfilename_prtcle = outputpathname() + "prtcl_output_" + name + ".txt";
 	if (detoutfilename_obs().size() == 0) detoutfilename_obs() = outputpathname() + "observed_output.txt";
+	if (detoutfilename_control.size() == 0) detoutfilename_control = outputpathname() + "control_output_" + name + ".txt";
 
 //	PE_info_filename() = "GA_info.txt";
 
@@ -2053,6 +2056,7 @@ void CMediumSet::solve(runtimeWindow *rtw)
 	ANS_hyd.clear();
 	ANS_colloids.clear();
 	ANS_constituents.clear();
+	ANS_control.clear();
 	for (int i = 0; i < Medium.size(); i++)
 	{
 		if (rtw)
@@ -2064,6 +2068,7 @@ void CMediumSet::solve(runtimeWindow *rtw)
 		ANS_hyd.push_back(&Medium[i].ANS);
 		ANS_colloids.push_back(&Medium[i].ANS_colloids);
 		ANS_constituents.push_back(&Medium[i].ANS_constituents);
+		ANS_colloids.push_back(&Medium[i].ANS_control);
 		gw->log(QString("%1 finished").arg(QString::fromStdString(Medium[i].name)));
 
 	}

@@ -38,6 +38,7 @@ CMedium::CMedium(const CMedium &M)
 	ANS_constituents = M.ANS_constituents;
 	ANS_obs_noise = M.ANS_obs_noise;
 	ANS_MB = M.ANS_MB;
+	ANS_control = M.ANS_control;
 
 
 	Blocks = M.Blocks;
@@ -51,6 +52,7 @@ CMedium::CMedium(const CMedium &M)
 	detoutfilename_hydro = M.detoutfilename_hydro;
 	detoutfilename_wq = M.detoutfilename_wq;
 	detoutfilename_prtcle = M.detoutfilename_prtcle;
+	detoutfilename_control = M.detoutfilename_control;
 
 	t = M.t;
 	Precipitation = M.Precipitation;
@@ -114,6 +116,7 @@ CMedium& CMedium::operator=(const CMedium &M)
 	ANS_obs = M.ANS_obs;
 	ANS_obs_noise = M.ANS_obs_noise;
 	ANS_MB = M.ANS_MB;
+	ANS_control = M.ANS_control;
 	
 
 	Blocks = M.Blocks;
@@ -127,7 +130,8 @@ CMedium& CMedium::operator=(const CMedium &M)
 	detoutfilename_hydro = M.detoutfilename_hydro;
 	detoutfilename_wq = M.detoutfilename_wq;
 	detoutfilename_prtcle = M.detoutfilename_prtcle;
-	
+	detoutfilename_control = M.detoutfilename_control;
+
 	t = M.t;
 	Precipitation = M.Precipitation;
 	Precipitation_filename = M.Precipitation_filename;
@@ -214,6 +218,7 @@ void CMedium::f_get_environmental_params()
 	if (detoutfilename_wq.size() == 0) detoutfilename_wq = "wq_output_"+name+".txt";
 	if (detoutfilename_prtcle.size() == 0) detoutfilename_prtcle = "prtcl_output_"+name+".txt";
 	if (detoutfilename_obs().size() == 0) detoutfilename_obs() = "observed_output.txt";
+	if (detoutfilename_control.size() == 0) detoutfilename_control = "control_output.txt";
 
 }
 
@@ -1691,6 +1696,7 @@ void CMedium::solve_fts_m2(double dt)
 	ANS = CBTCSet(3*Blocks.size()+3*Connector.size());
 	ANS_colloids = CBTCSet(Blocks.size()*Blocks[0].n_phases);
 	ANS_constituents = CBTCSet(Blocks.size()*(Blocks[0].n_phases+2)*RXN().cons.size());
+	ANS_control = CBTCSet(controllers().size());
 	if (mass_balance_check()) ANS_MB = CBTCSet(Blocks.size());
 	char buffer[33];
 	epoch_count = 0;
@@ -1736,6 +1742,10 @@ void CMedium::solve_fts_m2(double dt)
 						ANS_constituents.setname(get_member_no(i, p, l, k), RXN().cons[k].name + "_" + Blocks[i].ID + "_" + Solid_phase()[p].name + "_" + Solid_phase()[p].phase_names[l]);
 				}
 		}
+
+	for (int i = 0; i < controllers().size(); i++)
+		ANS_control.setname(i, controllers()[i].name);
+
 	dtt = dt;
 	double base_dtt = dt;
 	dt0 = dt;
@@ -2121,6 +2131,10 @@ void CMedium::solve_fts_m2(double dt)
 
 // Sassan
 	updateProgress(true);
+	
+	for (int i = 0; i < controllers().size(); i++)
+		ANS_control.BTC[i] = controllers()[i].output;
+	
 	if (uniformoutput())
 	{
 		if (ANS.BTC[0].n)
