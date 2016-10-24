@@ -272,8 +272,13 @@ void MainWindow::addToRecentFiles(QString fileName, bool addToFile)
 	if (!recentFiles.contains(fileName.toLower()) && fileName.trimmed()!="")
 	{
 		recentFiles.append(fileName.toLower());
-		QAction * a = ui->menuRecent->addAction(fileName);// , this, SLOT(recentItem()));
-		QObject::connect(a, SIGNAL(triggered()), this, SLOT(on_actionRecent_triggered()));
+//		QAction * a = ui->menuRecent->addAction(fileName);// , this, SLOT(recentItem()));
+		QAction * fileNameAction = new QAction(fileName, 0);
+		if (ui->menuRecent->actions().size())
+			ui->menuRecent->insertAction(ui->menuRecent->actions()[0], fileNameAction);
+		else 
+			ui->menuRecent->addAction(fileNameAction);
+		QObject::connect(fileNameAction, SIGNAL(triggered()), this, SLOT(on_actionRecent_triggered()));
 
 		if (addToFile)
 		{
