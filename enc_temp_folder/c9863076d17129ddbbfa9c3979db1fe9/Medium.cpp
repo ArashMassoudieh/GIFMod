@@ -218,7 +218,6 @@ void CMedium::f_get_environmental_params()
 	if (detoutfilename_wq.size() == 0) detoutfilename_wq = "wq_output_"+name+".txt";
 	if (detoutfilename_prtcle.size() == 0) detoutfilename_prtcle = "prtcl_output_"+name+".txt";
 	if (detoutfilename_obs().size() == 0) detoutfilename_obs() = "observed_output.txt";
-	if (detoutfilename_control.size() == 0) detoutfilename_control = "control_output.txt";
 
 }
 
@@ -2069,19 +2068,16 @@ void CMedium::solve_fts_m2(double dt)
 		//updating sensors
 		for (int i = 0; i < sensors().size(); i++)
 			{
-				int no_intervals_at_t = t / sensors()[i].interval;
-				int no_intervals_at_t_minus_dtt = (t - dtt) / sensors()[i].interval;
-				int delta_no_intervals = no_intervals_at_t - no_intervals_at_t_minus_dtt;
-				if (delta_no_intervals > 0)
-				{ 					
+				if (int(t / sensors()[i].interval) > int((t - dtt) / sensors()[i].interval))
+				{
+					double t_sensor = int(t / sensors()[i].interval)*sensors()[i].interval;
 					double C_1 = calc_term(sensors()[i].loc_type, sensors()[i].id, sensors()[i].quan);
 					double C_2 = calc_term_star(sensors()[i].loc_type, sensors()[i].id, sensors()[i].quan);
-					for (int no_intervals = 1; no_intervals <= delta_no_intervals; ++no_intervals) {
-						double t_sensor = (no_intervals_at_t_minus_dtt+ no_intervals) * sensors()[i].interval;
-						sensors()[i].append_output(t_sensor, C_1 + (C_2 - C_1) / dtt*(t_sensor - t + dtt), lookup_experiment(name));				
-					}
+					sensors()[i].append_output(t_sensor, C_1 + (C_2 - C_1) / dtt*(t_sensor - t + dtt), lookup_experiment(name));
 				}
+
 			}
+		}
 
 		for (int i = 0; i < controllers().size(); i++)
 		{

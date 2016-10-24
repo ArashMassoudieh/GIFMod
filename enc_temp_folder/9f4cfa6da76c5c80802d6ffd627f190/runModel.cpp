@@ -1208,7 +1208,7 @@ void CMedium::g_get_environmental_params()
 	if (detoutfilename_wq.size() == 0) detoutfilename_wq = outputpathname() +"wq_output_" + name + ".txt";
 	if (detoutfilename_prtcle.size() == 0) detoutfilename_prtcle = outputpathname() + "prtcl_output_" + name + ".txt";
 	if (detoutfilename_obs().size() == 0) detoutfilename_obs() = outputpathname() + "observed_output.txt";
-	if (detoutfilename_control.size() == 0) detoutfilename_control = outputpathname() + "control_output_" + name + ".txt";
+	if (detoutfilename_control.size() == 0) detoutfilename_control = outputpathname() + "control_" + name + ".txt";
 
 //	PE_info_filename() = "GA_info.txt";
 

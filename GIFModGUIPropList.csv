@@ -354,7 +354,7 @@
 1,Entity,Sensor,Connector,!,Location,id,!,!,string,populate at runtime;Connector,ComboBox,Global,Select,No,100348,,,
 1,Entity,Sensor,*,!,Quantity,quan,!,!,string,!,expressionEditor,Global,Input,No,100345,,,
 1,Entity,Sensor,*,!,Error distribution,error_structure,!,!,string,Normal-additive;Lognormal-multiplicative,ComboBox,Global,Select,No,100346,,,
-1,Entity,Sensor,*,!,Interval,interval,min;s;hr;day;wk,min,float,1,UnitBox,Global,Input,No,100349,>0,E,Interval must be positive
+1,Entity,Sensor,*,!,Interval,interval,min;s;hr;day;wk,day,float,1,UnitBox,Global,Input,No,100349,>0,E,Interval must be positive
 1,Entity,Controller,*,!,Name,!,!,!,string,!,TextBox,Global,Input,No,100350,,,
 1,Block,*,*,!,Width,width,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100342,!=0; >=0,W;W,Width is assigned to be zero; Width must be positive and non-zero
 1,Block,*,*,!,Length,d,m;cm;ft;in,m,float,!,UnitBox,Geometry,Input,Yes,100339,!=0; >=0,W;W,Length is assigned to be zero; Length must be positive and non-zero

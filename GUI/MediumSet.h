@@ -103,6 +103,7 @@ public:
 	void set_formulas();
 	CRxnNetwork RXN;
 	vector <CBTCSet*> ANS_hyd;
+	vector <CBTCSet*> ANS_control;
 	CBTCSet ANS_obs;
 	CBTCSet ANS_obs_noise;
 	vector <CBTCSet*> ANS_colloids;

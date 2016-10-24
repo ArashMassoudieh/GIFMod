@@ -66,20 +66,22 @@ void CController::append(double t, double C)
 
 double CController::P(double t, int experiment_id)
 {
-	//if (tolower(type) == "pid-manual")
-		return (Sensor->output[experiment_id].interpol(t) - params[3]);
+	if (Sensor->output[experiment_id].n == 0) return 0;
+	return (Sensor->output[experiment_id].interpol(t) - params[3]);
 
 }
 double CController::I(double t, int experiment_id)
 {
+	if (Sensor->output[experiment_id].n == 0) return 0;
 	if (params[k_i] == 0) return 0;
-	//if (tolower(type) == "pid-manual")
+	
 		return (Sensor->output[experiment_id].integrate(t) - params[3]*(t-Sensor->output[experiment_id].t[0]));
 
 }
 double CController::D(double t, int experiment_id)
 {
-	//if (tolower(type) == "pid-manual")
+	
+	if (Sensor->output[experiment_id].n == 0) return 0;
 		if (Sensor->output[experiment_id].n > 1)
 			return (Sensor->output[experiment_id].slope(t));
 		else

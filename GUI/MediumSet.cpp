@@ -11,6 +11,9 @@ CMediumSet::~CMediumSet()
 {
 	ANS_colloids.clear();
 	ANS_constituents.clear();
+	ANS_colloids.clear();
+	ANS_control.clear();
+	ANS_obs.clear();
 	ANS_hyd.clear();
 }
 
@@ -82,6 +85,7 @@ CMediumSet::CMediumSet(const CMediumSet &M)
 		ANS_hyd.push_back(&Medium[i].ANS);
 		ANS_colloids.push_back(&Medium[i].ANS_colloids);
 		ANS_constituents.push_back(&Medium[i].ANS_constituents);
+		ANS_control.push_back(&Medium[i].ANS_control);
 	}
 	Control = M.Control;
 
@@ -110,11 +114,13 @@ CMediumSet& CMediumSet::operator=(const CMediumSet &M)
 	ANS_hyd.clear();
 	ANS_colloids.clear();
 	ANS_constituents.clear();
+	ANS_control.clear();
 	for (int i = 0; i < Medium.size(); i++)
 	{
 		ANS_hyd.push_back(&Medium[i].ANS);
 		ANS_colloids.push_back(&Medium[i].ANS_colloids);
 		ANS_constituents.push_back(&Medium[i].ANS_constituents);
+		ANS_control.push_back(&Medium[i].ANS_constituents);
 	}
 	ANS_obs = M.ANS_obs;
 	Control = M.Control;
@@ -297,6 +303,7 @@ void CMediumSet::solve()
 	ANS_hyd.clear();
 	ANS_colloids.clear();
 	ANS_constituents.clear();
+	ANS_control.clear();
 	for (int i = 0; i < Medium.size(); i++)
 	{
 		Medium[i].solve();
@@ -304,6 +311,7 @@ void CMediumSet::solve()
 		ANS_hyd.push_back(&Medium[i].ANS);
 		ANS_colloids.push_back(&Medium[i].ANS_colloids);
 		ANS_constituents.push_back(&Medium[i].ANS_constituents);
+		ANS_control.push_back(&Medium[i].ANS_control);
 	}
 
 	ANS_obs = CBTCSet(measured_quan.size());
