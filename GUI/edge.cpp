@@ -615,7 +615,7 @@ void Edge::changed()
 	parent->edgeChanged(this);
 }
 
-void Edge::copyProps(Node *node, QString direction)
+void Edge::copyProps(Node *node, QString direction, bool copyLength)
 {
 	QStringList exceptionList;
 	exceptionList << "id";
@@ -623,10 +623,13 @@ void Edge::copyProps(Node *node, QString direction)
 		exceptionList << "width";
 	if (direction.toLower().contains("h"))
 		exceptionList << "a";
-
-	for each (QString code in node->codes())
+    if (!copyLength)
+        exceptionList << "d";
+    
+    for each (QString code in node->codes())
 	{
-		if (!exceptionList.contains(code.toLower()) && codes().contains(code))
+		if (!exceptionList.contains(code.toLower()) && codes().contains(code)&&
+            node->getValue(node->variableName(code)!=""))
 			setProp(variableName(code), node->getValue(node->variableName(code)).list(), XStringEditRole);
 	}
 }

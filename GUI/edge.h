@@ -66,7 +66,7 @@ public:
 	bool errorDetected() const { return (errors.count()) ? true : false; }
 	QStringList Edge::variableNames() const;
 	QString variableName(QString code) const;
-	void copyProps(Node *node, QString direction);
+	void copyProps(Node *node, QString direction, bool copyLength =true);
 	bool avoidCrossObjects = true;// false;
 	QString experimentName() const;
 	void copyProps(QString sourceExperiment, QString destExperiment);
