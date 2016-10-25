@@ -1,5 +1,5 @@
 #ifndef GIFMOD_VERSION
-#define GIFMOD_VERSION "0.1.1"
+#define GIFMOD_VERSION "0.1.2"
 #endif
 #define RECENT "recentFiles.txt"
 #include "mainwindow.h"

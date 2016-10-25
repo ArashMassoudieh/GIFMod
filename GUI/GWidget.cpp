@@ -2183,7 +2183,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
                                         //copyLength=false;
                                     }
 									bool copyLength = false;
-									e->copyProps(n, "Vertical", copyLength);
+									e->copyProps(n, "Vertical Array", "Vertical Connector", copyLength);
 								}
 								if (columnIndex != 0)
 								{
@@ -2194,7 +2194,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
                                         e->setProp(e->variableName("d"), length.list(), XStringEditRole);
                                         copyLength=false;
                                     }
-									e->copyProps(n, "Horizontal", copyLength);
+									e->copyProps(n, "Vertical Array", "Horizontal Connector", copyLength);
 								}
 
 							}
@@ -2259,14 +2259,14 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 								{
 									Edge *e = new Edge(rows[rowIndex - 1][columnIndex], n1, this);
 									treeModel->add(e); 
-									e->copyProps(n, "Horizontal");
+									e->copyProps(n, "Horizontal Array", "Vertical Connector");
 									if (lengthY > 0) e->setProp(e->variableName("d"), lengthY.list(), XStringEditRole);
 								}
 								if (columnIndex != 0)
 								{
 									Edge *e = new Edge(row[columnIndex - 1], n1, this);
 									treeModel->add(e); 
-									e->copyProps(n, "Horizontal");
+									e->copyProps(n, "Horizontal Array", "Horizontal Connector");
 									if (lengthX > 0) e->setProp(e->variableName("d"), lengthX.list(), XStringEditRole);
 								}
 

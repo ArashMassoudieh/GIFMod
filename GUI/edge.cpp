@@ -437,9 +437,10 @@ bool Edge::setValue(const QString &propName, const XString &Value)
 QString Edge::updateSubType()
 {
 	QString r;
-	QStringList Porous;
-	Porous << "Soil" << "Darcy" << "Storage";// << "" << "";
-	if (Porous.contains(source->ObjectType().ObjectType) || Porous.contains(dest->ObjectType().ObjectType))
+//	QStringList Porous;
+//	Porous << "Soil" << "Darcy" << "Storage";// << "" << "";
+//	if (Porous.contains(source->ObjectType().ObjectType) || Porous.contains(dest->ObjectType().ObjectType))
+	if (source->isPorous() || dest->isPorous())
 		r = "Porous";
 	else
 		r = "non-Porous";
@@ -615,14 +616,17 @@ void Edge::changed()
 	parent->edgeChanged(this);
 }
 
-void Edge::copyProps(Node *node, QString direction, bool copyLength)
+void Edge::copyProps(Node *node, QString arrayDirection, QString connectorDirection, bool copyLength)
 {
 	QStringList exceptionList;
 	exceptionList << "id";
-	if (direction.toLower().contains("v"))
+	if (connectorDirection.toLower().contains("v"))
 		exceptionList << "width";
-	if (direction.toLower().contains("h"))
+	if (connectorDirection.toLower().contains("h"))
 		exceptionList << "a";
+	if (!node->isPorous())
+		exceptionList << "a";
+
     if (!copyLength)
         exceptionList << "d";
     
@@ -632,6 +636,46 @@ void Edge::copyProps(Node *node, QString direction, bool copyLength)
             node->getValue(node->variableName(code))!="")
 			setProp(variableName(code), node->getValue(node->variableName(code)).list(), XStringEditRole);
 	}
+	if (node->isPorous())
+	{
+		if (connectorDirection.toLower().contains("h"))
+		{
+			if (variableName("a") != "")
+			{
+				XString area = node->getValue(node->variableName("a")).list();
+				area.unit = area.unitsList[0];
+				area.setNum(node->getValue(node->variableName("width")).toFloatDefaultUnit()*node->getValue(node->variableName("depth")).toFloatDefaultUnit());
+				setProp(variableName("a"), area.list(), XStringEditRole);
+			}
+		}
+		if (arrayDirection.toLower().contains("h") && connectorDirection.toLower().contains("v"))
+		{
+			if (variableName("a") != "")
+			{
+				XString area = node->getValue(node->variableName("a")).list();
+				area.unit = area.unitsList[0];
+				area.setNum(node->getValue(node->variableName("d")).toFloatDefaultUnit()*node->getValue(node->variableName("depth")).toFloatDefaultUnit());
+				setProp(variableName("a"), area.list(), XStringEditRole);
+			}
+		}
+		if (arrayDirection.toLower().contains("v") && connectorDirection.toLower().contains("v"))
+		{
+			//area already set to node's a
+		}
+	}
+	else //non-porous
+	{
+		if (connectorDirection.toLower().contains("h"))
+		{
+			//width already set to node's width
+		}
+		if (connectorDirection.toLower().contains("v"))
+			if (variableName("width") != "")
+			{
+				setProp(variableName("width"), node->getValue(node->variableName("width")).list(), XStringEditRole);
+			}
+	}
+
 }
 
 bool Edge::intersects(double x, double y)
