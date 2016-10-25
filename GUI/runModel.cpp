@@ -1072,7 +1072,7 @@ void CMediumSet::g_get_controllers()
 				M.set_val(key.toStdString(), e->val(key).toFloat());
 
 //		M.interval = e->val("interval").toFloatDefaultUnit();
-		if (M.type == "ziegler-nichols") M.set_zn();
+		if (tolower(M.type) == "ziegler-nichols") M.set_zn();
 		Control.Controllers.push_back(M);
 	}
 }
