@@ -847,7 +847,7 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 				{
 					if (data[i].name == controller->name.toStdString())
 					{
-						plotControllerData(data[i], QString::fromStdString(data[0].name));
+						plotControllerData(data[i], QString::fromStdString(data[i].name));
 						menu->addAction(QString("Plot control data").arg(name), this, SLOT(plotControllerData()));
 						addSeparator = true;
 					}
@@ -1327,6 +1327,7 @@ void MainWindow::plotObservationData(CBTC data, QString name)
 		plot->show();
 	}
 }
+
 void MainWindow::plotControllerData(CBTC data, QString name)
 {
 	static CBTC _data;

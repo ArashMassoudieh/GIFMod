@@ -628,8 +628,8 @@ void Edge::copyProps(Node *node, QString direction, bool copyLength)
     
     for each (QString code in node->codes())
 	{
-		if (!exceptionList.contains(code.toLower()) && codes().contains(code)&&
-            node->getValue(node->variableName(code)!=""))
+		if (!exceptionList.contains(code.toLower()) && codes().contains(code) &&
+            node->getValue(node->variableName(code))!="")
 			setProp(variableName(code), node->getValue(node->variableName(code)).list(), XStringEditRole);
 	}
 }
