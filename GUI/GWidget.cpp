@@ -2177,11 +2177,12 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 									treeModel->add(e);
 									XString connectorLength = z0;
 									connectorLength.setNum(abs(deltaV.toFloat(z0.unit)) / (numberofRows - 1));
-                                    bool copyLength = true;
+                                    //bool copyLength = true;
                                     if (connectorLength > 0){
                                         e->setProp(e->variableName("d"), connectorLength.list(), XStringEditRole);
-                                        copyLength=false;
+                                        //copyLength=false;
                                     }
+									bool copyLength = false;
 									e->copyProps(n, "Vertical", copyLength);
 								}
 								if (columnIndex != 0)

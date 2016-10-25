@@ -2144,28 +2144,28 @@ void CMedium::solve_fts_m2(double dt)
 				t += dtt;
 			}
 		}
-
-		// Sassan
-		updateProgress(true);
-
-		for (int i = 0; i < controllers().size(); i++)
-			ANS_control.BTC[i] = controllers()[i].output;
-
-		if (uniformoutput())
-		{
-			if (ANS.BTC[0].n)
-			{
-				ANS = ANS.make_uniform(dt0);
-				if (colloid_transport()) ANS_colloids = ANS_colloids.make_uniform(dt0);
-				if (constituent_transport()) ANS_constituents = ANS_constituents.make_uniform(dt0);
-				ANS_obs.unif = false;
-				ANS_obs = ANS_obs.make_uniform(dt0);
-			}
-		}
-		failed = false;
-		fail_reason = "Simulation conducted successfully";
 	}
+	// Sassan
+	updateProgress(true);
+
+	for (int i = 0; i < controllers().size(); i++)
+		ANS_control.BTC[i] = controllers()[i].output;
+
+	if (uniformoutput())
+	{
+		if (ANS.BTC[0].n)
+		{
+			ANS = ANS.make_uniform(dt0);
+			if (colloid_transport()) ANS_colloids = ANS_colloids.make_uniform(dt0);
+			if (constituent_transport()) ANS_constituents = ANS_constituents.make_uniform(dt0);
+			ANS_obs.unif = false;
+			ANS_obs = ANS_obs.make_uniform(dt0);
+		}
+	}
+	failed = false;
+	fail_reason = "Simulation conducted successfully";
 }
+
 bool CMedium::solve()
 {
 	evaluate_functions();
