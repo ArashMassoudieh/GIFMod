@@ -24,11 +24,11 @@ CMediumSet::CMediumSet(GraphWidget* gw, runtimeWindow *rtw)
 	set_default();
 	g_get_environmental_params();
 	g_get_params();
-	g_get_sensors();
-	g_get_controllers();
 	g_get_observed();
 	g_get_particle_types();
 	g_get_constituents();
+	g_get_sensors();
+	g_get_controllers();
 	g_get_reactions();
 	g_get_buildup();
 	g_get_external_flux();
@@ -1044,7 +1044,7 @@ void CMediumSet::g_get_sensors()
 		M.name = e->Name().toStdString();
 		M.loc_type = (e->val("loc_type") == "Block") ? 0 : 1; //OBSERVED SUBTYPE
 		string equation = convertstringtoStringOP(e->val("quan").toQString(), gw);
-		M.quan = CStringOP(equation);
+		M.quan = CStringOP(equation, &RXN);
 
 		M.id = (e->val("id").toStdString());
 		M.error_std = e->val("error_std").toFloat();

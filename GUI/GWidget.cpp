@@ -604,60 +604,80 @@ void GraphWidget::updateNodeCoordinates()
 		}
 	}
 }
-void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QString colorTheme, vector<double> predifinedMinMax)
+void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QString colorTheme, vector<double> predifinedMinMax, float time)
 {
 	if (!hasResults)
 	{
 		QMessageBox::information(0, "GIFMod", "There is no results available, please run the model first.");
 		return;
 	}
-	vector<CBTC> data;
-	vector<float> factors;
-	vector<float> shifts;
-	QStringList nodeNames = this->nodeNames();
-	for (int i = 0; i < nodeNames.size(); i++)
+	//	colorlegend colors;
+	if (time == -1)
 	{
-		float factor = 1;
-		float shift = 0;
-		int index = model->getblocksq(nodeNames[i].toStdString());
-		if (propertyName == "Storage") {
-			data.push_back(model->ANS[index]);
-		}
-		if (propertyName == "Head") {
-			data.push_back(model->ANS[model->Connector.size() + model->Blocks.size() + index]);
-		}
-		if (propertyName == "Moisture content")
+		vector<CBTC> data;
+		vector<float> factors;
+		vector<float> shifts;
+		QStringList nodeNames = this->nodeNames();
+		for (int i = 0; i < nodeNames.size(); i++)
 		{
-			Node *n = node(nodeNames[i]);
-			double volume = n->val("a").convertToDefaultUnit().toDouble() * n->val("depth").convertToDefaultUnit().toDouble();
-			factor = 1 / volume;
-			data.push_back(model->ANS[index]);
+			float factor = 1;
+			float shift = 0;
+			int index = model->getblocksq(nodeNames[i].toStdString());
+			if (propertyName == "Storage") {
+				data.push_back(model->ANS[index]);
+			}
+			if (propertyName == "Head") {
+				data.push_back(model->ANS[model->Connector.size() + model->Blocks.size() + index]);
+			}
+			if (propertyName == "Moisture content")
+			{
+				Node *n = node(nodeNames[i]);
+				double volume = n->val("a").convertToDefaultUnit().toDouble() * n->val("depth").convertToDefaultUnit().toDouble();
+				factor = 1 / volume;
+				data.push_back(model->ANS[index]);
+			}
+			if (propertyName == "Water depth")
+			{
+				Node *n = node(nodeNames[i]);
+				double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
+				shift = -z0;
+				data.push_back(model->ANS[model->Connector.size() + model->Blocks.size() + index]);
+			}
+			if (propertyName == "Evapotranspiration rate")
+			{
+				data.push_back(model->ANS[model->Connector.size() + 2 * model->Blocks.size() + index]);
+			}
+			factors.push_back(factor);
+			shifts.push_back(shift);
 		}
-		if (propertyName == "Water depth")
-		{
-			Node *n = node(nodeNames[i]);
-			double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
-			shift = -z0;
-			data.push_back(model->ANS[model->Connector.size() + model->Blocks.size() + index]);
-		}
-		if (propertyName == "Evapotranspiration rate")
-		{
-			data.push_back(model->ANS[model->Connector.size() + 2 * model->Blocks.size() + index]);
-		}
-		factors.push_back(factor);
-		shifts.push_back(shift);
+		colors.data = data;
+		colors.factors = factors;
+		colors.shifts = shifts;
+		colors.nodeNames = nodeNames;
+		colors.propertyName = propertyName;
 	}
-	float t = QInputDialog::getDouble(qApp->activeWindow(), "Input Dialog Box", "Enter time:", 0, 0, 2147483647, 4);
-	
-	colorlegend colors = colorScheme::colorandLegend(data, t, "Green", false, 8, factors, shifts);
-	for (int i = 0; i < nodeNames.size(); i++)
+
+	if (time == -1)
+		time = model->Timemin;
+	//float t = QInputDialog::getDouble(qApp->activeWindow(), "Input Dialog Box", QString("Enter time between(%1-%2):").arg(model->Timemin).arg(model->Timemax), 0, model->Timemin, model->Timemax, 4);
+
+	colorScheme::colorandLegend(colors, time, "Green", false, 8);
+	applyColorstoNodes();
+}
+
+void GraphWidget::applyColorstoNodes()
+{
+	for (int i = 0; i < colors.nodeNames.size(); i++)
 	{
-		Node *n = node(nodeNames[i]);
+		Node *n = node(colors.nodeNames[i]);
 		n->color.color1 = colors.colors[i];
 		n->color.color2 = colors.colors[i];
+		n->update(true);
 	}
 	colorCode.nodes = true;
-	colorScheme::showColorandLegend(colors);
+	QString title = QString("%1 at %2").arg(colors.propertyName).arg(colors.time);
+	colorScheme::showColorandLegend(colors, title, this);
+//	update();
 	
 }
 void GraphWidget::settableProp(QTableView*_tableProp)
@@ -2900,6 +2920,17 @@ void GraphWidget::experimentSelect(const QString & experimentName)
 				model = &modelSet->Medium[experimentID() - 1];
 
 	update();
+}
+void GraphWidget::colorSchemeLegend_closed()
+{
+	delete legendSliderTime;
+	colorCode.nodes = false;
+
+}
+void GraphWidget::legendSliderChanged(int value)
+{
+	colorScheme::colorandLegend(colors, value, "Green", false, 8);
+	applyColorstoNodes();
 }
 #endif
 int GraphWidget::experimentID()
