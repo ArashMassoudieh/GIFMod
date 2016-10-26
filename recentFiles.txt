@@ -5,4 +5,5 @@ C:/Users/ArashComp/Documents/GIFMod Projects/PID_pool_test/PID_pool_test.GIFM
 C:/Users/user/Documents/GIFMod Projects/test color.GIFM
 C:/Users/user/Documents/GIFMod Projects/test color.temp
 C:/Users/Arash-Home/Documents/GIFMod Projects/DO_control/DOControl.GIFM
-C:/Users/user/Dropbox/GUI/GIFMOD User's manual/Examples/1DRechards/1DRichards.GIFM
+C:/Users/Jamal/Documents/GIFMod Projects/PID_pool_test/PID_pool_test.GIFM
+C:/Users/Jamal/Documents/GIFMod Projects/DO_control/DOControl.GIFM
