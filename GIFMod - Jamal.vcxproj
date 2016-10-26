@@ -329,6 +329,7 @@ copy *.txt $(OutDir)
     <ClInclude Include="GUI\BTC.h" />
     <ClInclude Include="GUI\BTCSet.h" />
     <ClInclude Include="GUI\Buildup.h" />
+    <ClInclude Include="GUI\colorScheme.h" />
     <ClInclude Include="GUI\Connection.h" />
     <ClInclude Include="GUI\Constituent.h" />
     <ClInclude Include="GUI\ConstituentTableModel.h" />
