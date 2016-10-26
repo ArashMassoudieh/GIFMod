@@ -2177,15 +2177,24 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 									treeModel->add(e);
 									XString connectorLength = z0;
 									connectorLength.setNum(abs(deltaV.toFloat(z0.unit)) / (numberofRows - 1));
-									e->setProp(e->variableName("d"), connectorLength.list(), XStringEditRole);
-									e->copyProps(n, "Vertical");
+                                    //bool copyLength = true;
+                                    if (connectorLength > 0){
+                                        e->setProp(e->variableName("d"), connectorLength.list(), XStringEditRole);
+                                        //copyLength=false;
+                                    }
+									bool copyLength = false;
+									e->copyProps(n, "Vertical Array", "Vertical Connector", copyLength);
 								}
 								if (columnIndex != 0)
 								{
 									Edge *e = new Edge(row[columnIndex - 1], n1, this);
 									treeModel->add(e); 
-									if (length > 0) e->setProp(e->variableName("d"), length.list(), XStringEditRole);
-									e->copyProps(n, "Horizontal");
+                                    bool copyLength=true;
+                                    if (length > 0){
+                                        e->setProp(e->variableName("d"), length.list(), XStringEditRole);
+                                        copyLength=false;
+                                    }
+									e->copyProps(n, "Vertical Array", "Horizontal Connector", copyLength);
 								}
 
 							}
@@ -2250,14 +2259,14 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 								{
 									Edge *e = new Edge(rows[rowIndex - 1][columnIndex], n1, this);
 									treeModel->add(e); 
-									e->copyProps(n, "Horizontal");
+									e->copyProps(n, "Horizontal Array", "Vertical Connector");
 									if (lengthY > 0) e->setProp(e->variableName("d"), lengthY.list(), XStringEditRole);
 								}
 								if (columnIndex != 0)
 								{
 									Edge *e = new Edge(row[columnIndex - 1], n1, this);
 									treeModel->add(e); 
-									e->copyProps(n, "Horizontal");
+									e->copyProps(n, "Horizontal Array", "Horizontal Connector");
 									if (lengthX > 0) e->setProp(e->variableName("d"), lengthX.list(), XStringEditRole);
 								}
 
