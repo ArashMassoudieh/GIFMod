@@ -1,5 +1,5 @@
 #ifndef GIFMOD_VERSION
-#define GIFMOD_VERSION "0.1.1"
+#define GIFMOD_VERSION "0.1.2"
 #endif
 #define RECENT "recentFiles.txt"
 #include "mainwindow.h"
@@ -832,7 +832,80 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 			if (addSeparator) menu->addSeparator();
 		}
 
+//		*********
 
+		if (item->parent()->Name() == "Controllers")
+		{
+			bool addSeparator = false;
+			Entity *controller = mainGraphWidget->entity(name, "Controller");
+			//QString file = obs->getValue("Observed data").toQString();
+			QString file = QString("control_output_%1").arg(mainGraphWidget->experimentName());
+			CBTCSet data = CBTCSet(file.replace("./", modelPathname().append('/')).toStdString(), 1);
+			if (data.nvars)
+			{
+				for (int i = 0; i < data.nvars; i++)
+				{
+					if (data[i].name == controller->name.toStdString())
+					{
+						plotControllerData(data[i], QString::fromStdString(data[i].name));
+						menu->addAction(QString("Plot control data").arg(name), this, SLOT(plotControllerData()));
+						addSeparator = true;
+					}
+				}
+			}
+			/*				if (mainGraphWidget->modelSet != nullptr)
+								if (mainGraphWidget->modelSet->ANS_obs.nvars)
+								{
+									int index = -1;
+									for (int i = 0; i<mainGraphWidget->modelSet->ANS_obs.nvars; i++)
+										if (mainGraphWidget->modelSet->ANS_obs[i].name == name.toStdString())
+										{
+											plotModeledData(mainGraphWidget->modelSet->ANS_obs[i], data[0], QString("%1").arg(name));
+											menu->addAction(QString("Plot modeled data").arg(name), this, SLOT(plotModeledData()));
+
+											plotAgreementPlotData(data[0], mainGraphWidget->modelSet->ANS_obs[i].interpol(data[0]), QString("Agreement plot %1").arg(name));
+											menu->addAction(QString("Plot agreement plot").arg(name), this, SLOT(plotAgreementPlotData()));
+											addSeparator = true;
+										}
+								}
+
+							if (addSeparator) menu->addSeparator();
+							if (mainGraphWidget->results)
+							{
+								//				mainGraphWidget->log(obs->name);
+								if (mainGraphWidget->results->hasRealization(obs->name))
+								{
+									plotRealization(mainGraphWidget->results->realization(obs->name), QString("Realization %1").arg(obs->name));
+									menu->addAction(QString("Plot realization data").arg(obs->name), this, SLOT(plotRealization()));
+									addSeparator = true;
+								}
+								if (mainGraphWidget->results->hasRealizationPercentile(obs->name))
+								{
+									plotRealizationPercentile(mainGraphWidget->results->realizationPercentile(obs->name), QString("Realization percentile %1").arg(obs->name));
+									menu->addAction(QString("Plot prediction 95 percentile").arg(obs->name), this, SLOT(plotRealizationPercentile()));
+									addSeparator = true;
+								}
+								if (mainGraphWidget->results->hasNoiseRealization(obs->name))
+								{
+									plotNoiseRealization(mainGraphWidget->results->noiseRealization(obs->name), QString("Realization (Noise) %1").arg(obs->name));
+									menu->addAction(QString("Plot realization (Noise)").arg(obs->name), this, SLOT(plotNoiseRealization()));
+									addSeparator = true;
+								}
+								if (mainGraphWidget->results->hasNoiseRealizationPercentile(obs->name))
+								{
+									plotNoiseRealizationPercentile(mainGraphWidget->results->noiseRealizationPercentile(obs->name), QString("Realization percentile (Noise) %1").arg(obs->name));
+									menu->addAction(QString("Plot prediction 95 percentile (Noise)").arg(obs->name), this, SLOT(plotNoiseRealizationPercentile()));
+									addSeparator = true;
+								}
+
+							}
+							if (addSeparator) menu->addSeparator();
+						}
+
+
+
+						***************/
+		}
 		if (item->parent()->Name() == "Parameters" && mainGraphWidget->results)
 		{
 			bool addSeparator = false;
@@ -1254,6 +1327,26 @@ void MainWindow::plotObservationData(CBTC data, QString name)
 		plot->show();
 	}
 }
+
+void MainWindow::plotControllerData(CBTC data, QString name)
+{
+	static CBTC _data;
+	static QString _name;
+	if (data.n)
+	{
+		_data = data;
+		_name = name;
+		return;
+	}
+	else
+	{
+		plotWindow *plot = new plotWindow(mainGraphWidget);
+		bool convertTime = true;
+		plot->addScatterPlot(_data, _name + "(Controll)", convertTime);
+		plot->show();
+	}
+}
+
 void MainWindow::plotModeledData(CBTC modeled, CBTC observed, QString _name)
 {
 	static CBTC model, obs;

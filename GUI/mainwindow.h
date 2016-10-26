@@ -170,6 +170,7 @@ private slots:
 	void removeProjectExplorerEdgeItem(QString name = "", const QModelIndex = QModelIndex()); // TreeModel *model = 0, const QString name = "", const QModelIndex = QModelIndex());
 	void removeProjectExplorerEntityItem(QString name = "", const QModelIndex = QModelIndex()); // TreeModel *model = 0, const QString name = "", const QModelIndex = QModelIndex());
 	void plotObservationData(CBTC data = CBTC(), QString name = "");
+	void plotControllerData(CBTC data = CBTC(), QString name = "");
 	void plotModeledData(CBTC modeled = CBTC(), CBTC observed = CBTC(), QString name = "");
 	void plotModeledDataDot(CBTC modeled = CBTC(), CBTC observed = CBTC(), QString name = "");
 	void plotAgreementPlotData(CBTC observation = CBTC(), CBTC modeled = CBTC(), QString name = "");
