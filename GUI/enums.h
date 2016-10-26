@@ -69,6 +69,7 @@ struct percentileData{
 	double p25, p50, p975, mean, std;
 };
 
+
 QStringList percentile2List(percentileData p);
 percentileData percentileFromList(QStringList r);
 //template <class T> const T& min(const T& a, const T& b);

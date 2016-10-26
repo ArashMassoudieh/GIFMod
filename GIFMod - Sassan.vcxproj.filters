@@ -166,6 +166,9 @@
     <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_wizardDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GUI\colorScheme.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GUI\Binary.h" />
@@ -275,6 +278,12 @@
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_wizardDialog.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
+    <ClInclude Include="GeneratedFiles\GIFMOD\ui_DialogButtonBottom.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\colorScheme.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="GUI\expEditor.h" />
@@ -319,6 +328,9 @@
     </CustomBuild>
     <CustomBuild Include="GUI\wizardDialog.h">
       <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GUI\DialogButtonBottom.ui">
+      <Filter>Form Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
