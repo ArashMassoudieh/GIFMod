@@ -3,6 +3,8 @@
 #include "qgraphicsitem.h"
 #include "GWidget.h"
 #include "Medium.h"
+#include "qstatusbar.h"
+#include "qmenubar.h"
 
 /*vector<QColor> color(vector<CBTC> data, float t, QString theme, bool logType, int numberofGroups, vector<double> factors, vector<double> shifts)
 {
@@ -49,16 +51,23 @@ colorlegend colorScheme::colorandLegend(colorlegend &colors, float t, QString th
 		colors.legendColors.resize(numberofGroups);
 		colors.legendTexts.resize(numberofGroups);
 		colors.colors.resize(colors.data.size());
-
+		colors.middleText.resize(colors.data.size());
 		bool factor = colors.factors.size();
 		bool shift = colors.shifts.size();
 
 		if (theme == "Green")
 			for (int i = 0; i < numberofGroups; i++)
 			{
-				QColor c = QColor(0, i * 255 / numberofGroups, 0, 128);
+				QColor c = QColor(0, i * 255 / numberofGroups, 0, 255);
 				colors.legendColors[i] = c.toRgb();
 			}
+		if (theme == "Blue-Red")
+			for (int i = 0; i < numberofGroups; i++)
+			{
+				QColor c = QColor(i * 255 / (numberofGroups - 1), 0, 255 - i * 255 / (numberofGroups - 1), 255);
+				colors.legendColors[i] = c.toRgb();
+			}
+
 		double min = 1e200, max = -1e200;
 
 		vector <double> values(colors.data.size());
@@ -87,6 +96,7 @@ colorlegend colorScheme::colorandLegend(colorlegend &colors, float t, QString th
 		for (int i = 0; i < colors.data.size(); i++)
 		{
 			int g;
+			colors.middleText[i] = QString::number(values[i]);
 			if (values[i] == max)
 				g = numberofGroups - 1;
 			else
@@ -105,12 +115,49 @@ QGraphicsView* colorScheme::showColorandLegend(colorlegend &legend, QString titl
 	if (!legend.window)
 	{
 		legend.window = new QMainWindow;
-		QObject::connect(legend.window, SIGNAL(aboutToQuit()), gwidget, SLOT(colorSchemeLegend_closed()));
+		QObject::connect(legend.window, SLOT(closeEvent()), gwidget, SLOT(colorSchemeLegend_closed()));
 
+		if (legend.window->objectName().isEmpty())
+			legend.window->setObjectName(QStringLiteral("Legend Window"));
+		legend.window->resize(300, 350);
+		QWidget*centralwidget = new QWidget(legend.window);
+		centralwidget->setObjectName(QStringLiteral("centralwidget"));
+		QVBoxLayout*verticalLayout_2 = new QVBoxLayout(centralwidget);
+		verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
+		QVBoxLayout*verticalLayout = new QVBoxLayout();
+		verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
 		if (!legend.view)
-			legend.view = new QGraphicsView;
+		{
+			legend.view = new QGraphicsView(centralwidget);
+			legend.view->setObjectName(QStringLiteral("graphicsView"));
+			verticalLayout->addWidget(legend.view);
+		}
+
+		if (!gwidget->legendSliderTime)
+		{
+			gwidget->legendSliderTime = new QSlider(centralwidget);
+			gwidget->legendSliderTime->setObjectName(QStringLiteral("horizontalSlider"));
+			gwidget->legendSliderTime->setOrientation(Qt::Horizontal);
+			gwidget->legendSliderTime->setValue(legend.time);
+			verticalLayout->addWidget(gwidget->legendSliderTime);
+			if (legend.nodeNames.size())
+				QObject::connect(gwidget->legendSliderTime, SIGNAL(valueChanged(int)), gwidget, SLOT(legendSliderChanged_Nodes(int)));
+			else if (legend.edgeNames.size())
+				QObject::connect(gwidget->legendSliderTime, SIGNAL(valueChanged(int)), gwidget, SLOT(legendSliderChanged_Edges(int)));
+		}
+		verticalLayout_2->addLayout(verticalLayout);
+
+			legend.window->setCentralWidget(centralwidget);
+/*			QMenuBar*menubar = new QMenuBar(legend.window);
+			menubar->setObjectName(QStringLiteral("menubar"));
+			menubar->setGeometry(QRect(0, 0, 380, 21));
+			legend.window->setMenuBar(menubar);
+			QStatusBar*statusbar = new QStatusBar(legend.window);
+			statusbar->setObjectName(QStringLiteral("statusbar"));
+			legend.window->setStatusBar(statusbar);
+			*/
 		if (!legend.scene)
-			legend.scene = new QGraphicsScene;
+			legend.scene = new QGraphicsScene(legend.view);
 		legend.view->setScene(legend.scene);
 	}
 	for (int i = 0; i < legend.legendTexts.size(); i++)
@@ -144,18 +191,11 @@ QGraphicsView* colorScheme::showColorandLegend(colorlegend &legend, QString titl
 
 	//legend.view->show();
 //	QObject::connect(legend.view, SIGNAL(destroyed()), gwidget, SLOT(colorSchemeLegend_closed()));
-	if (!gwidget->legendSliderTime)
-	{
-		gwidget->legendSliderTime = new QSlider;
-		gwidget->legendSliderTime->setOrientation(Qt::Horizontal);
-		gwidget->legendSliderTime->setValue(legend.time);
-		QObject::connect(gwidget->legendSliderTime, SIGNAL(valueChanged(int)), gwidget, SLOT(legendSliderChanged(int)));
-	}
 	gwidget->legendSliderTime->setMinimum(gwidget->model->Timemin);
 	gwidget->legendSliderTime->setMaximum(gwidget->model->Timemax);
-	legend.view->setParent(legend.window);
-	gwidget->legendSliderTime->setParent(legend.window);
-	gwidget->legendSliderTime->show();
+	//legend.view->setParent(legend.window);
+	//gwidget->legendSliderTime->setParent(legend.window);
+	//gwidget->legendSliderTime->show();
 	legend.window->show();
 	return legend.view;
 }

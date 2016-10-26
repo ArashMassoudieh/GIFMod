@@ -184,7 +184,7 @@ void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 	else if (errorDetected())
 		painter->setPen(QPen(Qt::red, (bold) ? 3 : 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
 	else if (parent->colorCode.edges)
-		painter->setPen(QPen(color.color1, (bold) ? 3 : 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+		painter->setPen(QPen(color.color1, 4, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
 	//		painter->setPen(QPen(QColor::fromRgb(color.color1), (bold) ? 3 : 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
 	else
 		painter->setPen(QPen(Qt::black, (bold) ? 3 : 1, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));

@@ -2226,6 +2226,11 @@ void MainWindow::on_actionRecent_triggered()
 		removeFromRecentList(a);
 }
 
+void MainWindow::on_actionReset_colors_triggered()
+{
+	mainGraphWidget->colorSchemeLegend_closed();
+}
+
 void MainWindow::removeFromRecentList(QAction* selectedFileAction)
 {
 	recentFiles.removeAll(selectedFileAction->text());
@@ -2258,28 +2263,45 @@ void MainWindow::on_actioncolorCodedResults_triggered()
 }
 void MainWindow::on_actioncolorCodeStorage_triggered()
 {
-	mainGraphWidget->updateNodesColorCodes("Storage", false, "Green");
+	mainGraphWidget->updateNodesColorCodes("Storage", false, "Blue-Red");
 
 }
 void MainWindow::on_actioncolorCodeHead_triggered()
 {
-	mainGraphWidget->updateNodesColorCodes("Head", false, "Green");
+	mainGraphWidget->updateNodesColorCodes("Head", false, "Blue-Red");
 
 }
 void MainWindow::on_actioncolorCodeMoistureContent_triggered()
 {
-	mainGraphWidget->updateNodesColorCodes("Moisture content", false, "Green");
+	mainGraphWidget->updateNodesColorCodes("Moisture content", false, "Blue-Red");
 
 }
 void MainWindow::on_actioncolorCodeWaterDepth_triggered()
 {
-	mainGraphWidget->updateNodesColorCodes("Water depth", false, "Green");
+	mainGraphWidget->updateNodesColorCodes("Water depth", false, "Blue-Red");
 
 }
 void MainWindow::on_actioncolorCodeEvaporationRate_triggered()
 {
-	mainGraphWidget->updateNodesColorCodes("Evaporation rate", false, "Green");
+	mainGraphWidget->updateNodesColorCodes("Evaporation rate", false, "Blue-Red");
 
+}
+void MainWindow::on_actionColorCodeConnectorFlow_triggered()
+{
+	mainGraphWidget->updateEdgesColorCodes("Flow", false, "Blue-Red");
+}
+void MainWindow::on_actionColorCodeConnectorVelocity_triggered()
+{
+	mainGraphWidget->updateEdgesColorCodes("Velocity", false, "Blue-Red");
+}
+void MainWindow::on_actionColorCodeConnectorArea_triggered()
+{
+	mainGraphWidget->updateEdgesColorCodes("Area", false, "Blue-Red");
+
+}
+void MainWindow::on_actionColorCodeConnectorVaporExchangeEate_triggered()
+{
+	mainGraphWidget->updateEdgesColorCodes("Vapor exchange rate", false, "Blue-Red");
 }
 void MainWindow::gwidgetChanged()
 {

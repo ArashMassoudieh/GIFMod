@@ -205,7 +205,10 @@ private slots:
 	void on_actioncolorCodeMoistureContent_triggered();
 	void on_actioncolorCodeWaterDepth_triggered();
 	void on_actioncolorCodeEvaporationRate_triggered();
-
+	void on_actionColorCodeConnectorFlow_triggered();
+	void on_actionColorCodeConnectorVelocity_triggered();
+	void on_actionColorCodeConnectorArea_triggered();
+	void on_actionColorCodeConnectorVaporExchangeEate_triggered();
 
 
 	void on_actionProjectSettings_triggered();
@@ -219,6 +222,7 @@ private slots:
 	
 	void on_actionShowRuntimeWindow_triggered();
 	void on_actionRecent_triggered();
+	void on_actionReset_colors_triggered();
 	void removeFromRecentList(QAction*);
 
 	void writeRecentFilesList();

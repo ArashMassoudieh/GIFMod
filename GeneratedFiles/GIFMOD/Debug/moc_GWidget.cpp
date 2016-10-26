@@ -20,8 +20,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_GraphWidget_t {
-    QByteArrayData data[52];
-    char stringdata0[653];
+    QByteArrayData data[54];
+    char stringdata0[691];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -81,7 +81,9 @@ QT_MOC_LITERAL(47, 570, 5), // "index"
 QT_MOC_LITERAL(48, 576, 16), // "experimentSelect"
 QT_MOC_LITERAL(49, 593, 14), // "experimentName"
 QT_MOC_LITERAL(50, 608, 24), // "colorSchemeLegend_closed"
-QT_MOC_LITERAL(51, 633, 19) // "legendSliderChanged"
+QT_MOC_LITERAL(51, 633, 25), // "legendSliderChanged_Nodes"
+QT_MOC_LITERAL(52, 659, 5), // "value"
+QT_MOC_LITERAL(53, 665, 25) // "legendSliderChanged_Edges"
 
     },
     "GraphWidget\0Mouse_Pos\0\0changed\0shuffle\0"
@@ -102,7 +104,8 @@ QT_MOC_LITERAL(51, 633, 19) // "legendSliderChanged"
     "delegateDatePicked\0QCalendarWidget*\0"
     "calendar\0index\0experimentSelect\0"
     "experimentName\0colorSchemeLegend_closed\0"
-    "legendSliderChanged"
+    "legendSliderChanged_Nodes\0value\0"
+    "legendSliderChanged_Edges"
 };
 #undef QT_MOC_LITERAL
 
@@ -112,7 +115,7 @@ static const uint qt_meta_data_GraphWidget[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-      38,   14, // methods
+      39,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -120,46 +123,47 @@ static const uint qt_meta_data_GraphWidget[] = {
        2,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    3,  204,    2, 0x06 /* Public */,
-       3,    0,  211,    2, 0x06 /* Public */,
+       1,    3,  209,    2, 0x06 /* Public */,
+       3,    0,  216,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       4,    0,  212,    2, 0x0a /* Public */,
-       5,    0,  213,    2, 0x0a /* Public */,
-       6,    0,  214,    2, 0x0a /* Public */,
-       7,    1,  215,    2, 0x0a /* Public */,
-       7,    0,  218,    2, 0x2a /* Public | MethodCloned */,
-      10,    1,  219,    2, 0x0a /* Public */,
-      13,    1,  222,    2, 0x0a /* Public */,
-      15,    2,  225,    2, 0x0a /* Public */,
-      18,    2,  230,    2, 0x0a /* Public */,
-      21,    2,  235,    2, 0x0a /* Public */,
-      23,    1,  240,    2, 0x0a /* Public */,
-      24,    0,  243,    2, 0x0a /* Public */,
-      25,    0,  244,    2, 0x0a /* Public */,
-      26,    0,  245,    2, 0x0a /* Public */,
-      27,    0,  246,    2, 0x0a /* Public */,
-      28,    0,  247,    2, 0x0a /* Public */,
-      29,    0,  248,    2, 0x0a /* Public */,
-      30,    0,  249,    2, 0x0a /* Public */,
-      31,    0,  250,    2, 0x0a /* Public */,
-      32,    0,  251,    2, 0x0a /* Public */,
-      33,    0,  252,    2, 0x0a /* Public */,
-      34,    0,  253,    2, 0x0a /* Public */,
-      35,    0,  254,    2, 0x0a /* Public */,
-      36,    0,  255,    2, 0x0a /* Public */,
-      37,    0,  256,    2, 0x0a /* Public */,
-      38,    0,  257,    2, 0x0a /* Public */,
-      39,    0,  258,    2, 0x0a /* Public */,
-      40,    1,  259,    2, 0x0a /* Public */,
-      41,    1,  262,    2, 0x0a /* Public */,
-      42,    1,  265,    2, 0x0a /* Public */,
-      44,    2,  268,    2, 0x0a /* Public */,
-      44,    1,  273,    2, 0x2a /* Public | MethodCloned */,
-      44,    0,  276,    2, 0x2a /* Public | MethodCloned */,
-      48,    1,  277,    2, 0x0a /* Public */,
-      50,    0,  280,    2, 0x0a /* Public */,
-      51,    1,  281,    2, 0x0a /* Public */,
+       4,    0,  217,    2, 0x0a /* Public */,
+       5,    0,  218,    2, 0x0a /* Public */,
+       6,    0,  219,    2, 0x0a /* Public */,
+       7,    1,  220,    2, 0x0a /* Public */,
+       7,    0,  223,    2, 0x2a /* Public | MethodCloned */,
+      10,    1,  224,    2, 0x0a /* Public */,
+      13,    1,  227,    2, 0x0a /* Public */,
+      15,    2,  230,    2, 0x0a /* Public */,
+      18,    2,  235,    2, 0x0a /* Public */,
+      21,    2,  240,    2, 0x0a /* Public */,
+      23,    1,  245,    2, 0x0a /* Public */,
+      24,    0,  248,    2, 0x0a /* Public */,
+      25,    0,  249,    2, 0x0a /* Public */,
+      26,    0,  250,    2, 0x0a /* Public */,
+      27,    0,  251,    2, 0x0a /* Public */,
+      28,    0,  252,    2, 0x0a /* Public */,
+      29,    0,  253,    2, 0x0a /* Public */,
+      30,    0,  254,    2, 0x0a /* Public */,
+      31,    0,  255,    2, 0x0a /* Public */,
+      32,    0,  256,    2, 0x0a /* Public */,
+      33,    0,  257,    2, 0x0a /* Public */,
+      34,    0,  258,    2, 0x0a /* Public */,
+      35,    0,  259,    2, 0x0a /* Public */,
+      36,    0,  260,    2, 0x0a /* Public */,
+      37,    0,  261,    2, 0x0a /* Public */,
+      38,    0,  262,    2, 0x0a /* Public */,
+      39,    0,  263,    2, 0x0a /* Public */,
+      40,    1,  264,    2, 0x0a /* Public */,
+      41,    1,  267,    2, 0x0a /* Public */,
+      42,    1,  270,    2, 0x0a /* Public */,
+      44,    2,  273,    2, 0x0a /* Public */,
+      44,    1,  278,    2, 0x2a /* Public | MethodCloned */,
+      44,    0,  281,    2, 0x2a /* Public | MethodCloned */,
+      48,    1,  282,    2, 0x0a /* Public */,
+      50,    0,  285,    2, 0x0a /* Public */,
+      51,    1,  286,    2, 0x0a /* Public */,
+      53,    1,  289,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Int, QMetaType::Int, QMetaType::QString,    2,    2,    2,
@@ -201,7 +205,8 @@ static const uint qt_meta_data_GraphWidget[] = {
     QMetaType::Void,
     QMetaType::Void, QMetaType::QString,   49,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Int,    2,
+    QMetaType::Void, QMetaType::Int,   52,
+    QMetaType::Void, QMetaType::Int,   52,
 
        0        // eod
 };
@@ -264,7 +269,8 @@ void GraphWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
         case 34: _t->delegateDatePicked(); break;
         case 35: _t->experimentSelect((*reinterpret_cast< const QString(*)>(_a[1]))); break;
         case 36: _t->colorSchemeLegend_closed(); break;
-        case 37: _t->legendSliderChanged((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 37: _t->legendSliderChanged_Nodes((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 38: _t->legendSliderChanged_Edges((*reinterpret_cast< int(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
@@ -337,13 +343,13 @@ int GraphWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 38)
+        if (_id < 39)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 38;
+        _id -= 39;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 38)
+        if (_id < 39)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 38;
+        _id -= 39;
     }
     return _id;
 }

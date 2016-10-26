@@ -20,8 +20,9 @@ struct colorlegend
 	vector<QString> legendTexts;
 	QGraphicsView * view = 0;
 	QGraphicsScene * scene = 0;
+	vector<QString> middleText;
 	int x = 10, y = 10, dy = 20,
-		columnOffset = 100, boxHeight = 20, boxWidth = 50;
+		columnOffset = 120, boxHeight = 20, boxWidth = 50;
 	vector<	QGraphicsTextItem *> texts;
 	vector<	QGraphicsRectItem *> boxes;
 
@@ -30,7 +31,7 @@ struct colorlegend
 	vector<float> shifts;
 	QString propertyName;
 	float time = -1;
-	QStringList nodeNames, connectorNames;
+	QStringList nodeNames, edgeNames;
 	QMainWindow* window = 0;
 };
 
