@@ -8,6 +8,7 @@
 class GraphWidget;
 class runtimeWindow;
 #include "qmap.h"
+#include "StringOP.h"
 
 struct  Solver_parameters
 {
@@ -78,6 +79,7 @@ struct _set_features
 
 struct _control
 {
+	CStringOP Objective_function;
 	vector<CSensor> Sensors; 
 	vector<CController> Controllers; 
 };

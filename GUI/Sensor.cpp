@@ -1,4 +1,5 @@
 #include "Sensor.h"
+#include "Distribution.h"
 
 
 CSensor::CSensor()
@@ -43,7 +44,11 @@ CSensor& CSensor::operator=(const CSensor &M)
 
 void CSensor::append_output(double t, double C, int experiment_id)
 {
+	
 	output[experiment_id].knock_out(t - interval / 10);
-	output[experiment_id].append(t, C);
+	if (error_structure==0)
+		output[experiment_id].append(t, C+ getstdnormalrand()*error_std);
+	else if (error_structure ==1)
+		output[experiment_id].append(t, C*(exp(getstdnormalrand()*error_std)));
 	return;
 }
