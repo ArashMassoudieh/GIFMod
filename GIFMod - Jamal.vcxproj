@@ -224,6 +224,7 @@ copy *.txt $(OutDir)
     <ClCompile Include="GUI\BTC.cpp" />
     <ClCompile Include="GUI\BTCSet.cpp" />
     <ClCompile Include="GUI\Buildup.cpp" />
+    <ClCompile Include="GUI\colorScheme.cpp" />
     <ClCompile Include="GUI\Connection.cpp" />
     <ClCompile Include="GUI\Constituent.cpp" />
     <ClCompile Include="GUI\ConstituentDelegate.cpp" />

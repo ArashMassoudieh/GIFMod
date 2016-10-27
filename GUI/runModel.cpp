@@ -1037,6 +1037,10 @@ void CMediumSet::g_get_observed()
 
 void CMediumSet::g_get_sensors()
 {
+	for each (Entity *e in gw->entitiesByType("Objective Function"))
+	{
+		Control.Objective_function = convertstringtoStringOP(e->val("objective_function").toQString(), gw);
+	}
 	for each (Entity *e in gw->entitiesByType("Sensor"))
 	{
 		CSensor M(gw->experimentsList().count());
@@ -1044,12 +1048,14 @@ void CMediumSet::g_get_sensors()
 		M.name = e->Name().toStdString();
 		M.loc_type = (e->val("loc_type") == "Block") ? 0 : 1; //OBSERVED SUBTYPE
 		string equation = convertstringtoStringOP(e->val("quan").toQString(), gw);
+		
 		M.quan = CStringOP(equation, &RXN);
 
 		M.id = (e->val("id").toStdString());
 		M.error_std = e->val("error_std").toFloat();
 		M.error_structure = (e->val("error_structure") == "Normal") ? 0 : 1; //NORM 0 ; LOg 1
 		M.interval = e->val("interval").toFloat();
+		M.error_std = e->val("std").toFloat();
 
 
 		Control.Sensors.push_back(M);
