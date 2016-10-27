@@ -991,6 +991,17 @@ void MainWindow::tablePropShowContextMenu(const QPoint&pos)
 			connect(controlsMenu, SIGNAL(triggered(QAction*)), this, SLOT(addParameter(QAction*)));
 			controlsMenu->setEnabled(true);
 		}
+/*		QMenu *objectiveFunctionsMenu = new QMenu("Objective functions");
+		menu->addMenu(objectiveFunctionsMenu);
+		objectiveFunctionsMenu->setEnabled(false);
+		if (i2.data(VariableTypeRole).toString().toLower().contains("control"))
+		{
+			for each (QString item in mainGraphWidget->EntityNames("Controller"))
+				controlsMenu->addAction(QString("%1").arg(item));// , this, SLOT(addParameter()));
+			addParameterIndex(i1); // tableProp->indexAt(pos));
+			connect(controlsMenu, SIGNAL(triggered(QAction*)), this, SLOT(addParameter(QAction*)));
+			controlsMenu->setEnabled(true);
+		}*/
 		menu->exec(tableProp->mapToGlobal(pos));
 	}
 	if (i1.column() == 1 && i1.data(TypeRole).toString().toLower().contains("time series"))

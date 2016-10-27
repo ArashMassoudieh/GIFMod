@@ -37,7 +37,8 @@ TreeModel::TreeModel(GraphWidget *parent) : QAbstractItemModel(parent)
 			observed = new TreeItem("Observations", parent, TreeItem::Type::Branch);//, inverseModeling);
 			control = new TreeItem("Control", parent, TreeItem::Type::ControlBranch);//, rootItem);
 			sensor = new TreeItem("Sensors", parent, TreeItem::Type::Branch);
-			controller = new TreeItem("Controller", parent, TreeItem::Type::Branch);
+			objectiveFunction = new TreeItem("Objective functions", parent, TreeItem::Type::Branch);
+			controller = new TreeItem("Controllers", parent, TreeItem::Type::Branch);
 
 			QList<TreeItem*> rootNodes, settingsNodes, waterQualityNodes, reactionsNodes, inverseModelingNodes, controlNodes;
 			rootNodes << settings << blocks << connectors << evapotranspiration << waterQuality << inverseModeling << control;
@@ -45,7 +46,7 @@ TreeModel::TreeModel(GraphWidget *parent) : QAbstractItemModel(parent)
 			waterQualityNodes << particle << constituent << buildUp << extrenalFlux << reactions;
 			reactionsNodes << reactionParameter << reactionNetwork;
 			inverseModelingNodes << GA << MCMC << parameter << observed;
-			controlNodes << sensor << controller;
+			controlNodes << objectiveFunction << sensor << controller;
 			rootItem->addChild(rootNodes);
 			settings->addChild(settingsNodes);
 			waterQuality->addChild(waterQualityNodes);
@@ -190,6 +191,8 @@ void TreeModel::addChildFromMenu(const QString name, QModelIndex *parentIndex)
 		parent = this->controller;
 	if (name == "Sensor")
 		parent = this->sensor;
+	if (name == "Objective function")
+		parent = this->objectiveFunction;
 	if (name == "Constituent")
 		parent = this->constituent;
 	if (name == "Particle")
@@ -497,6 +500,8 @@ TreeItem * TreeModel::entityParentItemfromType(QString type) const
 	TreeItem *parent = 0;
 	if (type == "Sensor")
 		parent = this->sensor;
+	if (type == "Objective function")
+		parent = this->objectiveFunction;
 	if (type == "Controller")
 		parent = this->controller;
 	if (type == "Constituent")
