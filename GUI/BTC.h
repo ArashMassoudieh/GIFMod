@@ -87,7 +87,7 @@ public:
 	bool file_not_found = false;
 	CBTC CBTC::getcummulative();
 	CBTC CBTC::Exp();
-
+	CBTC fabs();
 	//GUI 
 	//QList <QMap <QVariant, QVariant>> CBTC::compact() const;
 	CBTC::CBTC(QList <QMap <QVariant, QVariant>> data);

@@ -206,6 +206,31 @@ copy *.txt $(OutDir)
     <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_statusviewer.cpp" />
     <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_treemodel.cpp" />
     <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_wizardDialog.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ConstituentDelegate.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ConstituentWindow.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_delegate.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ExchangeParametersWindow.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_expEditor.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_expressioneditor.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_freezetablewidget.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_gridWindow.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_GWidget.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_helpWindow.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_logwindow.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_mainwindow.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_observedcombobox.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ObservedConstituentWindow.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ParticleDelegate.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ParticleWindow.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_plotWindow.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_qcustomplot.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_reactiontablemodel.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_reactiontablewidget.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_reactionwindow.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_runtimeWindow.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_statusviewer.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_treemodel.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_wizardDialog.cpp" />
     <ClCompile Include="GUI\Binary.cpp" />
     <ClCompile Include="GUI\BTC.cpp" />
     <ClCompile Include="GUI\BTCSet.cpp" />
@@ -301,11 +326,11 @@ copy *.txt $(OutDir)
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_ConstituentWindow.h" />
-    <ClInclude Include="GeneratedFiles\GIFMOD\ui_DialogButtonBottom.h" />
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_ExchangeParametersWindow.h" />
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_gridWindow.h" />
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_helpWindow.h" />
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_logwindow.h" />
+    <ClInclude Include="GeneratedFiles\GIFMOD\ui_MainWindow.h" />
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_mainwindowGIFMod.h" />
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_ObservedConstituentWindow.h" />
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_ParticleWindow.h" />
@@ -1007,7 +1032,7 @@ copy *.txt $(OutDir)
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\GIFMOD\ui_%(Filename).h;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\GIFMOD\ui_%(Filename).h" "%(FullPath)"</Command>
     </CustomBuild>
-    <CustomBuild Include="GUI\DialogButtonBottom.ui">
+    <CustomBuild Include="GUI\MainWindow.ui">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Uic%27ing %(Identity)...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\GIFMOD\ui_%(Filename).h;%(Outputs)</Outputs>

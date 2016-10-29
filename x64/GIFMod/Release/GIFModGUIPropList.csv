@@ -355,6 +355,7 @@
 1,Entity,Sensor,*,!,Quantity,quan,!,!,string,!,expressionEditor,Global,Input,No,100345,,,
 1,Entity,Sensor,*,!,Error distribution,error_structure,!,!,string,Normal-additive;Lognormal-multiplicative,ComboBox,Global,Select,No,100346,,,
 1,Entity,Sensor,*,!,Interval,interval,min;s;hr;day;wk,day,float,1,UnitBox,Global,Input,No,100349,>0,E,Interval must be positive
+1,Entity,Sensor,*,!,Error Standard deviation,std,!,!,float,0,TextBox,Global,Input,No,100349,>0,E,Error Standard deviation must be positive
 1,Entity,Controller,*,!,Name,!,!,!,string,!,TextBox,Global,Input,No,100350,,,
 1,Block,*,*,!,Width,width,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100342,!=0; >=0,W;W,Width is assigned to be zero; Width must be positive and non-zero
 1,Block,*,*,!,Length,d,m;cm;ft;in,m,float,!,UnitBox,Geometry,Input,Yes,100339,!=0; >=0,W;W,Length is assigned to be zero; Length must be positive and non-zero
@@ -373,3 +374,8 @@
 1,Entity,Controller,Ziegler-Nichols,!,ku,k_u,!,!,float,!,TextBox,Global,Input,No,100354,,,
 1,Entity,Controller,Ziegler-Nichols,!,Tu,T_u,!,!,float,!,TextBox,Global,Input,No,100355,,,
 1,Entity,Controller,Ziegler-Nichols,!,Controller Type,zn_controller_type,!,!,string,P;PI;PD;PID;PID-No-overshoot,ComboBox,Global,Select,No,100355,,,
+1,Entity,Objective function,*,!,Name,!,!,!,string,!,TextBox,Global,Input,No,100345,,,
+1,Entity,Objective function,*,!,Objective function,objective_function,!,!,string,!,expressionEditor,Global,Input,No,100345,,,
+1,Entity,Objective function,*,!,SubType,loc_type,!,!,string,Block;Connector,ComboBox,Global,Select,No,100344,,,
+1,Entity,Objective function,Block,!,Location,id,!,!,string,populate at runtime;Block,ComboBox,Global,Select,No,100347,,,
+1,Entity,Objective function,Connector,!,Location,id,!,!,string,populate at runtime;Connector,ComboBox,Global,Select,No,100348,,,

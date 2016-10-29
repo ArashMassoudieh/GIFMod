@@ -438,10 +438,10 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 	}
 	if (cursorModeNormal) setCursor(Qt::ArrowCursor);
 }
-void GraphWidget::update()
+void GraphWidget::update(bool fast)
 {
-	for each (Node* n in Nodes()) n->update();
-	for each (Edge* e in Edges()) e->update();
+	for each (Node* n in Nodes()) n->update(fast);
+	for each (Edge* e in Edges()) e->update(fast);
 	
 
 }
@@ -618,6 +618,7 @@ void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QStri
 		vector<float> factors;
 		vector<float> shifts;
 		QStringList nodeNames = this->nodeNames();
+		QStringList removedNodes;
 		for (int i = 0; i < nodeNames.size(); i++)
 		{
 			float factor = 1;
@@ -632,9 +633,17 @@ void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QStri
 			if (propertyName == "Moisture content")
 			{
 				Node *n = node(nodeNames[i]);
-				double volume = n->val("a").convertToDefaultUnit().toDouble() * n->val("depth").convertToDefaultUnit().toDouble();
-				factor = 1 / volume;
-				data.push_back(model->ANS[index]);
+				if (!n->isPorous())
+				{
+					n->color.color1 = QColor(255, 255, 255, 128);
+					removedNodes.append(nodeNames[i]);
+				}
+				else
+				{
+					double volume = n->val("a").convertToDefaultUnit().toDouble() * n->val("depth").convertToDefaultUnit().toDouble();
+					factor = 1 / volume;
+					data.push_back(model->ANS[index]);
+				}
 			}
 			if (propertyName == "Water depth")
 			{
@@ -650,6 +659,8 @@ void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QStri
 			factors.push_back(factor);
 			shifts.push_back(shift);
 		}
+		for each (QString rN in removedNodes)
+			nodeNames.removeAll(rN);
 		colors.data = data;
 		colors.factors = factors;
 		colors.shifts = shifts;
@@ -661,8 +672,64 @@ void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QStri
 		time = model->Timemin;
 	//float t = QInputDialog::getDouble(qApp->activeWindow(), "Input Dialog Box", QString("Enter time between(%1-%2):").arg(model->Timemin).arg(model->Timemax), 0, model->Timemin, model->Timemax, 4);
 
-	colorScheme::colorandLegend(colors, time, "Green", false, 8);
+	colorScheme::colorandLegend(colors, time, "Blue-Red", false, 8);
 	applyColorstoNodes();
+}
+
+void GraphWidget::updateEdgesColorCodes(QString propertyName, bool logged, QString colorTheme, vector<double> predifinedMinMax, float time)
+{
+	if (!hasResults)
+	{
+		QMessageBox::information(0, "GIFMod", "There is no results available, please run the model first.");
+		return;
+	}
+	//	colorlegend colors;
+	if (time == -1)
+	{
+		vector<CBTC> data;
+		vector<float> factors;
+		vector<float> shifts;
+		QStringList edgeNames = this->edgeNames();
+//		QStringList removedEdges;
+		for (int i = 0; i < edgeNames.size(); i++)
+		{
+			float factor = 1;
+			float shift = 0;
+			int index = model->getconnectorsq(edgeNames[i].toStdString());
+			if (propertyName == "Flow") {
+				data.push_back(model->ANS[Nodes().count() + index].fabs());
+			}
+			if (propertyName == "Velocity") {
+				CBTC flow, area, velocity;
+				flow = model->ANS.BTC[Nodes().count() + index];
+				area = model->ANS.BTC[Nodes().count() * 3 + Edges().count() + index];
+				velocity = flow % area;
+				data.push_back(velocity.fabs());
+			}
+			if (propertyName == "Area") {
+				data.push_back(model->ANS[Nodes().count() * 3 + Edges().size() + index]);
+			}
+			if (propertyName == "Vapor exchange rate") {
+				data.push_back(model->ANS[Nodes().count() * 3 + 2 * Edges().size() + index].fabs());
+			}
+			factors.push_back(factor);
+			shifts.push_back(shift);
+		}
+//		for each (QString rN in removedNodes)
+//			nodeNames.removeAll(rN);
+		colors.data = data;
+		colors.factors = factors;
+		colors.shifts = shifts;
+		colors.edgeNames = edgeNames;
+		colors.propertyName = propertyName;
+	}
+
+	if (time == -1)
+		time = model->Timemin;
+	//float t = QInputDialog::getDouble(qApp->activeWindow(), "Input Dialog Box", QString("Enter time between(%1-%2):").arg(model->Timemin).arg(model->Timemax), 0, model->Timemin, model->Timemax, 4);
+
+	colorScheme::colorandLegend(colors, time, "Blue-Red", false, 8);
+	applyColorstoEdges();
 }
 
 void GraphWidget::applyColorstoNodes()
@@ -672,14 +739,30 @@ void GraphWidget::applyColorstoNodes()
 		Node *n = node(colors.nodeNames[i]);
 		n->color.color1 = colors.colors[i];
 		n->color.color2 = colors.colors[i];
+		n->middleText = colors.middleText[i];
 		n->update(true);
 	}
 	colorCode.nodes = true;
-	QString title = QString("%1 at %2").arg(colors.propertyName).arg(colors.time);
+	QString title = QString("%1 at t=%2").arg(colors.propertyName).arg(colors.time);
 	colorScheme::showColorandLegend(colors, title, this);
 //	update();
 	
 }
+
+void GraphWidget::applyColorstoEdges()
+{
+	for (int i = 0; i < colors.edgeNames.size(); i++)
+	{
+		Edge *e = edge(colors.edgeNames[i]);
+		e->color.color1 = colors.colors[i];
+		e->update(true);
+	}
+	colorCode.edges = true;
+	QString title = QString("%1 at t=%2").arg(colors.propertyName).arg(colors.time);
+	colorScheme::showColorandLegend(colors, title, this);
+	//	update();
+}
+
 void GraphWidget::settableProp(QTableView*_tableProp)
 {
 	tableProp = _tableProp;
@@ -2932,15 +3015,24 @@ void GraphWidget::experimentSelect(const QString & experimentName)
 }
 void GraphWidget::colorSchemeLegend_closed()
 {
-	delete legendSliderTime;
 	colorCode.nodes = false;
-
+	colorCode.edges = false;
+	delete legendSliderTime;
+	legendSliderTime = 0;
+	colors = colorlegend();
+	update(true);
 }
-void GraphWidget::legendSliderChanged(int value)
+void GraphWidget::legendSliderChanged_Nodes(int value)
 {
-	colorScheme::colorandLegend(colors, value, "Green", false, 8);
+	colorScheme::colorandLegend(colors, value, "Blue-Red", false, 8);
 	applyColorstoNodes();
 }
+void GraphWidget::legendSliderChanged_Edges(int value)
+{
+	colorScheme::colorandLegend(colors, value, "Blue-Red", false, 8);
+	applyColorstoEdges();
+}
+
 #endif
 int GraphWidget::experimentID()
 {

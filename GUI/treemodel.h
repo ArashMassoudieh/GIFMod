@@ -56,7 +56,7 @@ public:
 //	}
 #ifdef GIFMOD	
 	TreeItem *rootItem, *settings, *blocks, *connectors, *evapotranspiration, *waterQuality, *constituent, *buildUp, *extrenalFlux, *particle,
-		 *projectSettings, *climateSettings, *solverSettings, *reactions, *reaction, *reactionNetwork, *reactionParameter, *GA, *MCMC, *inverseModeling, *control, *sensor, *controller, *parameter,
+		 *projectSettings, *climateSettings, *solverSettings, *reactions, *reaction, *reactionNetwork, *reactionParameter, *GA, *MCMC, *inverseModeling, *control, *sensor, *objectiveFunction, *controller, *parameter,
 		 *observed, *wells, *tracers;
 #endif
 #ifdef GWA

@@ -755,8 +755,8 @@ double CBTC::maxfabs()
 	{
 		double max = -1e32;
 		for (int i=0; i<n; i++)
-		{	if (fabs(C[i])>max)
-				max = fabs(C[i]);
+		{	if (std::fabs(C[i])>max)
+				max = std::fabs(C[i]);
 		}
 		return max;
 	}
@@ -918,7 +918,7 @@ void CBTC::append(double x)
 	n++;
 	t.push_back(0);
 	C.push_back(x);
-	max_fabs = max(max_fabs,fabs(x));
+	max_fabs = max(max_fabs,std::fabs(x));
 
 }
 
@@ -930,7 +930,7 @@ void CBTC::append(double tt, double xx)
 	if (n>2) 
 		if (t[n-1]-t[n-2]!=t[n-2]-t[n-3]) 
 			structured = false;
-	max_fabs = max(max_fabs,fabs(xx));
+	max_fabs = max(max_fabs,std::fabs(xx));
 }
 void CBTC::append(CBTC &CC)
 {
@@ -1131,7 +1131,7 @@ void CBTC::clear()
 double CBTC::wiggle()
 {
 	if (n>2)
-		return 3*(fabs(C[n-1])*(t[n-2]-t[n-3])-fabs(C[n-2])*(t[n-1]-t[n-3])+fabs(C[n-3])*(t[n-1]-t[n-2]))/(t[n-1]-t[n-3])/max(maxfabs(),1e-7);
+		return 3*(std::fabs(C[n-1])*(t[n-2]-t[n-3])-std::fabs(C[n-2])*(t[n-1]-t[n-3])+std::fabs(C[n-3])*(t[n-1]-t[n-2]))/(t[n-1]-t[n-3])/max(maxfabs(),1e-7);
 	else
 		return 0;
 
@@ -1164,11 +1164,11 @@ double CBTC::wiggle_corr(int _n)
 bool CBTC::wiggle_sl(double tol)
 {
 	if (n < 4) return false;
-	double mean = fabs(C[n - 1] + C[n - 2] + C[n - 3] + C[n - 4]) / 4.0;
+	double mean = std::fabs(C[n - 1] + C[n - 2] + C[n - 3] + C[n - 4]) / 4.0;
 	double slope1 = (C[n - 1] - C[n - 2]) / (t[n - 1] - t[n - 2])/mean;
 	double slope2 = (C[n - 2] - C[n - 3]) / (t[n - 2] - t[n - 3])/mean;
 	double slope3 = (C[n - 3] - C[n - 4]) / (t[n - 3] - t[n - 4])/mean;
-	if (fabs(slope1) < tol && fabs(slope2) < tol && fabs(slope3) < tol) return false;
+	if (std::fabs(slope1) < tol && std::fabs(slope2) < tol && std::fabs(slope3) < tol) return false;
 	if ((slope1*slope2 < 0) && (slope2*slope3 < 0))
 		return true;
 	else
@@ -1240,6 +1240,17 @@ CBTC CBTC::Exp()
 	{
 		BTC.t[i] = t[i];
 		BTC.C[i] = exp(C[i]);
+	}
+	return BTC;
+}
+
+CBTC CBTC::fabs()
+{
+	CBTC BTC = CBTC(n);
+	for (int i = 0; i<n; i++)
+	{
+		BTC.t[i] = t[i];
+		BTC.C[i] = std::fabs(C[i]);
 	}
 	return BTC;
 }

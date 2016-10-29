@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[114];
-    char stringdata0[2632];
+    QByteArrayData data[119];
+    char stringdata0[2849];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -125,24 +125,29 @@ QT_MOC_LITERAL(92, 2043, 32), // "on_actioncolorCodeHead_triggered"
 QT_MOC_LITERAL(93, 2076, 43), // "on_actioncolorCodeMoistureCon..."
 QT_MOC_LITERAL(94, 2120, 38), // "on_actioncolorCodeWaterDepth_..."
 QT_MOC_LITERAL(95, 2159, 43), // "on_actioncolorCodeEvaporation..."
-QT_MOC_LITERAL(96, 2203, 34), // "on_actionProjectSettings_trig..."
-QT_MOC_LITERAL(97, 2238, 34), // "on_actionClimateSettings_trig..."
-QT_MOC_LITERAL(98, 2273, 33), // "on_actionSolverSettings_trigg..."
-QT_MOC_LITERAL(99, 2307, 32), // "on_actionNewExperiment_triggered"
-QT_MOC_LITERAL(100, 2340, 44), // "on_actionCopyFromCurrentExper..."
-QT_MOC_LITERAL(101, 2385, 13), // "addExperiment"
-QT_MOC_LITERAL(102, 2399, 16), // "sourceExperiment"
-QT_MOC_LITERAL(103, 2416, 42), // "on_actionremoveCurrentExperim..."
-QT_MOC_LITERAL(104, 2459, 36), // "on_actionShowRuntimeWindow_tr..."
-QT_MOC_LITERAL(105, 2496, 25), // "on_actionRecent_triggered"
-QT_MOC_LITERAL(106, 2522, 20), // "removeFromRecentList"
-QT_MOC_LITERAL(107, 2543, 20), // "writeRecentFilesList"
-QT_MOC_LITERAL(108, 2564, 9), // "loadModel"
-QT_MOC_LITERAL(109, 2574, 13), // "modelfilename"
-QT_MOC_LITERAL(110, 2588, 14), // "gwidgetChanged"
-QT_MOC_LITERAL(111, 2603, 9), // "getNumber"
-QT_MOC_LITERAL(112, 2613, 7), // "initial"
-QT_MOC_LITERAL(113, 2621, 10) // "recentItem"
+QT_MOC_LITERAL(96, 2203, 41), // "on_actionColorCodeConnectorFl..."
+QT_MOC_LITERAL(97, 2245, 45), // "on_actionColorCodeConnectorVe..."
+QT_MOC_LITERAL(98, 2291, 41), // "on_actionColorCodeConnectorAr..."
+QT_MOC_LITERAL(99, 2333, 54), // "on_actionColorCodeConnectorVa..."
+QT_MOC_LITERAL(100, 2388, 34), // "on_actionProjectSettings_trig..."
+QT_MOC_LITERAL(101, 2423, 34), // "on_actionClimateSettings_trig..."
+QT_MOC_LITERAL(102, 2458, 33), // "on_actionSolverSettings_trigg..."
+QT_MOC_LITERAL(103, 2492, 32), // "on_actionNewExperiment_triggered"
+QT_MOC_LITERAL(104, 2525, 44), // "on_actionCopyFromCurrentExper..."
+QT_MOC_LITERAL(105, 2570, 13), // "addExperiment"
+QT_MOC_LITERAL(106, 2584, 16), // "sourceExperiment"
+QT_MOC_LITERAL(107, 2601, 42), // "on_actionremoveCurrentExperim..."
+QT_MOC_LITERAL(108, 2644, 36), // "on_actionShowRuntimeWindow_tr..."
+QT_MOC_LITERAL(109, 2681, 25), // "on_actionRecent_triggered"
+QT_MOC_LITERAL(110, 2707, 31), // "on_actionReset_colors_triggered"
+QT_MOC_LITERAL(111, 2739, 20), // "removeFromRecentList"
+QT_MOC_LITERAL(112, 2760, 20), // "writeRecentFilesList"
+QT_MOC_LITERAL(113, 2781, 9), // "loadModel"
+QT_MOC_LITERAL(114, 2791, 13), // "modelfilename"
+QT_MOC_LITERAL(115, 2805, 14), // "gwidgetChanged"
+QT_MOC_LITERAL(116, 2820, 9), // "getNumber"
+QT_MOC_LITERAL(117, 2830, 7), // "initial"
+QT_MOC_LITERAL(118, 2838, 10) // "recentItem"
 
     },
     "MainWindow\0Mouse_Pos\0\0"
@@ -211,6 +216,10 @@ QT_MOC_LITERAL(113, 2621, 10) // "recentItem"
     "on_actioncolorCodeMoistureContent_triggered\0"
     "on_actioncolorCodeWaterDepth_triggered\0"
     "on_actioncolorCodeEvaporationRate_triggered\0"
+    "on_actionColorCodeConnectorFlow_triggered\0"
+    "on_actionColorCodeConnectorVelocity_triggered\0"
+    "on_actionColorCodeConnectorArea_triggered\0"
+    "on_actionColorCodeConnectorVaporExchangeEate_triggered\0"
     "on_actionProjectSettings_triggered\0"
     "on_actionClimateSettings_triggered\0"
     "on_actionSolverSettings_triggered\0"
@@ -220,6 +229,7 @@ QT_MOC_LITERAL(113, 2621, 10) // "recentItem"
     "on_actionremoveCurrentExperiment_triggered\0"
     "on_actionShowRuntimeWindow_triggered\0"
     "on_actionRecent_triggered\0"
+    "on_actionReset_colors_triggered\0"
     "removeFromRecentList\0writeRecentFilesList\0"
     "loadModel\0modelfilename\0gwidgetChanged\0"
     "getNumber\0initial\0recentItem"
@@ -232,7 +242,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-     133,   14, // methods
+     138,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -240,139 +250,144 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    3,  679,    2, 0x0a /* Public */,
-       3,    1,  686,    2, 0x0a /* Public */,
-       6,    0,  689,    2, 0x08 /* Private */,
-       7,    0,  690,    2, 0x08 /* Private */,
-       8,    0,  691,    2, 0x08 /* Private */,
-       9,    0,  692,    2, 0x08 /* Private */,
-      10,    0,  693,    2, 0x08 /* Private */,
-      11,    0,  694,    2, 0x08 /* Private */,
-      12,    1,  695,    2, 0x08 /* Private */,
-      14,    1,  698,    2, 0x08 /* Private */,
-      15,    1,  701,    2, 0x08 /* Private */,
-      16,    1,  704,    2, 0x08 /* Private */,
-      17,    0,  707,    2, 0x08 /* Private */,
-      18,    0,  708,    2, 0x08 /* Private */,
-      19,    0,  709,    2, 0x08 /* Private */,
-      20,    0,  710,    2, 0x08 /* Private */,
-      21,    1,  711,    2, 0x08 /* Private */,
-      23,    0,  714,    2, 0x08 /* Private */,
-      24,    0,  715,    2, 0x08 /* Private */,
-      25,    0,  716,    2, 0x08 /* Private */,
-      26,    0,  717,    2, 0x08 /* Private */,
-      27,    0,  718,    2, 0x08 /* Private */,
-      28,    0,  719,    2, 0x08 /* Private */,
-      29,    0,  720,    2, 0x08 /* Private */,
-      30,    0,  721,    2, 0x08 /* Private */,
-      31,    0,  722,    2, 0x08 /* Private */,
-      32,    0,  723,    2, 0x08 /* Private */,
-      33,    1,  724,    2, 0x08 /* Private */,
-      35,    1,  727,    2, 0x08 /* Private */,
-      37,    0,  730,    2, 0x08 /* Private */,
-      38,    1,  731,    2, 0x08 /* Private */,
-      39,    1,  734,    2, 0x08 /* Private */,
-      41,    1,  737,    2, 0x08 /* Private */,
-      41,    0,  740,    2, 0x28 /* Private | MethodCloned */,
-      42,    0,  741,    2, 0x08 /* Private */,
-      43,    3,  742,    2, 0x08 /* Private */,
-      43,    2,  749,    2, 0x28 /* Private | MethodCloned */,
-      43,    1,  754,    2, 0x28 /* Private | MethodCloned */,
-      43,    0,  757,    2, 0x28 /* Private | MethodCloned */,
-      47,    2,  758,    2, 0x08 /* Private */,
-      47,    1,  763,    2, 0x28 /* Private | MethodCloned */,
-      47,    0,  766,    2, 0x28 /* Private | MethodCloned */,
-      48,    2,  767,    2, 0x08 /* Private */,
-      48,    1,  772,    2, 0x28 /* Private | MethodCloned */,
-      48,    0,  775,    2, 0x28 /* Private | MethodCloned */,
-      49,    2,  776,    2, 0x08 /* Private */,
-      49,    1,  781,    2, 0x28 /* Private | MethodCloned */,
-      49,    0,  784,    2, 0x28 /* Private | MethodCloned */,
-      50,    2,  785,    2, 0x08 /* Private */,
-      50,    1,  790,    2, 0x28 /* Private | MethodCloned */,
-      50,    0,  793,    2, 0x28 /* Private | MethodCloned */,
-      53,    2,  794,    2, 0x08 /* Private */,
-      53,    1,  799,    2, 0x28 /* Private | MethodCloned */,
-      53,    0,  802,    2, 0x28 /* Private | MethodCloned */,
-      54,    3,  803,    2, 0x08 /* Private */,
-      54,    2,  810,    2, 0x28 /* Private | MethodCloned */,
-      54,    1,  815,    2, 0x28 /* Private | MethodCloned */,
-      54,    0,  818,    2, 0x28 /* Private | MethodCloned */,
-      57,    3,  819,    2, 0x08 /* Private */,
-      57,    2,  826,    2, 0x28 /* Private | MethodCloned */,
-      57,    1,  831,    2, 0x28 /* Private | MethodCloned */,
-      57,    0,  834,    2, 0x28 /* Private | MethodCloned */,
-      58,    3,  835,    2, 0x08 /* Private */,
-      58,    2,  842,    2, 0x28 /* Private | MethodCloned */,
-      58,    1,  847,    2, 0x28 /* Private | MethodCloned */,
-      58,    0,  850,    2, 0x28 /* Private | MethodCloned */,
-      60,    2,  851,    2, 0x08 /* Private */,
-      60,    1,  856,    2, 0x28 /* Private | MethodCloned */,
-      60,    0,  859,    2, 0x28 /* Private | MethodCloned */,
-      62,    2,  860,    2, 0x08 /* Private */,
-      62,    1,  865,    2, 0x28 /* Private | MethodCloned */,
-      62,    0,  868,    2, 0x28 /* Private | MethodCloned */,
-      64,    2,  869,    2, 0x08 /* Private */,
-      64,    1,  874,    2, 0x28 /* Private | MethodCloned */,
-      64,    0,  877,    2, 0x28 /* Private | MethodCloned */,
-      66,    2,  878,    2, 0x08 /* Private */,
-      66,    1,  883,    2, 0x28 /* Private | MethodCloned */,
-      66,    0,  886,    2, 0x28 /* Private | MethodCloned */,
-      67,    2,  887,    2, 0x08 /* Private */,
-      67,    1,  892,    2, 0x28 /* Private | MethodCloned */,
-      67,    0,  895,    2, 0x28 /* Private | MethodCloned */,
-      69,    2,  896,    2, 0x08 /* Private */,
-      69,    1,  901,    2, 0x28 /* Private | MethodCloned */,
-      69,    0,  904,    2, 0x28 /* Private | MethodCloned */,
-      70,    2,  905,    2, 0x08 /* Private */,
-      70,    1,  910,    2, 0x28 /* Private | MethodCloned */,
-      70,    0,  913,    2, 0x28 /* Private | MethodCloned */,
-      71,    2,  914,    2, 0x08 /* Private */,
-      71,    1,  919,    2, 0x28 /* Private | MethodCloned */,
-      71,    0,  922,    2, 0x28 /* Private | MethodCloned */,
-      72,    5,  923,    2, 0x08 /* Private */,
-      72,    4,  934,    2, 0x28 /* Private | MethodCloned */,
-      72,    3,  943,    2, 0x28 /* Private | MethodCloned */,
-      72,    2,  950,    2, 0x28 /* Private | MethodCloned */,
-      72,    1,  955,    2, 0x28 /* Private | MethodCloned */,
-      75,    0,  958,    2, 0x08 /* Private */,
-      76,    0,  959,    2, 0x08 /* Private */,
-      77,    0,  960,    2, 0x08 /* Private */,
-      78,    2,  961,    2, 0x08 /* Private */,
-      78,    1,  966,    2, 0x28 /* Private | MethodCloned */,
-      78,    0,  969,    2, 0x28 /* Private | MethodCloned */,
-      81,    0,  970,    2, 0x08 /* Private */,
-      82,    0,  971,    2, 0x08 /* Private */,
-      83,    0,  972,    2, 0x08 /* Private */,
-      84,    0,  973,    2, 0x08 /* Private */,
-      85,    0,  974,    2, 0x08 /* Private */,
-      86,    0,  975,    2, 0x08 /* Private */,
-      87,    0,  976,    2, 0x08 /* Private */,
-      88,    0,  977,    2, 0x08 /* Private */,
-      89,    0,  978,    2, 0x08 /* Private */,
-      90,    0,  979,    2, 0x08 /* Private */,
-      91,    0,  980,    2, 0x08 /* Private */,
-      92,    0,  981,    2, 0x08 /* Private */,
-      93,    0,  982,    2, 0x08 /* Private */,
-      94,    0,  983,    2, 0x08 /* Private */,
-      95,    0,  984,    2, 0x08 /* Private */,
-      96,    0,  985,    2, 0x08 /* Private */,
-      97,    0,  986,    2, 0x08 /* Private */,
-      98,    0,  987,    2, 0x08 /* Private */,
-      99,    0,  988,    2, 0x08 /* Private */,
-     100,    0,  989,    2, 0x08 /* Private */,
-     101,    1,  990,    2, 0x08 /* Private */,
-     101,    0,  993,    2, 0x28 /* Private | MethodCloned */,
-     103,    0,  994,    2, 0x08 /* Private */,
-     104,    0,  995,    2, 0x08 /* Private */,
-     105,    0,  996,    2, 0x08 /* Private */,
-     106,    1,  997,    2, 0x08 /* Private */,
-     107,    0, 1000,    2, 0x08 /* Private */,
-     108,    1, 1001,    2, 0x08 /* Private */,
-     110,    0, 1004,    2, 0x08 /* Private */,
-     111,    1, 1005,    2, 0x08 /* Private */,
-     111,    0, 1008,    2, 0x28 /* Private | MethodCloned */,
-     113,    0, 1009,    2, 0x08 /* Private */,
+       1,    3,  704,    2, 0x0a /* Public */,
+       3,    1,  711,    2, 0x0a /* Public */,
+       6,    0,  714,    2, 0x08 /* Private */,
+       7,    0,  715,    2, 0x08 /* Private */,
+       8,    0,  716,    2, 0x08 /* Private */,
+       9,    0,  717,    2, 0x08 /* Private */,
+      10,    0,  718,    2, 0x08 /* Private */,
+      11,    0,  719,    2, 0x08 /* Private */,
+      12,    1,  720,    2, 0x08 /* Private */,
+      14,    1,  723,    2, 0x08 /* Private */,
+      15,    1,  726,    2, 0x08 /* Private */,
+      16,    1,  729,    2, 0x08 /* Private */,
+      17,    0,  732,    2, 0x08 /* Private */,
+      18,    0,  733,    2, 0x08 /* Private */,
+      19,    0,  734,    2, 0x08 /* Private */,
+      20,    0,  735,    2, 0x08 /* Private */,
+      21,    1,  736,    2, 0x08 /* Private */,
+      23,    0,  739,    2, 0x08 /* Private */,
+      24,    0,  740,    2, 0x08 /* Private */,
+      25,    0,  741,    2, 0x08 /* Private */,
+      26,    0,  742,    2, 0x08 /* Private */,
+      27,    0,  743,    2, 0x08 /* Private */,
+      28,    0,  744,    2, 0x08 /* Private */,
+      29,    0,  745,    2, 0x08 /* Private */,
+      30,    0,  746,    2, 0x08 /* Private */,
+      31,    0,  747,    2, 0x08 /* Private */,
+      32,    0,  748,    2, 0x08 /* Private */,
+      33,    1,  749,    2, 0x08 /* Private */,
+      35,    1,  752,    2, 0x08 /* Private */,
+      37,    0,  755,    2, 0x08 /* Private */,
+      38,    1,  756,    2, 0x08 /* Private */,
+      39,    1,  759,    2, 0x08 /* Private */,
+      41,    1,  762,    2, 0x08 /* Private */,
+      41,    0,  765,    2, 0x28 /* Private | MethodCloned */,
+      42,    0,  766,    2, 0x08 /* Private */,
+      43,    3,  767,    2, 0x08 /* Private */,
+      43,    2,  774,    2, 0x28 /* Private | MethodCloned */,
+      43,    1,  779,    2, 0x28 /* Private | MethodCloned */,
+      43,    0,  782,    2, 0x28 /* Private | MethodCloned */,
+      47,    2,  783,    2, 0x08 /* Private */,
+      47,    1,  788,    2, 0x28 /* Private | MethodCloned */,
+      47,    0,  791,    2, 0x28 /* Private | MethodCloned */,
+      48,    2,  792,    2, 0x08 /* Private */,
+      48,    1,  797,    2, 0x28 /* Private | MethodCloned */,
+      48,    0,  800,    2, 0x28 /* Private | MethodCloned */,
+      49,    2,  801,    2, 0x08 /* Private */,
+      49,    1,  806,    2, 0x28 /* Private | MethodCloned */,
+      49,    0,  809,    2, 0x28 /* Private | MethodCloned */,
+      50,    2,  810,    2, 0x08 /* Private */,
+      50,    1,  815,    2, 0x28 /* Private | MethodCloned */,
+      50,    0,  818,    2, 0x28 /* Private | MethodCloned */,
+      53,    2,  819,    2, 0x08 /* Private */,
+      53,    1,  824,    2, 0x28 /* Private | MethodCloned */,
+      53,    0,  827,    2, 0x28 /* Private | MethodCloned */,
+      54,    3,  828,    2, 0x08 /* Private */,
+      54,    2,  835,    2, 0x28 /* Private | MethodCloned */,
+      54,    1,  840,    2, 0x28 /* Private | MethodCloned */,
+      54,    0,  843,    2, 0x28 /* Private | MethodCloned */,
+      57,    3,  844,    2, 0x08 /* Private */,
+      57,    2,  851,    2, 0x28 /* Private | MethodCloned */,
+      57,    1,  856,    2, 0x28 /* Private | MethodCloned */,
+      57,    0,  859,    2, 0x28 /* Private | MethodCloned */,
+      58,    3,  860,    2, 0x08 /* Private */,
+      58,    2,  867,    2, 0x28 /* Private | MethodCloned */,
+      58,    1,  872,    2, 0x28 /* Private | MethodCloned */,
+      58,    0,  875,    2, 0x28 /* Private | MethodCloned */,
+      60,    2,  876,    2, 0x08 /* Private */,
+      60,    1,  881,    2, 0x28 /* Private | MethodCloned */,
+      60,    0,  884,    2, 0x28 /* Private | MethodCloned */,
+      62,    2,  885,    2, 0x08 /* Private */,
+      62,    1,  890,    2, 0x28 /* Private | MethodCloned */,
+      62,    0,  893,    2, 0x28 /* Private | MethodCloned */,
+      64,    2,  894,    2, 0x08 /* Private */,
+      64,    1,  899,    2, 0x28 /* Private | MethodCloned */,
+      64,    0,  902,    2, 0x28 /* Private | MethodCloned */,
+      66,    2,  903,    2, 0x08 /* Private */,
+      66,    1,  908,    2, 0x28 /* Private | MethodCloned */,
+      66,    0,  911,    2, 0x28 /* Private | MethodCloned */,
+      67,    2,  912,    2, 0x08 /* Private */,
+      67,    1,  917,    2, 0x28 /* Private | MethodCloned */,
+      67,    0,  920,    2, 0x28 /* Private | MethodCloned */,
+      69,    2,  921,    2, 0x08 /* Private */,
+      69,    1,  926,    2, 0x28 /* Private | MethodCloned */,
+      69,    0,  929,    2, 0x28 /* Private | MethodCloned */,
+      70,    2,  930,    2, 0x08 /* Private */,
+      70,    1,  935,    2, 0x28 /* Private | MethodCloned */,
+      70,    0,  938,    2, 0x28 /* Private | MethodCloned */,
+      71,    2,  939,    2, 0x08 /* Private */,
+      71,    1,  944,    2, 0x28 /* Private | MethodCloned */,
+      71,    0,  947,    2, 0x28 /* Private | MethodCloned */,
+      72,    5,  948,    2, 0x08 /* Private */,
+      72,    4,  959,    2, 0x28 /* Private | MethodCloned */,
+      72,    3,  968,    2, 0x28 /* Private | MethodCloned */,
+      72,    2,  975,    2, 0x28 /* Private | MethodCloned */,
+      72,    1,  980,    2, 0x28 /* Private | MethodCloned */,
+      75,    0,  983,    2, 0x08 /* Private */,
+      76,    0,  984,    2, 0x08 /* Private */,
+      77,    0,  985,    2, 0x08 /* Private */,
+      78,    2,  986,    2, 0x08 /* Private */,
+      78,    1,  991,    2, 0x28 /* Private | MethodCloned */,
+      78,    0,  994,    2, 0x28 /* Private | MethodCloned */,
+      81,    0,  995,    2, 0x08 /* Private */,
+      82,    0,  996,    2, 0x08 /* Private */,
+      83,    0,  997,    2, 0x08 /* Private */,
+      84,    0,  998,    2, 0x08 /* Private */,
+      85,    0,  999,    2, 0x08 /* Private */,
+      86,    0, 1000,    2, 0x08 /* Private */,
+      87,    0, 1001,    2, 0x08 /* Private */,
+      88,    0, 1002,    2, 0x08 /* Private */,
+      89,    0, 1003,    2, 0x08 /* Private */,
+      90,    0, 1004,    2, 0x08 /* Private */,
+      91,    0, 1005,    2, 0x08 /* Private */,
+      92,    0, 1006,    2, 0x08 /* Private */,
+      93,    0, 1007,    2, 0x08 /* Private */,
+      94,    0, 1008,    2, 0x08 /* Private */,
+      95,    0, 1009,    2, 0x08 /* Private */,
+      96,    0, 1010,    2, 0x08 /* Private */,
+      97,    0, 1011,    2, 0x08 /* Private */,
+      98,    0, 1012,    2, 0x08 /* Private */,
+      99,    0, 1013,    2, 0x08 /* Private */,
+     100,    0, 1014,    2, 0x08 /* Private */,
+     101,    0, 1015,    2, 0x08 /* Private */,
+     102,    0, 1016,    2, 0x08 /* Private */,
+     103,    0, 1017,    2, 0x08 /* Private */,
+     104,    0, 1018,    2, 0x08 /* Private */,
+     105,    1, 1019,    2, 0x08 /* Private */,
+     105,    0, 1022,    2, 0x28 /* Private | MethodCloned */,
+     107,    0, 1023,    2, 0x08 /* Private */,
+     108,    0, 1024,    2, 0x08 /* Private */,
+     109,    0, 1025,    2, 0x08 /* Private */,
+     110,    0, 1026,    2, 0x08 /* Private */,
+     111,    1, 1027,    2, 0x08 /* Private */,
+     112,    0, 1030,    2, 0x08 /* Private */,
+     113,    1, 1031,    2, 0x08 /* Private */,
+     115,    0, 1034,    2, 0x08 /* Private */,
+     116,    1, 1035,    2, 0x08 /* Private */,
+     116,    0, 1038,    2, 0x28 /* Private | MethodCloned */,
+     118,    0, 1039,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void, QMetaType::Int, QMetaType::Int, QMetaType::QString,    2,    2,    2,
@@ -496,16 +511,21 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QString,  102,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::QString,  106,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void, 0x80000000 | 40,    2,
     QMetaType::Void,
-    QMetaType::Bool, QMetaType::QString,  109,
+    QMetaType::Bool, QMetaType::QString,  114,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Double,  112,
+    QMetaType::Void, QMetaType::Double,  117,
     QMetaType::Void,
     QMetaType::Void,
 
@@ -637,24 +657,29 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 113: _t->on_actioncolorCodeMoistureContent_triggered(); break;
         case 114: _t->on_actioncolorCodeWaterDepth_triggered(); break;
         case 115: _t->on_actioncolorCodeEvaporationRate_triggered(); break;
-        case 116: _t->on_actionProjectSettings_triggered(); break;
-        case 117: _t->on_actionClimateSettings_triggered(); break;
-        case 118: _t->on_actionSolverSettings_triggered(); break;
-        case 119: _t->on_actionNewExperiment_triggered(); break;
-        case 120: _t->on_actionCopyFromCurrentExperiment_triggered(); break;
-        case 121: _t->addExperiment((*reinterpret_cast< QString(*)>(_a[1]))); break;
-        case 122: _t->addExperiment(); break;
-        case 123: _t->on_actionremoveCurrentExperiment_triggered(); break;
-        case 124: _t->on_actionShowRuntimeWindow_triggered(); break;
-        case 125: _t->on_actionRecent_triggered(); break;
-        case 126: _t->removeFromRecentList((*reinterpret_cast< QAction*(*)>(_a[1]))); break;
-        case 127: _t->writeRecentFilesList(); break;
-        case 128: { bool _r = _t->loadModel((*reinterpret_cast< QString(*)>(_a[1])));
+        case 116: _t->on_actionColorCodeConnectorFlow_triggered(); break;
+        case 117: _t->on_actionColorCodeConnectorVelocity_triggered(); break;
+        case 118: _t->on_actionColorCodeConnectorArea_triggered(); break;
+        case 119: _t->on_actionColorCodeConnectorVaporExchangeEate_triggered(); break;
+        case 120: _t->on_actionProjectSettings_triggered(); break;
+        case 121: _t->on_actionClimateSettings_triggered(); break;
+        case 122: _t->on_actionSolverSettings_triggered(); break;
+        case 123: _t->on_actionNewExperiment_triggered(); break;
+        case 124: _t->on_actionCopyFromCurrentExperiment_triggered(); break;
+        case 125: _t->addExperiment((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 126: _t->addExperiment(); break;
+        case 127: _t->on_actionremoveCurrentExperiment_triggered(); break;
+        case 128: _t->on_actionShowRuntimeWindow_triggered(); break;
+        case 129: _t->on_actionRecent_triggered(); break;
+        case 130: _t->on_actionReset_colors_triggered(); break;
+        case 131: _t->removeFromRecentList((*reinterpret_cast< QAction*(*)>(_a[1]))); break;
+        case 132: _t->writeRecentFilesList(); break;
+        case 133: { bool _r = _t->loadModel((*reinterpret_cast< QString(*)>(_a[1])));
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = _r; }  break;
-        case 129: _t->gwidgetChanged(); break;
-        case 130: _t->getNumber((*reinterpret_cast< double(*)>(_a[1]))); break;
-        case 131: _t->getNumber(); break;
-        case 132: _t->recentItem(); break;
+        case 134: _t->gwidgetChanged(); break;
+        case 135: _t->getNumber((*reinterpret_cast< double(*)>(_a[1]))); break;
+        case 136: _t->getNumber(); break;
+        case 137: _t->recentItem(); break;
         default: ;
         }
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
@@ -710,13 +735,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 133)
+        if (_id < 138)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 133;
+        _id -= 138;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 133)
+        if (_id < 138)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 133;
+        _id -= 138;
     }
     return _id;
 }
