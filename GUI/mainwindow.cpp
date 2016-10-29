@@ -839,7 +839,7 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 			bool addSeparator = false;
 			Entity *controller = mainGraphWidget->entity(name, "Controller");
 			//QString file = obs->getValue("Observed data").toQString();
-			QString file = QString("control_output_%1").arg(mainGraphWidget->experimentName());
+			QString file = QString("./control_output_%1.txt").arg(mainGraphWidget->experimentName());
 			CBTCSet data = CBTCSet(file.replace("./", modelPathname().append('/')).toStdString(), 1);
 			if (data.nvars)
 			{
