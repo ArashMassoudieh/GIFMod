@@ -15,6 +15,7 @@
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QFrame>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
@@ -41,8 +42,12 @@ public:
     QLabel *Label_2;
     UnitTextBox2 *lengthUnitBox;
     QLabel *label_2;
+    QFrame *r0frame;
+    QLabel *label_r0;
+    UnitTextBox2 *r0UnitBox;
     QRadioButton *radioButtonV;
     QRadioButton *radioButtonH;
+    QRadioButton *radioButtonR;
     QGroupBox *groupBoxH;
     QSpinBox *rowsSpin_2;
     QLabel *label_9;
@@ -101,13 +106,13 @@ public:
         z0Lbl->setGeometry(QRect(10, 90, 261, 16));
         deltaHUnitBox = new UnitTextBox2(groupBoxV);
         deltaHUnitBox->setObjectName(QStringLiteral("deltaHUnitBox"));
-        deltaHUnitBox->setGeometry(QRect(140, 240, 133, 20));
+        deltaHUnitBox->setGeometry(QRect(140, 260, 133, 20));
         deltaVUnitBox = new UnitTextBox2(groupBoxV);
         deltaVUnitBox->setObjectName(QStringLiteral("deltaVUnitBox"));
         deltaVUnitBox->setGeometry(QRect(140, 300, 133, 20));
         label_1 = new QLabel(groupBoxV);
         label_1->setObjectName(QStringLiteral("label_1"));
-        label_1->setGeometry(QRect(10, 220, 261, 16));
+        label_1->setGeometry(QRect(10, 240, 261, 16));
         Label_2 = new QLabel(groupBoxV);
         Label_2->setObjectName(QStringLiteral("Label_2"));
         Label_2->setGeometry(QRect(10, 280, 261, 16));
@@ -117,13 +122,31 @@ public:
         label_2 = new QLabel(groupBoxV);
         label_2->setObjectName(QStringLiteral("label_2"));
         label_2->setGeometry(QRect(10, 160, 261, 16));
+        r0frame = new QFrame(groupBoxV);
+        r0frame->setObjectName(QStringLiteral("r0frame"));
+        r0frame->setGeometry(QRect(10, 200, 271, 41));
+        r0frame->setFrameShape(QFrame::StyledPanel);
+        r0frame->setFrameShadow(QFrame::Raised);
+        r0frame->setLineWidth(0);
+        label_r0 = new QLabel(r0frame);
+        label_r0->setObjectName(QStringLiteral("label_r0"));
+        label_r0->setGeometry(QRect(0, 0, 261, 16));
+        r0UnitBox = new UnitTextBox2(r0frame);
+        r0UnitBox->setObjectName(QStringLiteral("r0UnitBox"));
+        r0UnitBox->setGeometry(QRect(130, 20, 133, 20));
+        label_r0->raise();
+        r0UnitBox->raise();
+        Label_2->raise();
         radioButtonV = new QRadioButton(gridWindow);
         radioButtonV->setObjectName(QStringLiteral("radioButtonV"));
-        radioButtonV->setGeometry(QRect(20, 25, 101, 21));
+        radioButtonV->setGeometry(QRect(20, 9, 101, 21));
         radioButtonV->setChecked(true);
         radioButtonH = new QRadioButton(gridWindow);
         radioButtonH->setObjectName(QStringLiteral("radioButtonH"));
-        radioButtonH->setGeometry(QRect(130, 26, 111, 20));
+        radioButtonH->setGeometry(QRect(130, 10, 111, 20));
+        radioButtonR = new QRadioButton(gridWindow);
+        radioButtonR->setObjectName(QStringLiteral("radioButtonR"));
+        radioButtonR->setGeometry(QRect(20, 30, 161, 20));
         groupBoxH = new QGroupBox(gridWindow);
         groupBoxH->setObjectName(QStringLiteral("groupBoxH"));
         groupBoxH->setGeometry(QRect(10, 60, 281, 331));
@@ -200,8 +223,11 @@ public:
         Label_2->setText(QApplication::translate("gridWindow", "Total bottom elevation change in vertical direction", 0));
         lengthUnitBox->setText(QString());
         label_2->setText(QApplication::translate("gridWindow", "Horizontal distance between cell grids", 0));
+        label_r0->setText(QApplication::translate("gridWindow", "r0", 0));
+        r0UnitBox->setText(QString());
         radioButtonV->setText(QApplication::translate("gridWindow", "Vertical 2D array", 0));
         radioButtonH->setText(QApplication::translate("gridWindow", "Horizontal 2D array", 0));
+        radioButtonR->setText(QApplication::translate("gridWindow", "Radially symmetrical array", 0));
         groupBoxH->setTitle(QApplication::translate("gridWindow", "2D Horizontal array configuration", 0));
         label_9->setText(QApplication::translate("gridWindow", "Number of rows", 0));
         label_10->setText(QApplication::translate("gridWindow", "Number of columns", 0));

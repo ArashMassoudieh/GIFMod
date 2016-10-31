@@ -28,6 +28,7 @@
 #include "PropModel.h"
 #include "qvariant.h"
 #include "colorScheme.h"
+//#include "utility_funcs.h"
 
 #ifdef GIFMOD
 #include "medium.h"
@@ -2178,12 +2179,22 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 			XString z0 = n->getValue(n->variableName("z0")).list();
 			QString unit = z0.unit;
 			XString height = n->getValue(n->variableName("depth"));
-			
+			XString width = n->getValue(n->variableName("width"));
+			XString length = n->getValue(n->variableName("d"));
+
 			QString gridType = "2D V";
 			bool canChangeType = true;
-			XString length = z0, width = z0;
-			length.setNum(0);
-			width.setNum(0);
+			if (length.isEmpty())
+			{
+				length = z0;
+				length.setNum(0);
+			}
+			if (width.isEmpty())
+			{
+				width = z0;
+				width.setNum(0);
+			}
+
 			if (n->objectType.ObjectType == "Catchment")
 			{
 				gridType = "2D H";
@@ -2278,6 +2289,180 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
                                         copyLength=false;
                                     }
 									e->copyProps(n, "Vertical Array", "Horizontal Connector", copyLength);
+								}
+
+							}
+						}
+						rows.append(row);
+					}
+				}
+			}
+			else if (grid.keys().contains("Radially symmetrical array"))
+			{
+				XString deltaV = grid["delta V"];
+				XString deltaH = grid["delta H"];
+				XString length = grid["length"];
+				XString r0 = grid["r0"];
+
+				if (length.toDouble() <= 0)
+				{
+					QMessageBox::information(mainWindow, "Radially symmetrical array", "Length should be greater than zero");
+					return;
+				}
+
+				XString widthAvg = n->getValue(n->variableName("width"));
+				XString bottomArea = n->getValue(n->variableName("a"));
+
+				if (widthAvg.toQString() == "" && bottomArea.toQString() == "")
+				{
+					QMessageBox::information(mainWindow, "Radially symmetrical array",
+						"At least one of 'Bottom area' or 'Length' should be defined.");
+					return;
+				}
+
+				XString w1 = width, w2 = width;
+				double r0d = r0.toDouble("m");
+				double r1 = r0d;
+				double r2 = r1 + length.toDouble("m");
+				double theta = width.toDouble("m") / ((r1 + r2) / 2.0);
+
+				if (width.toQString() == "" || width.toDouble()==0)
+				{
+					theta = 2 * bottomArea.toDouble("m~^2") / (r2*r2 - r1*r1);
+
+					width.setNum(((r1 + r2) / 2.0)*theta);
+					width.setUnit("m");
+
+					XString newWidth = width.convertTo(n->getValue(n->variableName("width")).unit);
+					n->setProp(n->variableName("width"), newWidth.list(), XStringEditRole);
+					width = newWidth;
+				}
+
+				w1.setNum(r1*theta);
+				w1.setUnit("m");
+				w2.setNum(r2*theta);
+				w2.setUnit("m");
+
+				//double calculatedWidth = length.toDouble("m") * theta;
+/*				if (!isFuzzyEqual(width.toDouble("m"), calculatedWidth)
+				{
+					QMessageBox::information(mainWindow, "Radially symmetrical array", 
+						"Block width is not consistent with the Length should be greater than zero");
+					return;
+				}
+*/
+				double calculatedArea = theta / 2.0 *((r2*r2) - (r1*r1));
+
+				if (bottomArea.toQString() == "" || bottomArea.toDouble() ==0)
+				{
+					bottomArea.setNum(calculatedArea);
+					bottomArea.setUnit("m~^2");
+					XString area = bottomArea.convertTo(n->getValue(n->variableName("a")).unit);
+					n->setProp(n->variableName("a"), area.list(), XStringEditRole);
+				}
+
+				double area = n->getValue(n->variableName("a")).toDouble("m~^2");
+				if (!isFuzzyEqual(area, calculatedArea))
+				{
+					QMessageBox::information(mainWindow, "Radially symmetrical array",
+						"Block's 'Bottom area', 'Width', and 'length' are not consistent.\nArea = width * length / 2");
+					return;
+				}
+
+				if (numberofRows >= 1 && numberofColumns >= 1)// && isnumber(deltaV) && isnumber (deltaH))
+				{
+					//qDebug() << QString("Creating %1x%2 grid, delta H=%3, delta V=%4.").arg(numberofRows).arg(numberofColumns).arg(deltaH).arg(deltaV);
+					Node *n1;
+					QList<QList<Node*>> rows;
+					for (int rowIndex = 0; rowIndex < numberofRows; rowIndex++)
+					{
+						QList <Node*> row;
+						for (int columnIndex = 0; columnIndex < numberofColumns; columnIndex++)
+						{
+							if (rowIndex == 0 && columnIndex == 0)
+							{
+								row.append(n);
+							}
+							else
+							{
+								n1 = new Node(*n);
+
+								treeModel->add(n1);
+								row.append(n1);
+								n1->setName(n->newNodeName(n->Name(), Nodes()));
+								n1->edgeList.clear();
+
+								if (columnIndex == 0)
+									n1->setX(n->x());
+								else
+									n1->setX(row[columnIndex - 1]->x() + n->Width() + 50);
+
+								int offsetY = 0;
+								if (deltaV.toFloat() < 0)
+									offsetY = n->Height() + 50;
+								else if (deltaV.toFloat() > 0)
+									offsetY = -n->Height() - 50;
+
+								if (rowIndex == 0)
+									n1->setY(n->y());
+								else
+									n1->setY(rows[rowIndex - 1][columnIndex]->y() + offsetY);
+
+								//qDebug() << QString("[%1,%2], x=%3, y=%4").arg(rowIndex).arg(columnIndex).arg(n1->x()).arg(n1->y());
+								if (rowIndex != 0)
+									z0.setNum(rows[rowIndex - 1][columnIndex]->getValue(z0variableName).toFloat() +
+									(1.0 / (numberofRows - 1) * deltaV.toFloat(z0.unit)));
+								else
+									z0.setNum(row[columnIndex - 1]->getValue(z0variableName).toFloat() +
+									(1.0 / (numberofColumns - 1) * deltaH.toFloat(z0.unit)));
+
+								n1->setProp(z0variableName, z0.list(), XStringEditRole);
+								MainGraphicsScene->addItem(n1);
+								if (rowIndex != 0)
+								{
+									Edge *e = new Edge(rows[rowIndex - 1][columnIndex], n1, this);
+									treeModel->add(e);
+									XString connectorLength = z0;
+									connectorLength.setNum(abs(deltaV.toFloat(z0.unit)) / (numberofRows - 1));
+									//bool copyLength = true;
+									if (connectorLength > 0) {
+										e->setProp(e->variableName("d"), connectorLength.list(), XStringEditRole);
+										//copyLength=false;
+									}
+									bool copyLength = false;
+									e->copyProps(n1, "Vertical Array", "Vertical Connector", copyLength);
+								}
+								if (columnIndex != 0)
+								{
+									double col = columnIndex + 1;
+									XString connectorWidth = n->getValue(n->variableName("width"));
+									connectorWidth.setNum((r0d + (col-1)*length.toDouble("m"))*theta);
+									connectorWidth.setUnit("m");
+									connectorWidth.convertTo(n->getValue(n->variableName("width")).unit);
+
+									XString width = n->getValue(n->variableName("width"));
+									width.setNum((r0d + (col-1.5)*length.toDouble("m"))*theta);
+									width.setUnit("m");
+									width.convertTo(n->getValue(n->variableName("width")).unit);
+									n1->setProp(n1->variableName("width"), width.list(), XStringEditRole);
+
+									XString area = n->getValue(n->variableName("a"));
+									r1 = r0d + (col - 1)*length.toDouble("m");
+									r2 = r0d + col*length.toDouble("m");
+									area.setNum(theta / 2.0*((r2*r2) - (r1*r1)));
+									area.setUnit("m~^2");
+									area.convertTo(n->getValue(n->variableName("a")).unit);
+									n1->setProp(n->variableName("a"), area.list(), XStringEditRole);
+								
+									Edge *e = new Edge(row[columnIndex - 1], n1, this);
+									treeModel->add(e);
+									bool copyLength = true;
+									if (length > 0) {
+										e->setProp(e->variableName("d"), length.list(), XStringEditRole);
+										copyLength = false;
+									}
+									e->copyProps(n1, "Vertical Array", "Horizontal Connector", copyLength);
+									e->setProp(e->variableName("width"), connectorWidth.list(), XStringEditRole);
 								}
 
 							}
@@ -3077,4 +3262,8 @@ QString getTime(bool reset)
 		t0 = clock();
 
 	return r;
+}
+bool isFuzzyEqual(double a, double b, double allowableError)
+{
+	return (fabs(a - b) / ((a + b) / 2) <= allowableError);
 }
