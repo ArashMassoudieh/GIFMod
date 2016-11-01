@@ -3966,6 +3966,11 @@ vector<CController>& CMedium::controllers()
 	return parent->Control.Controllers;
 }
 
+vector<CObjectiveFunction>& CMedium::objective_functions()
+{
+	return parent->Control.ObjectiveFunctions;
+}
+
 vector<double>& CMedium::std()
 {
 	return parent->std;
@@ -4188,11 +4193,26 @@ int CMedium::lookup_experiment(string S)
 	return -1; 
 }
 
+double CMedium::calc_obj_function(double time_interval)
+{
+	return 0.0;
+}
+
 int CMedium::lookup_controllers(string S)
 {
 	int out = -1;
 	for (int i = 0; i < controllers().size(); i++)
 		if (tolower(S) == tolower(controllers()[i].name))
+			return i;
+
+	return out;
+}
+
+int CMedium::lookup_objective_functions(string S)
+{
+	int out = -1;
+	for (int i = 0; i < objective_functions().size(); i++)
+		if (tolower(S) == tolower(objective_functions()[i].name))
 			return i;
 
 	return out;

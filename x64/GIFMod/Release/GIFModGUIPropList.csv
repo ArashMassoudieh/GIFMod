@@ -283,7 +283,7 @@
 1,Entity,Constituent,Constituent,!,Diffusion coefficient,diffusion,m~^2/day; m~^2/s; cm~^2/s; cm~^2/day ,m~^2/day,float+Estimate,!,UnitBox,Global,Input,No,100107,>=0,E,Diffusion coefficient must be non-negative
 1,Entity,Constituent,Constituent,!,Exchange rate factor,exchange_rate_factor,!,!,expression,1,TextBox,Global,Input,No,100112,>=0,E,Exchange rate factor must be non-negative
 1,Entity,Constituent,Constituent,!,Partitioning coefficient,kd,!,!,dialog,...;Solid aqueous exchange parameters,PushButton,Global,Input,No,100128,,,
-1,Entity,Constituent,*,!,Settling model,vs,!,!,float+Estimate,Constant velocity; Double Exponential,ComboBox,Material,Select,No,100358,,,
+1,Entity,Constituent,*,!,Settling model,settling_model,!,!,float+Estimate,Constant velocity; Double Exponential,ComboBox,Material,Select,No,100358,,,
 1,Entity,Constituent,*,!,Hindered zone settling parameter,r_hin,!,!,float+Estimate,!,TextBox,Material,Input,No,100359,>=0,E,Hindered zone settling parameter must be non-negative
 1,Entity,Constituent,*,!,Flocculant zone settling parameter,r_floc,!,!,float+Estimate,!,TextBox,Material,Input,No,100359,>=0,E,Flocculant zone settling parameter must be non-negative
 1,Entity,Constituent,*,!,Minimum concentration for double exponential settling,x_min,!,!,float+Estimate,!,TextBox,Material,Input,No,100359,>=0,E,Minimum concentration for double exponential settling must be non-negative
@@ -323,7 +323,7 @@
 1,Entity,Particle,Single phase,!,Partitioning coefficient to air-water interface,kair,!,!,float+Estimate,!,TextBox,Material,Input,No,100127,>=0,E,Partitioning coefficient to air-water interface must be non-negative
 1,Entity,Particle,Single phase,!,Saturation attachment concentration,gmax,!,!,float+Estimate,!,TextBox,Material,Input,No,100142,>0,E,Saturation attachment concentration must be non-negative
 1,Entity,Particle,Single phase,!,Settling velocity,vs,m/day;cm/day;cm/s;mm/s;ft/day;in/day;in/s,m/day,float+Estimate,!,UnitBox,Material,Input,No,100143,>=0,E,settling velocity must be non-negative
-1,Entity,Particle,*,!,Settling model,vs,!,!,float+Estimate,Constant velocity; Double Exponential,ComboBox,Material,Select,No,100358,,,
+1,Entity,Particle,*,!,Settling model,settling_model,!,!,float+Estimate,Constant velocity; Double Exponential,ComboBox,Material,Select,No,100358,,,
 1,Entity,Particle,*,!,Hindered zone settling parameter,r_hin,!,!,float+Estimate,!,TextBox,Material,Input,No,100359,>=0,E,Hindered zone settling parameter must be non-negative
 1,Entity,Particle,*,!,Flocculant zone settling parameter,r_floc,!,!,float+Estimate,!,TextBox,Material,Input,No,100359,>=0,E,Flocculant zone settling parameter must be non-negative
 1,Entity,Particle,*,!,Minimum concentration for double exponential settling,x_min,!,!,float+Estimate,!,TextBox,Material,Input,No,100359,>=0,E,Minimum concentration for double exponential settling must be non-negative

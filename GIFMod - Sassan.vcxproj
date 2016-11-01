@@ -206,31 +206,6 @@ copy *.txt $(OutDir)
     <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_statusviewer.cpp" />
     <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_treemodel.cpp" />
     <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_wizardDialog.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ConstituentDelegate.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ConstituentWindow.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_delegate.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ExchangeParametersWindow.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_expEditor.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_expressioneditor.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_freezetablewidget.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_gridWindow.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_GWidget.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_helpWindow.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_logwindow.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_mainwindow.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_observedcombobox.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ObservedConstituentWindow.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ParticleDelegate.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ParticleWindow.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_plotWindow.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_qcustomplot.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_reactiontablemodel.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_reactiontablewidget.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_reactionwindow.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_runtimeWindow.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_statusviewer.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_treemodel.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_wizardDialog.cpp" />
     <ClCompile Include="GUI\Binary.cpp" />
     <ClCompile Include="GUI\BTC.cpp" />
     <ClCompile Include="GUI\BTCSet.cpp" />
@@ -357,6 +332,7 @@ copy *.txt $(OutDir)
     <ClInclude Include="GUI\EnvExchange.h" />
     <ClInclude Include="GUI\Evaporation.h" />
     <ClInclude Include="GUI\ExchangeParametersTableModel.h" />
+    <ClInclude Include="Header.h" />
     <CustomBuild Include="GUI\expEditor.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing expEditor.h...</Message>

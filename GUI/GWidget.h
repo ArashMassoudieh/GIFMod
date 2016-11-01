@@ -327,3 +327,5 @@ private:
 };
 bool validInflowFile(QString file);
 QString getTime(bool reset=true);
+
+bool isFuzzyEqual(double a, double b, double allowableError = 0.05);

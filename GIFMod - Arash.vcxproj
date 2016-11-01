@@ -312,6 +312,7 @@ copy *.txt $(OutDir)
     <ClCompile Include="GUI\Well.cpp" />
     <ClCompile Include="GUI\wizardDialog.cpp" />
     <ClCompile Include="GUI\Sensor.cpp" />
+    <ClCompile Include="GUI\ObjectiveFunction.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_ConstituentWindow.h" />
@@ -345,6 +346,7 @@ copy *.txt $(OutDir)
     <ClInclude Include="GUI\EnvExchange.h" />
     <ClInclude Include="GUI\Evaporation.h" />
     <ClInclude Include="GUI\ExchangeParametersTableModel.h" />
+    <ClInclude Include="GUI\ObjectiveFunction.h" />
     <CustomBuild Include="GUI\expEditor.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing expEditor.h...</Message>

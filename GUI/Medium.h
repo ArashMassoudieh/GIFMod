@@ -16,6 +16,7 @@
 #include "Evaporation.h"
 #include "Sensor.h"
 #include "utility_funcs.h"
+#include "ObjectiveFunction.h"
 
 //Sassan 
 #include "qstring.h"
@@ -25,6 +26,7 @@ class QProgressBar;
 class runtimeWindow;
 
 using namespace std;
+
 
 
 struct measured_chrc //Properties of observed data
@@ -62,9 +64,7 @@ public:
 	vector<CConnection> Connector;
 	vector<CMBBlock> Blocks;
 	vector<CSolid_Phase>& Solid_phase();
-	void CMedium::add_Richards_medium(int n, double dz, vector<double> params); 
 	void CMedium::add_Richards_medium(int n, double dz, int id=-1);
-	void CMedium::add_Darcy_medium(int n, double dz, vector<double> params); 
 	void CMedium::add_Darcy_medium(int n, double dz,  int id=-1);
 	void CMedium::add_stream_medium(int n, double z0, double slope, double lenght, int id=-1);
 	void CMedium::add_catchment_medium(int n, double z0, double slope, double lenght, int id=-1);
@@ -113,7 +113,6 @@ public:
 	CVector CMedium::Jacobian_Q(const CVector &V, const CVector &F0, int i, double dt);
 	CVector CMedium::getH(const CVector &X);
 	CVector CMedium::getQ(const CVector &X);
-	CVector CMedium::getres_H(const CVector &X);
 	void CMedium::onestepsolve_flow(double dt);
 	void CMedium::onestepsolve_colloid(double dt);
 	void CMedium::onestepsolve_const(double dtt);
@@ -140,6 +139,7 @@ public:
 	vector<range>& parameters(); // properties of unknown parameters
 	vector<CSensor>& sensors(); // properties of sensors
 	vector<CController>& controllers(); //propoerties of controllers;
+	vector<CObjectiveFunction>& objective_functions(); //objective functions for control;
 	void CMedium::getparams(string filename);
 	vector<measured_chrc>& measured_quan(); 
 	vector<double>& std(); // the vector of measured error standard deviations
@@ -256,7 +256,6 @@ public:
 
 	void CMedium::f_get_environmental_params();
 	void CMedium::f_get_model_configuration();
-	void CMedium::f_get_constituents();
 	void CMedium::f_set_default_connector_expressions();
 	void CMedium::f_set_default_block_expressions();
 	void CMedium::f_load_inflows();
@@ -283,6 +282,7 @@ public:
 	int CMedium::lookup_parameters(string S);
 	int CMedium::lookup_sensors(string S);
 	int CMedium::lookup_controllers(string S);
+	int CMedium::lookup_objective_functions(string S);
 //	int CMedium::lookup_observation(string S);
 	
 	void CMedium::writetolog(string S);
@@ -358,6 +358,10 @@ public:
 	vector<int> CMedium::get_member_no_inv(int i);
 	vector<int> CMedium::get_relevant_measured_quans();
 	int CMedium::lookup_experiment(string S);
+
+
+	// Control
+	double CMedium::calc_obj_function(double time_interval);
 
 };
 
