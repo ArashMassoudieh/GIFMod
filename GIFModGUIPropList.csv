@@ -5,12 +5,12 @@
 1,Block,*,*,Default  Values Template,SubType,!,!,!,string,populate at runtime; SubType,ComboBox,Geometry,Select,Yes,100003,,,
 1,Connector,*,*,Connector Name,Name,id,!,!,string,!,TextBox,Geometry,Input,Yes,100004,,,
 1,Connector,*,*,Connector Type,Type,!,!,!,string,populate at runtime; Type,ComboBox,Geometry,Select,Yes,100005,,,
-1,Block,Soil,*,!,Bottom area,a,m~^2;cm^2;ft~^2,m~^2,float+Estimate,0,UnitBox,Geometry,Input,Yes,100006,>0,E,Area must be greater than zero
+1,Block,Soil,*,!,Bottom area,a,m~^2;cm~^2;ft~^2,m~^2,float+Estimate,0,UnitBox,Geometry,Input,Yes,100006,>0,E,Area must be greater than zero
 1,Block,Catchment,Catchment,!,Area,a,m~^2;ft~^2,m~^2,float+Estimate,0,UnitBox,Geometry,Input,Yes,100006,>0,E,Area must be greater than zero
-1,Block,Pond,Pond,!,Bottom area,a,m~^2;cm^2;ft~^2,m~^2,float+Estimate,0,UnitBox,Geometry,Input,Yes,100006,>0,E,Area must be greater than zero
-1,Block,Darcy,Darcy,!,Bottom area,a,m~^2;cm^2;ft~^2,m~^2,float+Estimate,0,UnitBox,Geometry,Input,Yes,100006,>0,E,Area must be greater than zero
-1,Block,Stream,Stream,!,Bottom area,a,m~^2;cm^2;ft~^2,m~^2,float+Estimate,1,UnitBox,Geometry,Input,Yes,100006,>0,E,Area must be greater than zero
-1,Block,Storage,Storage,!,Bottom area,a,m~^2;cm^2;ft~^2,m~^2,float+Estimate,0,UnitBox,Geometry,Input,Yes,100006,>0,E,Area must be greater than zero
+1,Block,Pond,Pond,!,Bottom area,a,m~^2;cm~^2;ft~^2,m~^2,float+Estimate,0,UnitBox,Geometry,Input,Yes,100006,>0,E,Area must be greater than zero
+1,Block,Darcy,Darcy,!,Bottom area,a,m~^2;cm~^2;ft~^2,m~^2,float+Estimate,0,UnitBox,Geometry,Input,Yes,100006,>0,E,Area must be greater than zero
+1,Block,Stream,Stream,!,Bottom area,a,m~^2;cm~^2;ft~^2,m~^2,float+Estimate,1,UnitBox,Geometry,Input,Yes,100006,>0,E,Area must be greater than zero
+1,Block,Storage,Storage,!,Bottom area,a,m~^2;cm~^2;ft~^2,m~^2,float+Estimate,0,UnitBox,Geometry,Input,Yes,100006,>0,E,Area must be greater than zero
 1,Block,Catchment,Catchment,!,Bottom elevation,z0,m;cm;ft;in,m,float+Estimate,0,UnitBox,Material,Input,Yes,100013,,,
 1,Block,Pond,Pond,!,Bottom elevation,z0,m;cm;ft;in,m,float+Estimate,0,UnitBox,Geometry,Input,Yes,100013,,,
 1,Block,Soil,*,!,Bottom elevation,z0,m;cm;ft;in,m,float+Estimate,0,UnitBox,Material,Input,Yes,100013,,,

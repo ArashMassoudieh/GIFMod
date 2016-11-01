@@ -11,3 +11,5 @@ C:/Users/Jamal/Documents/GIFMod Projects/DO_control/DO_control.GIFM
 C:/Users/user/Dropbox/GUI/GIFMOD User's manual/Examples/1DRechards/1DRichards.GIFM
 C:/Users/user/Dropbox/GUI/GIFMOD User's manual/Examples/DO_control/DO_control.GIFM
 C:/Users/user/Documents/GIFMod Projects/1.GIFM
+C:/Users/user/Documents/GIFMod Projects/radial.GIFM
+C:/Users/user/Documents/GIFMod Projects/radial 2.GIFM
