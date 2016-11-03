@@ -251,9 +251,9 @@ double CMBBlock::get_val(int i, vector<int> ii)
 			return bulk_density;
 	}
 
-	if (i>=3000 && i<4000) return Solid_phase[ii[0]]->c_params[i-3000];
+	if (i>=3000 && i<4000) return Solid_phase[ii[0]]->get_val(i);
 	if (i>=4000 && i<5000) return envexchange[ii[1]]->parameters[i-4000];
-	if (i >= 5000 && i<6000) return RXN->cons[ii[0]].exchange_params[i - 5000];
+	if (i >= 5000 && i<6000) return RXN->cons[ii[0]].get_val(i);
 	if (i >= 10000 && i<20000) return G[(i-10000)/1000][(i-10000)%1000];
 	if (i >= 100000 && i<200000) return CG[(i-100000)/10000][(i-100000)%10000];
 
@@ -453,9 +453,9 @@ double CMBBlock::get_val_star(int i, vector<int> ii)
 			return bulk_density;
 	}
 
-	if (i>=3000 && i<4000) return Solid_phase[ii[0]]->c_params[i-3000];
+	if (i>=3000 && i<4000) return Solid_phase[ii[0]]->get_val(i);
 	if (i>=4000 && i<5000) return envexchange[ii[1]]->parameters[i-4000];
-	if (i >= 5000 && i<6000) return RXN->cons[ii[0]].exchange_params[i - 5000];
+	if (i >= 5000 && i<6000) return RXN->cons[ii[0]].get_val(i);
 	if (i >= 6000 && i<7000) return evaporation_m[ii[0]]->parameters[i - 6000];
 	if (i >= 10000 && i<20000) return G[(i - 10000) / 1000][(i - 10000) % 1000];
 	if (i >= 100000 && i<200000) return CG[(i - 100000) / 10000][(i - 100000) % 10000];

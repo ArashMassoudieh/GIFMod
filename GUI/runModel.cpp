@@ -1037,10 +1037,6 @@ void CMediumSet::g_get_observed()
 
 void CMediumSet::g_get_sensors()
 {
-	for each (Entity *e in gw->entitiesByType("Objective Function"))
-	{
-		Control.Objective_function = convertstringtoStringOP(e->val("objective_function").toQString(), gw);
-	}
 	for each (Entity *e in gw->entitiesByType("Sensor"))
 	{
 		CSensor M(gw->experimentsList().count());
@@ -1062,6 +1058,25 @@ void CMediumSet::g_get_sensors()
 	}
 
 }
+
+void CMediumSet::g_get_objective_functions()
+{
+	
+	for each (Entity *e in gw->entitiesByType("Objective Function"))
+	{
+		CObjectiveFunction M;
+		M.name = e->Name().toStdString();
+		M.loc_type = (e->val("loc_type") == "Block") ? 0 : 1; //OBSERVED SUBTYPE
+		M.location = (e->val("id").toStdString());
+		string equation = convertstringtoStringOP(e->val("quan").toQString(), gw);
+
+		M.expression = CStringOP(equation, &RXN);
+
+		Control.ObjectiveFunctions.push_back(M);
+	}
+
+}
+
 
 void CMediumSet::g_get_controllers()
 {
@@ -1626,8 +1641,15 @@ void CMediumSet::g_get_particle_types()
 		if (model == "Single phase") model = "single_phase";
 		if (model == "Dual phase") model = "dual_phase_lm";
 		if (model == "Triple phase") model = "triple_phase_lm";
+		
+		string _settling_model = e->val("settling_model").toStdString();// e->props.list["Model"];
+		
+
 
 		CSolid_Phase S(model.toStdString());
+		if (tolower(_settling_model) == "constant velocity") S.settling_model = "constant_velocity";
+		if (tolower(_settling_model) == "double exponential") S.settling_model = "double_exponential";
+		S.set_settling_model(S.settling_model);
 		S.name = e->Name().toStdString();
 		for each (QString key in e->codes())//props.list.keys())
 		{
@@ -1671,9 +1693,13 @@ void CMediumSet::g_get_constituents()
 	for (int i = 0; i<entities.count(); i++)
 	{
 		Entity *e = entities[i];
-		CConstituent S;
+		string _settling_model = e->val("settling_model").toStdString();// e->props.list["Model"];
+		if (tolower(_settling_model) == "constant velocity") _settling_model = "constant_velocity";
+		if (tolower(_settling_model) == "double exponential") _settling_model = "double_exponential";
+		CConstituent S(_settling_model);
 		S.name = e->Name().toStdString();
 		S.exchange_rate_scale_factor = CStringOP(e->val("exchange_rate_factor").toStdString());
+		
 		//S.diffusion = e->val("diffusion").toFloat(); 
 		for each (QString code in e->codes())
 		{

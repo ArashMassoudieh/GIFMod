@@ -3,13 +3,17 @@
 #include <vector>
 #include "btc.h"
 #include "StringOP.h"
+#include "Solid_Phase.h"
 
 using namespace std;
+
+
 
 class CConstituent
 {
 public:
 	CConstituent(void);
+	CConstituent(string _settling_model);
 	~CConstituent(void);
 	CConstituent& CConstituent::operator==(const CConstituent& CC);
 	CConstituent::CConstituent(const CConstituent &C);
@@ -43,5 +47,9 @@ public:
 	CStringOP exchange_rate_scale_factor;
 	vector<double> exchange_params;
 	double vs=0; 
+	CStringOP vs_coefficient; 
+	string settling_model;
+	vector<double> settling_parameters;
+	double CConstituent::get_val(int i);
 };
 
