@@ -268,7 +268,7 @@
 1,Entity,Evapotranspiration,Priestley-Taylor,,Psychrometric constant,psychrometric_constant,Pa/~degreeC,Pa/~degreeC,string,66.8,UnitBox,Global,Select,No,100319,>0,E,Psychrometric constant must be non-negative
 //1,Block,Pond,Pond,!,Length,d,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100319,,,
 1,Entity,Evapotranspiration,Penman,,Wind coefficient,coefficient,!,!,string,!,TextBox,Global,Select,No,100320,!=0;>0,W;E,Coefficient is zero;Coefficient must be non-negative
-1,Block,Storage,Storage,!,Suction head coefficient under dry condition,storage_epsilon,m;cm;ft;in,!,float+Estimate,0.01,UnitBox,Geometry,Input,Yes,100320,>0,E,Suction head coefficient should be positive
+1,Block,Storage,Storage,!,Suction head coefficient under dry condition,storage_epsilon,m;cm;ft;in,m,float+Estimate,0.01,UnitBox,Geometry,Input,Yes,100320,>0,E,Suction head coefficient should be positive
 1,Entity,Evapotranspiration,Penman,,Solar-radiation coefficient,coefficient_light,!,!,string,!,TextBox,Global,Select,No,100321,!=0;>0,W;E,Coefficient is zero;Coefficient must be non-negative
 1,Block,Storage,Storage,!,Suction head power under dry condition,storage_n,!,!,float+Estimate,2,TextBox,Geometry,Input,Yes,100321,>0,E,Suction head power should be positive
 1,Entity,Evapotranspiration,Penman,,Psychrometric constant,psychrometric_constant,Pa/~degreeC,Pa/~degreeC,string,66.8,UnitBox,Global,Select,No,100319,>0,E,Psychrometric constant must be non-negative

@@ -9,7 +9,6 @@
     <ClCompile Include="GUI\Constituent.cpp" />
     <ClCompile Include="GUI\ConstituentDelegate.cpp" />
     <ClCompile Include="GUI\ConstituentTableModel.cpp" />
-    <ClCompile Include="GUI\ConstituentWindow.cpp" />
     <ClCompile Include="GUI\Copula.cpp" />
     <ClCompile Include="GUI\Copula_GWA.cpp" />
     <ClCompile Include="GUI\Crxtterm.cpp" />
@@ -96,6 +95,12 @@
     <ClCompile Include="GUI\GWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GUI\ObjectiveFunction.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\ConstituentWindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
     <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_ConstituentDelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -169,6 +174,81 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_wizardDialog.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ConstituentDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ConstituentWindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_delegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ExchangeParametersWindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_expEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_expressioneditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_freezetablewidget.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_gridWindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_GWidget.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_helpWindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_logwindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_mainwindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_observedcombobox.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ObservedConstituentWindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ParticleDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ParticleWindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_plotWindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_qcustomplot.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_reactiontablemodel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_reactiontablewidget.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_reactionwindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_runtimeWindow.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_statusviewer.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_treemodel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_wizardDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -248,6 +328,12 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="Header.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\ObjectiveFunction.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\texfonts.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_ConstituentWindow.h">
@@ -343,6 +429,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="GUI\PropList.csv" />
+    <None Include="GUI\Icons\Save File Icon Stock Photography - Image_ 517502_files\BhKMRj1sUPu(1).html" />
+    <None Include="GUI\Icons\Save File Icon Stock Photography - Image_ 517502_files\BhKMRj1sUPu.html" />
+    <None Include="GUI\Icons\Save File Icon Stock Photography - Image_ 517502_files\fastbutton.html" />
+    <None Include="GUI\Icons\Save File Icon Stock Photography - Image_ 517502_files\follow_button.ae36744a06482b14f4c1ab8ab6ea765e.en.html" />
+    <None Include="GUI\Icons\Save File Icon Stock Photography - Image_ 517502_files\like.html" />
+    <None Include="GUI\Icons\Save File Icon Stock Photography - Image_ 517502_files\postmessageRelay.html" />
+    <None Include="GUI\Icons\Save File Icon Stock Photography - Image_ 517502_files\saved_resource.html" />
+    <None Include="GUI\Icons\Save File Icon Stock Photography - Image_ 517502.html" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Form Files">
