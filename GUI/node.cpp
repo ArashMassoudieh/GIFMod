@@ -428,7 +428,10 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 	}
 	else
 	{
-		painter->setBrush(radialGrad);
+		if (parent->colorCode.nodes)
+			painter->setBrush(color.color1);
+		else
+			painter->setBrush(radialGrad);
 		painter->setPen(QPen(Qt::black, (bold) ? 2 : 0));
 		painter->drawRoundRect(0, 0, width, height, 10, 10);
 		qreal factor = parent->transform().scale(1, 1).mapRect(QRectF(0, 0, 1, 1)).width();
@@ -439,7 +442,13 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 		if (ObjectType().ObjectType == "Well" || ObjectType().ObjectType == "Tracer")
 			painter->drawText(10, height - 10, QString("%1: %2").arg(ObjectType().ObjectType).arg(Name()));
 		else
+		{
 			painter->drawText(10, height - 10, QString("%1, z0=%2").arg(Name()).arg(XString(getProp(variableName("z0")).toStringList())));
+			if (parent->colorCode.nodes && middleText!="")
+			{
+				painter->drawText(10, height / 2 - 10, middleText);
+			}
+		}
 		if (isSelected())
 		{
 			if (parent->tableProp->model() != model) {

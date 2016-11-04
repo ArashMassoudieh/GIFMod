@@ -210,6 +210,7 @@ copy *.txt $(OutDir)
     <ClCompile Include="GUI\BTC.cpp" />
     <ClCompile Include="GUI\BTCSet.cpp" />
     <ClCompile Include="GUI\Buildup.cpp" />
+    <ClCompile Include="GUI\colorScheme.cpp" />
     <ClCompile Include="GUI\Connection.cpp" />
     <ClCompile Include="GUI\Constituent.cpp" />
     <ClCompile Include="GUI\ConstituentDelegate.cpp" />
@@ -304,6 +305,7 @@ copy *.txt $(OutDir)
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_gridWindow.h" />
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_helpWindow.h" />
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_logwindow.h" />
+    <ClInclude Include="GeneratedFiles\GIFMOD\ui_MainWindow.h" />
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_mainwindowGIFMod.h" />
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_ObservedConstituentWindow.h" />
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_ParticleWindow.h" />
@@ -315,6 +317,7 @@ copy *.txt $(OutDir)
     <ClInclude Include="GUI\BTC.h" />
     <ClInclude Include="GUI\BTCSet.h" />
     <ClInclude Include="GUI\Buildup.h" />
+    <ClInclude Include="GUI\colorScheme.h" />
     <ClInclude Include="GUI\Connection.h" />
     <ClInclude Include="GUI\Constituent.h" />
     <ClInclude Include="GUI\ConstituentTableModel.h" />
@@ -329,6 +332,7 @@ copy *.txt $(OutDir)
     <ClInclude Include="GUI\EnvExchange.h" />
     <ClInclude Include="GUI\Evaporation.h" />
     <ClInclude Include="GUI\ExchangeParametersTableModel.h" />
+    <ClInclude Include="Header.h" />
     <CustomBuild Include="GUI\expEditor.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing expEditor.h...</Message>
@@ -987,6 +991,24 @@ copy *.txt $(OutDir)
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\GIFMOD\ui_%(Filename).h" "%(FullPath)"</Command>
     </CustomBuild>
     <CustomBuild Include="GUI\mainwindowGIFMod.ui">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Uic%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\GIFMOD\ui_%(Filename).h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\GIFMOD\ui_%(Filename).h" "%(FullPath)"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Uic%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\GIFMOD\ui_%(Filename).h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\GIFMOD\ui_%(Filename).h" "%(FullPath)"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Uic%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\GIFMOD\ui_%(Filename).h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\GIFMOD\ui_%(Filename).h" "%(FullPath)"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Uic%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\GIFMOD\ui_%(Filename).h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\GIFMOD\ui_%(Filename).h" "%(FullPath)"</Command>
+    </CustomBuild>
+    <CustomBuild Include="GUI\MainWindow.ui">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Uic%27ing %(Identity)...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\GIFMOD\ui_%(Filename).h;%(Outputs)</Outputs>

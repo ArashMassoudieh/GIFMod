@@ -31,7 +31,6 @@
     <ClCompile Include="GUI\GA.cpp" />
     <ClCompile Include="GUI\gridWindow.cpp" />
     <ClCompile Include="GUI\GWA.cpp" />
-    <ClCompile Include="GUI\GWidget.cpp" />
     <ClCompile Include="GUI\helpWindow.cpp" />
     <ClCompile Include="GUI\Individual.cpp" />
     <ClCompile Include="GUI\LIDconfig.cpp" />
@@ -89,6 +88,12 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GUI\Medium.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\colorScheme.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\GWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_ConstituentDelegate.cpp">
@@ -239,6 +244,12 @@
     <ClInclude Include="GUI\edge.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GUI\colorScheme.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Header.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_ConstituentWindow.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
@@ -252,6 +263,9 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_logwindow.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\GIFMOD\ui_MainWindow.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_mainwindowGIFMod.h">
@@ -319,6 +333,9 @@
     </CustomBuild>
     <CustomBuild Include="GUI\wizardDialog.h">
       <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GUI\MainWindow.ui">
+      <Filter>Form Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

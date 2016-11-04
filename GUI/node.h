@@ -111,6 +111,16 @@ public:
 	QMap<QString, QString> warnings, errors;
 	int minH = 30, minW = 40;
 	bool oldVersionLoad = false;
+	bool isPorous() {
+		QStringList Porous;
+		Porous << "Soil" << "Darcy" << "Storage";// << "" << "";
+		if (Porous.contains(ObjectType().ObjectType))
+			return true;
+		else 
+			return false;
+	}
+	QString middleText = "";
+
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) Q_DECL_OVERRIDE;
 	void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);

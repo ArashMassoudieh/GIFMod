@@ -170,6 +170,7 @@ private slots:
 	void removeProjectExplorerEdgeItem(QString name = "", const QModelIndex = QModelIndex()); // TreeModel *model = 0, const QString name = "", const QModelIndex = QModelIndex());
 	void removeProjectExplorerEntityItem(QString name = "", const QModelIndex = QModelIndex()); // TreeModel *model = 0, const QString name = "", const QModelIndex = QModelIndex());
 	void plotObservationData(CBTC data = CBTC(), QString name = "");
+	void plotControllerData(CBTC data = CBTC(), QString name = "");
 	void plotModeledData(CBTC modeled = CBTC(), CBTC observed = CBTC(), QString name = "");
 	void plotModeledDataDot(CBTC modeled = CBTC(), CBTC observed = CBTC(), QString name = "");
 	void plotAgreementPlotData(CBTC observation = CBTC(), CBTC modeled = CBTC(), QString name = "");
@@ -204,7 +205,10 @@ private slots:
 	void on_actioncolorCodeMoistureContent_triggered();
 	void on_actioncolorCodeWaterDepth_triggered();
 	void on_actioncolorCodeEvaporationRate_triggered();
-
+	void on_actionColorCodeConnectorFlow_triggered();
+	void on_actionColorCodeConnectorVelocity_triggered();
+	void on_actionColorCodeConnectorArea_triggered();
+	void on_actionColorCodeConnectorVaporExchangeEate_triggered();
 
 
 	void on_actionProjectSettings_triggered();
@@ -218,6 +222,7 @@ private slots:
 	
 	void on_actionShowRuntimeWindow_triggered();
 	void on_actionRecent_triggered();
+	void on_actionReset_colors_triggered();
 	void removeFromRecentList(QAction*);
 
 	void writeRecentFilesList();

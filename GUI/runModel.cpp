@@ -24,11 +24,11 @@ CMediumSet::CMediumSet(GraphWidget* gw, runtimeWindow *rtw)
 	set_default();
 	g_get_environmental_params();
 	g_get_params();
-	g_get_sensors();
-	g_get_controllers();
 	g_get_observed();
 	g_get_particle_types();
 	g_get_constituents();
+	g_get_sensors();
+	g_get_controllers();
 	g_get_reactions();
 	g_get_buildup();
 	g_get_external_flux();
@@ -1044,18 +1044,39 @@ void CMediumSet::g_get_sensors()
 		M.name = e->Name().toStdString();
 		M.loc_type = (e->val("loc_type") == "Block") ? 0 : 1; //OBSERVED SUBTYPE
 		string equation = convertstringtoStringOP(e->val("quan").toQString(), gw);
-		M.quan = CStringOP(equation);
+		
+		M.quan = CStringOP(equation, &RXN);
 
 		M.id = (e->val("id").toStdString());
 		M.error_std = e->val("error_std").toFloat();
 		M.error_structure = (e->val("error_structure") == "Normal") ? 0 : 1; //NORM 0 ; LOg 1
 		M.interval = e->val("interval").toFloat();
+		M.error_std = e->val("std").toFloat();
 
 
 		Control.Sensors.push_back(M);
 	}
 
 }
+
+void CMediumSet::g_get_objective_functions()
+{
+	
+	for each (Entity *e in gw->entitiesByType("Objective Function"))
+	{
+		CObjectiveFunction M;
+		M.name = e->Name().toStdString();
+		M.loc_type = (e->val("loc_type") == "Block") ? 0 : 1; //OBSERVED SUBTYPE
+		M.location = (e->val("id").toStdString());
+		string equation = convertstringtoStringOP(e->val("quan").toQString(), gw);
+
+		M.expression = CStringOP(equation, &RXN);
+
+		Control.ObjectiveFunctions.push_back(M);
+	}
+
+}
+
 
 void CMediumSet::g_get_controllers()
 {
@@ -1072,7 +1093,7 @@ void CMediumSet::g_get_controllers()
 				M.set_val(key.toStdString(), e->val(key).toFloat());
 
 //		M.interval = e->val("interval").toFloatDefaultUnit();
-		if (M.type == "ziegler-nichols") M.set_zn();
+		if (tolower(M.type) == "ziegler-nichols") M.set_zn();
 		Control.Controllers.push_back(M);
 	}
 }
@@ -1620,8 +1641,15 @@ void CMediumSet::g_get_particle_types()
 		if (model == "Single phase") model = "single_phase";
 		if (model == "Dual phase") model = "dual_phase_lm";
 		if (model == "Triple phase") model = "triple_phase_lm";
+		
+		string _settling_model = e->val("settling_model").toStdString();// e->props.list["Model"];
+		
+
 
 		CSolid_Phase S(model.toStdString());
+		if (tolower(_settling_model) == "constant velocity") S.settling_model = "constant_velocity";
+		if (tolower(_settling_model) == "double exponential") S.settling_model = "double_exponential";
+		S.set_settling_model(S.settling_model);
 		S.name = e->Name().toStdString();
 		for each (QString key in e->codes())//props.list.keys())
 		{
@@ -1665,9 +1693,13 @@ void CMediumSet::g_get_constituents()
 	for (int i = 0; i<entities.count(); i++)
 	{
 		Entity *e = entities[i];
-		CConstituent S;
+		string _settling_model = e->val("settling_model").toStdString();// e->props.list["Model"];
+		if (tolower(_settling_model) == "constant velocity") _settling_model = "constant_velocity";
+		if (tolower(_settling_model) == "double exponential") _settling_model = "double_exponential";
+		CConstituent S(_settling_model);
 		S.name = e->Name().toStdString();
 		S.exchange_rate_scale_factor = CStringOP(e->val("exchange_rate_factor").toStdString());
+		
 		//S.diffusion = e->val("diffusion").toFloat(); 
 		for each (QString code in e->codes())
 		{

@@ -13,6 +13,7 @@
 #include "PropModel.h"
 #include "XString.h"
 //#include "helpWindow.h"
+#include "colorscheme.h"
 
 //class MainWindow;
 class helpWindow;
@@ -31,6 +32,7 @@ class CMediumSet;
 class CGWA;
 class Results;
 struct plotformat;
+
 
 //class logWindow;
 
@@ -101,7 +103,7 @@ public:
 	bool trackingUndo = false;
 	void deselectAll() const;
 	void deleteSelected();
-	void update();
+	void update(bool fast = false);
 //	void PropsPopulate(const Node *node, QTableView *tableProp);
 	void PropsPopulate(Node *node, QStandardItemModel *propModel);
 	int _x, _y;
@@ -249,8 +251,12 @@ public:
 	void GraphWidget::experimentsComboClear(bool addExperiment1 = true);
 	void GraphWidget::updateNodeCoordinates();
 	QMap<QString, QMap<QString, QString>> specs;
-	void updateNodesColorCodes(QString propertyItem, bool logged = false, QString colorTheme = "Green", vector<double> predifinedMinMax = vector<double>());
-
+	void updateNodesColorCodes(QString propertyItem, bool logged = false, QString colorTheme = "Green", vector<double> predifinedMinMax = vector<double>(), float time = -1);
+	void updateEdgesColorCodes(QString propertyItem, bool logged = false, QString colorTheme = "Green", vector<double> predifinedMinMax = vector<double>(), float time = -1);
+	QSlider *legendSliderTime=0;
+	colorlegend colors;
+	void applyColorstoNodes();
+	void applyColorstoEdges();
 public slots:
 	void shuffle();
 	void zoomIn();
@@ -289,6 +295,9 @@ public slots:
 	void delegateDatePicked(QCalendarWidget *calendar = 0, QModelIndex index = QModelIndex());
 	//QComboBox* experiments;
 	void experimentSelect(const QString &experimentName);
+	void colorSchemeLegend_closed();
+	void legendSliderChanged_Nodes(int value);
+	void legendSliderChanged_Edges(int value);
 
 signals:
 	void Mouse_Pos(int, int, QString);
@@ -318,3 +327,5 @@ private:
 };
 bool validInflowFile(QString file);
 QString getTime(bool reset=true);
+
+bool isFuzzyEqual(double a, double b, double allowableError = 0.05);

@@ -5,3 +5,7 @@ C:/Users/ArashComp/Documents/GIFMod Projects/PID_pool_test/PID_pool_test.GIFM
 C:/Users/user/Documents/GIFMod Projects/test color.GIFM
 C:/Users/user/Documents/GIFMod Projects/test color.temp
 C:/Users/Arash-Home/Documents/GIFMod Projects/DO_control/DOControl.GIFM
+E:/Dropbox/GUI/GIFMOD User's manual/Examples/DO_control/DO_control.GIFM
+C:/Users/ArashComp/Documents/GIFMod Projects/Double_exp_settling/double_exp_settling.GIFM
+C:/Users/ArashComp/Documents/GIFMod Projects/Double_exp_settling/double_exp_settling_10blks.GIFM
+C:/Users/ArashComp/Documents/GIFMod Projects/Double_exp_settling/double_exp_settling_10blks_cnstts.GIFM

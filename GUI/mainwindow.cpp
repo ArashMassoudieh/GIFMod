@@ -1,5 +1,5 @@
 #ifndef GIFMOD_VERSION
-#define GIFMOD_VERSION "0.1.1"
+#define GIFMOD_VERSION "0.1.2"
 #endif
 #define RECENT "recentFiles.txt"
 #include "mainwindow.h"
@@ -272,8 +272,13 @@ void MainWindow::addToRecentFiles(QString fileName, bool addToFile)
 	if (!recentFiles.contains(fileName.toLower()) && fileName.trimmed()!="")
 	{
 		recentFiles.append(fileName.toLower());
-		QAction * a = ui->menuRecent->addAction(fileName);// , this, SLOT(recentItem()));
-		QObject::connect(a, SIGNAL(triggered()), this, SLOT(on_actionRecent_triggered()));
+//		QAction * a = ui->menuRecent->addAction(fileName);// , this, SLOT(recentItem()));
+		QAction * fileNameAction = new QAction(fileName, 0);
+		if (ui->menuRecent->actions().size())
+			ui->menuRecent->insertAction(ui->menuRecent->actions()[0], fileNameAction);
+		else 
+			ui->menuRecent->addAction(fileNameAction);
+		QObject::connect(fileNameAction, SIGNAL(triggered()), this, SLOT(on_actionRecent_triggered()));
 
 		if (addToFile)
 		{
@@ -827,7 +832,80 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 			if (addSeparator) menu->addSeparator();
 		}
 
+//		*********
 
+		if (item->parent()->Name() == "Controllers")
+		{
+			bool addSeparator = false;
+			Entity *controller = mainGraphWidget->entity(name, "Controller");
+			//QString file = obs->getValue("Observed data").toQString();
+			QString file = QString("./control_output_%1.txt").arg(mainGraphWidget->experimentName());
+			CBTCSet data = CBTCSet(file.replace("./", modelPathname().append('/')).toStdString(), 1);
+			if (data.nvars)
+			{
+				for (int i = 0; i < data.nvars; i++)
+				{
+					if (data[i].name == controller->name.toStdString())
+					{
+						plotControllerData(data[i], QString::fromStdString(data[i].name));
+						menu->addAction(QString("Plot control data").arg(name), this, SLOT(plotControllerData()));
+						addSeparator = true;
+					}
+				}
+			}
+			/*				if (mainGraphWidget->modelSet != nullptr)
+								if (mainGraphWidget->modelSet->ANS_obs.nvars)
+								{
+									int index = -1;
+									for (int i = 0; i<mainGraphWidget->modelSet->ANS_obs.nvars; i++)
+										if (mainGraphWidget->modelSet->ANS_obs[i].name == name.toStdString())
+										{
+											plotModeledData(mainGraphWidget->modelSet->ANS_obs[i], data[0], QString("%1").arg(name));
+											menu->addAction(QString("Plot modeled data").arg(name), this, SLOT(plotModeledData()));
+
+											plotAgreementPlotData(data[0], mainGraphWidget->modelSet->ANS_obs[i].interpol(data[0]), QString("Agreement plot %1").arg(name));
+											menu->addAction(QString("Plot agreement plot").arg(name), this, SLOT(plotAgreementPlotData()));
+											addSeparator = true;
+										}
+								}
+
+							if (addSeparator) menu->addSeparator();
+							if (mainGraphWidget->results)
+							{
+								//				mainGraphWidget->log(obs->name);
+								if (mainGraphWidget->results->hasRealization(obs->name))
+								{
+									plotRealization(mainGraphWidget->results->realization(obs->name), QString("Realization %1").arg(obs->name));
+									menu->addAction(QString("Plot realization data").arg(obs->name), this, SLOT(plotRealization()));
+									addSeparator = true;
+								}
+								if (mainGraphWidget->results->hasRealizationPercentile(obs->name))
+								{
+									plotRealizationPercentile(mainGraphWidget->results->realizationPercentile(obs->name), QString("Realization percentile %1").arg(obs->name));
+									menu->addAction(QString("Plot prediction 95 percentile").arg(obs->name), this, SLOT(plotRealizationPercentile()));
+									addSeparator = true;
+								}
+								if (mainGraphWidget->results->hasNoiseRealization(obs->name))
+								{
+									plotNoiseRealization(mainGraphWidget->results->noiseRealization(obs->name), QString("Realization (Noise) %1").arg(obs->name));
+									menu->addAction(QString("Plot realization (Noise)").arg(obs->name), this, SLOT(plotNoiseRealization()));
+									addSeparator = true;
+								}
+								if (mainGraphWidget->results->hasNoiseRealizationPercentile(obs->name))
+								{
+									plotNoiseRealizationPercentile(mainGraphWidget->results->noiseRealizationPercentile(obs->name), QString("Realization percentile (Noise) %1").arg(obs->name));
+									menu->addAction(QString("Plot prediction 95 percentile (Noise)").arg(obs->name), this, SLOT(plotNoiseRealizationPercentile()));
+									addSeparator = true;
+								}
+
+							}
+							if (addSeparator) menu->addSeparator();
+						}
+
+
+
+						***************/
+		}
 		if (item->parent()->Name() == "Parameters" && mainGraphWidget->results)
 		{
 			bool addSeparator = false;
@@ -913,6 +991,17 @@ void MainWindow::tablePropShowContextMenu(const QPoint&pos)
 			connect(controlsMenu, SIGNAL(triggered(QAction*)), this, SLOT(addParameter(QAction*)));
 			controlsMenu->setEnabled(true);
 		}
+/*		QMenu *objectiveFunctionsMenu = new QMenu("Objective functions");
+		menu->addMenu(objectiveFunctionsMenu);
+		objectiveFunctionsMenu->setEnabled(false);
+		if (i2.data(VariableTypeRole).toString().toLower().contains("control"))
+		{
+			for each (QString item in mainGraphWidget->EntityNames("Controller"))
+				controlsMenu->addAction(QString("%1").arg(item));// , this, SLOT(addParameter()));
+			addParameterIndex(i1); // tableProp->indexAt(pos));
+			connect(controlsMenu, SIGNAL(triggered(QAction*)), this, SLOT(addParameter(QAction*)));
+			controlsMenu->setEnabled(true);
+		}*/
 		menu->exec(tableProp->mapToGlobal(pos));
 	}
 	if (i1.column() == 1 && i1.data(TypeRole).toString().toLower().contains("time series"))
@@ -1249,6 +1338,26 @@ void MainWindow::plotObservationData(CBTC data, QString name)
 		plot->show();
 	}
 }
+
+void MainWindow::plotControllerData(CBTC data, QString name)
+{
+	static CBTC _data;
+	static QString _name;
+	if (data.n)
+	{
+		_data = data;
+		_name = name;
+		return;
+	}
+	else
+	{
+		plotWindow *plot = new plotWindow(mainGraphWidget);
+		bool convertTime = true;
+		plot->addScatterPlot(_data, _name + "(Controll)", convertTime);
+		plot->show();
+	}
+}
+
 void MainWindow::plotModeledData(CBTC modeled, CBTC observed, QString _name)
 {
 	static CBTC model, obs;
@@ -2128,6 +2237,11 @@ void MainWindow::on_actionRecent_triggered()
 		removeFromRecentList(a);
 }
 
+void MainWindow::on_actionReset_colors_triggered()
+{
+	mainGraphWidget->colorSchemeLegend_closed();
+}
+
 void MainWindow::removeFromRecentList(QAction* selectedFileAction)
 {
 	recentFiles.removeAll(selectedFileAction->text());
@@ -2160,28 +2274,45 @@ void MainWindow::on_actioncolorCodedResults_triggered()
 }
 void MainWindow::on_actioncolorCodeStorage_triggered()
 {
-	mainGraphWidget->updateNodesColorCodes("Storage", false, "Green");
+	mainGraphWidget->updateNodesColorCodes("Storage", false, "Blue-Red");
 
 }
 void MainWindow::on_actioncolorCodeHead_triggered()
 {
-	mainGraphWidget->updateNodesColorCodes("Head", false, "Green");
+	mainGraphWidget->updateNodesColorCodes("Head", false, "Blue-Red");
 
 }
 void MainWindow::on_actioncolorCodeMoistureContent_triggered()
 {
-	mainGraphWidget->updateNodesColorCodes("Moisture content", false, "Green");
+	mainGraphWidget->updateNodesColorCodes("Moisture content", false, "Blue-Red");
 
 }
 void MainWindow::on_actioncolorCodeWaterDepth_triggered()
 {
-	mainGraphWidget->updateNodesColorCodes("Water depth", false, "Green");
+	mainGraphWidget->updateNodesColorCodes("Water depth", false, "Blue-Red");
 
 }
 void MainWindow::on_actioncolorCodeEvaporationRate_triggered()
 {
-	mainGraphWidget->updateNodesColorCodes("Evaporation rate", false, "Green");
+	mainGraphWidget->updateNodesColorCodes("Evaporation rate", false, "Blue-Red");
 
+}
+void MainWindow::on_actionColorCodeConnectorFlow_triggered()
+{
+	mainGraphWidget->updateEdgesColorCodes("Flow", false, "Blue-Red");
+}
+void MainWindow::on_actionColorCodeConnectorVelocity_triggered()
+{
+	mainGraphWidget->updateEdgesColorCodes("Velocity", false, "Blue-Red");
+}
+void MainWindow::on_actionColorCodeConnectorArea_triggered()
+{
+	mainGraphWidget->updateEdgesColorCodes("Area", false, "Blue-Red");
+
+}
+void MainWindow::on_actionColorCodeConnectorVaporExchangeEate_triggered()
+{
+	mainGraphWidget->updateEdgesColorCodes("Vapor exchange rate", false, "Blue-Red");
 }
 void MainWindow::gwidgetChanged()
 {

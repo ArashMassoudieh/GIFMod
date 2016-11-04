@@ -8,6 +8,8 @@
 class GraphWidget;
 class runtimeWindow;
 #include "qmap.h"
+#include "StringOP.h"
+#include "ObjectiveFunction.h"
 
 struct  Solver_parameters
 {
@@ -78,6 +80,7 @@ struct _set_features
 
 struct _control
 {
+	vector<CObjectiveFunction> ObjectiveFunctions; 
 	vector<CSensor> Sensors; 
 	vector<CController> Controllers; 
 };
@@ -151,6 +154,7 @@ public:
 	void g_get_params();
 	void g_get_observed();
 	void g_get_sensors();
+	void g_get_objective_functions();
 	void g_get_particle_types();
 	void g_get_constituents();
 	void g_get_reactions();

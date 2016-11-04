@@ -1,5 +1,6 @@
 #pragma once
 #include "QColor.h";
+#define PI 3.14159265359;
 class GraphWidget;
 enum Operation_Modes{ Draw_Connector, Node1_selected, Pan, NormalMode, resizeNode };
 enum Object_Types { Void, Block, Connector, RayLine };
@@ -68,6 +69,7 @@ struct percentileData{
 	std::string parameter;
 	double p25, p50, p975, mean, std;
 };
+
 
 QStringList percentile2List(percentileData p);
 percentileData percentileFromList(QStringList r);

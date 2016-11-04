@@ -28,6 +28,7 @@
 #include "PropModel.h"
 #include "qvariant.h"
 #include "colorScheme.h"
+//#include "utility_funcs.h"
 
 #ifdef GIFMOD
 #include "medium.h"
@@ -438,10 +439,10 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 	}
 	if (cursorModeNormal) setCursor(Qt::ArrowCursor);
 }
-void GraphWidget::update()
+void GraphWidget::update(bool fast)
 {
-	for each (Node* n in Nodes()) n->update();
-	for each (Edge* e in Edges()) e->update();
+	for each (Node* n in Nodes()) n->update(fast);
+	for each (Edge* e in Edges()) e->update(fast);
 	
 
 }
@@ -604,62 +605,165 @@ void GraphWidget::updateNodeCoordinates()
 		}
 	}
 }
-void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QString colorTheme, vector<double> predifinedMinMax)
+void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QString colorTheme, vector<double> predifinedMinMax, float time)
 {
 	if (!hasResults)
 	{
 		QMessageBox::information(0, "GIFMod", "There is no results available, please run the model first.");
 		return;
 	}
-	vector<CBTC> data;
-	vector<float> factors;
-	vector<float> shifts;
-	QStringList nodeNames = this->nodeNames();
-	for (int i = 0; i < nodeNames.size(); i++)
+	//	colorlegend colors;
+	if (time == -1)
 	{
-		float factor = 1;
-		float shift = 0;
-		int index = model->getblocksq(nodeNames[i].toStdString());
-		if (propertyName == "Storage") {
-			data.push_back(model->ANS[index]);
-		}
-		if (propertyName == "Head") {
-			data.push_back(model->ANS[model->Connector.size() + model->Blocks.size() + index]);
-		}
-		if (propertyName == "Moisture content")
+		vector<CBTC> data;
+		vector<float> factors;
+		vector<float> shifts;
+		QStringList nodeNames = this->nodeNames();
+		QStringList removedNodes;
+		for (int i = 0; i < nodeNames.size(); i++)
 		{
-			Node *n = node(nodeNames[i]);
-			double volume = n->val("a").convertToDefaultUnit().toDouble() * n->val("depth").convertToDefaultUnit().toDouble();
-			factor = 1 / volume;
-			data.push_back(model->ANS[index]);
+			float factor = 1;
+			float shift = 0;
+			int index = model->getblocksq(nodeNames[i].toStdString());
+			if (propertyName == "Storage") {
+				data.push_back(model->ANS[index]);
+			}
+			if (propertyName == "Head") {
+				data.push_back(model->ANS[model->Connector.size() + model->Blocks.size() + index]);
+			}
+			if (propertyName == "Moisture content")
+			{
+				Node *n = node(nodeNames[i]);
+				if (!n->isPorous())
+				{
+					n->color.color1 = QColor(255, 255, 255, 128);
+					removedNodes.append(nodeNames[i]);
+				}
+				else
+				{
+					double volume = n->val("a").convertToDefaultUnit().toDouble() * n->val("depth").convertToDefaultUnit().toDouble();
+					factor = 1 / volume;
+					data.push_back(model->ANS[index]);
+				}
+			}
+			if (propertyName == "Water depth")
+			{
+				Node *n = node(nodeNames[i]);
+				double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
+				shift = -z0;
+				data.push_back(model->ANS[model->Connector.size() + model->Blocks.size() + index]);
+			}
+			if (propertyName == "Evapotranspiration rate")
+			{
+				data.push_back(model->ANS[model->Connector.size() + 2 * model->Blocks.size() + index]);
+			}
+			factors.push_back(factor);
+			shifts.push_back(shift);
 		}
-		if (propertyName == "Water depth")
-		{
-			Node *n = node(nodeNames[i]);
-			double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
-			shift = -z0;
-			data.push_back(model->ANS[model->Connector.size() + model->Blocks.size() + index]);
-		}
-		if (propertyName == "Evapotranspiration rate")
-		{
-			data.push_back(model->ANS[model->Connector.size() + 2 * model->Blocks.size() + index]);
-		}
-		factors.push_back(factor);
-		shifts.push_back(shift);
+		for each (QString rN in removedNodes)
+			nodeNames.removeAll(rN);
+		colors.data = data;
+		colors.factors = factors;
+		colors.shifts = shifts;
+		colors.nodeNames = nodeNames;
+		colors.propertyName = propertyName;
 	}
-	float t = QInputDialog::getDouble(qApp->activeWindow(), "Input Dialog Box", "Enter time:", 0, 0, 2147483647, 4);
-	
-	colorlegend colors = colorScheme::colorandLegend(data, t, "Green", false, 8, factors, shifts);
-	for (int i = 0; i < nodeNames.size(); i++)
+
+	if (time == -1)
+		time = model->Timemin;
+	//float t = QInputDialog::getDouble(qApp->activeWindow(), "Input Dialog Box", QString("Enter time between(%1-%2):").arg(model->Timemin).arg(model->Timemax), 0, model->Timemin, model->Timemax, 4);
+
+	colorScheme::colorandLegend(colors, time, "Blue-Red", false, 8);
+	applyColorstoNodes();
+}
+
+void GraphWidget::updateEdgesColorCodes(QString propertyName, bool logged, QString colorTheme, vector<double> predifinedMinMax, float time)
+{
+	if (!hasResults)
 	{
-		Node *n = node(nodeNames[i]);
+		QMessageBox::information(0, "GIFMod", "There is no results available, please run the model first.");
+		return;
+	}
+	//	colorlegend colors;
+	if (time == -1)
+	{
+		vector<CBTC> data;
+		vector<float> factors;
+		vector<float> shifts;
+		QStringList edgeNames = this->edgeNames();
+//		QStringList removedEdges;
+		for (int i = 0; i < edgeNames.size(); i++)
+		{
+			float factor = 1;
+			float shift = 0;
+			int index = model->getconnectorsq(edgeNames[i].toStdString());
+			if (propertyName == "Flow") {
+				data.push_back(model->ANS[Nodes().count() + index].fabs());
+			}
+			if (propertyName == "Velocity") {
+				CBTC flow, area, velocity;
+				flow = model->ANS.BTC[Nodes().count() + index];
+				area = model->ANS.BTC[Nodes().count() * 3 + Edges().count() + index];
+				velocity = flow % area;
+				data.push_back(velocity.fabs());
+			}
+			if (propertyName == "Area") {
+				data.push_back(model->ANS[Nodes().count() * 3 + Edges().size() + index]);
+			}
+			if (propertyName == "Vapor exchange rate") {
+				data.push_back(model->ANS[Nodes().count() * 3 + 2 * Edges().size() + index].fabs());
+			}
+			factors.push_back(factor);
+			shifts.push_back(shift);
+		}
+//		for each (QString rN in removedNodes)
+//			nodeNames.removeAll(rN);
+		colors.data = data;
+		colors.factors = factors;
+		colors.shifts = shifts;
+		colors.edgeNames = edgeNames;
+		colors.propertyName = propertyName;
+	}
+
+	if (time == -1)
+		time = model->Timemin;
+	//float t = QInputDialog::getDouble(qApp->activeWindow(), "Input Dialog Box", QString("Enter time between(%1-%2):").arg(model->Timemin).arg(model->Timemax), 0, model->Timemin, model->Timemax, 4);
+
+	colorScheme::colorandLegend(colors, time, "Blue-Red", false, 8);
+	applyColorstoEdges();
+}
+
+void GraphWidget::applyColorstoNodes()
+{
+	for (int i = 0; i < colors.nodeNames.size(); i++)
+	{
+		Node *n = node(colors.nodeNames[i]);
 		n->color.color1 = colors.colors[i];
 		n->color.color2 = colors.colors[i];
+		n->middleText = colors.middleText[i];
+		n->update(true);
 	}
 	colorCode.nodes = true;
-	colorScheme::showColorandLegend(colors);
+	QString title = QString("%1 at t=%2").arg(colors.propertyName).arg(colors.time);
+	colorScheme::showColorandLegend(colors, title, this);
+//	update();
 	
 }
+
+void GraphWidget::applyColorstoEdges()
+{
+	for (int i = 0; i < colors.edgeNames.size(); i++)
+	{
+		Edge *e = edge(colors.edgeNames[i]);
+		e->color.color1 = colors.colors[i];
+		e->update(true);
+	}
+	colorCode.edges = true;
+	QString title = QString("%1 at t=%2").arg(colors.propertyName).arg(colors.time);
+	colorScheme::showColorandLegend(colors, title, this);
+	//	update();
+}
+
 void GraphWidget::settableProp(QTableView*_tableProp)
 {
 	tableProp = _tableProp;
@@ -2075,12 +2179,22 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 			XString z0 = n->getValue(n->variableName("z0")).list();
 			QString unit = z0.unit;
 			XString height = n->getValue(n->variableName("depth"));
-			
+			XString width = n->getValue(n->variableName("width"));
+			XString length = n->getValue(n->variableName("d"));
+
 			QString gridType = "2D V";
 			bool canChangeType = true;
-			XString length = z0, width = z0;
-			length.setNum(0);
-			width.setNum(0);
+			if (length.isEmpty())
+			{
+				length = z0;
+				length.setNum(0);
+			}
+			if (width.isEmpty())
+			{
+				width = z0;
+				width.setNum(0);
+			}
+
 			if (n->objectType.ObjectType == "Catchment")
 			{
 				gridType = "2D H";
@@ -2157,15 +2271,198 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 									treeModel->add(e);
 									XString connectorLength = z0;
 									connectorLength.setNum(abs(deltaV.toFloat(z0.unit)) / (numberofRows - 1));
-									e->setProp(e->variableName("d"), connectorLength.list(), XStringEditRole);
-									e->copyProps(n, "Vertical");
+                                    //bool copyLength = true;
+                                    if (connectorLength > 0){
+                                        e->setProp(e->variableName("d"), connectorLength.list(), XStringEditRole);
+                                        //copyLength=false;
+                                    }
+									bool copyLength = false;
+									e->copyProps(n, "Vertical Array", "Vertical Connector", copyLength);
 								}
 								if (columnIndex != 0)
 								{
 									Edge *e = new Edge(row[columnIndex - 1], n1, this);
 									treeModel->add(e); 
-									if (length > 0) e->setProp(e->variableName("d"), length.list(), XStringEditRole);
-									e->copyProps(n, "Horizontal");
+                                    bool copyLength=true;
+                                    if (length > 0){
+                                        e->setProp(e->variableName("d"), length.list(), XStringEditRole);
+                                        copyLength=false;
+                                    }
+									e->copyProps(n, "Vertical Array", "Horizontal Connector", copyLength);
+								}
+
+							}
+						}
+						rows.append(row);
+					}
+				}
+			}
+			else if (grid.keys().contains("Radially symmetrical array"))
+			{
+				XString deltaV = grid["delta V"];
+				XString deltaH = grid["delta H"];
+				XString length = grid["length"];
+				XString r0 = grid["r0"];
+
+				if (length.toDouble() <= 0)
+				{
+					QMessageBox::information(mainWindow, "Radially symmetrical array", "Length should be greater than zero");
+					return;
+				}
+
+				XString widthAvg = n->getValue(n->variableName("width"));
+				XString bottomArea = n->getValue(n->variableName("a"));
+
+				if (widthAvg.toQString() == "" && bottomArea.toQString() == "")
+				{
+					QMessageBox::information(mainWindow, "Radially symmetrical array",
+						"At least one of 'Bottom area' or 'Length' should be defined.");
+					return;
+				}
+
+				XString w1 = width, w2 = width;
+				double r0d = r0.toDouble("m");
+				double r1 = r0d;
+				double r2 = r1 + length.toDouble("m");
+				double theta = width.toDouble("m") / ((r1 + r2) / 2.0);
+
+				if (width.toQString() == "" || width.toDouble()==0)
+				{
+					theta = 2 * bottomArea.toDouble("m~^2") / (r2*r2 - r1*r1);
+
+					width.setNum(((r1 + r2) / 2.0)*theta);
+					width.setUnit("m");
+
+					XString newWidth = width.convertTo(n->getValue(n->variableName("width")).unit);
+					n->setProp(n->variableName("width"), newWidth.list(), XStringEditRole);
+					width = newWidth;
+				}
+
+				w1.setNum(r1*theta);
+				w1.setUnit("m");
+				w2.setNum(r2*theta);
+				w2.setUnit("m");
+
+				//double calculatedWidth = length.toDouble("m") * theta;
+/*				if (!isFuzzyEqual(width.toDouble("m"), calculatedWidth)
+				{
+					QMessageBox::information(mainWindow, "Radially symmetrical array", 
+						"Block width is not consistent with the Length should be greater than zero");
+					return;
+				}
+*/
+				double calculatedArea = theta / 2.0 *((r2*r2) - (r1*r1));
+
+				if (bottomArea.toQString() == "" || bottomArea.toDouble() ==0)
+				{
+					bottomArea.setNum(calculatedArea);
+					bottomArea.setUnit("m~^2");
+					XString area = bottomArea.convertTo(n->getValue(n->variableName("a")).unit);
+					n->setProp(n->variableName("a"), area.list(), XStringEditRole);
+				}
+
+				double area = n->getValue(n->variableName("a")).toDouble("m~^2");
+				if (!isFuzzyEqual(area, calculatedArea))
+				{
+					QMessageBox::information(mainWindow, "Radially symmetrical array",
+						"Block's 'Bottom area', 'Width', and 'length' are not consistent.\nArea = width * length / 2");
+					return;
+				}
+
+				if (numberofRows >= 1 && numberofColumns >= 1)// && isnumber(deltaV) && isnumber (deltaH))
+				{
+					//qDebug() << QString("Creating %1x%2 grid, delta H=%3, delta V=%4.").arg(numberofRows).arg(numberofColumns).arg(deltaH).arg(deltaV);
+					Node *n1;
+					QList<QList<Node*>> rows;
+					for (int rowIndex = 0; rowIndex < numberofRows; rowIndex++)
+					{
+						QList <Node*> row;
+						for (int columnIndex = 0; columnIndex < numberofColumns; columnIndex++)
+						{
+							if (rowIndex == 0 && columnIndex == 0)
+							{
+								row.append(n);
+							}
+							else
+							{
+								n1 = new Node(*n);
+
+								treeModel->add(n1);
+								row.append(n1);
+								n1->setName(n->newNodeName(n->Name(), Nodes()));
+								n1->edgeList.clear();
+
+								if (columnIndex == 0)
+									n1->setX(n->x());
+								else
+									n1->setX(row[columnIndex - 1]->x() + n->Width() + 50);
+
+								int offsetY = 0;
+								if (deltaV.toFloat() < 0)
+									offsetY = n->Height() + 50;
+								else if (deltaV.toFloat() > 0)
+									offsetY = -n->Height() - 50;
+
+								if (rowIndex == 0)
+									n1->setY(n->y());
+								else
+									n1->setY(rows[rowIndex - 1][columnIndex]->y() + offsetY);
+
+								//qDebug() << QString("[%1,%2], x=%3, y=%4").arg(rowIndex).arg(columnIndex).arg(n1->x()).arg(n1->y());
+								if (rowIndex != 0)
+									z0.setNum(rows[rowIndex - 1][columnIndex]->getValue(z0variableName).toFloat() +
+									(1.0 / (numberofRows - 1) * deltaV.toFloat(z0.unit)));
+								else
+									z0.setNum(row[columnIndex - 1]->getValue(z0variableName).toFloat() +
+									(1.0 / (numberofColumns - 1) * deltaH.toFloat(z0.unit)));
+
+								n1->setProp(z0variableName, z0.list(), XStringEditRole);
+								MainGraphicsScene->addItem(n1);
+								if (rowIndex != 0)
+								{
+									Edge *e = new Edge(rows[rowIndex - 1][columnIndex], n1, this);
+									treeModel->add(e);
+									XString connectorLength = z0;
+									connectorLength.setNum(abs(deltaV.toFloat(z0.unit)) / (numberofRows - 1));
+									//bool copyLength = true;
+									if (connectorLength > 0) {
+										e->setProp(e->variableName("d"), connectorLength.list(), XStringEditRole);
+										//copyLength=false;
+									}
+									bool copyLength = false;
+									e->copyProps(n1, "Vertical Array", "Vertical Connector", copyLength);
+								}
+								if (columnIndex != 0)
+								{
+									double col = columnIndex + 1;
+									XString connectorWidth = n->getValue(n->variableName("width"));
+									connectorWidth.setNum((r0d + (col-1)*length.toDouble("m"))*theta);
+									connectorWidth.setUnit("m");
+									connectorWidth.convertTo(n->getValue(n->variableName("width")).unit);
+
+									XString width = n->getValue(n->variableName("width"));
+									width.setNum((r0d + (col-1.5)*length.toDouble("m"))*theta);
+									width.setUnit("m");
+									width.convertTo(n->getValue(n->variableName("width")).unit);
+									n1->setProp(n1->variableName("width"), width.list(), XStringEditRole);
+
+									XString area = n->getValue(n->variableName("a"));
+									r1 = r0d + (col - 1)*length.toDouble("m");
+									r2 = r0d + col*length.toDouble("m");
+									area.setNum(theta / 2.0*((r2*r2) - (r1*r1)));
+									area.setUnit("m~^2");
+									area.convertTo(n->getValue(n->variableName("a")).unit);
+									n1->setProp(n->variableName("a"), area.list(), XStringEditRole);
+								
+									Edge *e = new Edge(row[columnIndex - 1], n1, this);
+									treeModel->add(e);
+									bool copyLength = true;
+									if (length > 0) {
+										e->setProp(e->variableName("d"), length.list(), XStringEditRole);
+										copyLength = false;
+									}
+									e->copyProps(n1, "Vertical Array", "Horizontal Connector", copyLength);
+									e->setProp(e->variableName("width"), connectorWidth.list(), XStringEditRole);
 								}
 
 							}
@@ -2230,14 +2527,14 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 								{
 									Edge *e = new Edge(rows[rowIndex - 1][columnIndex], n1, this);
 									treeModel->add(e); 
-									e->copyProps(n, "Horizontal");
+									e->copyProps(n, "Horizontal Array", "Vertical Connector");
 									if (lengthY > 0) e->setProp(e->variableName("d"), lengthY.list(), XStringEditRole);
 								}
 								if (columnIndex != 0)
 								{
 									Edge *e = new Edge(row[columnIndex - 1], n1, this);
 									treeModel->add(e); 
-									e->copyProps(n, "Horizontal");
+									e->copyProps(n, "Horizontal Array", "Horizontal Connector");
 									if (lengthX > 0) e->setProp(e->variableName("d"), lengthX.list(), XStringEditRole);
 								}
 
@@ -2901,6 +3198,26 @@ void GraphWidget::experimentSelect(const QString & experimentName)
 
 	update();
 }
+void GraphWidget::colorSchemeLegend_closed()
+{
+	colorCode.nodes = false;
+	colorCode.edges = false;
+	delete legendSliderTime;
+	legendSliderTime = 0;
+	colors = colorlegend();
+	update(true);
+}
+void GraphWidget::legendSliderChanged_Nodes(int value)
+{
+	colorScheme::colorandLegend(colors, value, "Blue-Red", false, 8);
+	applyColorstoNodes();
+}
+void GraphWidget::legendSliderChanged_Edges(int value)
+{
+	colorScheme::colorandLegend(colors, value, "Blue-Red", false, 8);
+	applyColorstoEdges();
+}
+
 #endif
 int GraphWidget::experimentID()
 {
@@ -2945,4 +3262,8 @@ QString getTime(bool reset)
 		t0 = clock();
 
 	return r;
+}
+bool isFuzzyEqual(double a, double b, double allowableError)
+{
+	return (fabs(a - b) / ((a + b) / 2) <= allowableError);
 }

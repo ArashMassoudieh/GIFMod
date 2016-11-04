@@ -159,16 +159,26 @@
      <addaction name="actioncolorCodeMoistureContent"/>
      <addaction name="actioncolorCodeEvaporationRate"/>
     </widget>
+    <widget class="QMenu" name="menuConnectors">
+     <property name="title">
+      <string>Connectors</string>
+     </property>
+     <addaction name="actionColorCodeConnectorFlow"/>
+     <addaction name="actionColorCodeConnectorVelocity"/>
+     <addaction name="actionColorCodeConnectorArea"/>
+     <addaction name="actionColorCodeConnectorVaporExchangeEate"/>
+    </widget>
     <addaction name="menuBlocks"/>
-    <addaction name="actionConnectors_2"/>
+    <addaction name="menuConnectors"/>
+    <addaction name="actionReset_colors"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
    <addaction name="menu_Window"/>
    <addaction name="menu_Model"/>
    <addaction name="menuPreferences"/>
-   <addaction name="menu_Help"/>
    <addaction name="menuPost_Processing"/>
+   <addaction name="menu_Help"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <property name="mouseTracking">
@@ -734,11 +744,6 @@
     <string>Evaporation rate</string>
    </property>
   </action>
-  <action name="actionConnectors_2">
-   <property name="text">
-    <string>Connectors</string>
-   </property>
-  </action>
   <action name="actioncolorCodeHead">
    <property name="text">
     <string>Head</string>
@@ -777,6 +782,31 @@
   <action name="actionRecent">
    <property name="text">
     <string>Recent</string>
+   </property>
+  </action>
+  <action name="actionColorCodeConnectorFlow">
+   <property name="text">
+    <string>Flow</string>
+   </property>
+  </action>
+  <action name="actionColorCodeConnectorVelocity">
+   <property name="text">
+    <string>Velocity</string>
+   </property>
+  </action>
+  <action name="actionColorCodeConnectorArea">
+   <property name="text">
+    <string>Area</string>
+   </property>
+  </action>
+  <action name="actionColorCodeConnectorVaporExchangeEate">
+   <property name="text">
+    <string>Vapor exchange rate</string>
+   </property>
+  </action>
+  <action name="actionReset_colors">
+   <property name="text">
+    <string>Reset colors</string>
    </property>
   </action>
  </widget>
