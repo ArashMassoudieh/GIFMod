@@ -1256,10 +1256,10 @@ void GraphWidget::clear()
 		treeModel->deleteEntity(e);
 
 	Entities.clear();
-	qDeleteAll(Entities);
-	Entities.clear();
-	qDeleteAll(Processes);
-	Processes.clear();
+//	qDeleteAll(Entities);
+//	Entities.clear();
+//	qDeleteAll(Processes);
+//	Processes.clear();
 	treeModel->refresh();
 	tableProp->setModel(0);
 	if (results)
@@ -3209,12 +3209,14 @@ void GraphWidget::colorSchemeLegend_closed()
 }
 void GraphWidget::legendSliderChanged_Nodes(int value)
 {
-	colorScheme::colorandLegend(colors, value, "Blue-Red", false, 8);
+	double time = model->Timemin + value * model->dt();
+	colorScheme::colorandLegend(colors, time, "Blue-Red", false, 8);
 	applyColorstoNodes();
 }
 void GraphWidget::legendSliderChanged_Edges(int value)
 {
-	colorScheme::colorandLegend(colors, value, "Blue-Red", false, 8);
+	double time = model->Timemin + value * model->dt();
+	colorScheme::colorandLegend(colors, time, "Blue-Red", false, 8);
 	applyColorstoEdges();
 }
 

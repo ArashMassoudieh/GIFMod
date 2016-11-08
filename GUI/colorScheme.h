@@ -30,7 +30,7 @@ struct colorlegend
 	vector<float> factors;
 	vector<float> shifts;
 	QString propertyName;
-	float time = -1;
+	double time = -1;
 	QStringList nodeNames, edgeNames;
 	QMainWindow* window = 0;
 };
@@ -57,7 +57,7 @@ public:
 		return (logType) ? "Logged" : "Normal";
 	}
 //	static vector<QColor> color(vector<CBTC> data, float t, QString theme = "Green", bool logType = false, int numberofGroups = 8, vector<double> factors = vector<double>(), vector<double> shifts = vector<double>());
-	static colorlegend colorandLegend(colorlegend &colors, float t, QString theme = "Green", bool logType = false, int numberofGroups = 8);
+	static colorlegend colorandLegend(colorlegend &colors, double t, QString theme = "Green", bool logType = false, int numberofGroups = 8);
 	static QGraphicsView* showColorandLegend(colorlegend &legend, QString title = "", GraphWidget* gwidget = 0);
 private:
 	QString colorTheme;
