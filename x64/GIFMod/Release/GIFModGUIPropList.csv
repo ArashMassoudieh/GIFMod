@@ -69,7 +69,15 @@
 1,Connector,Rating Curve,*,!,Exponent,rating_curve_power,!,!,float+Estimate,!,TextBox,Geometry,Input,Yes,100074,>=0,E,Exponent must be non-negative
 1,Connector,Normal Flow,*,!,Flow exponent,exponent,!,!,float+Estimate,!,TextBox,Geometry,Input,Yes,100076,,,
 1,Connector,Pipe,*,!,Hazen-Williams roughness factor c,pipe_c,SI,SI,float+Estimate,100,UnitBox,Material,Input,Yes,100077,>=0,E,Hazen Williams roughness factor C must be non-negative
-1,Connector,*,*,!,Length,d,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100078,>0,E,Connector length must be greater than zero
+1,Connector,Default,*,!,Length,d,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100078,>0,E,Connector length must be greater than zero
+1,Connector,Pipe,*,!,Length,d,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100078,>0,E,Connector length must be greater than zero
+1,Connector,Normal Flow,*,!,Length,d,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100078,>0,E,Connector length must be greater than zero
+1,Connector,Darcy,*,!,Length,d,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100078,>0,E,Connector length must be greater than zero
+1,Connector,Userdefined,*,!,Length,d,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100078,>0,E,Connector length must be greater than zero
+1,Connector,Rating Curve,*,!,Length,d,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100078,>0,E,Connector length must be greater than zero
+1,Connector,Prescribed flow,*,!,Length,d,m;cm;ft;in,m,float+Estimate,1,UnitBox,Geometry,Input,Yes,100078,>0,E,Connector length must be greater than zero
+1,Connector,Quasi steady,*,!,Length,d,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100078,>0,E,Connector length must be greater than zero
+1,Connector,Controlled,*,!,Length,d,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100078,>0,E,Connector length must be greater than zero
 1,Connector,Normal Flow,*,!,Manning's roughness coefficient,nmanning,s/~^3~radicm,day/~^3~radicm,float+Estimate,!,UnitBox,Material,Input,Yes,100079,>0,E,Manning's roughness coefficient must be positive
 1,Connector,Darcy,*,!,Saturated hydraulic conductivity (ks),ks,m/day;cm/day;cm/s;mm/s;ft/day;in/day;in/s,m/day,float+Estimate,!,UnitBox,Material,Input,Yes,100327,>=0,E,Hydraulic conductivity must me non-negative
 1,Connector,*,*,!,Settling,settling,!,!,string,No;Yes,ComboBox,Geometry,Select,Yes,100081,,,

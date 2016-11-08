@@ -101,8 +101,17 @@ public:
 	void undo();
 	void redo();
 	bool trackingUndo = false;
-	void deselectAll() const;
+	void deselectAll(QString items = "Nodes Edges Entities (Entity)") const;
 	void deleteSelected();
+	
+	//names of selected Items
+	QStringList selectedItems();
+	QString typeOfSelecetedItems();
+
+	QList<Node*> selectedNodes();
+	QList<Edge*> selectedEdges();
+	QList<Entity*> selectedEntities();
+
 	void update(bool fast = false);
 //	void PropsPopulate(const Node *node, QTableView *tableProp);
 	void PropsPopulate(Node *node, QStandardItemModel *propModel);
@@ -314,7 +323,7 @@ protected:
 #endif
 	void drawBackground(QPainter *painter, const QRectF &rect) Q_DECL_OVERRIDE;
 //	void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
-	
+	void rubberBandChanged(QRect rubberBandRect, QPointF fromScenePoint, QPointF toScenePoint);
 
 private:
 	int timerId;

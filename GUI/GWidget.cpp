@@ -201,12 +201,121 @@ void GraphWidget::deleteSelected()
 	deselectAll();
 }
 
-void GraphWidget::deselectAll() const
+QStringList GraphWidget::selectedItems()
 {
-	for each (Node *node in Nodes()) node->setSelected(false);
-	for each (Edge *edge in Edges()) edge->setSelected(false);
-	for each (Entity *entity in Entities) entity->setSelected(false);
-	tableProp->setModel(0);
+	QStringList names;
+	QList<Node *> nodes;
+	for each(QGraphicsItem *item in scene()->items())
+	{
+		if (Node *node = qgraphicsitem_cast<Node *>(item))
+		{
+			nodes << node;
+			names << node->Name();
+		}
+	}
+
+	QList<Edge *> edges;
+	for each(QGraphicsItem *item in scene()->items())
+	{
+		if (Edge *edge = qgraphicsitem_cast<Edge *>(item))
+		{
+			edges << edge;
+			names << edge->Name();
+		}
+	}
+
+	QList<Entity *> entities;
+	for each(Entity *entity in Entities)
+	{
+		if (entity->isSelected())
+		{
+			entities << entity;
+			names << entity->Name();
+		}
+	}
+
+	return names;
+}
+
+QString GraphWidget::typeOfSelecetedItems()
+{
+	QList<Node *> nodes;
+	for each(QGraphicsItem *item in scene()->items())
+	{
+		if (Node *node = qgraphicsitem_cast<Node *>(item))
+			nodes << node;
+	}
+
+	QList<Edge *> edges;
+	for each(QGraphicsItem *item in scene()->items())
+	{
+		if (Edge *edge = qgraphicsitem_cast<Edge *>(item))
+			edges << edge;
+	}
+
+	QList<Entity *> entities;
+	for each(Entity *entity in Entities)
+	{
+		if (entity->isSelected())
+			entities << entity;
+	}
+
+	if (nodes.size() && !edges.size() && !entities.size())
+		return "Nodes";
+	if (!nodes.size() && edges.size() && !entities.size())
+		return "Edges";
+	if (!nodes.size() && !edges.size() && entities.size())
+		return "Entities";
+	return "None";
+}
+
+QList<Node*> GraphWidget::selectedNodes()
+{
+	QList<Node *> nodes;
+	for each(QGraphicsItem *item in scene()->items())
+	{
+		if (Node *node = qgraphicsitem_cast<Node *>(item))
+			if (node->isSelected())
+				nodes << node;
+	}
+	return nodes;
+}
+
+QList<Edge*> GraphWidget::selectedEdges()
+{
+	QList<Edge *> edges;
+	for each(QGraphicsItem *item in scene()->items())
+	{
+		if (Edge *edge = qgraphicsitem_cast<Edge *>(item))
+			if (edge->isSelected())
+				edges << edge;
+	}
+	return edges;
+}
+
+QList<Entity*> GraphWidget::selectedEntities()
+{
+	QList<Entity *> entities;
+	for each(Entity *entity in Entities)
+	{
+		if (entity->isSelected() )
+			entities << entity;
+	}
+	return entities;
+}
+
+void GraphWidget::deselectAll(QString items) const
+{
+	if (items.toLower().contains("node"))
+		for each (Node *node in Nodes()) node->setSelected(false);
+	if (items.toLower().contains("edge"))
+		for each (Edge *edge in Edges()) edge->setSelected(false);
+	if (items.toLower().contains("entity"))
+		for each (Entity *entity in Entities) entity->setSelected(false);
+	if (items.toLower().contains("node") ||
+		items.toLower().contains("edge") ||
+		items.toLower().contains("entity"))
+		tableProp->setModel(0);
 //	if ((propModel->type() == "Node") || (propModel->type() == "Edge")) propModel->setParentEntity(Entities[0]);
 }
 
@@ -305,6 +414,18 @@ void GraphWidget::zoomOut()
 
 void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 {
+	qDebug() << "Mouse MOVE, button: " << event->button() << ", modifier: " << event->modifiers() << ", buttons: " << event->buttons();
+	if (event->buttons() == Qt::LeftButton)
+		int i = 0;
+
+	if (event->buttons() == Qt::MiddleButton && Operation_Mode == Operation_Modes::Pan)
+	{
+		QMouseEvent *newEvent = new QMouseEvent(event->type(), event->localPos(), Qt::LeftButton, Qt::MouseButtons(1) ,event->modifiers());
+//		QGraphicsView::mousePressEvent(newEvent);
+		QGraphicsView::mouseMoveEvent(newEvent);
+		delete newEvent;
+		return;
+	}
 	_x = mapToScene(event->pos()).x();
 	_y = mapToScene(event->pos()).y();
 	bool cursorModeNormal = true;
@@ -439,6 +560,13 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 	}
 	if (cursorModeNormal) setCursor(Qt::ArrowCursor);
 }
+void GraphWidget::rubberBandChanged(QRect rubberBandRect, QPointF fromScenePoint, QPointF toScenePoint)
+{
+	if (fromScenePoint.x() <= toScenePoint.x()) //left to right selection, keep nodes
+		deselectAll("Edges");
+	else
+		deselectAll("Nodes");
+}
 void GraphWidget::update(bool fast)
 {
 	for each (Node* n in Nodes()) n->update(fast);
@@ -448,6 +576,23 @@ void GraphWidget::update(bool fast)
 }
 void GraphWidget::mousePressEvent(QMouseEvent *event)
 {
+	qDebug() << "Mouse press, Button: " << event->button() << ", modifier: " << event->modifiers() << ", buttons: " << event->buttons();
+	//	if (!event->modifiers() && Qt::ShiftModifier)
+	//		deselectAll();
+	if (event->buttons() == Qt::MiddleButton && Operation_Mode == Operation_Modes::NormalMode)
+	{
+		//setDragMode(QGraphicsView::ScrollHandDrag);
+		setMode(Operation_Modes::Pan);
+		QMouseEvent *newEvent = new QMouseEvent(event->type(), event->localPos(), Qt::LeftButton, Qt::MouseButtons(1), event->modifiers());
+		QGraphicsView::mousePressEvent(newEvent);
+		delete newEvent;
+		//Operation_Mode == Operation_Modes::Pan;
+		return;
+	}
+	QGraphicsView::mousePressEvent(event); //Call the ancestor
+
+	//	if (!event->modifiers() && Qt::ShiftModifier)
+	//	{
 	if (Operation_Mode == Operation_Modes::NormalMode)
 	{
 		setDragMode(QGraphicsView::RubberBandDrag);
@@ -479,12 +624,33 @@ void GraphWidget::mousePressEvent(QMouseEvent *event)
 
 					else
 					{
-						for each (Node* n in Nodes()) n->setFlag(QGraphicsItem::ItemIsMovable, false);
-						node->setFlag(QGraphicsItem::ItemIsMovable, true);
+						QList<Node *> selected, all, notSelected;
+						all = Nodes();
+						if (!node->isSelected())
+						{
+							node->setFlag(QGraphicsItem::ItemIsSelectable, true);
+							node->setSelected(true);
+						}
+						//						{
+						//							node->setSelected(true);
+						//							node->update(true);
+						//						}
+						//node->update(true);
+
+						selected = selectedNodes();
+						notSelected = all;
+						for each (Node* n in selected)
+						{
+							n->setFlag(QGraphicsItem::ItemIsMovable, true);
+							notSelected.removeAll(n);
+						}
+						for each (Node* n in notSelected)
+							n->setFlag(QGraphicsItem::ItemIsMovable, false);
+						//							node->setFlag(QGraphicsItem::ItemIsMovable, true);
 					}
 				}
 			}
-	}	
+	}
 	if (event->buttons() == Qt::LeftButton)
 	{
 		switch (Operation_Mode) {
@@ -496,7 +662,7 @@ void GraphWidget::mousePressEvent(QMouseEvent *event)
 				//Pan1 = mouseEvent->pos();
 				setDragMode(QGraphicsView::ScrollHandDrag);
 				}
-				
+
 		case Operation_Modes::Pan:
 		{
 			//		Node *child = static_cast<Node*> (itemAt(mouseEvent->pos())); //Get the item at the position
@@ -518,21 +684,35 @@ void GraphWidget::mousePressEvent(QMouseEvent *event)
 			setMode(Operation_Modes::Node1_selected);
 			break;
 		}
-/*		case Operation_Modes::NormalMode:
-		{
-			Node *node = static_cast<Node*> (itemAt(event->pos())); //Get the item at the position
-			Edge *edge = static_cast<Edge*> (itemAt(event->pos())); //Get the item at the position
+		/*		case Operation_Modes::NormalMode:
+				{
+					Node *node = static_cast<Node*> (itemAt(event->pos())); //Get the item at the position
+					Edge *edge = static_cast<Edge*> (itemAt(event->pos())); //Get the item at the position
 
-			if (!node && !edge) deselectAll();
-			break;
-		}*/ 
-		default:
-		QGraphicsView::mousePressEvent(event); //Call the ancestor
+					if (!node && !edge) deselectAll();
+					break;
+				}*/
+
+
+				//		default:
 		}
 	}
+	//	}
 }
 void GraphWidget::mouseReleaseEvent(QMouseEvent *event)
 {
+	qDebug() << "Mouse RELEASE, button: " << event->button() << ", modifier: " << event->modifiers() << ", buttons: " << event->buttons();
+
+	if (event->button() == Qt::MiddleButton && Operation_Mode == Operation_Modes::Pan)
+	{
+		setMode(Operation_Modes::NormalMode);
+		QMouseEvent *newEvent = new QMouseEvent(event->type(), event->localPos(), Qt::LeftButton, Qt::MouseButtons(1), event->modifiers());
+		QGraphicsView::mouseReleaseEvent(newEvent);
+		delete newEvent;
+		return;
+
+	}
+
 	switch (Operation_Mode) {
 	case Operation_Modes::Node1_selected:
 	{
@@ -555,13 +735,14 @@ void GraphWidget::mouseReleaseEvent(QMouseEvent *event)
 				if (node->itemType == Object_Types::Block)
 					if (node->flags() == QGraphicsItem::ItemIsMovable)
 						node->setFlag(QGraphicsItem::ItemIsMovable, false);
-					else deselectAll();
+					//else if (!(event->modifiers() && Qt::ShiftModifier)) //QGuiApplication::queryKeyboardModifiers().testFlag(Qt::ShiftModifier))
+						//deselectAll();
 			Edge *edge = static_cast<Edge*> (itemAt(event->pos())); //Get the item at the position
 			if (edge)
 			{
 				if (edge->dist(mapToScene(event->pos())) < 120) edge->setSelected(true);
 			}
-			if (!node && !edge) deselectAll();
+			//if (!node && !edge) deselectAll();
 		}
 		break;
 	}

@@ -13,3 +13,5 @@ c:/users/user/dropbox/gui/gifmod user's manual/examples/do_control/do_control.gi
 c:/users/user/documents/gifmod projects/1.gifm
 c:/users/user/documents/gifmod projects/radial.gifm
 c:/users/user/documents/gifmod projects/radial 2.gifm
+C:/Users/user/Documents/GIFMod Projects/multiselect.GIFM
+C:/Users/user/Desktop/ASM/activated sludge model.GIFM
