@@ -847,6 +847,7 @@ void CConnection::evaluate_dispersion_star()
 {
 	for (int i=0; i<Solid_phase.size(); i++)
 		c_dispersion_star[i] = calc_star(Solid_phase[i]->dispersion, i) + Solid_phase[i]->diffusion;
+	
 }
 
 void CConnection::evaluate_const_dispersion()
