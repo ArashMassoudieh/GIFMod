@@ -201,7 +201,7 @@ void GraphWidget::deleteSelected()
 	deselectAll();
 }
 
-QStringList GraphWidget::selectedItems()
+QStringList GraphWidget::selectedItems()const
 {
 	QStringList names;
 	QList<Node *> nodes;
@@ -237,7 +237,7 @@ QStringList GraphWidget::selectedItems()
 	return names;
 }
 
-QString GraphWidget::typeOfSelecetedItems()
+QString GraphWidget::typeOfSelecetedItems()const
 {
 	QList<Node *> nodes;
 	for each(QGraphicsItem *item in scene()->items())
@@ -269,7 +269,7 @@ QString GraphWidget::typeOfSelecetedItems()
 	return "None";
 }
 
-QList<Node*> GraphWidget::selectedNodes()
+QList<Node*> GraphWidget::selectedNodes() const
 {
 	QList<Node *> nodes;
 	for each(QGraphicsItem *item in scene()->items())
@@ -281,7 +281,7 @@ QList<Node*> GraphWidget::selectedNodes()
 	return nodes;
 }
 
-QList<Edge*> GraphWidget::selectedEdges()
+QList<Edge*> GraphWidget::selectedEdges() const
 {
 	QList<Edge *> edges;
 	for each(QGraphicsItem *item in scene()->items())
@@ -293,7 +293,7 @@ QList<Edge*> GraphWidget::selectedEdges()
 	return edges;
 }
 
-QList<Entity*> GraphWidget::selectedEntities()
+QList<Entity*> GraphWidget::selectedEntities()const
 {
 	QList<Entity *> entities;
 	for each(Entity *entity in Entities)
@@ -414,7 +414,7 @@ void GraphWidget::zoomOut()
 
 void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 {
-	qDebug() << "Mouse MOVE, button: " << event->button() << ", modifier: " << event->modifiers() << ", buttons: " << event->buttons();
+//	qDebug() << "Mouse MOVE, button: " << event->button() << ", modifier: " << event->modifiers() << ", buttons: " << event->buttons();
 	if (event->buttons() == Qt::LeftButton)
 		int i = 0;
 
@@ -432,25 +432,26 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 	setToolTip("");
 	QGraphicsView::mouseMoveEvent(event);
 	QString txt;
-	Node *c1 = qgraphicsitem_cast<Node*> (itemAt(event->pos())); //Get the item at the position
-	if (c1 && c1->itemType == Object_Types::Block) //GUI == "Block") //itemType == Object_Types::Block)
+	Node *n1 = qgraphicsitem_cast<Node*> (itemAt(event->pos())); //Get the item at the position
+	if (n1) //itemType == Object_Types::Block)
 	{
-		txt = QString("%1, %2: %3").arg(c1->ObjectType().GuiObject).arg(c1->ObjectType().ObjectType).arg(c1->Name());
-		QString toolTip = QString("Type: %1\nName: %2").arg(c1->ObjectType().ObjectType).arg(c1->Name());
-		toolTip.append(QString("\nBottom Elevation: %1").arg(c1->val("z0").toStringUnit()));
-		if (c1->errors.count()) toolTip.append(QString("\n%1 Error(s)").arg(c1->errors.count()));
-		if (c1->warnings.count()) toolTip.append(QString("\n%1 Warning(s)").arg(c1->warnings.count()));
+		txt = QString("%1, %2: %3").arg(n1->ObjectType().GuiObject).arg(n1->ObjectType().ObjectType).arg(n1->Name());
+		QString toolTip = QString("Type: %1\nName: %2").arg(n1->ObjectType().ObjectType).arg(n1->Name());
+		toolTip.append(QString("\nBottom Elevation: %1").arg(n1->val("z0").toStringUnit()));
+		if (n1->errors.count()) toolTip.append(QString("\n%1 Error(s)").arg(n1->errors.count()));
+		if (n1->warnings.count()) toolTip.append(QString("\n%1 Warning(s)").arg(n1->warnings.count()));
 		setToolTip(toolTip);
 	}
-	else for each (c1 in Nodes()) c1->setBold(false);
-	Edge *c2 = qgraphicsitem_cast<Edge*> (itemAt(event->pos())); //Get the item at the position
-	if (Edges().contains(c2))
-		if (c2 && c2->itemType == Object_Types::Connector && c2->dist(mapToScene(event->pos())) < 120) //GUI == "Connector"
+	//for each (Node* n in Nodes()) 
+	//	if (n!=n1) n->setBold(false);
+	Edge *e1 = qgraphicsitem_cast<Edge*> (itemAt(event->pos())); //Get the item at the position
+	if (e1)
+	//	if (c2 && c2->itemType == Object_Types::Connector && c2->dist(mapToScene(event->pos())) < 120) //GUI == "Connector"
 		{
-			c2->setBold(true);
-			c2->update();
+	//		e1->setBold(true);
+	//		e1->update();
 			//txt = QString("%1, %2: %3").arg(c2->ObjectType().GuiObject).arg(c2->ObjectType().ObjectType).arg(c2->Name());
-			QString toolTip = QString("%1, %2: %3").arg(c2->ObjectType().GuiObject).arg(c2->ObjectType().ObjectType).arg(c2->ObjectType().SubType);
+			QString toolTip = QString("%1, %2: %3").arg(e1->ObjectType().GuiObject).arg(e1->ObjectType().ObjectType).arg(e1->ObjectType().SubType);
 			//QString toolTip = QString("Type: %1\nName: %2").arg(c1->ObjectType().ObjectType).arg(c1->Name());
 			//toolTip.append(QString("\nBottom Elevation: %1").arg(c1->val("z0").toStringUnit()));
 			//if (c1->errors.count()) toolTip.append(QString("\n%1 Error(s)").arg(c1->errors.count()));
@@ -458,8 +459,9 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 			setToolTip(toolTip);
 
 		}
-	else for each (c2 in Edges()) c2->setBold(false);
-	update();
+	//for each (Edge*e in Edges()) 
+	//	if (e!=e1) e->setBold(false);
+	//update();
 	emit Mouse_Pos(_x, _y, txt);
 	if (Operation_Mode == Operation_Modes::Node1_selected)
 	{
@@ -558,7 +560,8 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 		for each(Edge *edge in resizenode->edges())
 		edge->adjust();
 	}
-	if (cursorModeNormal) setCursor(Qt::ArrowCursor);
+	if (cursorModeNormal) 
+		setCursor(Qt::ArrowCursor);
 }
 void GraphWidget::rubberBandChanged(QRect rubberBandRect, QPointF fromScenePoint, QPointF toScenePoint)
 {
@@ -576,7 +579,10 @@ void GraphWidget::update(bool fast)
 }
 void GraphWidget::mousePressEvent(QMouseEvent *event)
 {
-	qDebug() << "Mouse press, Button: " << event->button() << ", modifier: " << event->modifiers() << ", buttons: " << event->buttons();
+//	return;
+	Node *node = static_cast<Node*> (itemAt(event->pos())); //Get the item at the position
+	if (node)
+		qDebug() << "Node Flag:" << node->flags() << "enabled:" << node->isEnabled() << "active:" << node->isActive();
 	//	if (!event->modifiers() && Qt::ShiftModifier)
 	//		deselectAll();
 	if (event->buttons() == Qt::MiddleButton && Operation_Mode == Operation_Modes::NormalMode)
@@ -590,13 +596,16 @@ void GraphWidget::mousePressEvent(QMouseEvent *event)
 		return;
 	}
 	QGraphicsView::mousePressEvent(event); //Call the ancestor
-
+	
 	//	if (!event->modifiers() && Qt::ShiftModifier)
 	//	{
 	if (Operation_Mode == Operation_Modes::NormalMode)
 	{
-		setDragMode(QGraphicsView::RubberBandDrag);
-		Node *node = static_cast<Node*> (itemAt(event->pos())); //Get the item at the position
+		if (node) 
+			setDragMode(QGraphicsView::NoDrag);
+		else
+			setDragMode(QGraphicsView::RubberBandDrag);
+//		Node *node = static_cast<Node*> (itemAt(event->pos())); //Get the item at the position
 		if (node)
 			if (node->itemType == Object_Types::Block)
 			{
@@ -622,14 +631,22 @@ void GraphWidget::mousePressEvent(QMouseEvent *event)
 						setMode(Operation_Modes::Node1_selected);
 					}
 
+					else if (event->modifiers() && Qt::ControlModifier) {
+						node->setFlag(QGraphicsItem::ItemIsMovable, false);
+						node->setSelected(true);
+					}
 					else
-					{
+						node->setFlag(QGraphicsItem::ItemIsMovable, true);
+
+						/*					{
 						QList<Node *> selected, all, notSelected;
 						all = Nodes();
 						if (!node->isSelected())
 						{
 							node->setFlag(QGraphicsItem::ItemIsSelectable, true);
-							node->setSelected(true);
+							QGraphicsView::mousePressEvent(event); //Call the ancestor
+//							node->setSelected(true);
+							qDebug() << "Node :" << node->Name() << " added to selection.";
 						}
 						//						{
 						//							node->setSelected(true);
@@ -647,31 +664,14 @@ void GraphWidget::mousePressEvent(QMouseEvent *event)
 						for each (Node* n in notSelected)
 							n->setFlag(QGraphicsItem::ItemIsMovable, false);
 						//							node->setFlag(QGraphicsItem::ItemIsMovable, true);
-					}
+					}*/
 				}
 			}
 	}
 	if (event->buttons() == Qt::LeftButton)
 	{
 		switch (Operation_Mode) {
-			/*	case Operation_Modes::NormalMode:
-				{
-				Node *child = static_cast<Node*> (itemAt(mouseEvent->pos())); //Get the item at the position
-				if (!child)
-				//setMode(Operation_Modes::Pan);
-				//Pan1 = mouseEvent->pos();
-				setDragMode(QGraphicsView::ScrollHandDrag);
-				}
 
-		case Operation_Modes::Pan:
-		{
-			//		Node *child = static_cast<Node*> (itemAt(mouseEvent->pos())); //Get the item at the position
-			//		if (!child)
-			//			setMode(Operation_Modes::Pan);
-			Pan1 =  mouseEvent->pos();
-			setMode(Operation_Modes::Pan_Started);
-			break;
-		}*/
 		case Operation_Modes::Draw_Connector:
 		{
 			Node *child = static_cast<Node*> (itemAt(event->pos())); //Get the item at the position
@@ -684,24 +684,14 @@ void GraphWidget::mousePressEvent(QMouseEvent *event)
 			setMode(Operation_Modes::Node1_selected);
 			break;
 		}
-		/*		case Operation_Modes::NormalMode:
-				{
-					Node *node = static_cast<Node*> (itemAt(event->pos())); //Get the item at the position
-					Edge *edge = static_cast<Edge*> (itemAt(event->pos())); //Get the item at the position
-
-					if (!node && !edge) deselectAll();
-					break;
-				}*/
-
-
-				//		default:
 		}
 	}
-	//	}
+
+	//QGraphicsView::mousePressEvent(event);
 }
 void GraphWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-	qDebug() << "Mouse RELEASE, button: " << event->button() << ", modifier: " << event->modifiers() << ", buttons: " << event->buttons();
+//	qDebug() << "Mouse RELEASE, button: " << event->button() << ", modifier: " << event->modifiers() << ", buttons: " << event->buttons();
 
 	if (event->button() == Qt::MiddleButton && Operation_Mode == Operation_Modes::Pan)
 	{
@@ -732,8 +722,9 @@ void GraphWidget::mouseReleaseEvent(QMouseEvent *event)
 		{
 			Node *node = static_cast<Node*> (itemAt(event->pos())); //Get the item at the position
 			if (node)
-				if (node->itemType == Object_Types::Block)
-					if (node->flags() == QGraphicsItem::ItemIsMovable)
+				for each (Node * node in Nodes())
+//				if (node->itemType == Object_Types::Block)
+					if (node->flags() && QGraphicsItem::ItemIsMovable)
 						node->setFlag(QGraphicsItem::ItemIsMovable, false);
 					//else if (!(event->modifiers() && Qt::ShiftModifier)) //QGuiApplication::queryKeyboardModifiers().testFlag(Qt::ShiftModifier))
 						//deselectAll();
@@ -768,7 +759,8 @@ void GraphWidget::mouseReleaseEvent(QMouseEvent *event)
 		}
 	}
 	if (changed) gwChanged();
-		QGraphicsView::mouseReleaseEvent(event); //Call the ancestor
+
+	QGraphicsView::mouseReleaseEvent(event); //Call the ancestor
 }
 void GraphWidget::updateNodeCoordinates()
 {
@@ -857,7 +849,55 @@ void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QStri
 	colorScheme::colorandLegend(colors, time, "Blue-Red", false, 8);
 	applyColorstoNodes();
 }
+void GraphWidget::updateNodesColorCodes_WaterQuality(QStringList property, bool logged, QString colorTheme, vector<double> predifinedMinMax, float time)
+{
+	if (!hasResults)
+	{
+		QMessageBox::information(0, "GIFMod", "There is no results available, please run the model first.");
+		return;
+	}
+	//	colorlegend colors;
+	if (time == -1)
+	{
+		vector<CBTC> data;
+		vector<float> factors;
+		vector<float> shifts;
+		QStringList nodeNames = this->nodeNames();
+		QStringList removedNodes;
+		for (int i = 0; i < nodeNames.size(); i++)
+		{
+			float factor = 1;
+			float shift = 0;
+			int index = model->getblocksq(nodeNames[i].toStdString());
+			if (property[0] == "Particle")
+			{
+				int index = model->get_member_no(nodeNames[i], property[1], property[3]);
+				data.push_back(model->ANS_colloids[index]);
+			}
+			else
+			{
+				int index = model->get_member_no(nodeNames[i], property[1], property[3], property[2]);
+				data.push_back(model->ANS_constituents[index]);
+			}
+			factors.push_back(factor);
+			shifts.push_back(shift);
+		}
+//		for each (QString rN in removedNodes)
+//			nodeNames.removeAll(rN);
+		colors.data = data;
+		colors.factors = factors;
+		colors.shifts = shifts;
+		colors.nodeNames = nodeNames;
+		colors.propertyName = QString("%1 %2(%3)").arg(property[1]).arg(property[3]).arg(property[2]);
+	}
 
+	if (time == -1)
+		time = model->Timemin;
+	//float t = QInputDialog::getDouble(qApp->activeWindow(), "Input Dialog Box", QString("Enter time between(%1-%2):").arg(model->Timemin).arg(model->Timemax), 0, model->Timemin, model->Timemax, 4);
+
+	colorScheme::colorandLegend(colors, time, "Blue-Red", false, 8);
+	applyColorstoNodes();
+}
 void GraphWidget::updateEdgesColorCodes(QString propertyName, bool logged, QString colorTheme, vector<double> predifinedMinMax, float time)
 {
 	if (!hasResults)
@@ -949,6 +989,7 @@ void GraphWidget::settableProp(QTableView*_tableProp)
 {
 	tableProp = _tableProp;
 }
+
 //void GraphWidget::setpropModel(PropModel *_propModel)
 //{
 //	propModel = _propModel;
@@ -965,6 +1006,7 @@ void GraphWidget::add_to_undo_list(QList<QMap<QString, QVariant>> &state)
 	undo_counter = undolist.size(); 
 	qDebug() << "Undo Counter (added) :" << undolist.size() << undo_counter;	
 }
+
 void GraphWidget::undo()
 {
 	trackingUndo= false;
@@ -979,6 +1021,7 @@ void GraphWidget::undo()
 	qDebug() << undolist.size() << undo_counter;
 	trackingUndo= true;
 }
+
 void GraphWidget::redo()
 {
 	trackingUndo = false;
@@ -1012,8 +1055,8 @@ void GraphWidget::sceneChanged()
 	newRect.setHeight(max(rect.height(), newRect.height()));
 
 	MainGraphicsScene->setSceneRect(newRect);
-
 }
+
 QList<Node*> GraphWidget::Nodes() const
 {
 	QList<Node *> nodes;
@@ -1046,7 +1089,7 @@ Operation_Modes GraphWidget::setModeCursor()
 {
 	switch (Operation_Mode) {
 	case Operation_Modes::Draw_Connector:
-		setCursor(Qt::PointingHandCursor);
+		setCursor(Qt::CrossCursor);
 		break;
 	case Operation_Modes::Pan:
 		setCursor(Qt::OpenHandCursor);
@@ -3450,3 +3493,138 @@ bool isFuzzyEqual(double a, double b, double allowableError)
 {
 	return (fabs(a - b) / ((a + b) / 2) <= allowableError);
 }
+
+
+
+/*
+{
+QMenu *waterQualitySubMenu = menu.addMenu("Plot Water Quality Results");
+
+if (model->colloid_transport() && entitiesByType("Particle").count())
+{
+for each (Entity *p in entitiesByType("Particle"))
+{
+QMenu *particleSubMenu = waterQualitySubMenu->addMenu(p->Name());
+if (p->getValue("Model").contains("Single"))
+{
+QStringList list;
+list.append(("Particle"));
+int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+model->lookup_particle_type(p->Name().toStdString()), 0);
+list.append(QString::number(BTCid));
+menuKey[particleSubMenu->addAction("Mobile")] = list;
+}
+if (p->getValue("Model").contains("Dual"))
+{
+QStringList list;
+list.append(("Particle"));
+int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+model->lookup_particle_type(p->Name().toStdString()), 0);
+list.append(QString::number(BTCid));
+menuKey[particleSubMenu->addAction("Mobile")] = list;
+list.clear();
+list.append(("Particle"));
+BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+model->lookup_particle_type(p->Name().toStdString()), 1);
+list.append(QString::number(BTCid));
+menuKey[particleSubMenu->addAction("Attached")] = list;
+}
+if (p->getValue("Model").contains("Triple"))
+{
+QStringList list;
+list.append(("Particle"));
+int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+model->lookup_particle_type(p->Name().toStdString()), 0);
+list.append(QString::number(BTCid));
+menuKey[particleSubMenu->addAction("Mobile")] = list;
+list.clear();
+list.append(("Particle"));
+BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+model->lookup_particle_type(p->Name().toStdString()), 2);
+list.append(QString::number(BTCid));
+menuKey[particleSubMenu->addAction("Reversible attached")] = list;
+list.clear();
+list.append(("Particle"));
+BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+model->lookup_particle_type(p->Name().toStdString()), 1);
+list.append(QString::number(BTCid));
+menuKey[particleSubMenu->addAction("Irreversible attached")] = list;
+}
+}
+}
+if (model->constituent_transport() && entitiesByType("Constituent").count())
+{
+if (model->colloid_transport() && entitiesByType("Particle").count())
+menu.addSeparator();
+for each (Entity *e in entitiesByType("Constituent"))
+{
+//QMenu *constituentSubMenu = waterQualitySubMenu->addMenu(e->Name());
+QStringList list;
+list.append("Constituent");
+int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()), -2, 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
+list.append(QString::number(BTCid));
+menuKey[waterQualitySubMenu->addAction(e->Name())] = list;
+}
+QMenu *sorbedSubMenu = waterQualitySubMenu->addMenu("Sorbed/Particle associated");
+QMenu *constituentSorbedSubMenu;
+for each (Entity *e in entitiesByType("Constituent"))
+{
+constituentSorbedSubMenu = sorbedSubMenu->addMenu(e->Name());
+QStringList list;
+list.append("Constituent");
+int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()), -1, 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
+list.append(QString::number(BTCid));
+menuKey[constituentSorbedSubMenu->addAction("Soil")] = list;
+for each (Entity *p in entitiesByType("Particle"))
+{
+QMenu *particleSubMenu = constituentSorbedSubMenu->addMenu(p->Name());
+if (p->getValue("Model").contains("Single"))
+{
+QStringList list;
+list.append("Constituent");
+int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+model->lookup_particle_type(p->Name().toStdString()), 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
+list.append(QString::number(BTCid));
+menuKey[particleSubMenu->addAction("Mobile")] = list;
+}
+if (p->getValue("Model").contains("Dual"))
+{
+QStringList list;
+list.append("Constituent");
+int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+model->lookup_particle_type(p->Name().toStdString()), 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
+list.append(QString::number(BTCid));
+menuKey[particleSubMenu->addAction("Mobile")] = list;
+list.clear();
+list.append("Constituent");
+BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+model->lookup_particle_type(p->Name().toStdString()), 1, model->RXN().look_up_constituent_no(e->Name().toStdString()));
+list.append(QString::number(BTCid));
+menuKey[particleSubMenu->addAction("Attached")] = list;
+}
+if (p->getValue("Model").contains("Triple"))
+{
+QStringList list;
+list.append("Constituent");
+int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+model->lookup_particle_type(p->Name().toStdString()), 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
+list.append(QString::number(BTCid));
+menuKey[particleSubMenu->addAction("Mobile")] = list;
+list.clear();
+list.append("Constituent");
+BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+model->lookup_particle_type(p->Name().toStdString()), 1, model->RXN().look_up_constituent_no(e->Name().toStdString()));
+list.append(QString::number(BTCid));
+menuKey[particleSubMenu->addAction("Reversible attached")] = list;
+list.clear();
+list.append("Constituent");
+BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+model->lookup_particle_type(p->Name().toStdString()), 2, model->RXN().look_up_constituent_no(e->Name().toStdString()));
+list.append(QString::number(BTCid));
+menuKey[particleSubMenu->addAction("Irreversible attached")] = list;
+}
+}
+}
+}
+}
+*/

@@ -2050,7 +2050,8 @@ void CMedium::solve_fts_m2(double dt)
 			else
 				dtt = min(base_dtt, 1000 * avg_redo_dtt*1.2);
 
-			dtt = min(dtt, get_nextcontrolinterval(t) - t);
+			if (controllers().size())
+				dtt = min(dtt, get_nextcontrolinterval(t) - t);
 
 
 
@@ -2905,10 +2906,10 @@ CVector CMedium::getres_C(const CVector &X, double dtt)
 				//advection
 				vector<int> ii;
 				ii.push_back(p);
-				qDebug() << QString::fromStdString(Solid_phase()[p].vs_coefficient.expression);
+				
 				double Q_adv_star = (Connector[i].Q_star - Connector[i].Q_v_star)*Connector[i].flow_factor + Connector[i].settling*Solid_phase()[p].vs*sgn(Connector[i].Block1->z0 - Connector[i].Block2->z0)*Connector[i].A_star*0.5*(Connector[i].Block1->calc_star(Solid_phase()[p].vs_coefficient,ii) + Connector[i].Block2->calc_star(Solid_phase()[p].vs_coefficient,ii));
 				double Q_adv = (Connector[i].Q - Connector[i].Q_v)*Connector[i].flow_factor + Connector[i].settling*Solid_phase()[p].vs*sgn(Connector[i].Block1->z0 - Connector[i].Block2->z0)*Connector[i].A*0.5*(Connector[i].Block1->calc(Solid_phase()[p].vs_coefficient,ii) + Connector[i].Block2->calc(Solid_phase()[p].vs_coefficient,ii));
-				qDebug() <<"Q_" << Q_adv_star << "    " << Q_adv;
+				
 				if (((1-w())*Q_adv_star+w()*Q_adv)>0)
 				{	F[get_member_no(getblocksq(Connector[i].Block1ID),p,l)] += (w()*Q_adv*Blocks[getblocksq(Connector[i].Block1ID)].G[p][l] + (1-w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block1ID)].G_star[p][l])*Blocks[getblocksq(Connector[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
 					F[get_member_no(getblocksq(Connector[i].Block2ID),p,l)] -= (w()*Q_adv*Blocks[getblocksq(Connector[i].Block1ID)].G[p][l] + (1-w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block1ID)].G_star[p][l])*Blocks[getblocksq(Connector[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
@@ -3361,7 +3362,7 @@ int CMedium::get_member_no(int block_no, int solid_id, int phase_no, int const_n
 	{
 		int k=0;
 		for (int i=0; i<solid_id; i++) k+=Blocks[0].Solid_phase[i]->n_phases*Blocks.size()*RXN().cons.size();
-		return k+(phase_no*Blocks.size())*RXN().cons.size()+block_no+2*int(RXN().cons.size())*Blocks.size();
+		return const_no*Blocks.size()+k+(phase_no*Blocks.size())*RXN().cons.size()+block_no+2*int(RXN().cons.size())*Blocks.size();
 	}
 
 }

@@ -1315,7 +1315,8 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 				B.evaporation_id.push_back(n->val(code).toStdString());
 			if (code == "light")
 				B.light_swch = n->val(code).toBool();
-
+			if (code == "perform_rxn")
+				B.perform_rxn = n->val(code).toBool();
 		}
 		for each (QString text in n->g().split(';'))
 			B.set_val(text.split('=').first().toStdString(), text.split('=').last().toFloat());
@@ -2229,9 +2230,7 @@ int CMedium::get_member_no(QString block_name, QString solid_name, QString phase
 	else if (phase_name == "Irreversible attached") phase_no = 2;
 	else gw->log(QString("Warning: Could not locate Phase(%1) for Particle(%2) in Block(%3).").arg(phase_name).arg(solid_name).arg(block_name));
 
-	int k = 0;
-	for (int i = 0; i<solid_id; i++) k += Blocks[0].Solid_phase[i]->n_phases*Blocks.size();
-	return k + getblocksq(block_name.toStdString()) + phase_no*Blocks.size();
+	return get_member_no(getblocksq(block_name.toStdString()), solid_id, phase_no);
 }
 
 int CMedium::get_member_no(QString block_name, QString solid_name, QString phase_name, QString const_name)

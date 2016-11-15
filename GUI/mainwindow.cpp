@@ -245,6 +245,9 @@ MainWindow::MainWindow(QWidget *parent, QString applicationName, QString shortNa
 	//	ui->experimantsToolbar->insertWidget()
 	mainGraphWidget->add_to_undo_list();
 	mainGraphWidget->trackingUndo = true;
+	connect(ui->menuWaterQuality->menuAction(), SIGNAL(hovered()), this, SLOT(menuWaterQuality_hovered()));
+	connect(ui->menuWaterQuality, SIGNAL(triggered()), this, SLOT(menuWaterQuality_triggered()));
+
 }
 
 void MainWindow::readRecentFilesList()
@@ -269,14 +272,24 @@ void MainWindow::readRecentFilesList()
 }
 void MainWindow::addToRecentFiles(QString fileName, bool addToFile) 
 {
-	if (!recentFiles.contains(fileName.toLower()) && fileName.trimmed()!="")
+	bool rewriteFile = false;
+	if (recentFiles.contains(fileName.toLower()) && fileName.trimmed() != "")
+		if (recentFiles.indexOf(fileName.toLower()) != recentFiles.count()-1)
+		{
+			ui->menuRecent->removeAction(ui->menuRecent->actions()[recentFiles.size() - 1 - recentFiles.indexOf(fileName.toLower())]);
+			recentFiles.removeOne(fileName.toLower());
+			addToFile = false;
+			rewriteFile = true;
+		}
+
+	if (!recentFiles.contains(fileName.toLower()) && fileName.trimmed() != "")
 	{
 		recentFiles.append(fileName.toLower());
-//		QAction * a = ui->menuRecent->addAction(fileName);// , this, SLOT(recentItem()));
+		//		QAction * a = ui->menuRecent->addAction(fileName);// , this, SLOT(recentItem()));
 		QAction * fileNameAction = new QAction(fileName, 0);
 		if (ui->menuRecent->actions().size())
 			ui->menuRecent->insertAction(ui->menuRecent->actions()[0], fileNameAction);
-		else 
+		else
 			ui->menuRecent->addAction(fileNameAction);
 		QObject::connect(fileNameAction, SIGNAL(triggered()), this, SLOT(on_actionRecent_triggered()));
 
@@ -287,6 +300,8 @@ void MainWindow::addToRecentFiles(QString fileName, bool addToFile)
 				file << fileName.toStdString() << endl;
 			file.close();
 		}
+		if (rewriteFile)
+			writeRecentFilesList();
 	}
 }
 
@@ -2232,6 +2247,7 @@ void MainWindow::on_actionRecent_triggered()
 	{
 		on_actionZoom_All_triggered();
 		mainGraphWidget->updateNodeCoordinates();
+		addToRecentFiles(fileName, false);
 	}
 	else
 		removeFromRecentList(a);
@@ -2240,6 +2256,129 @@ void MainWindow::on_actionRecent_triggered()
 void MainWindow::on_actionReset_colors_triggered()
 {
 	mainGraphWidget->colorSchemeLegend_closed();
+}
+
+
+void MainWindow::menuWaterQuality_hovered()
+{
+	static double t = 0;
+	if (time(0) - t >= 4)
+	{
+		t = time(0);
+		//aqueous
+		QMenu *waterQualitySubMenu = ui->menuWaterQuality;
+		QAction *a;
+
+		qDeleteAll(waterQualitySubMenu->actions());
+		if (!mainGraphWidget->model)
+			return;
+
+		if (mainGraphWidget->model->colloid_transport() && mainGraphWidget->entitiesByType("Particle").count())
+		{
+			for each (Entity *p in mainGraphWidget->entitiesByType("Particle"))
+			{
+				QMenu *particleSubMenu = waterQualitySubMenu->addMenu(p->Name());
+				
+				if (p->getValue("Model").contains("Single"))
+				{
+					a = particleSubMenu->addAction("Mobile");
+					updateAction(a, "Particle", p->Name());
+				}
+				if (p->getValue("Model").contains("Dual"))
+				{
+					a = particleSubMenu->addAction("Mobile");
+					updateAction(a, "Particle", p->Name());
+					a = particleSubMenu->addAction("Attached");
+					updateAction(a, "Particle", p->Name());
+				}
+				if (p->getValue("Model").contains("Triple"))
+				{
+					a = particleSubMenu->addAction("Mobile");
+					updateAction(a, "Particle", p->Name());
+					a = particleSubMenu->addAction("Reversible attached");
+					updateAction(a, "Particle", p->Name());
+					a = particleSubMenu->addAction("Irreversible attached");
+					updateAction(a, "Particle", p->Name());
+				}
+			}
+		}
+		if (mainGraphWidget->model->constituent_transport() && mainGraphWidget->entitiesByType("Constituent").count())
+		{
+			if (mainGraphWidget->model->colloid_transport() && mainGraphWidget->entitiesByType("Particle").count())
+				ui->menuWaterQuality->addSeparator();
+			for each (Entity *e in mainGraphWidget->entitiesByType("Constituent"))
+			{
+				a=waterQualitySubMenu->addAction(e->Name());
+				updateAction(a, "Constituent", "", e->Name(), "");
+			}
+			QMenu *sorbedSubMenu = waterQualitySubMenu->addMenu("Sorbed/Particle associated");
+			QMenu *constituentSorbedSubMenu;
+			for each (Entity *e in mainGraphWidget->entitiesByType("Constituent"))
+			{
+				constituentSorbedSubMenu = sorbedSubMenu->addMenu(e->Name());
+				a=constituentSorbedSubMenu->addAction("Soil");
+				updateAction(a, "Constituent", "Soil", e->Name(), "");
+				for each (Entity *p in mainGraphWidget->entitiesByType("Particle"))
+				{
+					QMenu *particleSubMenu = constituentSorbedSubMenu->addMenu(p->Name());
+					if (p->getValue("Model").contains("Single"))
+					{
+						a =particleSubMenu->addAction("Mobile");
+						updateAction(a, "Constituent", p->Name(), e->Name());
+					}
+					if (p->getValue("Model").contains("Dual"))
+					{
+						a=particleSubMenu->addAction("Mobile");
+						updateAction(a, "Constituent", p->Name(), e->Name());
+						a=particleSubMenu->addAction("Attached");
+						updateAction(a, "Constituent", p->Name(), e->Name());
+					}
+					if (p->getValue("Model").contains("Triple"))
+					{
+						a=particleSubMenu->addAction("Mobile");
+						updateAction(a, "Constituent", p->Name(), e->Name());
+						a=particleSubMenu->addAction("Reversible attached");
+						updateAction(a, "Constituent", p->Name(), e->Name());
+						a=particleSubMenu->addAction("Irreversible attached..");
+						updateAction(a, "Constituent", p->Name(), e->Name());
+					}
+				}
+			}
+		}
+	}
+}
+void MainWindow::updateAction(QAction *a, QString particleConstituent, QString p, QString c, QString phase)
+{
+	QStringList data;
+	data.append(particleConstituent);
+	data.append(p);
+	data.append(c);
+	if (phase == "get from action")
+		data.append(a->text());
+	else
+		data.append(phase);
+	a->setData(data);
+	connect(a, SIGNAL(triggered()), this, SLOT(waterQualityPostProcessing_clicked()));
+}
+void MainWindow::waterQualityPostProcessing_clicked()
+{
+	QAction* a = static_cast<QAction*> (QObject::sender());
+	QStringList list = a->data().toStringList();
+	mainGraphWidget->updateNodesColorCodes_WaterQuality(list, false, "Blue-Red");
+}
+void MainWindow::menuWaterQuality_triggered()
+{
+	int i = 0;
+}
+
+void MainWindow::on_actionContact_Us_triggered()
+{
+	int i = 0;
+}
+
+void MainWindow::on_actionContact_Us_hovered()
+{
+	int i = 0;
 }
 
 void MainWindow::removeFromRecentList(QAction* selectedFileAction)
@@ -2252,8 +2391,11 @@ void MainWindow::writeRecentFilesList()
 {
 	ofstream file(RECENT);
 	if (file.good())
+	{
+		int i = recentFiles.removeDuplicates();
 		for each (QString fileName in recentFiles)
 			file << fileName.toStdString() << endl;
+	}
 	file.close();
 }
 

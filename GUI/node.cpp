@@ -288,6 +288,10 @@ edgesides Node::edge(const int _x, const int _y)
 	if (abs(_x - x() - width) < vBorder) return edgesides::rightside;
 	return edgesides::noside;
 }
+void Node::setBold(const bool bold) {
+	this->bold = bold;
+	update();
+}
 
 void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *)
 {
@@ -449,11 +453,16 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 				painter->drawText(10, height / 2 - 10, middleText);
 			}
 		}
-		if (isSelected())
-		{
-			if (parent->tableProp->model() != model) {
-				parent->tableProp->setModel(model);
+		if (parent->selectedNodes().count()==1)
+			if (isSelected())
+			{
+				if (parent->tableProp->model() != model) {
+					parent->tableProp->setModel(model);
+				}
 			}
+		else
+		{
+			//multinodes selected
 		}
 	}
 }

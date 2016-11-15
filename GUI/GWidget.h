@@ -105,12 +105,12 @@ public:
 	void deleteSelected();
 	
 	//names of selected Items
-	QStringList selectedItems();
-	QString typeOfSelecetedItems();
+	QStringList selectedItems()const;
+	QString typeOfSelecetedItems()const;
 
-	QList<Node*> selectedNodes();
-	QList<Edge*> selectedEdges();
-	QList<Entity*> selectedEntities();
+	QList<Node*> selectedNodes() const;
+	QList<Edge*> selectedEdges() const;
+	QList<Entity*> selectedEntities()const;
 
 	void update(bool fast = false);
 //	void PropsPopulate(const Node *node, QTableView *tableProp);
@@ -261,6 +261,7 @@ public:
 	void GraphWidget::updateNodeCoordinates();
 	QMap<QString, QMap<QString, QString>> specs;
 	void updateNodesColorCodes(QString propertyItem, bool logged = false, QString colorTheme = "Green", vector<double> predifinedMinMax = vector<double>(), float time = -1);
+	void updateNodesColorCodes_WaterQuality(QStringList property, bool logged = false, QString colorTheme = "Green", vector<double> predifinedMinMax = vector<double>(), float time = -1);
 	void updateEdgesColorCodes(QString propertyItem, bool logged = false, QString colorTheme = "Green", vector<double> predifinedMinMax = vector<double>(), float time = -1);
 	QSlider *legendSliderTime=0;
 	colorlegend colors;

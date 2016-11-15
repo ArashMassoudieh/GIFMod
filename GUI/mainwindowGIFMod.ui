@@ -168,8 +168,15 @@
      <addaction name="actionColorCodeConnectorArea"/>
      <addaction name="actionColorCodeConnectorVaporExchangeEate"/>
     </widget>
+    <widget class="QMenu" name="menuWaterQuality">
+     <property name="title">
+      <string>Water quality</string>
+     </property>
+     <addaction name="separator"/>
+    </widget>
     <addaction name="menuBlocks"/>
     <addaction name="menuConnectors"/>
+    <addaction name="menuWaterQuality"/>
     <addaction name="actionReset_colors"/>
    </widget>
    <addaction name="menu_File"/>

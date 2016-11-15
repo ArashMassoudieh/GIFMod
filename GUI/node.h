@@ -56,6 +56,7 @@ public:
 	mPropList mpropList()  const;
 	QString Name() const { return name; };
 	bool setName(const QString &Name);
+	void setBold(const bool _Bold = true);
 
 	bool setObjectType(const QString &);
 	bool setObjectSubType(const QString &);
@@ -65,9 +66,8 @@ public:
 	void setWidth(const int &Width) { width = Width; update(); };
 	void setHeight(const int &Height) { height = Height; update(); };
 	mProp Filter() const { return ObjectType(); };
-	void setBold(const bool _Bold = true) {
-			bold = _Bold;
-			update();		};
+	
+
 	QVariant getProp(const QString &propName, const int role = Qt::DisplayRole) const;
 	XString getValue(const QString &propName) const;
 	bool setProp(const QString &propName, const QVariant &Value, const int role = Qt::EditRole) ;
@@ -99,7 +99,6 @@ public:
 	XString val(const QString & code) const;
 
 	GraphWidget *parent;
-	bool bold = false;
 	QString GUI;
 	Object_Types itemType;
 	QMap<QString, QList<ParticleInitialConditionItem>>* particleInitialConditions;
@@ -139,6 +138,7 @@ private:
 //	GraphWidget *graph;
 	void changed();
 //	QMap<QString, QString> warnings, errors;
+	bool bold = false;
 
 
 };

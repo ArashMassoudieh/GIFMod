@@ -404,6 +404,7 @@ XString Edge::getValue(const QString& propName) const
 		return props.getProp(propName, parent->experimentsList()[0]);
 	return props.getProp(propName, experimentName());
 }
+
 bool Edge::setProp(const QString &propName, const QVariant &Value, const int role)
 {
 	if (role == Qt::EditRole)
