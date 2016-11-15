@@ -61,6 +61,7 @@ public:
 	void CMedium::create(CLIDconfig _lid_config, CMediumSet *_parent);
 	double& w(); //current time weight for CN solution
 	CMedium& CMedium::operator=(const CMedium &BB); //equal operator
+	void get_state(const CMedium & M);
 	vector<CConnection> Connector;
 	vector<CMBBlock> Blocks;
 	vector<CSolid_Phase>& Solid_phase();
