@@ -17,3 +17,4 @@ c:/users/user/documents/gifmod projects/test control.gifm
 c:/users/user/documents/gifmod projects/radial 2.gifm
 c:/users/user/documents/gifmod projects/1.gifm
 c:/users/user/dropbox/asm/activated sludge model.gifm
+E:/Dropbox/GUI/GIFMOD User's manual/Examples/DO_control/DO_control_n.GIFM
