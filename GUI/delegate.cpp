@@ -492,7 +492,7 @@ void Delegate::openParticleInitialCondition()
 			vector<QVariant> gValues;
 			for (int i = 0; i < n->parent->experimentsList().count(); i++)
 				gValues.push_back(n->g(parent->experimentsList()[i]));
-			multiValues gMultiValues(gValues);
+			multiValues<> gMultiValues(gValues);
 			if (gMultiValues.sameValues())
 			{
 				new ParticleWindow(parent->parent, parent, n, experimentName);
@@ -549,7 +549,7 @@ void Delegate::openConstituentInitialCondition()
 			vector<QVariant> gValues;
 			for (int i = 0; i < n->parent->experimentsList().count(); i++)
 				gValues.push_back(n->cg(parent->experimentsList()[i]));
-			multiValues gMultiValues(gValues);
+			multiValues<> gMultiValues(gValues);
 			if (gMultiValues.sameValues())
 			{
 				new ConstituentWindow(parent->parent, parent, n, experimentName);

@@ -46,6 +46,7 @@ public:
 	QList<Edge *> edges() const { return edgeList; };
 
 	mPropList getmList(const mProp &_filter) const;
+	mPropList getmList(const QList<mProp>_filter) const;
 
 	enum { Type = UserType + 1 };
     int type() const Q_DECL_OVERRIDE { return Type; }
@@ -66,9 +67,15 @@ public:
 	void setWidth(const int &Width) { width = Width; update(); };
 	void setHeight(const int &Height) { height = Height; update(); };
 	mProp Filter() const { return ObjectType(); };
-	
+	QList<mProp> Filter(const QList<Node*> nodes) const { 
+		QList<mProp> objectTypes;
+		for each (Node* n in nodes)
+			objectTypes.append(n->ObjectType());
+		return objectTypes; };
+
 
 	QVariant getProp(const QString &propName, const int role = Qt::DisplayRole) const;
+	QVariant getProp(const QString &propName, const QList<Node*> nodes, const int role = Qt::DisplayRole) const;
 	XString getValue(const QString &propName) const;
 	bool setProp(const QString &propName, const QVariant &Value, const int role = Qt::EditRole) ;
 	bool setValue(const QString &propName, const XString &Value);

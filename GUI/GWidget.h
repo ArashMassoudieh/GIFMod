@@ -334,6 +334,8 @@ private:
 	Node *resizenode;
 	corners resizecorner;
 	bool sceneReady = false;
+	QList<Node*> nodes(const QList<QGraphicsItem*>items) const;
+	QList<Edge*> edges(const QList<QGraphicsItem*>items) const;
 };
 bool validInflowFile(QString file);
 QString getTime(bool reset=true);

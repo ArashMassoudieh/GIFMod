@@ -8,7 +8,6 @@ c:/users/arash-home/documents/gifmod projects/do_control/docontrol.gifm
 c:/users/jamal/documents/gifmod projects/pid_pool_test/pid_pool_test.gifm
 c:/users/user/dropbox/gui/gifmod user's manual/examples/1drechards/1drichards.gifm
 c:/users/user/dropbox/gui/gifmod user's manual/examples/do_control/do_control.gifm
-c:/users/user/documents/gifmod projects/multiselect.gifm
 c:/users/user/desktop/asm/activated sludge model.gifm
 c:/users/user/desktop/asm/new activated sludge model.gifm
 c:/users/user/dropbox/asm/new activated sludge model.gifm
@@ -17,3 +16,5 @@ c:/users/user/documents/gifmod projects/test control.gifm
 c:/users/user/documents/gifmod projects/radial 2.gifm
 c:/users/user/documents/gifmod projects/1.gifm
 c:/users/user/dropbox/asm/activated sludge model.gifm
+c:/users/user/documents/gifmod projects/multiselect.gifm
+C:/Users/user/Desktop/DO_control/DO_control_n.GIFM
