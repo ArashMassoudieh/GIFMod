@@ -2745,7 +2745,7 @@ void CMedium::onestepsolve_const(double dtt)
 	J_q_update_count = 0;
 	while (err>tol()) 
 	{
-		if (J_update_Q==true)
+		if ((J_update_Q==true) || (M_Q.getnumrows()!= X.num ))
 		{
 			J_q_update_count++;
 			M_Q = Jacobian_Q(X,dtt);
