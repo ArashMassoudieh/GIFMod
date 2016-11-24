@@ -1991,6 +1991,9 @@ void CMedium::solve_fts_m2(double dt)
 			{
 				failed = true;
 				fail_reason = "Simulation was stopped by user";
+				for (int i = 0; i < controllers().size(); i++)
+					ANS_control.BTC[i] = controllers()[i].output;
+
 				return;
 			}
 
@@ -2005,6 +2008,10 @@ void CMedium::solve_fts_m2(double dt)
 				}
 				fail_reason = "dt too small, epoch = " + numbertostring(epoch_count) + ", avarage_dt = " + numbertostring((t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii);
 				failed = true;
+				for (int i = 0; i < controllers().size(); i++)
+					ANS_control.BTC[i] = controllers()[i].output;
+
+
 				return;
 			}
 

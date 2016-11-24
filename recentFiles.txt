@@ -18,3 +18,5 @@ c:/users/user/documents/gifmod projects/radial 2.gifm
 c:/users/user/documents/gifmod projects/1.gifm
 c:/users/user/dropbox/asm/activated sludge model.gifm
 E:/Dropbox/GUI/GIFMOD User's manual/Examples/DO_control/DO_control_n.GIFM
+E:/Dropbox/GUI/GIFMOD User's manual/Examples/2DConfinedAquifer/2DConfined-transport.GIFM
+E:/Dropbox/GIFMod Projects/Nit-DeNit-3tanks/Nit_Denit_3tanks.GIFM
