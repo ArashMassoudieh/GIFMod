@@ -3,6 +3,7 @@
 #include "proplistitem.h"
 #include "multiValues.h"
 
+class Node;
 class XString;
 class QString;
 #include "qvariant.h"
@@ -103,12 +104,14 @@ public:
 		return r;
 	}
 
-	XString getProp(const QString& propName, const QString& experimentName) const; // add a default value for experiment name
+	XString getProp(const QString& propName, const QString& experimentName, T* parentSub = 0) const; // add a default value for experiment name
+	XString getProp(const QString& propName, QList<T*>, const QString& experimentName) const; // add a default value for experiment name
 	bool setProp(const QString& propName, const XString& Value, const QString& experimentName);
-	multiValues getPropMultiValues(const QString& propName, const QStringList &experimentsList) const{
+	multiValues<> getPropMultiValues(const QString& propName, const QStringList &experimentsList) const{
 		vector<QVariant> values;
 		for (int i = 0;i<experimentsList.count();i++)
 			values.push_back(getProp(propName, experimentsList[i]));
-		return multiValues(values);
+		return multiValues<>(values);
 	}
+	multiValues<> getPropMultiValues(const QString& propName, const QList<Node*> nodes, const QStringList &experimentsList) const;
 };

@@ -330,3 +330,13 @@ bool conditionConformed(QString condition, QString value, GraphWidget *gw)
 		if (condition.contains(')')) return ((value.toFloat() > condition.remove('(').remove(')').split(':')[0].toFloat()) && (value.toFloat() < condition.remove('(').remove(')').split(':')[1].toFloat()));
 	}
 }
+
+bool mProp::areTheSame(const QList<mProp>a, const QList<mProp>b)
+{
+	if (a.count() != b.count())
+		return false;
+	for (int i = 0; i < a.size(); i++)
+		if (!(a[i] %= b[i]))
+			return false;
+	return true;
+}

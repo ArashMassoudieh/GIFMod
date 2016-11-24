@@ -11,7 +11,8 @@
 #include <QGraphicsSceneContextMenuEvent>
 #include "treemodel.h"
 #include "Proplist.h"
-#include "multiValues.h"
+//#include "multiValues.h"
+//#include "utility_Funcs.h"
 
 Node::Node(GraphWidget *gwidget, QString _type, QString _name, int _ID, int x, int y, int _width, int _height)
 	//: graph(gwidget)
@@ -74,6 +75,20 @@ mPropList Node::getmList(const mProp& _filter) const
 	static mProp filter;
 	static mPropList r;
 	if (filter %= _filter) return r;
+	r = mList()->filter(_filter);
+	filter = _filter;
+	return r;// (*parent->mList).filter(Filter() & _filter);
+}
+mPropList Node::getmList(const QList<mProp> _filter) const
+{
+//	int type = (_filter.ObjectType == "Tracer") ? 1 : 0;
+
+	static QList<mProp> filter;
+	static mPropList r;
+	
+	bool check = true;
+	for each(mProp mP in _filter)
+		if (mProp::areTheSame(filter, _filter)) return r;
 	r = mList()->filter(_filter);
 	filter = _filter;
 	return r;// (*parent->mList).filter(Filter() & _filter);
@@ -174,7 +189,110 @@ QVariant Node::getProp(const QString &propName, const int role) const
 	}
 	return QVariant();
 }
+QVariant Node::getProp(const QString &propName, const QList<Node*> nodes, const int role) const
+{
+	QList<mProp> filter = Filter(nodes);
+	for (int i=0;i<filter.size();i++)
+		filter[i].VariableName = propName;
+	mProp mValue = mList()->filter(filter)[0];
 
+	if (role == TypeRole) return mValue.Delegate;
+	if (role == InputMethodRole) return mValue.inputMethod;
+	if (role == DefaultValuesListRole)
+	{
+		multiValues<> defaultValues;
+		for (int i = 0; i<filter.size(); i++)
+			defaultValues.append(mValue.DefaultValuesStringList(mList(), &filter[i], parent));
+		if (defaultValues.sameValues())
+			return defaultValues.value();
+		return QString("different values");
+	}
+	if (role == VariableTypeRole) return mValue.VariableType;
+	if (role == UnitRole) return getValue(propName).unit;
+	if (role == defaultUnitRole) return getValue(propName).defaultUnit;
+	if (role == UnitsListRole) return getValue(propName).unitsList;
+	if (role == experimentDependentRole) return mValue.ExperimentDependent;
+	if (role == differentValuesRole)
+	{
+		if (mValue.ExperimentDependent == "No" || parent->experimentID())
+			return false;
+		else
+			return props.getPropMultiValues(propName, nodes, parent->experimentsList()).differentValues();
+	}
+	if (role == allUnitsRole) {
+		QStringList allUnits;
+		allUnits.append(getValue(propName).unit);
+		allUnits.append(getValue(propName).unitsList);
+		allUnits.append(getValue(propName).defaultUnit);
+		return allUnits;
+	}
+	if (role == DescriptionCodeRole) return mValue.DescriptionCode;
+	if (role == warningConditionRole)
+		return mValue.Condition;
+	if (role == warningErrorRole)
+		return mValue.error;
+	if (role == warningErrorDescRole)
+		return mValue.errorDesc;
+
+	if (role == Qt::ForegroundRole)
+	{
+		if (warnings.keys().contains(propName))
+			return QBrush((QColor(255, 111, 128)));
+		if (errors.keys().contains(propName))
+			return QBrush(Qt::red);
+		if (getProp(propName, nodes, differentValuesRole).toBool())
+			return QBrush(Qt::gray);
+	}
+	if (role == Qt::FontRole)
+	{
+		QFont boldFont, redBoldFont;
+		boldFont.setBold(true);
+		redBoldFont.setBold(true);
+		if (parent->applicationShortName == "GWA" && propName == "Name") return boldFont;
+		if (parent->applicationShortName != "GWA" && (propName == "Name" || propName == "Type" || propName == "SubType")) return boldFont;
+		if (mValue.DefaultValuesStringList(0, 0, parent).indexOf(getValue(propName)) != -1) return boldFont;
+		else return QFont();
+	}
+	if (role == Qt::CheckStateRole)
+		if ((mValue.Delegate == "CheckBox") || (mValue.VariableType == "boolean"))
+			if ((getValue(propName) != "0") && (getValue(propName).toLower() != "false") && (getValue(propName).toLower() != "no")) return Qt::Checked; else return Qt::Unchecked;
+
+	if (role == fullFileNameRole) return getValue(propName);
+	if (role == Qt::DisplayRole)
+	{
+		if (getProp(propName, nodes, differentValuesRole).toBool())
+			return QVariant("Different values.");
+		if (mValue.VariableType == "filename") {
+			qDebug() << OnlyFilenames(getValue(propName));
+			return OnlyFilenames(getValue(propName));
+		}
+		else if (mValue.Delegate == "CheckBox")
+			return "";
+		else return getValue(propName).toStringUnit();
+	}
+	if (role == Qt::ToolTipRole)
+	{
+		QString toolTip;
+		if (errors.keys().contains(propName)) toolTip.append("\n Error: ").append(errors[propName]);
+		if (warnings.keys().contains(propName)) toolTip.append("\n Warning: ").append(warnings[propName]);
+
+		if (mValue.VariableType.contains("filename"))
+			return getValue(propName).append(toolTip);
+		else if (mValue.Delegate.contains("CheckBox"))
+			return toolTip;
+		else return (getValue(propName).toStringUnit() == " ...") ? QVariant() : getValue(propName).toStringUnit().remove("...").append(toolTip);
+	}
+	if (role == VariableNameToolTipRole) return (mValue.Description != "*") ? mValue.Description : QVariant();
+	if (role == Qt::EditRole) {
+		if (getProp(propName, nodes, differentValuesRole).toBool())
+			return QVariant("Different values");
+		return getValue(propName);
+	}
+	if (role == XStringEditRole) {
+		return getValue(propName).list();
+	}
+	return QVariant();
+}
 XString Node::getValue(const QString& propName) const
 {
 	//qDebug() << "propName = " << propName;
@@ -453,7 +571,7 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 				painter->drawText(10, height / 2 - 10, middleText);
 			}
 		}
-		if (parent->selectedNodes().count()==1)
+		if (parent->selectedNodes().count()==1 && parent->selectedEdges().count()==0) // only one node is selected
 			if (isSelected())
 			{
 				if (parent->tableProp->model() != model) {
@@ -462,7 +580,10 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 			}
 		else
 		{
-			//multinodes selected
+			if (parent->selectedNodes().count() > 1 && parent->selectedEdges().count() == 0)//multi nodes are selected and no edges
+			{
+
+			}
 		}
 	}
 }
@@ -647,7 +768,7 @@ QList<ParticleInitialConditionItem> &Node::particleInitialCondition(QString expe
 	vector<QVariant> gValues;
 	for (int i = 0; i < parent->experimentsList().count(); i++)
 		gValues.push_back(g(parent->experimentsList()[i]));
-	multiValues gMultiValues(gValues);
+	multiValues<> gMultiValues(gValues);
 	if (gMultiValues.sameValues())
 		particleInitialConditions->operator[](experimentName) = particleInitialConditions->operator[](parent->firstExperimentName());
 	else
@@ -667,7 +788,7 @@ QList<ParticleInitialConditionItem> &Node::particleInitialCondition(QString expe
 	vector<QVariant> gValues;
 	for (int i = 0; i < parent->experimentsList().count(); i++)
 		gValues.push_back(g(parent->experimentsList()[i]));
-	multiValues gMultiValues(gValues);
+	multiValues<> gMultiValues(gValues);
 	if (gMultiValues.sameValues())
 		particleInitialConditions->operator[](experimentName) = particleInitialConditions->operator[](parent->firstExperimentName());
 	else
@@ -688,7 +809,7 @@ QList<ConstituentInitialConditionItem> &Node::constituentInitialCondition(QStrin
 	vector<QVariant> gValues;
 	for (int i = 0; i < parent->experimentsList().count(); i++)
 		gValues.push_back(cg(parent->experimentsList()[i]));
-	multiValues gMultiValues(gValues);
+	multiValues<> gMultiValues(gValues);
 	if (gMultiValues.sameValues())
 		constituentInitialConditions->operator[](experimentName) = constituentInitialConditions->operator[](parent->firstExperimentName());
 	else
@@ -708,7 +829,7 @@ QList<ConstituentInitialConditionItem> &Node::constituentInitialCondition(QStrin
 	vector<QVariant> gValues;
 	for (int i = 0; i < parent->experimentsList().count(); i++)
 		gValues.push_back(cg(parent->experimentsList()[i]));
-	multiValues gMultiValues(gValues);
+	multiValues<> gMultiValues(gValues);
 	if (gMultiValues.sameValues())
 		constituentInitialConditions->operator[](experimentName) = constituentInitialConditions->operator[](parent->firstExperimentName());
 	else

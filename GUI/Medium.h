@@ -175,6 +175,8 @@ public:
 	double& dt_change_rate();
 	double& dt_change_failure(); 
 	int& nr_failure_criteria();
+	bool &sorption();
+	int n_default_phases; //number of aquesous/soil matrix phases =1 for solely aqueous =2 when sorption to soil matrix occures
 	bool failed;
 	CMatrix InvJ1; //Inverse Jacobian Matrix
 	CMatrix InvJ2; //Inverse Jacobian Matrix
