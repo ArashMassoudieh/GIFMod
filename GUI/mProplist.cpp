@@ -267,7 +267,9 @@ mPropList mPropList::filter(const QList<mProp> mP) const
 
 	//find the intersection variable names
 	QList<QStringList> v;
-	v.reserve(mP.count());
+	for (int i = 0; i < mP.count(); i++)
+		v << QStringList();
+
 	QStringList variableNamesList;
 	for (int j = 0; j < mP.size(); j++)
 		{

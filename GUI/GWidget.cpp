@@ -1489,7 +1489,8 @@ QList<QMap<QString, QVariant>> GraphWidget::compactRXN() const
 
 void GraphWidget::clear()
 {
-//	expandNode(treeModel->index(-1, -1), false);
+//expandNode(treeModel->index(-1, -1), false);
+	clearRXN(); 
 	for each (Node *n in Nodes())
 		treeModel->deleteNode(n);
 	for each (Edge *e in Edges())

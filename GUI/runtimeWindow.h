@@ -75,7 +75,7 @@ private slots:
 		int i = 0;
 	};
 
-  void realtimeDataSlot(double x, double y, bool secondPlot = false, QString chartName = "", bool commingBackX = false);
+  void realtimeDataSlot(double x, double y, bool secondPlot = false, QString chartName = "chart", bool commingBackX = false);
   void bracketDataSlot();
   void screenShot();
   void allScreenShots();

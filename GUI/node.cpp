@@ -87,8 +87,7 @@ mPropList Node::getmList(const QList<mProp> _filter) const
 	static mPropList r;
 	
 	bool check = true;
-	for each(mProp mP in _filter)
-		if (mProp::areTheSame(filter, _filter)) return r;
+	if (mProp::areTheSame(filter, _filter)) return r;
 	r = mList()->filter(_filter);
 	filter = _filter;
 	return r;// (*parent->mList).filter(Filter() & _filter);
@@ -192,8 +191,7 @@ QVariant Node::getProp(const QString &propName, const int role) const
 QVariant Node::getProp(const QString &propName, const QList<Node*> nodes, const int role) const
 {
 	QList<mProp> filter = Filter(nodes);
-	for (int i=0;i<filter.size();i++)
-		filter[i].VariableName = propName;
+	for (int i=0;i<filter.size();i++)filter[i].VariableName = propName;
 	mProp mValue = mList()->filter(filter)[0];
 
 	if (role == TypeRole) return mValue.Delegate;
@@ -571,18 +569,27 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 				painter->drawText(10, height / 2 - 10, middleText);
 			}
 		}
-		if (parent->selectedNodes().count()==1 && parent->selectedEdges().count()==0) // only one node is selected
+		if (parent->selectedNodes().count() == 1 && parent->selectedEdges().count() == 0) // only one node is selected
+		{
 			if (isSelected())
 			{
 				if (parent->tableProp->model() != model) {
 					parent->tableProp->setModel(model);
 				}
 			}
+		}
 		else
 		{
+			QList<Node*> l = parent->selectedNodes();
+			QList<Edge*> m = parent->selectedEdges();
 			if (parent->selectedNodes().count() > 1 && parent->selectedEdges().count() == 0)//multi nodes are selected and no edges
 			{
-
+				static PropModel<Node>* multiModel = 0;
+				if (!multiModel)
+					multiModel = new PropModel<Node>(parent->selectedNodes());
+				if (multiModel->itemsList()!=parent->selectedNodes())
+					multiModel = new PropModel<Node>(parent->selectedNodes());
+				parent->tableProp->setModel(multiModel);
 			}
 		}
 	}
