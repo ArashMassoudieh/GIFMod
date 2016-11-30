@@ -7,7 +7,7 @@
 
 QVariant PropModel<Node>::data(const QModelIndex & index, int role) const
 {
-	if (parent) // ordinary structure (only one object selected)
+	if (!items.count()) // ordinary structure (only one object selected)
 	{
 		if (index.row() >= rows()) return QVariant();
 		if (role == saveIndex)
@@ -82,8 +82,7 @@ QVariant PropModel<Node>::data(const QModelIndex & index, int role) const
 		int col = index.column();
 		multiValues<mPropList> mList;
 		QList<mProp> objectTypes;
-		for each (Node* n in items)
-			objectTypes.append(n->ObjectType());
+		for each (Node* n in items)	objectTypes.append(n->ObjectType());
 		QString VariableName = parent->getmList(objectTypes).VariableNames()[row];
 
 		if (role == VariableNameRole) return VariableName;

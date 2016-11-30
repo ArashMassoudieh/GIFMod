@@ -13,6 +13,7 @@
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QCheckBox>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
@@ -50,6 +51,7 @@ public:
     QPushButton *btnHide;
     QPushButton *btnStop;
     QSpacerItem *verticalSpacer_2;
+    QCheckBox *refreshPlot;
     QVBoxLayout *verticalLayout_2;
     QCustomPlot *customPlot;
     QCustomPlot *customPlot2;
@@ -170,6 +172,11 @@ public:
 
         verticalLayout->addItem(verticalSpacer_2);
 
+        refreshPlot = new QCheckBox(centralWidget);
+        refreshPlot->setObjectName(QStringLiteral("refreshPlot"));
+
+        verticalLayout->addWidget(refreshPlot);
+
 
         horizontalLayout_3->addLayout(verticalLayout);
 
@@ -238,6 +245,8 @@ public:
         label->setText(QApplication::translate("runtimeWindow", "Epoch count", 0));
         btnHide->setText(QApplication::translate("runtimeWindow", "Hide", 0));
         btnStop->setText(QApplication::translate("runtimeWindow", "Stop running", 0));
+        refreshPlot->setText(QApplication::translate("runtimeWindow", "Refresh graph \n"
+"at each time step", 0));
     } // retranslateUi
 
 };

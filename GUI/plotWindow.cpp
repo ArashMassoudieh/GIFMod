@@ -2026,7 +2026,7 @@ void plotWindow::setupFinancialDemo(QCustomPlot *customPlot)
 
 void plotWindow::realtimeDataSlot()
 {
-  // calculate two new data points:
+/*  // calculate two new data points:
 #if QT_VERSION < QT_VERSION_CHECK(4, 7, 0)
   double key = 0;
 #else
@@ -2070,7 +2070,7 @@ void plotWindow::realtimeDataSlot()
           , 0);
     lastFpsKey = key;
     frameCount = 0;
-  }
+  }*/
 }
 
 void plotWindow::bracketDataSlot()

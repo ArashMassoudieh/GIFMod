@@ -11,6 +11,9 @@ Project("{840C416C-B8F3-42BC-B0DD-F6BB14C9F8CB}") = "GIFMod Setup", "Setup Proje
 	EndProjectSection
 EndProject
 Global
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
