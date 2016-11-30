@@ -2869,14 +2869,16 @@ void CMedium::onestepsolve_const(double dtt)
 		failed_const = false;
 		fail_reason == "none";
 	}
+	int max_phases = 10000;
+	if (!sorption())
+		max_phases = -1;
 	
-	//newly added
 	if (failed_const == false)
 	{
 		fail_reason = "none";
 		for (int k = 0; k < RXN().cons.size(); k++)
 		{
-			for (int p = -2; p<int(Blocks[0].Solid_phase.size()); p++)
+			for (int p = -2; p<min(int(Blocks[0].Solid_phase.size()),max_phases); p++)
 			{
 				int _t;
 				if (p < 0) _t = 1; else _t = Blocks[0].Solid_phase[p]->n_phases;
@@ -3394,9 +3396,11 @@ int CMedium::get_member_no(int block_no, int solid_id, int phase_no, int const_n
 vector<int> CMedium::get_member_no_inv(int ii)
 {
 	vector<int> v;
-	
+	int max_phases = 10000;
+	if (!sorption())
+		max_phases = -1;
 	for (int kk = 0; kk<RXN().cons.size(); kk++)
-		for (int p = -2; p<int(Blocks[0].Solid_phase.size()); p++)
+		for (int p = -2; p<min(int(Blocks[0].Solid_phase.size()),max_phases); p++)
 		{
 			int _t;
 			if (p < 0) _t = 1; else _t = Blocks[0].Solid_phase[p]->n_phases;

@@ -1491,6 +1491,7 @@ void GraphWidget::clear()
 {
 //expandNode(treeModel->index(-1, -1), false);
 	clearRXN(); 
+	expandNode(treeModel->index(-1, -1), false);
 	for each (Node *n in Nodes())
 		treeModel->deleteNode(n);
 	for each (Edge *e in Edges())
@@ -1530,7 +1531,8 @@ void GraphWidget::experimentsComboClear(bool addExperiment1)
 void GraphWidget::clearRXN()
 {
 	expandNode(treeModel->index(-1, -1), false);
-	for each (Entity *e in Entities)
+	QList<Entity*> entitiesCopy = Entities;
+	for each (Entity *e in entitiesCopy)
 		if (e->objectType.ObjectType == "Reaction parameter" || e->objectType.ObjectType == "Reaction Network" || e->objectType.ObjectType == "Constituent")
 		{
 			delete e;
