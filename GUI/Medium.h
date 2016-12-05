@@ -237,6 +237,8 @@ public:
 	void CMedium::read_state(string filename);
 	int& restore_interval();
 	double dtt;
+	double base_dtt;
+	int where_base_dtt_changed = 0;
 	double avg_redo_dtt=0;
 	int redo_count = 0;
 	int CMedium::get_member_no(int solid_id, int phase_no);

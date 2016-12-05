@@ -18,4 +18,4 @@ c:/users/user/dropbox/asm/activated sludge model.gifm
 c:/users/user/documents/gifmod projects/radial 2.gifm
 c:/users/user/documents/gifmod projects/multiselect.gifm
 c:/users/user/dropbox/gui/gifmod user's manual/examples/do_control/do_control.gifm
-C:/Users/user/Dropbox/ASM/final polishing.GIFM
+c:/users/user/dropbox/asm/final polishing.gifm

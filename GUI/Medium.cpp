@@ -1770,7 +1770,7 @@ void CMedium::solve_fts_m2(double dt)
 		ANS_control.setname(i, controllers()[i].name);
 
 	dtt = dt;
-	double base_dtt = dt;
+	base_dtt = dt;
 	dt0 = dt;
 
 	wiggle_dt_mult = 4;
@@ -2023,7 +2023,7 @@ void CMedium::solve_fts_m2(double dt)
 
 		}
 
-		dt_fail = max(dtt, dt_fail);
+		dt_fail = max(base_dtt, dt_fail);
 
 
 		//dt=dt*max(atoi(0.5*atoi(interpolate(Blocks[11].BTC.D, t))),1);
@@ -2036,9 +2036,11 @@ void CMedium::solve_fts_m2(double dt)
 		dt_last = dtt;
 		if (redo == false)
 		{
+			where_base_dtt_changed = 0;
 			if (max(max(counter_flow, counter_colloid), counter_const) < nr_iteration_treshold_min())
 			{
 				base_dtt = min(base_dtt*min(min(min(1 / (pow(dt_change_rate(), 1 - double(in_redo) / 2.0)), wiggle_dt_mult), pos_def_mult), pos_def_mult_Q), maxt);
+				where_base_dtt_changed = 11;
 				J_update = false;
 				J_update_C = false;
 				J_update_Q = false;
@@ -2046,6 +2048,7 @@ void CMedium::solve_fts_m2(double dt)
 			else if (max(max(counter_flow, counter_colloid), counter_const) > nr_iteration_treshold_max())
 			{
 				base_dtt = min(base_dtt*min(min(min(dt_change_rate(), wiggle_dt_mult), pos_def_mult), pos_def_mult_Q), maxt);  //dt=max(dt*dt_change_rate,dt0)??
+				where_base_dtt_changed = 12;
 				J_update = true;
 				J_update_C = true;
 				J_update_Q = true;
@@ -2054,12 +2057,17 @@ void CMedium::solve_fts_m2(double dt)
 			{
 				J_update = true;
 				base_dtt = min(base_dtt*min(min(min(wiggle_dt_mult, 1.0), pos_def_mult), pos_def_mult_Q), maxt);
+				where_base_dtt_changed = 13;
 			}
 			base_dtt = min(base_dtt, dt_fail*pow(1.1, 1 - double(in_redo) / 2.0));
+			where_base_dtt_changed += 10;
 			if (t < redo_time)
 				dtt = min(pow((redo_time - t) / (redo_time - redo_to_time), 1)*base_dtt + (1 - pow((redo_time - t) / (redo_time - redo_to_time), 1))*dt_change_failure()*redo_dt, 1000 * avg_redo_dtt*1.2);
 			else if (t > redo_time && t - dtt < redo_time)
+			{
 				base_dtt = dtt;
+				where_base_dtt_changed += 20;
+			}
 			else
 				dtt = min(base_dtt, 1000 * avg_redo_dtt*1.2);
 
@@ -3563,7 +3571,7 @@ void CMedium::writedetails()
 {
 	FILE *FILEBTC;
 	FILEBTC = fopen((outputpathname() + "Solution_details.txt").c_str(), "a");
-	fprintf(FILEBTC, "dt:, %lf, %le, %le, counters:, %i, %i, %i, J_updates:, %i, %i, %i, update_counts: %i, %i, %i, multis: %le, %le, pos_defs: %le, %le, wiggle: %le, %le, %le, %i, %s\n", t, dtt, avg_redo_dtt, counter_flow, counter_colloid, counter_const, J_update, J_update_C, J_update_Q, J_h_update_count, J_c_update_count, J_q_update_count, pos_def_mult, pos_def_mult_Q, pos_def_ratio, pos_def_ratio_const, max_wiggle, wiggle_dt_mult, dt_fail, max_wiggle_id, fail_reason.c_str());
+	fprintf(FILEBTC, "dt:, %lf, %le, %le(%i), %le, counters:, %i, %i, %i, J_updates:, %i, %i, %i, update_counts: %i, %i, %i, multis: %le, %le, pos_defs: %le, %le, wiggle: %le, %le, %le, %i, %s\n", t, dtt, base_dtt, where_base_dtt_changed, avg_redo_dtt, counter_flow, counter_colloid, counter_const, J_update, J_update_C, J_update_Q, J_h_update_count, J_c_update_count, J_q_update_count, pos_def_mult, pos_def_mult_Q, pos_def_ratio, pos_def_ratio_const, max_wiggle, wiggle_dt_mult, dt_fail, max_wiggle_id, fail_reason.c_str());
 	fclose(FILEBTC);
 }
 
