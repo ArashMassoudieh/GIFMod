@@ -1,12 +1,12 @@
 #include <GWidget.h>
 #include <qdebug.h>
 #include "entity.h"
-#include "qdatetime.h"
-#include "qtimezone.h"
+//#include "qdatetime.h"
+//#include "qtimezone.h"
 //#include "PropModel.h"
 #include "treemodel.h"
 #include "Proplist.h"
-
+#include "utility_funcs.h"
 
 Entity::Entity(const QString _type, QString _name, GraphWidget *_parent)
 {
@@ -201,14 +201,7 @@ QVariant Entity::getProp(const QString &propName, const int role) const
 			return OnlyFilenames(getValue(propName));
 		else if (mValue.VariableType.contains("datetime"))
 		{
-			qint64 currentDate = getValue(propName).toFloat();
-			currentDate += QDate(1900, 1, 1).toJulianDay();
-			QDate date = QDate::fromJulianDay(currentDate);
-			
-//			QDateTime r = QDateTime::fromTime_t(getValue(propName).toFloat() * 86400 - 2209161600, QTimeZone(0));
-//			return r.toString("MMM dd yyyy HH:mm");// QDateTime(getValue(propName));
-			return date.toString("MMM dd yyyy");// QDateTime(getValue(propName));
-
+			return float2date(getValue(propName).toFloat());
 		}
 		else if (mValue.Delegate == "CheckBox")
 			return "";

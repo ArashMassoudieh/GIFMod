@@ -3421,7 +3421,7 @@ void GraphWidget::delegateDatePicked(QCalendarWidget *calendar, QModelIndex inde
 	}
 
 	//setModelData(currentEditor, currentModel, currentIndex);
-	int date = currentCalendar->selectedDate().toJulianDay() - QDate(1900, 1, 1).toJulianDay();
+	int date = julian2xldate(currentCalendar->selectedDate().toJulianDay());
 	currentModel->setData(currentIndex, date, Qt::EditRole);
 
 }

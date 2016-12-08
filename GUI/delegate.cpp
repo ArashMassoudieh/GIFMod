@@ -27,7 +27,7 @@
 #include "entity.h"
 #include "qmessagebox.h"
 #include "Precipitation.h"
-
+#include <utility_funcs.h>
 #endif
 
 
@@ -147,9 +147,9 @@ void Delegate::setEditorData(QWidget *editor,
 	QString delegateType = index.data(TypeRole).toString();
 	if (delegateType.toLower().contains("date"))
 	{
-		qint64 currentDate = index.model()->data(index, Qt::EditRole).toDouble();
-		currentDate += QDate(1900, 1, 1).toJulianDay();
-		QDate date = QDate::fromJulianDay(currentDate);
+		qint64 selectedDate = index.model()->data(index, Qt::EditRole).toDouble();
+		qint64 julianDate = xldate2julian(selectedDate);// currentDate += 2415020;// QDate(1900, 1, 1).toJulianDay();
+		QDate date = QDate::fromJulianDay(julianDate);
 
 		QCalendarWidget *calendar = static_cast<QCalendarWidget*>(editor);
 		calendar->setSelectedDate(date);
