@@ -449,6 +449,7 @@ void GraphWidget::update(bool fast)
 }
 void GraphWidget::mousePressEvent(QMouseEvent *event)
 {
+	tableProp->setModel(0);
 	Node *node = qgraphicsitem_cast<Node*> (itemAt(event->pos())); //Get the item at the position
 	if (node)
 		qDebug() << "Name: "<< node->Name()<<" Flag:" << node->flags() << "enabled:" << node->isEnabled() << "active:" << node->isActive();

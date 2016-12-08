@@ -1949,6 +1949,7 @@ void MainWindow::openRXNWindow()
 
 void MainWindow::on_actionRun_Model_triggered()
 {
+	mainGraphWidget->tableProp->setModel(0);
 	if (!mainGraphWidget->allowRun)
 	{
 		statusBar()->showMessage("Unable to run Model.");
@@ -1956,6 +1957,7 @@ void MainWindow::on_actionRun_Model_triggered()
 		mainGraphWidget->allowRun = true;
 		return;
 	}
+
 	if (!mainGraphWidget->Nodes().size())
 	{
 		statusBar()->showMessage("Unable to run Model.");
