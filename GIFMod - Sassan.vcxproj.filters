@@ -178,6 +178,12 @@
     <ClCompile Include="GUI\node.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GUI\CustomPlotZoom.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\files\moc_CustomPlotZoom.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GUI\Binary.h" />
@@ -347,6 +353,9 @@
     </CustomBuild>
     <CustomBuild Include="GUI\GWidget.h">
       <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GUI\CustomPlotZoom.h">
+      <Filter>Generated Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
