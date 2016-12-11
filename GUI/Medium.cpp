@@ -1925,7 +1925,7 @@ void CMedium::solve_fts_m2(double dt)
 					redo = true;
 					Res = clean_up_restore_points(Res, t);
 					redo_time = t;
-					redo_dt = dtt;
+					redo_dt = dtt* dt_change_failure();;
 					doredo(Res[max(int(Res.size()) - redo_counter, 0)]);
 					base_dtt = dtt;
 					redo_to_time = t;
@@ -1959,13 +1959,18 @@ void CMedium::solve_fts_m2(double dt)
 				J_update = true;
 				dt_fail = dtt;
 
-				if (fail_counter > 1)
+				dtt = min(base_dtt, 1000 * avg_redo_dtt*1.2);
+
+				if (controllers().size())
+					dtt = min(dtt, get_nextcontrolinterval(t) - t);
+
+				if (fail_counter > 3)
 				{
 					redo_counter++;
 					redo = true;
 					Res = clean_up_restore_points(Res, t);
 					redo_time = t;
-					redo_dt = dtt;
+					redo_dt = dtt* dt_change_failure();;
 					doredo(Res[max(int(Res.size()) - redo_counter, 0)]);
 					base_dtt = dtt;
 					redo_to_time = t;
