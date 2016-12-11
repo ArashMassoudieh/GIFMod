@@ -449,6 +449,7 @@ void GraphWidget::update(bool fast)
 }
 void GraphWidget::mousePressEvent(QMouseEvent *event)
 {
+	tableProp->setModel(0);
 	Node *node = qgraphicsitem_cast<Node*> (itemAt(event->pos())); //Get the item at the position
 	if (node)
 		qDebug() << "Name: "<< node->Name()<<" Flag:" << node->flags() << "enabled:" << node->isEnabled() << "active:" << node->isActive();
@@ -3420,7 +3421,7 @@ void GraphWidget::delegateDatePicked(QCalendarWidget *calendar, QModelIndex inde
 	}
 
 	//setModelData(currentEditor, currentModel, currentIndex);
-	int date = currentCalendar->selectedDate().toJulianDay() - QDate(1900, 1, 1).toJulianDay();
+	int date = julian2xldate(currentCalendar->selectedDate().toJulianDay());
 	currentModel->setData(currentIndex, date, Qt::EditRole);
 
 }

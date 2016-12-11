@@ -1085,14 +1085,14 @@ void MainWindow::addParameter(QAction* item)
 
 void MainWindow::getNumber(double initial)
 {
-	static double initialValue = 0;
+	static double initialValue = 1;
 	if (initial != -1)
 	{
 		initialValue = initial;
 		return;
 	}
 
-	double value = QInputDialog::getDouble(this, "Input Dialog Box", "Enter number:", initialValue, 0, 2147483647, 4);// item->text();
+	double value = QInputDialog::getDouble(this, "Input Dialog Box", "Enter number:", initialValue, 1, 2147483647, 4);// item->text();
 
 	tableProp->model()->setData(addParameterIndex(), value);
 }
@@ -1949,6 +1949,7 @@ void MainWindow::openRXNWindow()
 
 void MainWindow::on_actionRun_Model_triggered()
 {
+	mainGraphWidget->tableProp->setModel(0);
 	if (!mainGraphWidget->allowRun)
 	{
 		statusBar()->showMessage("Unable to run Model.");
@@ -1956,6 +1957,7 @@ void MainWindow::on_actionRun_Model_triggered()
 		mainGraphWidget->allowRun = true;
 		return;
 	}
+
 	if (!mainGraphWidget->Nodes().size())
 	{
 		statusBar()->showMessage("Unable to run Model.");
