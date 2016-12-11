@@ -101,8 +101,17 @@ public:
 	void undo();
 	void redo();
 	bool trackingUndo = false;
-	void deselectAll() const;
+	void deselectAll(QString items = "Nodes Edges Entities (Entity)") const;
 	void deleteSelected();
+	
+	//names of selected Items
+	QStringList selectedItems()const;
+	QString typeOfSelecetedItems()const;
+
+	QList<Node*> selectedNodes() const;
+	QList<Edge*> selectedEdges() const;
+	QList<Entity*> selectedEntities()const;
+
 	void update(bool fast = false);
 //	void PropsPopulate(const Node *node, QTableView *tableProp);
 	void PropsPopulate(Node *node, QStandardItemModel *propModel);
@@ -252,6 +261,7 @@ public:
 	void GraphWidget::updateNodeCoordinates();
 	QMap<QString, QMap<QString, QString>> specs;
 	void updateNodesColorCodes(QString propertyItem, bool logged = false, QString colorTheme = "Green", vector<double> predifinedMinMax = vector<double>(), float time = -1);
+	void updateNodesColorCodes_WaterQuality(QStringList property, bool logged = false, QString colorTheme = "Green", vector<double> predifinedMinMax = vector<double>(), float time = -1);
 	void updateEdgesColorCodes(QString propertyItem, bool logged = false, QString colorTheme = "Green", vector<double> predifinedMinMax = vector<double>(), float time = -1);
 	QSlider *legendSliderTime=0;
 	colorlegend colors;
@@ -314,7 +324,7 @@ protected:
 #endif
 	void drawBackground(QPainter *painter, const QRectF &rect) Q_DECL_OVERRIDE;
 //	void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
-	
+	void rubberBandChanged(QRect rubberBandRect, QPointF fromScenePoint, QPointF toScenePoint);
 
 private:
 	int timerId;
@@ -324,6 +334,8 @@ private:
 	Node *resizenode;
 	corners resizecorner;
 	bool sceneReady = false;
+	QList<Node*> nodes(const QList<QGraphicsItem*>items) const;
+	QList<Edge*> edges(const QList<QGraphicsItem*>items) const;
 };
 bool validInflowFile(QString file);
 QString getTime(bool reset=true);

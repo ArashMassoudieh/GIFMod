@@ -17,6 +17,7 @@ struct  Solver_parameters
 	double tol;
 	double dt;
 	int solution_method;
+	bool sorption;
 	int nr_iteration_treshold_max;
 	int nr_iteration_treshold_min;
 	double dt_change_rate;

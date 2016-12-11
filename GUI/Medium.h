@@ -61,6 +61,7 @@ public:
 	void CMedium::create(CLIDconfig _lid_config, CMediumSet *_parent);
 	double& w(); //current time weight for CN solution
 	CMedium& CMedium::operator=(const CMedium &BB); //equal operator
+	void get_state(const CMedium & M);
 	vector<CConnection> Connector;
 	vector<CMBBlock> Blocks;
 	vector<CSolid_Phase>& Solid_phase();
@@ -174,6 +175,8 @@ public:
 	double& dt_change_rate();
 	double& dt_change_failure(); 
 	int& nr_failure_criteria();
+	bool &sorption();
+	int n_default_phases; //number of aquesous/soil matrix phases =1 for solely aqueous =2 when sorption to soil matrix occures
 	bool failed;
 	CMatrix InvJ1; //Inverse Jacobian Matrix
 	CMatrix InvJ2; //Inverse Jacobian Matrix
@@ -234,6 +237,8 @@ public:
 	void CMedium::read_state(string filename);
 	int& restore_interval();
 	double dtt;
+	double base_dtt;
+	int where_base_dtt_changed = 0;
 	double avg_redo_dtt=0;
 	int redo_count = 0;
 	int CMedium::get_member_no(int solid_id, int phase_no);

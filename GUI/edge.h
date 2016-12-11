@@ -3,6 +3,7 @@
 #include "PropModel.h"
 #include "Proplist.h"
 #include "XString.h"
+#include "node.h"
 
 class GraphWidget;
 class Node;
@@ -27,7 +28,7 @@ public:
 	void setBold(const bool _Bold = true);
 	enum { Type = UserType + 2 };
 	int type() const Q_DECL_OVERRIDE{ return Type; };
-	void setName(const QString& Name){ name = Name; };
+	void setName(const QString& Name){ name = Name; }
 //	void setID(const QString& ID){ id = ID; };
 	mPropList *mList() const;
 	QVariant getProp(const QString &propName, const int role = Qt::DisplayRole) const;

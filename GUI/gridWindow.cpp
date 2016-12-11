@@ -45,7 +45,7 @@ gridWindow::gridWindow(QWidget *parent, XString z0, QString type, bool canChange
 	ui->lengthYUnitBox->setValidator(validator2);
 	
 	XString dh;
-	dh = z0;
+	dh = height;
 	dh.setNum(0); 
 	
 	ui->deltaHUnitBox->setXString(dh);
@@ -82,7 +82,7 @@ void gridWindow::on_columnsSpin_valueChanged(int columns)
 
 void gridWindow::on_rowsSpin_valueChanged(int rows)
 {
-	ui->deltaVUnitBox->setText(QString::number(-(rows - 1)*height.toFloat()));
+	ui->deltaVUnitBox->setText(QString::number(-(rows - 1)*height.toFloat(ui->deltaVUnitBox->toXString().unit)));
 }
 
 void gridWindow::accept()

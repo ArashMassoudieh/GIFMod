@@ -7,57 +7,107 @@
 
 QVariant PropModel<Node>::data(const QModelIndex & index, int role) const
 {
-	if (index.row() >= rows()) return QVariant();
-	if (role == saveIndex)
+	if (!items.count()) // ordinary structure (only one object selected)
 	{
-		save(index);
-		return "index Saved";
-	}
-	if (role == loadIndexandInputMethodRole)
-	{
-		return data(load(), InputMethodRole);
-	}
-	if (role == loadIndexandDefaultValuesListRole)
-	{
-		return data(load(), DefaultValuesListRole);
-	}
-	if (role == loadIndexandVariableTypeRole)
-	{
-		return data(load(), VariableTypeRole);
-	}
+		if (index.row() >= rows()) return QVariant();
+		if (role == saveIndex)
+		{
+			save(index);
+			return "index Saved";
+		}
+		if (role == loadIndexandInputMethodRole)
+		{
+			return data(load(), InputMethodRole);
+		}
+		if (role == loadIndexandDefaultValuesListRole)
+		{
+			return data(load(), DefaultValuesListRole);
+		}
+		if (role == loadIndexandVariableTypeRole)
+		{
+			return data(load(), VariableTypeRole);
+		}
 
-	if (!index.isValid())
-		return QVariant();
-	int row = index.row();
-	int col = index.column();
+		if (!index.isValid())
+			return QVariant();
+		int row = index.row();
+		int col = index.column();
 		//qDebug() << QString("data for (%1, %2) role %3").arg(row).arg(col).arg(role);
-	QString VariableName = parent->getmList(parent->ObjectType()).VariableNames()[row];
-	//qDebug() << QString("Variable Name %1").arg(VariableName); // .arg(col).arg(role).arg(VariableName);
+		QString VariableName = parent->getmList(parent->ObjectType()).VariableNames()[row];
+		//qDebug() << QString("Variable Name %1").arg(VariableName); // .arg(col).arg(role).arg(VariableName);
 
-	if (role == VariableNameRole) return VariableName;
-	if (col == 0) {
-		if (role == Qt::DisplayRole)
-		{
-			if (parent->parent->applicationShortName == "GWA" && VariableName == "SubType")return "Distribution";
-//			else if (parent->parent->applicationShortName == "GIFMod" && VariableName == "SubType")return "Model";
+		if (role == VariableNameRole) return VariableName;
+		if (col == 0) {
+			if (role == Qt::DisplayRole)
+			{
+				if (parent->parent->applicationShortName == "GWA" && VariableName == "SubType")return "Distribution";
+				//			else if (parent->parent->applicationShortName == "GIFMod" && VariableName == "SubType")return "Model";
 
-			else return VariableName;
+				else return VariableName;
+			}
+			if (role == Qt::ToolTipRole)
+			{
+				QString toolTip = (parent->getProp(VariableName, VariableNameToolTipRole) == "") ? VariableName : parent->getProp(VariableName, role).toString();
+				if (parent->errors.keys().contains(VariableName)) toolTip.append("\n Error: ").append(parent->errors[VariableName]);
+				if (parent->warnings.keys().contains(VariableName)) toolTip.append("\n Warning: ").append(parent->warnings[VariableName]);
+				return toolTip;
+			}
+			if (role == DescriptionCodeRole)
+				return parent->getProp(VariableName, role);
+			return QVariant();
 		}
-		if (role == Qt::ToolTipRole)
-		{
-			QString toolTip = (parent->getProp(VariableName, VariableNameToolTipRole) == "") ? VariableName : parent->getProp(VariableName, role).toString();
-			if (parent->errors.keys().contains(VariableName)) toolTip.append("\n Error: ").append(parent->errors[VariableName]);
-			if (parent->warnings.keys().contains(VariableName)) toolTip.append("\n Warning: ").append(parent->warnings[VariableName]);
-			return toolTip;
-		}
-		if (role == DescriptionCodeRole)
+		if (col == 1)
 			return parent->getProp(VariableName, role);
-		return QVariant();
 	}
-	if (col == 1) 
-		return parent->getProp(VariableName, role);
-}
+	else if (items.count()) // multiple objects selected
+	{
+		if (index.row() >= rows()) return QVariant();
+		if (role == saveIndex)		{
+			save(index);
+			return "index Saved";
+		}
+		if (role == loadIndexandInputMethodRole)		{
+			return data(load(), InputMethodRole);
+		}
+		if (role == loadIndexandDefaultValuesListRole)		{
+			return data(load(), DefaultValuesListRole);
+		}
+		if (role == loadIndexandVariableTypeRole)		{
+			return data(load(), VariableTypeRole);
+		}
 
+		if (!index.isValid())
+			return QVariant();
+		int row = index.row();
+		int col = index.column();
+		multiValues<mPropList> mList;
+		QList<mProp> objectTypes;
+		for each (Node* n in items)	objectTypes.append(n->ObjectType());
+		QString VariableName = parent->getmList(objectTypes).VariableNames()[row];
+
+		if (role == VariableNameRole) return VariableName;
+		if (col == 0) {
+			if (role == Qt::DisplayRole)			{
+				if (parent->parent->applicationShortName == "GWA" && VariableName == "SubType")return "Distribution";
+
+				else return VariableName;
+			}
+			if (role == Qt::ToolTipRole)
+			{
+				QString toolTip = (parent->getProp(VariableName, items, VariableNameToolTipRole) == "") ? VariableName : parent->getProp(VariableName, items, role).toString();
+				if (parent->errors.keys().contains(VariableName)) toolTip.append("\n Error: ").append(parent->errors[VariableName]);
+				if (parent->warnings.keys().contains(VariableName)) toolTip.append("\n Warning: ").append(parent->warnings[VariableName]);
+				return toolTip;
+			}
+			if (role == DescriptionCodeRole)
+				return parent->getProp(VariableName, items, role);
+			return QVariant();
+		}
+		if (col == 1)
+			return parent->getProp(VariableName, items, role);
+
+	}
+}
 bool PropModel<Node>::setData(const QModelIndex & index, const QVariant & value, int role)
 {
 	if (index.row() >= rows()) return false;

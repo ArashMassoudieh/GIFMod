@@ -24,7 +24,7 @@ runtimeWindow::runtimeWindow(GraphWidget *parent, QString mode) :
 	ui->setupUi(this);
 	setMode(mode);
 //	connect(ui->btnStop, SIGNAL(clicked()), this, SLOT(on_btnStop_clicked()));
-	connect(ui->customPlot, SIGNAL(mouseRelease(QMouseEvent *)), this, SLOT(showMenu(QMouseEvent *)));
+	//connect(ui->customPlot, SIGNAL(mouseRelease(QMouseEvent *)), this, SLOT(showMenu(QMouseEvent *)));
 //	QObject::connect(ui->btnStop, SIGNAL(clicked()), this, SLOT(on_btnStop_clicked()));
 
   this->parent = parent;
@@ -165,8 +165,19 @@ void runtimeWindow::setLabel(QString label)
 				{
 					double t = vars["t"].toDouble();
 					static double maxT = 0;
-
-					realtimeDataSlot(t, vars["dtt"].toDouble(),false,"" ,t<maxT);
+					static int lastProgress = -1;
+					static int interval = 0;
+					static long int counter = 0;
+					counter++;
+					if (vars.value("progress") != "" && vars.value("progress").toInt() != lastProgress)
+					{
+						lastProgress = vars.value("progress").toInt();
+						realtimeDataSlot(t, vars["dtt"].toDouble(), false, "", t < maxT);
+						interval = 0;
+					}
+					int updateInterval = (ui->refreshPlot->isChecked()) ? 1 : max(1, counter/100);
+					if (interval++ % updateInterval == 0)
+						realtimeDataSlot(t, vars["dtt"].toDouble(), false, "", t < maxT);
 					maxT = (t > maxT) ? t : maxT;
 				}
 				if (vars.keys().contains("epoch count"))
@@ -211,8 +222,8 @@ void runtimeWindow::setLabel(QString label)
 
 
 
-
-			QCoreApplication::processEvents();
+		//ui->customPlot->replot();
+		QCoreApplication::processEvents();
 	}
 
 void runtimeWindow::on_btnStop_clicked()
@@ -247,42 +258,27 @@ void runtimeWindow::realtimeDataSlot(double x, double y, bool secondPlot, QStrin
 #if QT_VERSION < QT_VERSION_CHECK(4, 7, 0)
 	double key = 0;
 #else
-	double key = x;//QDateTime::currentDateTime().toMSecsSinceEpoch() / 1000.0;
+	double key = x;
 #endif
-	//	static double lastPointKey = 0;
-	//	if (key - lastPointKey > 0.0001) // at most add point every 10 ms
-	//	{
-	double value0 = y;// qSin(key); //qSin(key*1.6+qCos(key*1.7)*2)*10 + qSin(key*1.2+0.56)*20 + 26;
-	//    double value1 = qCos(key); //qSin(key*1.3+qCos(key*1.2)*1.2)*7 + qSin(key*0.9+0.26)*24 + 26;
-	// add data to lines:
-	if (plot->graph(0)->data()->size() == 1)
+	double value0 = y;
+
+	if (plot->graph(0)->data()->size() == 0)
 	{
 		min[chartName] = value0;
 		max[chartName] = value0;
 	}
+	
 	if (commingBackX)
-		for each (double itemX in plot->graph(0)->data()->keys())
-			if (itemX>=x)
-				plot->graph(0)->data()->remove(itemX);
-	plot->graph(0)->addData(key, value0);
+		plot->graph(0)->removeDataAfter(x);
 
-	if (value0 < min[chartName]) min[chartName] = value0;
-	if (value0 > max[chartName]) max[chartName] = value0;
-	//    plot->graph(1)->addData(key, value1);
-	// set data of dots:
-	plot->graph(1)->clearData();
-	plot->graph(1)->addData(key, value0);
-	//    plot->graph(3)->clearData();
-	//    plot->graph(3)->addData(key, value1);
-	// remove data of lines that's outside visible range:
-	//plot->graph(0)->removeDataBefore(key - 8);
-	//    plot->graph(1)->removeDataBefore(key-8);
-	// rescale value (vertical) axis to fit the current data:
-	plot->graph(0)->rescaleValueAxis();
-	//    plot->graph(1)->rescaleValueAxis(true);
-	//		lastPointKey = key;
-	//	}
-	// make key axis range scroll with the data (at a constant range size of 8):
+//		for each (double itemX in plot->graph(0)->data()->keys())
+//			if (itemX>=x)
+//				plot->graph(0)->data()->remove(itemX);
+
+	//plot->graph(1)->clearData();
+	//plot->graph(1)->addData(key, value0);
+
+
 #ifdef GIFMOD
 	double Timemin = 0;
 	double Timemax = x;
@@ -297,12 +293,56 @@ void runtimeWindow::realtimeDataSlot(double x, double y, bool secondPlot, QStrin
 		double Timemax = parent->model->Timemax;
 #endif
 
-		qDebug() << Timemin << x << y;
-//	plot->xAxis->setRange(parent->model->Timemin, parent->model->Timemax, Qt::AlignRight);
-	if (useStartFinishTimes) plot->xAxis->setRange(Timemin, Timemax);
-	plot->xAxis->setScaleType(QCPAxis::stLinear);
+		//running a moving average and keep data points around 2000 to optimize the graphing speed
+/*		static int maxNumberofXs = 300;
+		if (plot->graph(0)->data()->keys().count() > maxNumberofXs*1.5)
+		{
+			double step = (x - Timemin) / maxNumberofXs;
+			QCPDataMap data = *plot->graph(0)->data();
+			QVector<double> newX, newY;
+			double currentX = Timemin, currentY = 0;
+			int n = 0;
+			QList<qreal> oldX = data.keys();
+			//QList<qreal> oldY = data.
 
-	plot->xAxis->setRangeUpper(x);
+			for (int i = 0; i < oldX.count(); i++)
+			{
+				if (oldX[i] < currentX + step / 2.0)
+				{
+					y += data[i].value;
+					n++;
+				}
+				else
+				{
+					newX.append(currentX);
+					newY.append(currentY / double(n));
+					currentX += step;
+					currentY = 0;
+					n = 0;
+				}
+			}
+			plot->graph(0)->clearData();
+			plot->graph(0)->setData(newX, newY);
+		}
+		else*/
+			plot->graph(0)->addData(key, value0);
+	
+		if (value0 < min[chartName]) min[chartName] = value0;
+		if (value0 > max[chartName]) max[chartName] = value0;
+
+	//qDebug() << Timemin << x << y;
+
+	if (useStartFinishTimes) plot->xAxis->setRange(Timemin, Timemax);
+	
+	bool firstTime = true;
+	if (firstTime) {
+		plot->xAxis->setScaleType(QCPAxis::stLinear);
+		firstTime = false;
+	}
+
+//	plot->graph(0)->rescaleValueAxis();
+	plot->yAxis->setRangeLower(min[chartName]);
+	plot->yAxis->setRangeUpper(max[chartName]);
 	if (chartName.contains("perterbation")){
 		plot->yAxis->setRangeLower(pow(10, int(log10(min[chartName])) - 1));
 		plot->yAxis->setRangeUpper(pow(10, int(log10(max[chartName])) + 1));
@@ -312,23 +352,14 @@ void runtimeWindow::realtimeDataSlot(double x, double y, bool secondPlot, QStrin
 		plot->yAxis->setRangeLower(0);
 		plot->yAxis->setRangeUpper(1);
 	}
+	plot->xAxis->setRangeUpper(x);
+	//if (x>1) plot->graph(0)->removeDataBefore(x-0.5);
+	static int lastX = -1;
+	if (ui->refreshPlot->isChecked() || ui->progressBar->value() >= lastX + 1) {
+		plot->replot(QCustomPlot::rpQueued);
+		lastX = x;
+	}
 
-	plot->replot();
-
-	// calculate frames per second:
-	static double lastFpsKey;
-	static int frameCount;
-	++frameCount;
-	/*  if (key-lastFpsKey > 2) // average fps over 2 seconds
-	{
-	ui->statusBar->showMessage(
-	QString("%1 FPS, Total Data points: %2")
-	.arg(frameCount/(key-lastFpsKey), 0, 'f', 0)
-	.arg(plot->graph(0)->data()->count()+plot->graph(1)->data()->count())
-	, 0);
-	lastFpsKey = key;
-	frameCount = 0;
-	}*/
 }
 void runtimeWindow::addScatterPlot(QString name, QVector<double> t, QVector<double> y)
 {
@@ -1278,38 +1309,33 @@ void runtimeWindow::setupRealtimeDataDemo(QCustomPlot *customPlot)
   demoName = "Run Time Data";
   
   // include this section to fully disable antialiasing for higher performance:
-  /*
+  
   customPlot->setNotAntialiasedElements(QCP::aeAll);
   QFont font;
   font.setStyleStrategy(QFont::NoAntialias);
   customPlot->xAxis->setTickLabelFont(font);
   customPlot->yAxis->setTickLabelFont(font);
   customPlot->legend->setFont(font);
-  */
+  
   customPlot->addGraph(); // blue line
   customPlot->graph(0)->setPen(QPen(Qt::blue));
   customPlot->graph(0)->setBrush(QBrush(QColor(240, 255, 200)));
-  customPlot->graph(0)->setAntialiasedFill(false);
-/*  customPlot->addGraph(); // red line
-  customPlot->graph(1)->setPen(QPen(Qt::red));
-*/  customPlot->graph(0)->setChannelFillGraph(customPlot->graph(1));
+  //customPlot->graph(0)->setAntialiasedFill(false);
+
+  //customPlot->graph(0)->setChannelFillGraph(customPlot->graph(1));
   
   customPlot->addGraph(); // blue dot
   customPlot->graph(1)->setPen(QPen(Qt::blue));
   customPlot->graph(1)->setLineStyle(QCPGraph::lsNone);
   customPlot->graph(1)->setScatterStyle(QCPScatterStyle::ssDisc);
-/*  customPlot->addGraph(); // red dot
-  customPlot->graph(3)->setPen(QPen(Qt::red));
-  customPlot->graph(3)->setLineStyle(QCPGraph::lsNone);
-  customPlot->graph(3)->setScatterStyle(QCPScatterStyle::ssDisc);
-*/  
-//  customPlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
-//  customPlot->xAxis->setDateTimeFormat("hh:mm:ss");
+
   customPlot->xAxis->setScaleType(QCPAxis::stLinear);
-//  customPlot->xAxis->setAutoTickStep(false);
-  customPlot->xAxis->setTickStep(2);
+
+  customPlot->xAxis->setAutoTickStep(true);
+  //customPlot->xAxis->setTickStep(2);
   customPlot->axisRect()->setupFullAxesBox();
-//  customPlot->xAxis->setRange(parent->model->Timemin, parent->model->Timemax, Qt::AlignRight);
+
+  //  customPlot->xAxis->setRange(parent->model->Timemin, parent->model->Timemax, Qt::AlignRight);
 /*  customPlot->yAxis->setScaleType(QCPAxis::stLogarithmic);
   customPlot->yAxis->setScaleLogBase(10);
   customPlot->yAxis->setNumberFormat("eb"); // e = exponential, b = beautiful decimal powers

@@ -223,6 +223,12 @@ private slots:
 	void on_actionShowRuntimeWindow_triggered();
 	void on_actionRecent_triggered();
 	void on_actionReset_colors_triggered();
+	void menuWaterQuality_hovered();
+	void updateAction(QAction *a, QString particleConstituent, QString p, QString c="", QString phase="get from action");
+	void waterQualityPostProcessing_clicked();
+	void menuWaterQuality_triggered();
+	void on_actionContact_Us_triggered();
+	void on_actionContact_Us_hovered(); 
 	void removeFromRecentList(QAction*);
 
 	void writeRecentFilesList();

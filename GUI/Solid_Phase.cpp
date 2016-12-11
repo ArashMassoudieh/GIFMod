@@ -38,6 +38,7 @@ CSolid_Phase::CSolid_Phase(string m)
 	c_params.resize(30);
 	c_params[7] = 1e12; // jamming limit
 	set_settling_model("constant_velocity");
+	diffusion = 0;
 
 	if (model=="single_phase")
 	{
