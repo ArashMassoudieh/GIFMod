@@ -1710,7 +1710,7 @@ void CMedium::solve_fts_m2(double dt)
 	else
 		max_phase = -1;
 		
-
+	int oscillation_counter;
 	Solution_dt.clear();
 	Solution_dt = CBTCSet(3);
 	dt_fail = 10000;
