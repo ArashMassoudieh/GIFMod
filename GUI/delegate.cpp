@@ -451,6 +451,7 @@ void Delegate::dirBrowserClicked()
 
 	parent->propModel()->setData(QModelIndex(), Dir, loadIndex);
 }
+
 void Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
 	const QModelIndex &index) const
 {
@@ -475,7 +476,6 @@ void Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
 	else
 		QStyledItemDelegate::paint(painter, option, index);
 }
-
 
 void Delegate::openParticleInitialCondition()
 {
@@ -534,6 +534,7 @@ void Delegate::openParticleInitialCondition()
 
 #endif
 }
+
 void Delegate::openConstituentInitialCondition()
 {
 #ifdef GIFMOD
@@ -603,6 +604,7 @@ void Delegate::openAqueousExchangeParameters()
 
 #endif
 }
+
 void Delegate::browserCheck(QString _fileName)
 {
 	if (!_fileName.contains("Browse ...")) return;
@@ -625,4 +627,3 @@ void Delegate::browserCheck(QString _fileName)
 	delete fileDialog;
 	return;
 }
-
