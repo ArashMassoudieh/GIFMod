@@ -20,3 +20,8 @@ c:/users/user/documents/gifmod projects/multiselect.gifm
 c:/users/user/dropbox/gui/gifmod user's manual/examples/do_control/do_control.gifm
 c:/users/user/dropbox/asm/final polishing.gifm
 C:/Users/Arash-Home/Documents/GIFMod Projects/Infiltration_Basin/Infiltration_Basin.GIFM
+C:/Users/Arash-Home/Documents/GIFMod Projects/arma_test.GIFM
+C:/Users/Arash-Home/Dropbox/GUI/GIFMOD User's manual/Examples/1DRechards/1DRichards.GIFM
+C:/Users/Arash-Home/Dropbox/GUI/GIFMOD User's manual/Examples/2DConfinedAquifer/2DConfined-transport.GIFM
+C:/Users/Arash-Home/Dropbox/GUI/GIFMOD User's manual/Examples/2DUnconfined/2DUnconfined.GIFM
+C:/Users/Arash-Home/Dropbox/GUI/GIFMOD User's manual/Examples/WetPond/Wetpond.GIFM
