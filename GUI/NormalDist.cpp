@@ -17,13 +17,15 @@ CNormalDist::~CNormalDist(void)
 
 double CNormalDist::unitrandom()
 {
-	double x1 = rand();
-	double x2 = rand();
-	int i = rand() % RAND_MAX;
+	int randmax1 = 1435;
+	int randmax2 = 1533;
+	double x1 = rand()%randmax1;
+	double x2 = rand()%randmax2;
+	int i = rand() % 2;
 	if (i==1)
-		return (x1+x2*(double(RAND_MAX)-1))/(double(RAND_MAX)*double(RAND_MAX));
+		return (x1+x2*(randmax1-1))/(double(randmax2)*double(randmax1-1));
 	else
-		return double(1) - (x1 + x2*(double(RAND_MAX) - 1)) / (double(RAND_MAX)*double(RAND_MAX));
+		return double(1) - (x1 + x2*(randmax1 - 1)) / (double(randmax2)*double(randmax1 - 1));
 }
 
 double CNormalDist::getstdnormalrand()

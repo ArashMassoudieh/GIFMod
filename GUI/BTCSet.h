@@ -29,11 +29,14 @@ public:
 	vector<double> CBTCSet::getrandom();
 	vector<double> CBTCSet::percentile(double x);
 	vector<double> CBTCSet::mean(int limit);
+	vector<double> CBTCSet::mean(int limit, vector<int> index);
 	vector<double> CBTCSet::std(int limit);
+	vector<double> CBTCSet::std(int limit, vector<int> index);
 	CMatrix CBTCSet::correlation(int limit, int n);
 	vector<double> CBTCSet::integrate();
 	vector<double> CBTCSet::average();
 	vector<double> CBTCSet::percentile(double x, int limit);
+	vector<double> CBTCSet::percentile(double x, int limit, vector<int> index);
 	vector<double> CBTCSet::getrandom(int burnin);
 	void CBTCSet::append(double t, vector<double> c);
 	CBTC CBTCSet::add(vector<int> ii);

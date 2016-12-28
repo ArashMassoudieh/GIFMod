@@ -347,7 +347,7 @@ bool CMCMC::step(int k)
 	double logp_1 = logp_0;
 	bool res;
 	
-	if (ND.unitrandom()<exp(logp_0-logp[k-n_chains]))
+	if (ND.unitrandom() <exp(logp_0-logp[k-n_chains]))
 	{
 		res=true;
 		Params[k] = X;
@@ -416,7 +416,7 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
 		omp_set_num_threads(numberOfThreads);
 #pragma omp parallel
 		{
-			srand(int(time(NULL)) ^ omp_get_thread_num());
+			srand(int(time(NULL)) ^ omp_get_thread_num()+kk);
 #pragma omp for
 
 			for (int jj = kk; jj < min(kk + n_chains, nsamples); jj++)
@@ -441,6 +441,7 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
 						fprintf(file, "%le, ", Params[jj][i]);
 					fprintf(file, "%le, %le, %f,", logp[jj], logp1[jj], stuckcounter[jj - kk]);
 					for (int j = 0; j < pertcoeff.size(); j++) fprintf(file, "%le,", pertcoeff[j]);
+					//fprintf(file, "%le", u[jj]);
 					// plot pertcoeff of each param vs jj
 					// plot acceptance_count/jj
 					fprintf(file, "\n");
@@ -449,6 +450,7 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
 				QCoreApplication::processEvents();
 				cout << jj << "," << pertcoeff[0] << "," << stuckcounter.max() << "," << stuckcounter.min() << endl;
 				qDebug() << jj << "," << pertcoeff[0] << "," << stuckcounter.max() << "," << stuckcounter.min();
+				//if (jj<n_burnout)
 				if (jj % 500 == 0)
 				{
 					if (double(accepted_count) / double(total_count)>acceptance_rate) 

@@ -891,8 +891,8 @@ double CBTC::percentile(double x, int limit)
 	vector<double> C1(C.size()-limit);
 	for (int i=0; i<C1.size(); i++)
 		C1[i] = C[i+limit];
-	vector<double> X = QSort(C1);
-//	vector<double> X = bubbleSort(C1);
+	vector<double> X = bubbleSort(C1);
+	//vector<double> X = bubbleSort(C1);
 //	vector<double> X = C1;
 	int ii = int(x*double(X.size()));
 	return X[ii];

@@ -853,6 +853,8 @@ void MainWindow::inverseRun(CMediumSet *modelSet, runtimeWindow* rtw)
 		if (GA.calculate_percentile == true)
 		{
 			qDebug() << 1016;
+			vector<int> index;
+			for (int i=0; i<MCMC.nActParams; i++) index.push_back(i+1);
 			vector<double> p2dot5 = MCMCOut.percentile(0.025, MCMC.n_burnout);
 			vector<double> p50 = MCMCOut.percentile(0.5, MCMC.n_burnout);
 			vector<double> mean = MCMCOut.mean(MCMC.n_burnout);
