@@ -5,6 +5,8 @@
 #include "BTCSet.h"
 #include "Precipitation.h"
 #include "MediumSet.h"
+#include "Matrix_arma.h"
+#include "Vector_arma.h"
 
 using namespace std;
 
@@ -1084,10 +1086,74 @@ CVector CMedium::getres_S(const CVector &X, double dt)
 	return F;
 }
 
+
+CVector_arma CMedium::getres_S(CVector_arma &X, double dt)
+{
+	CVector_arma F(X.num);  //Create Vector F with size num
+	setS_star(X);     //Blocks[i].set_val("S*", X[i]);
+	CVector_arma X1 = X;
+
+	for (int i = 0; i<Blocks.size(); i++)
+	{
+		if (Blocks[i].setzero == 1) { dt = X[i]; Blocks[i].S_star = 0; }
+		if (Blocks[i].setzero == 2) { Blocks[i].outflow_corr_factor = X1[i];	Blocks[i].S_star = 0; }
+		if (Blocks[i].setzero != 0) X1[i] = 0; else Blocks[i].outflow_corr_factor = 1;
+	}
+
+
+	setH_star();      //Blocks[i].set_val("H*", Blocks[i].calc_star(Blocks[i].H_S_expression));  
+	evaluate_area();  //Update connector areas; 
+	setQ_star();      //Connector[i].set_val("Q*",Connector[i].calc_star(Connector[i].flow_expression));  
+
+
+	for (int i = 0; i<Blocks.size(); i++)
+	{
+		if (Blocks[i].inflow.size() != 0)
+			F[i] = (X1[i] - Blocks[i].S) / dt - sum_interpolate(Blocks[i].inflow, t, "flow");
+		else F[i] = (X1[i] - Blocks[i].S) / dt;
+		F[i] += Blocks[i].outflow_corr_factor*Blocks[i].get_evaporation(t);
+	}
+
+	for (int i = 0; i<Connector.size(); i++)
+	{
+		if (w()*Connector[i].Q + (1 - w())*Connector[i].Q_star>0) Connector[i].flow_factor = Blocks[getblocksq(Connector[i].Block1ID)].outflow_corr_factor;
+		if (w()*Connector[i].Q + (1 - w())*Connector[i].Q_star<0) Connector[i].flow_factor = Blocks[getblocksq(Connector[i].Block2ID)].outflow_corr_factor;
+	}
+
+	for (int i = 0; i<Connector.size(); i++)
+	{
+		F[getblocksq(Connector[i].Block1ID)] += (w()*Connector[i].Q + (1 - w())*Connector[i].Q_star)*Connector[i].flow_factor;
+		F[getblocksq(Connector[i].Block2ID)] -= (w()*Connector[i].Q + (1 - w())*Connector[i].Q_star)*Connector[i].flow_factor;
+	}
+
+	for (int i = 0; i<Blocks.size(); i++)
+	{
+		if (Blocks[i].setzero == 2)
+		{
+			bool all_out_flows_zero = true;
+			if (Blocks[i].get_evaporation(t) > 1e-30) all_out_flows_zero = false;
+			for (int k = 0; k<Blocks[i].connectors.size(); k++)
+				if ((w()*Connector[Blocks[i].connectors[k]].Q + (1 - w())*Connector[Blocks[i].connectors[k]].Q_star)*(Blocks[i].connectors_se[k] - 0.5)<0)
+					all_out_flows_zero = false;
+			if (all_out_flows_zero == true)
+				F[i] = Blocks[i].outflow_corr_factor - 1.1;
+		}
+	}
+
+	return F;
+}
+
 void CMedium::setS_star(const CVector &X)
 {
 	for (int i=0; i<Blocks.size(); i++)
 		Blocks[i].set_val("s*", X.vec[i]);
+
+}
+
+void CMedium::setS_star(CVector_arma &X)
+{
+	for (int i = 0; i<Blocks.size(); i++)
+		Blocks[i].set_val("s*", X[i]);
 
 }
 
@@ -1710,7 +1776,7 @@ void CMedium::solve_fts_m2(double dt)
 	else
 		max_phase = -1;
 		
-
+	int oscillation_counter;
 	Solution_dt.clear();
 	Solution_dt = CBTCSet(3);
 	dt_fail = 10000;
@@ -1770,7 +1836,7 @@ void CMedium::solve_fts_m2(double dt)
 		ANS_control.setname(i, controllers()[i].name);
 
 	dtt = dt;
-	double base_dtt = dt;
+	base_dtt = dt;
 	dt0 = dt;
 
 	wiggle_dt_mult = 4;
@@ -1834,7 +1900,10 @@ void CMedium::solve_fts_m2(double dt)
 				Res_temp = getrestoreinfo(); Res_temp.iii = iii;
 			}
 			if (!steady_state_hydro())
-				onestepsolve_flow(dtt);
+				if (use_arma)
+					onestepsolve_flow_ar(dtt);
+				else
+					onestepsolve_flow(dtt);
 			else
 				onestepsolve_flow_bioest(dtt);
 			vector<int> max_wiggle_v = ANS.max_wiggle_sl(Blocks.size(), wiggle_tolerance());
@@ -1868,7 +1937,11 @@ void CMedium::solve_fts_m2(double dt)
 				if (constituent_transport()) failed_const = false;
 				if (colloid_transport())
 				{
-					onestepsolve_colloid(dtt);
+					if (use_arma)
+						onestepsolve_colloid_ar(dtt);
+					else
+						onestepsolve_colloid(dtt);
+
 					if (pos_def_limit())
 						pos_def_mult = 1 / (pos_def_ratio*dtt / dtt_J_c);
 					else
@@ -1885,7 +1958,10 @@ void CMedium::solve_fts_m2(double dt)
 					{
 						if (constituent_transport())
 						{
-							onestepsolve_const(dtt);
+							if (use_arma)
+								onestepsolve_const_ar(dtt);
+							else
+								onestepsolve_const(dtt);
 							if (pos_def_limit())
 								pos_def_mult_Q = 1 / (pos_def_ratio_const*dtt / dtt_J_q);
 							else
@@ -1925,7 +2001,7 @@ void CMedium::solve_fts_m2(double dt)
 					redo = true;
 					Res = clean_up_restore_points(Res, t);
 					redo_time = t;
-					redo_dt = dtt;
+					redo_dt = dtt* dt_change_failure();;
 					doredo(Res[max(int(Res.size()) - redo_counter, 0)]);
 					base_dtt = dtt;
 					redo_to_time = t;
@@ -1959,13 +2035,18 @@ void CMedium::solve_fts_m2(double dt)
 				J_update = true;
 				dt_fail = dtt;
 
-				if (fail_counter > 1)
+				dtt = min(base_dtt, 1000 * avg_redo_dtt*1.2);
+
+				if (controllers().size())
+					dtt = min(dtt, get_nextcontrolinterval(t) - t);
+
+				if (fail_counter > 3)
 				{
 					redo_counter++;
 					redo = true;
 					Res = clean_up_restore_points(Res, t);
 					redo_time = t;
-					redo_dt = dtt;
+					redo_dt = dtt* dt_change_failure();;
 					doredo(Res[max(int(Res.size()) - redo_counter, 0)]);
 					base_dtt = dtt;
 					redo_to_time = t;
@@ -2003,7 +2084,7 @@ void CMedium::solve_fts_m2(double dt)
 				return;
 			}
 
-			if ((((iii > 100) && ((t - Timemin) / double(iii) / dt0 < avg_dt_limit())) || (epoch_count > epoch_limit())) && dt <= dt_last)
+			if (((((iii > 100) && ((t - Timemin) / double(iii) / dt0 < avg_dt_limit())) || (epoch_count > epoch_limit())) && dt <= dt_last) || (dtt<1e-20))
 			{
 				if (write_details())
 				{
@@ -2023,7 +2104,7 @@ void CMedium::solve_fts_m2(double dt)
 
 		}
 
-		dt_fail = max(dtt, dt_fail);
+		dt_fail = max(base_dtt, dt_fail);
 
 
 		//dt=dt*max(atoi(0.5*atoi(interpolate(Blocks[11].BTC.D, t))),1);
@@ -2036,9 +2117,11 @@ void CMedium::solve_fts_m2(double dt)
 		dt_last = dtt;
 		if (redo == false)
 		{
+			where_base_dtt_changed = 0;
 			if (max(max(counter_flow, counter_colloid), counter_const) < nr_iteration_treshold_min())
 			{
 				base_dtt = min(base_dtt*min(min(min(1 / (pow(dt_change_rate(), 1 - double(in_redo) / 2.0)), wiggle_dt_mult), pos_def_mult), pos_def_mult_Q), maxt);
+				where_base_dtt_changed = 11;
 				J_update = false;
 				J_update_C = false;
 				J_update_Q = false;
@@ -2046,6 +2129,7 @@ void CMedium::solve_fts_m2(double dt)
 			else if (max(max(counter_flow, counter_colloid), counter_const) > nr_iteration_treshold_max())
 			{
 				base_dtt = min(base_dtt*min(min(min(dt_change_rate(), wiggle_dt_mult), pos_def_mult), pos_def_mult_Q), maxt);  //dt=max(dt*dt_change_rate,dt0)??
+				where_base_dtt_changed = 12;
 				J_update = true;
 				J_update_C = true;
 				J_update_Q = true;
@@ -2054,12 +2138,17 @@ void CMedium::solve_fts_m2(double dt)
 			{
 				J_update = true;
 				base_dtt = min(base_dtt*min(min(min(wiggle_dt_mult, 1.0), pos_def_mult), pos_def_mult_Q), maxt);
+				where_base_dtt_changed = 13;
 			}
 			base_dtt = min(base_dtt, dt_fail*pow(1.1, 1 - double(in_redo) / 2.0));
+			where_base_dtt_changed += 10;
 			if (t < redo_time)
 				dtt = min(pow((redo_time - t) / (redo_time - redo_to_time), 1)*base_dtt + (1 - pow((redo_time - t) / (redo_time - redo_to_time), 1))*dt_change_failure()*redo_dt, 1000 * avg_redo_dtt*1.2);
 			else if (t > redo_time && t - dtt < redo_time)
+			{
 				base_dtt = dtt;
+				where_base_dtt_changed += 20;
+			}
 			else
 				dtt = min(base_dtt, 1000 * avg_redo_dtt*1.2);
 
@@ -2869,14 +2958,16 @@ void CMedium::onestepsolve_const(double dtt)
 		failed_const = false;
 		fail_reason == "none";
 	}
+	int max_phases = 10000;
+	if (!sorption())
+		max_phases = -1;
 	
-	//newly added
 	if (failed_const == false)
 	{
 		fail_reason = "none";
 		for (int k = 0; k < RXN().cons.size(); k++)
 		{
-			for (int p = -2; p<int(Blocks[0].Solid_phase.size()); p++)
+			for (int p = -2; p<min(int(Blocks[0].Solid_phase.size()),max_phases); p++)
 			{
 				int _t;
 				if (p < 0) _t = 1; else _t = Blocks[0].Solid_phase[p]->n_phases;
@@ -2980,6 +3071,93 @@ CVector CMedium::getres_C(const CVector &X, double dtt)
 
 	return F;
 }
+
+
+CVector_arma CMedium::getres_C(CVector_arma &X, double dtt)
+{
+
+	CVector_arma F(Blocks[0].n_phases*Blocks.size());
+
+	set_G_star(X);	//Blocks[i].G_star[p] = X[i+Blocks.size()*p];
+	evaluate_K_star();
+	evaluate_capacity_star();
+	evaluate_dispersion();
+
+	for (int p = 0; p<Blocks[0].Solid_phase.size(); p++)
+	{
+		for (int l = 0; l<Blocks[0].Solid_phase[p]->n_phases; l++)
+		{
+			// LHS
+			for (int i = 0; i<Blocks.size(); i++)
+			{
+				F[get_member_no(i, p, l)] = (Blocks[i].capacity_c_star[p][l] * Blocks[i].G_star[p][l] - Blocks[i].capacity_c[p][l] * Blocks[i].G[p][l]) / dtt;
+				if ((l == 0) && (Blocks[i].inflow.size() != 0))
+					F[get_member_no(i, p, l)] -= sum_interpolate(Blocks[i].inflow, t, "flow")*sum_interpolate(Blocks[i].inflow, t, Solid_phase()[p].name);
+			}
+
+			for (int i = 0; i<Connector.size(); i++)
+			{
+				//advection
+				vector<int> ii;
+				ii.push_back(p);
+
+				double Q_adv_star = (Connector[i].Q_star - Connector[i].Q_v_star)*Connector[i].flow_factor + Connector[i].settling*Solid_phase()[p].vs*sgn(Connector[i].Block1->z0 - Connector[i].Block2->z0)*Connector[i].A_star*0.5*(Connector[i].Block1->calc_star(Solid_phase()[p].vs_coefficient, ii) + Connector[i].Block2->calc_star(Solid_phase()[p].vs_coefficient, ii));
+				double Q_adv = (Connector[i].Q - Connector[i].Q_v)*Connector[i].flow_factor + Connector[i].settling*Solid_phase()[p].vs*sgn(Connector[i].Block1->z0 - Connector[i].Block2->z0)*Connector[i].A*0.5*(Connector[i].Block1->calc(Solid_phase()[p].vs_coefficient, ii) + Connector[i].Block2->calc(Solid_phase()[p].vs_coefficient, ii));
+
+				if (((1 - w())*Q_adv_star + w()*Q_adv)>0)
+				{
+					F[get_member_no(getblocksq(Connector[i].Block1ID), p, l)] += (w()*Q_adv*Blocks[getblocksq(Connector[i].Block1ID)].G[p][l] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block1ID)].G_star[p][l])*Blocks[getblocksq(Connector[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
+					F[get_member_no(getblocksq(Connector[i].Block2ID), p, l)] -= (w()*Q_adv*Blocks[getblocksq(Connector[i].Block1ID)].G[p][l] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block1ID)].G_star[p][l])*Blocks[getblocksq(Connector[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
+				}
+				if (((1 - w())*Q_adv_star + w()*Q_adv)<0)
+				{
+					F[get_member_no(getblocksq(Connector[i].Block1ID), p, l)] += (w()*Q_adv*Blocks[getblocksq(Connector[i].Block2ID)].G[p][l] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block2ID)].G_star[p][l])*Blocks[getblocksq(Connector[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
+					F[get_member_no(getblocksq(Connector[i].Block2ID), p, l)] -= (w()*Q_adv*Blocks[getblocksq(Connector[i].Block2ID)].G[p][l] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block2ID)].G_star[p][l])*Blocks[getblocksq(Connector[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
+				}
+
+			}
+			//diffusion
+			for (int i = 0; i<Connector.size(); i++)
+			{
+				double exchange = Connector[i].A*(w()*Connector[i].c_dispersion[p] + (1 - w())*Connector[i].c_dispersion_star[p]) / Connector[i].d*((w()*Blocks[getblocksq(Connector[i].Block2ID)].G[p][l] + (1 - w())*Blocks[getblocksq(Connector[i].Block2ID)].G_star[p][l]) - (w()*Blocks[getblocksq(Connector[i].Block1ID)].G[p][l] + (1 - w())*Blocks[getblocksq(Connector[i].Block1ID)].G_star[p][l]))*Blocks[getblocksq(Connector[i].Block1ID)].Solid_phase[p]->mobility_factor[l] * Blocks[getblocksq(Connector[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
+				F[get_member_no(getblocksq(Connector[i].Block1ID), p, l)] -= exchange;
+				F[get_member_no(getblocksq(Connector[i].Block2ID), p, l)] += exchange;
+			}
+
+		}
+
+	}
+
+	// phase mass transfer
+	for (int i = 0; i<Blocks.size(); i++)
+	{
+		for (int p = 0; p<Blocks[i].Solid_phase.size(); p++)
+		{
+			for (int l = 0; l<Blocks[i].Solid_phase[p]->n_phases; l++)
+				for (int k = 0; k<Blocks[i].Solid_phase[p]->n_phases; k++)
+				{
+					double exchange = (1 - w())*Blocks[i].K_star[p][l][k] * Blocks[i].G_star[p][l] + w()*Blocks[i].K[p][l][k] * Blocks[i].G[p][l];
+					F[get_member_no(i, p, l)] += exchange*Blocks[i].V;
+					F[get_member_no(i, p, k)] -= exchange*Blocks[i].V;
+				}
+		}
+	}
+
+	// build_up
+	for (int i = 0; i<Blocks.size(); i++)
+	{
+		for (int p = 0; p<Blocks[i].Solid_phase.size(); p++)
+		{
+			for (int k = 0; k<Blocks[i].Solid_phase[p]->n_phases; k++)
+				for (int j = 0; j<Blocks[i].buildup.size(); j++)
+					if ((buildup()[j].name == Blocks[i].Solid_phase[p]->name) && (Blocks[i].buildup[j]->phase == Blocks[i].Solid_phase[p]->phase_names[k]))
+						F[get_member_no(i, p, k)] -= Blocks[i].buildup[j]->buildup((1 - w())*Blocks[i].G_star[p][k] + w()*Blocks[i].G[p][k], &Blocks[i])*Blocks[i].V;
+		}
+	}
+
+	return F;
+}
+
 
 void CMedium::correct_S(double dtt)
 {
@@ -3376,6 +3554,281 @@ CVector CMedium::getres_Q(const CVector &X, double dtt)
 	return F;
 }
 
+
+CVector_arma CMedium::getres_Q(CVector_arma &X, double dtt)
+{
+	int max_phases = 10000;
+	if (!sorption())
+		max_phases = -1;
+	CVector F(RXN().cons.size()*(Blocks[0].n_phases + n_default_phases)*Blocks.size());
+	set_CG_star(X);
+	evaluate_capacity_c_star();
+	for (int k = 0; k<RXN().cons.size(); k++)
+	{
+		for (int p = -2; p<min(int(Blocks[0].Solid_phase.size()), max_phases); p++)
+		{
+			int _t;
+			if (p<0) _t = 1; else _t = Blocks[0].Solid_phase[p]->n_phases;
+			for (int l = 0; l<_t; l++)
+			{
+				// LHS
+				for (int i = 0; i<Blocks.size(); i++)
+				{
+					F[get_member_no(i, p, l, k)] = (get_capacity_star(i, l, p)*Blocks[i].CG_star[k][get_member_no(p, l)] - get_capacity(i, l, p)*Blocks[i].CG[k][get_member_no(p, l)]) / dtt;
+
+					if ((p == -2) && (Blocks[i].inflow.size() != 0))//needs to be modified to account for colloid-associated inflow
+					{
+						F[get_member_no(i, p, l, k)] -= sum_interpolate(Blocks[i].inflow, t, "flow")*sum_interpolate(Blocks[i].inflow, t, RXN().cons[k].name);
+
+						for (int j = 0; j < Blocks[i].evaporation_m.size(); j++) //newly added
+						{
+							if (Blocks[i].evaporation_m[j]->uptake == true)
+								F[get_member_no(i, p, l, k)] += Blocks[i].outflow_corr_factor*(Blocks[i].get_evaporation(j, t)*(w()*Blocks[i].CG_star[k][get_member_no(p, l)] + (1 - w())*Blocks[i].CG[k][get_member_no(p, l)]));
+						}
+
+					}
+
+
+				}
+
+
+
+
+				for (int i = 0; i<Connector.size(); i++)
+				{
+					//advection
+
+					if (p == -2)
+					{
+						vector<int> ii;
+						ii.push_back(k);
+						double Q_adv_star = (Connector[i].Q_star - Connector[i].Q_v_star)*Connector[i].flow_factor + Connector[i].settling*RXN().cons[k].vs*sgn(Connector[i].Block1->z0 - Connector[i].Block2->z0)*Connector[i].A_star*0.5*(Connector[i].Block1->calc_star(RXN().cons[k].vs_coefficient, ii) + Connector[i].Block2->calc_star(RXN().cons[k].vs_coefficient, ii));
+						double Q_adv = (Connector[i].Q - Connector[i].Q_v)*Connector[i].flow_factor + Connector[i].settling*RXN().cons[k].vs*sgn(Connector[i].Block1->z0 - Connector[i].Block2->z0)*Connector[i].A*0.5*(Connector[i].Block1->calc(RXN().cons[k].vs_coefficient, ii) + Connector[i].Block2->calc(RXN().cons[k].vs_coefficient, ii));
+
+						if (w()*Q_adv + (1 - w())*Q_adv_star>0)
+						{
+							F[get_member_no(getblocksq(Connector[i].Block1ID), p, l, k)] += (w()*Q_adv*Blocks[getblocksq(Connector[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block1ID)].CG_star[k][get_member_no(p, l)]);
+							F[get_member_no(getblocksq(Connector[i].Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connector[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block1ID)].CG_star[k][get_member_no(p, l)]);
+
+						}
+						if (Q_adv<0)
+						{
+							F[get_member_no(getblocksq(Connector[i].Block1ID), p, l, k)] += (w()*Q_adv*Blocks[getblocksq(Connector[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block2ID)].CG_star[k][get_member_no(p, l)]);
+							F[get_member_no(getblocksq(Connector[i].Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connector[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block2ID)].CG_star[k][get_member_no(p, l)]);
+						}
+
+					}
+					else if (p == -1)
+					{
+
+
+					}
+					else
+					{
+						vector<int> ii;
+						ii.push_back(p);
+						double Q_adv_star = (Connector[i].Q_star - Connector[i].Q_v_star)*Connector[i].flow_factor + Connector[i].settling*Solid_phase()[p].vs*sgn(Connector[i].Block1->z0 - Connector[i].Block2->z0)*0.5*(Connector[i].Block1->calc_star(Solid_phase()[p].vs_coefficient, ii) + Connector[i].Block2->calc_star(Solid_phase()[p].vs_coefficient, ii));
+						double Q_adv = (Connector[i].Q - Connector[i].Q_v)*Connector[i].flow_factor + Connector[i].settling*Solid_phase()[p].vs*sgn(Connector[i].Block1->z0 - Connector[i].Block2->z0)*0.5*(Connector[i].Block1->calc(Solid_phase()[p].vs_coefficient, ii) + Connector[i].Block2->calc(Solid_phase()[p].vs_coefficient, ii));
+						if (Q_adv>0)
+						{
+							F[get_member_no(getblocksq(Connector[i].Block1ID), p, l, k)] += (w()*Q_adv*Blocks[getblocksq(Connector[i].Block1ID)].G[p][l] * Blocks[getblocksq(Connector[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block1ID)].G_star[p][l] * Blocks[getblocksq(Connector[i].Block1ID)].CG_star[k][get_member_no(p, l)])*Blocks[getblocksq(Connector[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
+							F[get_member_no(getblocksq(Connector[i].Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connector[i].Block1ID)].G[p][l] * Blocks[getblocksq(Connector[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block1ID)].G_star[p][l] * Blocks[getblocksq(Connector[i].Block1ID)].CG_star[k][get_member_no(p, l)])*Blocks[getblocksq(Connector[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
+						}
+						if (Q_adv<0)
+						{
+							F[get_member_no(getblocksq(Connector[i].Block1ID), p, l, k)] += (w()*Q_adv*Blocks[getblocksq(Connector[i].Block2ID)].G[p][l] * Blocks[getblocksq(Connector[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block2ID)].G_star[p][l] * Blocks[getblocksq(Connector[i].Block2ID)].CG_star[k][get_member_no(p, l)])*Blocks[getblocksq(Connector[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
+							F[get_member_no(getblocksq(Connector[i].Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connector[i].Block2ID)].G[p][l] * Blocks[getblocksq(Connector[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block2ID)].G_star[p][l] * Blocks[getblocksq(Connector[i].Block2ID)].CG_star[k][get_member_no(p, l)])*Blocks[getblocksq(Connector[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
+						}
+					}
+
+
+				}
+				//diffusion
+				for (int i = 0; i<Connector.size(); i++)
+				{
+					if (p == -2)
+					{
+						double exchange = Connector[i].A*(w()*Connector[i].dispersion[k] + (1 - w())*Connector[i].dispersion_star[k]) / Connector[i].d*min(Heavyside(get_capacity_star(getblocksq(Connector[i].Block2ID), l, p) - 1e-13), Heavyside(get_capacity_star(getblocksq(Connector[i].Block1ID), l, p) - 1e-13));
+						double term1 = w()*Blocks[getblocksq(Connector[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[getblocksq(Connector[i].Block2ID)].CG_star[k][get_member_no(p, l)];
+						double term2 = w()*Blocks[getblocksq(Connector[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[getblocksq(Connector[i].Block1ID)].CG_star[k][get_member_no(p, l)];
+						exchange *= (term1 - term2);
+						F[get_member_no(getblocksq(Connector[i].Block1ID), p, l, k)] -= exchange;
+						F[get_member_no(getblocksq(Connector[i].Block2ID), p, l, k)] += exchange;
+					}
+					else if (p == -1)
+					{
+
+					}
+					else
+					{
+						double exchange = Connector[i].A*(w()*Connector[i].c_dispersion[p] + (1 - w())*Connector[i].c_dispersion_star[p]) / Connector[i].d*min(Heavyside(get_capacity_star(getblocksq(Connector[i].Block1ID), l, p) - 1e-13), Heavyside(get_capacity_star(getblocksq(Connector[i].Block2ID), l, p) - 1e-13));;
+						double term1 = w()*Blocks[getblocksq(Connector[i].Block2ID)].G[p][l] * Blocks[getblocksq(Connector[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[getblocksq(Connector[i].Block2ID)].G_star[p][l] * Blocks[getblocksq(Connector[i].Block2ID)].CG_star[k][get_member_no(p, l)];
+						double term2 = w()*Blocks[getblocksq(Connector[i].Block1ID)].G[p][l] * Blocks[getblocksq(Connector[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[getblocksq(Connector[i].Block1ID)].G_star[p][l] * Blocks[getblocksq(Connector[i].Block1ID)].CG_star[k][get_member_no(p, l)];
+						exchange *= (Blocks[getblocksq(Connector[i].Block1ID)].Solid_phase[p]->mobility_factor[l] * Blocks[getblocksq(Connector[i].Block2ID)].Solid_phase[p]->mobility_factor[l])*(term1 - term2);
+						F[get_member_no(getblocksq(Connector[i].Block1ID), p, l, k)] -= exchange;
+						F[get_member_no(getblocksq(Connector[i].Block2ID), p, l, k)] += exchange;
+					}
+				}
+
+			}
+
+		}
+
+		// solid mass transfer
+		for (int i = 0; i<Blocks.size(); i++)
+		{
+			for (int p = 0; p<min(Blocks[i].Solid_phase.size(), max_phases); p++)
+			{
+				for (int l = 0; l<Blocks[i].Solid_phase[p]->n_phases; l++)
+					for (int kk = 0; kk<Blocks[i].Solid_phase[p]->n_phases; kk++)
+					{
+						double exchange = (1 - w())*Blocks[i].K_star[p][l][kk] * Blocks[i].G_star[p][l] * Blocks[i].CG_star[k][get_member_no(p, l)] + w()*Blocks[i].K[p][l][kk] * Blocks[i].G[p][l] * Blocks[i].CG[k][get_member_no(p, l)];
+						F[get_member_no(i, p, l, k)] += exchange*Blocks[i].V;
+						F[get_member_no(i, p, kk, k)] -= exchange*Blocks[i].V;
+					}
+			}
+		}
+
+		//solute mass transfer
+		for (int i = 0; i<Blocks.size(); i++)
+		{
+			for (int p = -1; p<min(int(Blocks[i].Solid_phase.size()), max_phases); p++)
+			{
+				int _t;
+				if (p<0) _t = 1; else _t = Blocks[0].Solid_phase[p]->n_phases;
+				for (int l = 0; l<_t; l++)
+				{
+					double exchange = 0;
+					if (p == -1)
+					{
+						exchange -= (1 - w())*Blocks[i].get_exchange_rate_star(p, l, k)*Blocks[i].CG_star[k][get_member_no(p, l)] + w()*Blocks[i].get_exchange_rate(p, l, k)*Blocks[i].CG[k][get_member_no(p, l)];
+						exchange += ((1 - w())*Blocks[i].get_exchange_rate_star(p, l, k)*Blocks[i].CG_star[k][get_member_no(-2, l)] + w()*Blocks[i].get_exchange_rate(p, l, k)*Blocks[i].CG[k][get_member_no(-2, l)])*Blocks[i].get_kd(p, l, k);
+						F[get_member_no(i, -2, 0, k)] += exchange*get_capacity(i, l, p);
+						F[get_member_no(i, p, l, k)] -= exchange*get_capacity(i, l, p);
+					}
+					else
+					{
+						exchange -= (1 - w())*Blocks[i].get_exchange_rate_star(p, l, k)*Blocks[i].CG_star[k][get_member_no(p, l)] + w()*Blocks[i].get_exchange_rate(p, l, k)*Blocks[i].CG[k][get_member_no(p, l)];
+						exchange += ((1 - w())*Blocks[i].get_exchange_rate_star(p, l, k)* Blocks[i].CG_star[k][get_member_no(-2, l)] + w()*Blocks[i].get_exchange_rate(p, l, k)*Blocks[i].CG[k][get_member_no(-2, l)]) * Blocks[i].get_kd(p, l, k);
+						F[get_member_no(i, -2, 0, k)] += exchange*get_capacity(i, l, p);
+						F[get_member_no(i, p, l, k)] -= exchange*get_capacity(i, l, p);
+
+					}
+				}
+			}
+		}
+
+		// build_up
+		for (int i = 0; i<Blocks.size(); i++)
+		{
+			for (int p = -1; p<min(int(Blocks[i].Solid_phase.size()), max_phases); p++)
+			{
+				int _t;
+				if (p<0) _t = 1; else _t = Blocks[0].Solid_phase[p]->n_phases;
+				for (int l = 0; l<_t; l++)
+				{
+					double exchange = 0;
+					if (p == -1)
+					{
+						for (int j = 0; j<Blocks[i].buildup.size(); j++)
+							if (Blocks[i].buildup[j]->phase == "sorbed")
+								F[get_member_no(i, p, l, k)] -= Blocks[i].buildup[j]->buildup((1 - w())*Blocks[i].CG_star[k][get_member_no(p, l)] + w()*Blocks[i].CG[k][get_member_no(p, l)], &Blocks[i])*Blocks[i].V;
+					}
+					else
+					{
+						for (int j = 0; j<Blocks[i].buildup.size(); j++)
+							if ((Blocks[i].buildup[j]->solid == Blocks[i].Solid_phase[p]->name) && (Blocks[i].buildup[j]->phase == Blocks[i].Solid_phase[p]->phase_names[l]))
+								F[get_member_no(i, p, l, k)] -= Blocks[i].buildup[j]->buildup((1 - w())*Blocks[i].CG_star[k][get_member_no(p, l)] + w()*Blocks[i].CG[k][get_member_no(p, l)], &Blocks[i])*Blocks[i].V;
+
+
+					}
+				}
+			}
+		}
+
+		//External flux
+		for (int i = 0; i<Blocks.size(); i++)
+		{
+			for (int p = -2; p<min(int(Blocks[i].Solid_phase.size()), max_phases); p++)
+			{
+				int _t;
+				if (p<0) _t = 1; else _t = Blocks[0].Solid_phase[p]->n_phases;
+				for (int l = 0; l<_t; l++)
+				{
+					double exchange = 0;
+					if (p == -2)
+					{
+						for (int j = 0; j<Blocks[i].envexchange.size(); j++)
+							if ((Blocks[i].envexchange[j]->phase == "aqueous") && (Blocks[i].envexchange[j]->constituent == RXN().cons[k].name))
+								F[get_member_no(i, p, l, k)] -= w()*Blocks[i].envexchange[j]->calculate(&Blocks[i]) + (1 - w())*Blocks[i].envexchange[j]->calculate_star(&Blocks[i]);
+					}
+					else if (p == -1)
+					{
+						for (int j = 0; j<Blocks[i].envexchange.size(); j++)
+							if ((Blocks[i].envexchange[j]->phase == "sorbed") && (Blocks[i].envexchange[j]->constituent == RXN().cons[k].name))
+								F[get_member_no(i, p, l, k)] -= w()*Blocks[i].envexchange[j]->calculate(&Blocks[i]) + (1 - w())*Blocks[i].envexchange[j]->calculate_star(&Blocks[i]);
+					}
+					else if (p>-1)
+					{
+						for (int j = 0; j<Blocks[i].envexchange.size(); j++)
+							if ((Blocks[i].envexchange[j]->solid == Blocks[i].Solid_phase[p]->name) && (Blocks[i].envexchange[j]->phase == Blocks[i].Solid_phase[p]->phase_names[l]) && (Blocks[i].envexchange[j]->constituent == RXN().cons[k].name))
+								F[get_member_no(i, p, l, k)] -= w()*Blocks[i].envexchange[j]->calculate(&Blocks[i]) + (1 - w())*Blocks[i].envexchange[j]->calculate_star(&Blocks[i]);
+
+
+					}
+				}
+			}
+		}
+
+	}
+
+	//reactions
+	CVector rate_chng = get_rxn_chng_rate();
+	F -= rate_chng;
+
+	// set concentration zero when the storage is zero
+	for (int k = 0; k < RXN().cons.size(); k++)
+	{
+		for (int p = -2; p<min(int(Blocks[0].Solid_phase.size()), max_phases); p++)
+		{
+			int _t;
+			if (p < 0) _t = 1; else _t = Blocks[0].Solid_phase[p]->n_phases;
+			for (int l = 0; l < _t; l++)
+			{
+				// LHS
+				for (int i = 0; i < Blocks.size(); i++)
+				{
+					if (get_capacity_star(i, l, p) < 1e-13)
+					{
+						F[get_member_no(i, p, l, k)] = X[get_member_no(i, p, l, k)];
+						if (Blocks[i].CG_stored_mass[k][Blocks[i].get_member_no(p, l)] == 0)
+						{
+							Blocks[i].CG_stored_mass[k][Blocks[i].get_member_no(p, l)] = get_capacity(i, l, p)*Blocks[i].CG[k][Blocks[i].get_member_no(p, l)]; // newly added
+							if ((p == -2) && (Blocks[i].inflow.size() != 0))//needs to be modified to account for colloid-associated inflow
+							{
+								Blocks[i].CG_stored_mass[k][Blocks[i].get_member_no(p, l)] += sum_interpolate(Blocks[i].inflow, t, RXN().cons[k].name)*dtt; // newly added
+							}
+						}
+
+						if ((p == -2) && (Blocks[i].inflow.size() != 0))//needs to be modified to account for colloid-associated inflow
+						{
+							F[get_member_no(i, p, l, k)] -= sum_interpolate(Blocks[i].inflow, t, RXN().cons[k].name);
+						}
+
+					}
+					else
+						F[get_member_no(i, p, l, k)] -= Blocks[i].CG_stored_mass[k][Blocks[i].get_member_no(p, l)] / dtt; //newly added
+
+
+				}
+			}
+		}
+	}
+
+	return F;
+}
+
+
 int CMedium::get_member_no(int block_no, int solid_id, int phase_no, int const_no)
 {
 	if (solid_id==-2) 
@@ -3394,9 +3847,11 @@ int CMedium::get_member_no(int block_no, int solid_id, int phase_no, int const_n
 vector<int> CMedium::get_member_no_inv(int ii)
 {
 	vector<int> v;
-	
+	int max_phases = 10000;
+	if (!sorption())
+		max_phases = -1;
 	for (int kk = 0; kk<RXN().cons.size(); kk++)
-		for (int p = -2; p<int(Blocks[0].Solid_phase.size()); p++)
+		for (int p = -2; p<min(int(Blocks[0].Solid_phase.size()),max_phases); p++)
 		{
 			int _t;
 			if (p < 0) _t = 1; else _t = Blocks[0].Solid_phase[p]->n_phases;
@@ -3559,7 +4014,7 @@ void CMedium::writedetails()
 {
 	FILE *FILEBTC;
 	FILEBTC = fopen((outputpathname() + "Solution_details.txt").c_str(), "a");
-	fprintf(FILEBTC, "dt:, %lf, %le, %le, counters:, %i, %i, %i, J_updates:, %i, %i, %i, update_counts: %i, %i, %i, multis: %le, %le, pos_defs: %le, %le, wiggle: %le, %le, %le, %i, %s\n", t, dtt, avg_redo_dtt, counter_flow, counter_colloid, counter_const, J_update, J_update_C, J_update_Q, J_h_update_count, J_c_update_count, J_q_update_count, pos_def_mult, pos_def_mult_Q, pos_def_ratio, pos_def_ratio_const, max_wiggle, wiggle_dt_mult, dt_fail, max_wiggle_id, fail_reason.c_str());
+	fprintf(FILEBTC, "dt:, %lf, %le, %le(%i), %le, counters:, %i, %i, %i, J_updates:, %i, %i, %i, update_counts: %i, %i, %i, multis: %le, %le, pos_defs: %le, %le, wiggle: %le, %le, %le, %i, %s\n", t, dtt, base_dtt, where_base_dtt_changed, avg_redo_dtt, counter_flow, counter_colloid, counter_const, J_update, J_update_C, J_update_Q, J_h_update_count, J_c_update_count, J_q_update_count, pos_def_mult, pos_def_mult_Q, pos_def_ratio, pos_def_ratio_const, max_wiggle, wiggle_dt_mult, dt_fail, max_wiggle_id, fail_reason.c_str());
 	fclose(FILEBTC);
 }
 
@@ -4277,3 +4732,712 @@ int CMedium::lookup_objective_functions(string S)
 
 
 #endif
+
+void CMedium::onestepsolve_flow_ar(double dt)
+{
+	int indicator = 1;
+	int done = 0;
+	CVector pos_def;
+	vector<int> old_fixed_connect_status = get_fixed_connect_status();
+	CVector_arma X_old = getS();
+
+	for (int i = 0; i<Blocks.size(); i++)
+	{
+		if (Blocks[i].setzero == 1) X_old[i] = dtt;
+		if (Blocks[i].setzero == 2) X_old[i] = Blocks[i].outflow_corr_factor;
+	}
+	fail_reason = "none";
+
+	CVector correction_factor_old = get_flow_factors();
+
+	while ((indicator == 1) && (done<2))
+	{
+		bool fixed_connect;
+		done += 1;
+
+		int err_expand_counter = 0;
+		double errF;
+		int J_update1, J_update2;
+		J_update1 = J_update2 = J_update;
+
+		CVector_arma X = getS();    //getting the Storage of blocks, test
+		fixed_connect = false;
+		for (int i = 0; i<Blocks.size(); i++)
+		{
+			if (Blocks[i].setzero == 1) X[i] = dtt;
+			if (Blocks[i].setzero == 2) X[i] = Blocks[i].outflow_corr_factor;
+			if (Blocks[i].setzero != 0) fixed_connect = true;
+		}
+
+		CVector_arma F = getres_S(X, dtt);
+
+		double err = F.norm2();
+		double err_p = err;
+
+		counter_flow = 0;
+		double lambda = 1;
+		J_h_update_count = 0;
+		while (err>tol())
+		{
+
+			bool a = (F == F);
+			if ((F == F) != true || (X == X) != true || (F.is_finite() == false) || (X.is_finite() == false))
+			{
+				fail_reason = "indefinite X or F in hydro";
+				set_fixed_connect_status(old_fixed_connect_status);
+				setS_star(X_old);
+				return;
+			}
+
+
+			if (((J_update1 == true) || (InvJ1.getnumrows() == 0)) && (fixed_connect == false))
+			{
+				J_h_update_count++;
+				M_arma = Jacobian_S(X, dtt,true);
+				CMatrix_arma M1 = normalize_diag(M_arma, M_arma);
+				pos_def = M.diag_ratio();
+				epoch_count++;
+				double xx = diag(M).max();
+
+				InvJ1_arma = inv(M1);
+				if (InvJ1_arma.getnumcols() != Blocks.size())
+				{
+					fail_reason = "Hydro Jacobian in not inversible";
+					set_flow_factors(correction_factor_old);
+					set_fixed_connect_status(old_fixed_connect_status);
+					return;
+				}
+				dtt_J_h1 = dtt;
+				J_update1 = false;
+			}
+
+			if (((J_update2 == true) || (InvJ2.getnumrows() == 0)) && (fixed_connect == true))
+			{
+				J_h_update_count++;
+				M_arma = Jacobian_S(X, dtt, true);
+				CMatrix_arma M1 = normalize_diag(M_arma, M_arma);
+				epoch_count++;
+				pos_def = M_arma.diag_ratio();
+				double xx = diag(M).max();
+
+				InvJ2_arma = inv(M1);
+				if (InvJ2_arma.getnumcols() != Blocks.size())
+				{
+					fail_reason = "Hydro Jacobian in not inversible";
+					set_flow_factors(correction_factor_old);
+					set_fixed_connect_status(old_fixed_connect_status);
+					return;
+				}
+				dtt_J_h2 = dtt;
+				J_update2 = false;
+			}
+
+			CVector_arma dx;
+			if (fixed_connect)
+			{
+				dx = (InvJ2_arma*normalize_diag(F, M_arma));
+				X -= lambda*((dtt / dtt_J_h2)*dx);
+			}
+			else
+			{
+				dx = (InvJ1_arma*normalize_diag(F, M_arma));
+				X -= lambda*((dtt / dtt_J_h1)*dx);
+			}
+
+
+			F = getres_S(X, dtt);
+
+			err_p = err;
+			err = F.norm2();
+			if (err / err_p>0.8)
+				if (fixed_connect) J_update2 = true; else J_update1 = true;
+
+			if ((dx / X).abs_max()<1e-15) err = 0;
+			if (err >= err_p)
+			{
+				if (fixed_connect) J_update2 = true; else J_update1 = true; err_expand_counter++; X = X_old; set_flow_factors(correction_factor_old); lambda /= 2.0;
+				err = 10000;
+			}
+			if (err_expand_counter>4)
+			{
+				fail_reason = "Expanding error in hydro";
+				set_flow_factors(correction_factor_old);
+				set_fixed_connect_status(old_fixed_connect_status);
+				setS_star(X_old);
+				return;
+			}
+
+			if ((err == err) == false)
+			{
+				fail_reason = "infinite error in hydro";
+				set_flow_factors(correction_factor_old);
+				set_fixed_connect_status(old_fixed_connect_status);
+				setS_star(X_old);
+				return;
+			}
+
+
+			counter_flow++;
+			if (counter_flow>nr_failure_criteria())
+			{
+				fail_reason = "Number of iteration exceeded the limit in hydro";
+				set_flow_factors(correction_factor_old);
+				set_fixed_connect_status(old_fixed_connect_status);
+				setS_star(X_old);
+				return;
+			}
+
+		}
+
+		failed = false;
+		fail_reason = "none";
+		indicator = 0;
+
+		for (int i = 0; i<X.num; i++)
+		{
+			if ((X[i]<1e-15) && (X[i]>-1e-15)) X[i] = 0;
+			if ((Blocks[i].setzero == 0) && (X[i]<0))
+			{
+				J_update = true;
+				indicator = 1;
+				failed = true;
+				if (Blocks[i].S == 0)
+					Blocks[i].setzero = 2;
+				else
+					Blocks[i].setzero = 2;
+			}
+			if (Blocks[i].outflow_corr_factor>1)
+			{
+				fail_reason = "block " + Blocks[i].ID + " is wet, " + "outflow factor = " + numbertostring(Blocks[i].outflow_corr_factor);
+				J_update = true;
+				indicator = 1;
+				failed = true;
+				Blocks[i].setzero = 0;
+				Blocks[i].outflow_corr_factor = 1;
+			}
+		}
+	}
+}
+
+void CMedium::onestepsolve_colloid_ar(double dt)
+{
+	if (Blocks[0].n_phases == 0)
+	{
+		failed_colloid = false;
+		return;
+	}
+	evaluate_dispersion();   //Connector[i].evaluate_dispersion(); Connector[i].evaluate_dispersion_star();  //Negative diffusion due to negative f[8]????
+	evaluate_K();			//Blocks[i].evaluate_K();  
+	evaluate_capacity();	//Blocks[i].evaluate_capacity();  
+							//renew_G();				
+
+	CVector_arma X(Blocks.size()*Blocks[0].n_phases);
+	CVector_arma X_old(Blocks.size()*Blocks[0].n_phases);
+
+	for (int p = 0; p<Blocks[0].Solid_phase.size(); p++)
+		for (int l = 0; l<Blocks[0].Solid_phase[p]->n_phases; l++)
+			for (int i = 0; i<Blocks.size(); i++)  X[get_member_no(i, p, l)] = Blocks[i].G[p][l];
+
+	X_old = X;
+	int error_expand_counter = 0;
+	CVector_arma F = getres_C(X, dtt);
+	CVector_arma F_old = F;
+	double lambda = 1;
+	counter_colloid = 0;
+
+	if ((F == F) != true || (X == X) != true || (F.is_finite() == false) || (X.is_finite() == false))
+	{
+		failed_colloid = true;
+		fail_reason = "infinite X or F in colloids";
+		pos_def_ratio = 1e-12;
+		return;
+	}
+
+	double err = F.norm2();
+	double err_p = err;
+	double errF;
+	J_c_update_count = 0;
+	while ((err>tol()) || (X.min()<double(0)))
+	{
+		if ((J_update_C == true) || (M_C.getnumcols() != X.num))
+		{
+			J_c_update_count++;
+			M_C_arma = Jacobian_C(X, dtt);
+			epoch_count++;
+			CMatrix_arma M1 = normalize_diag(M_C_arma, M_C_arma);
+			if (M_C_arma.getnumcols()>0) pos_def_ratio = M1.diag_ratio().abs_max(); else pos_def_ratio = 1e-12;
+			if (fabs(det(M1))<1e-30)
+			{
+				set_G_star(X_old);
+				fail_reason = "non strongly positive definite Jacobian in colloids";
+				failed_colloid = true;
+				return;
+
+			}
+
+			InvJ_C_arma = inv(M1);
+			if (InvJ_C.getnumcols() == 0)
+			{
+				fail_reason = "Colloid Jacobian in not inversible";
+				failed_colloid = true;
+				pos_def_ratio = 1e-12;
+				return;
+			}
+
+			J_update_C = false;
+			dtt_J_c = dtt;
+		}
+
+		CVector_arma dx = (dtt / dtt_J_c)*(InvJ_C_arma*normalize_diag(F, M_C_arma));
+
+		X -= lambda*dx;
+
+		F = getres_C(X, dtt);
+		err_p = err;
+		err = F.norm2();
+		if (err>err_p)
+		{
+			error_expand_counter++;
+			J_update_Q = true;
+			X = X_old;
+			F = F_old;
+			lambda /= 2.0;
+		}
+
+
+		if (error_expand_counter == 4)
+		{
+			set_G_star(X_old);
+			fail_reason = "error expansion in particle transport";
+			failed_colloid = true;
+			return;
+		}
+
+		counter_colloid++;
+		if (counter_colloid>nr_failure_criteria())
+		{
+			set_G_star(X_old);
+			fail_reason = "Number of iterations exceeded the limit in colloids";
+			failed_colloid = true;
+			return;
+		}
+	}
+
+	set_G_star(X); //Added by Babak to avoid negative values in response 12/22/15
+
+	if (X.min() < double(-1e-13))
+	{
+		fail_reason = "Negative value for colloid concentration";
+		failed_colloid = true;
+	}
+	else
+		failed_colloid = false;
+}
+
+void CMedium::onestepsolve_const_ar(double dtt)
+{
+	evaluate_const_dispersion();
+	//renew_CG();
+	evaluate_capacity_c();
+	int error_expand_counter = 0;
+	update_rxn_params();
+	CVector_arma X = get_X_from_CG();
+
+	CVector_arma X_old = X;
+	CVector_arma F = getres_Q(X, dtt);
+	CVector_arma F_old = F;
+	counter_const = 0;
+
+	if ((F == F) != true || (X == X) != true || (F.is_finite() == false) || (X.is_finite() == false))
+	{
+		failed_const = true;
+		fail_reason = "infinite X or F in water quality";
+		pos_def_ratio_const = 1e-12;
+		return;
+	}
+
+	double err = F.norm2();
+	double err_p = err;
+	double errF;
+	double lambda = 1;
+	J_q_update_count = 0;
+	while (err>tol())
+	{
+		if ((J_update_Q == true) || (M_Q_arma.getnumrows() != X.num))
+		{
+			J_q_update_count++;
+			M_Q_arma = Jacobian_Q(X, dtt);
+			CMatrix_arma M1 = normalize_diag(M_Q_arma, M_Q_arma);
+			CMatrix_arma D = M1.non_posdef_elems_m();
+			epoch_count++;
+			if (M_Q_arma.getnumcols()>0) pos_def_ratio_const = M1.diag_ratio().abs_max(); else pos_def_ratio_const = 1e-12;
+			if (pos_def_ratio_const > 1)
+				Preconditioner_Q_arma = M1.Preconditioner();
+			else
+				Preconditioner_Q_arma = Identity_ar(F.num);
+			if (fabs(det(M1))<1e-30)
+			{
+				set_CG_star(X_old);
+				fail_reason = "Not strongly positive definite Jacobian in wq";
+				failed_const = true;
+				return;
+
+			}
+
+			InvJ_Q_arma = inv(Preconditioner_Q_arma*M1);
+			if (InvJ_Q_arma.getnumcols() == 0)
+			{
+				set_CG_star(X_old);
+				fail_reason = "Matrix not invertible in wq";
+				failed_const = true;
+				return;
+
+			}
+			J_update_Q = false;
+			dtt_J_q = dtt;
+		}
+
+		CVector_arma dx = dtt / dtt_J_q*(InvJ_Q_arma*Preconditioner_Q_arma*normalize_diag(F, M_Q_arma));
+
+		X -= lambda*dx;
+
+		F = getres_Q(X, dtt);
+		err_p = min(err, err_p);
+		err = F.norm2();
+		if ((dx / X).abs_max()<1e-15) err = 0;
+
+		if (err / err_p>0.8) J_update_Q = true;
+
+		if ((err>err_p) && (err>tol()))
+		{
+			error_expand_counter++;
+			J_update_Q = true;
+			X = X_old;
+			F = F_old;
+			lambda /= 2.0;
+		}
+
+		counter_const++;
+
+		if (error_expand_counter == 4)
+		{
+			set_CG_star(X_old);
+			fail_reason = "error expansion in wq";
+			failed_const = true;
+			return;
+		}
+
+		if (counter_const>nr_failure_criteria())
+		{
+			set_CG_star(X_old);
+			fail_reason = "Number of iterations exceeded the limit in wq";
+			failed_const = true;
+			return;
+		}
+	}
+	if (negative_concentration_allowed() == false)
+	{
+		if (X.min() < -1e-13)
+		{
+			vector<int> neg_vals_cons;
+			vector<int> neg_vals_block;
+			vector<double> neg_vals;
+			for (int i = 0; i < X.getsize(); i++) if (X[i] < -1e-13) {
+				neg_vals_block.push_back(get_member_no_inv(i)[0]); neg_vals_cons.push_back(get_member_no_inv(i)[3]);  neg_vals.push_back(X[i]);
+
+
+			}
+
+			fail_reason = "Negative value in constituent ";
+			for (int i = 0; i < neg_vals_block.size(); i++) fail_reason = fail_reason + RXN().cons[neg_vals_cons[i]].name; +", ";
+			fail_reason = fail_reason + " concentration at ";
+			for (int i = 0; i < neg_vals_block.size(); i++) fail_reason = fail_reason + Blocks[neg_vals_block[i]].ID; +", ";
+			fail_reason = fail_reason + " values respectively = ";
+			for (int i = 0; i < neg_vals_block.size(); i++) fail_reason = fail_reason + numbertostring(neg_vals[i]) + ", ";
+			failed_const = true;
+		}
+		else
+		{
+			failed_const = false;
+			fail_reason == "none";
+		}
+	}
+	else
+	{
+		failed_const = false;
+		fail_reason == "none";
+	}
+	int max_phases = 10000;
+	if (!sorption())
+		max_phases = -1;
+
+	if (failed_const == false)
+	{
+		fail_reason = "none";
+		for (int k = 0; k < RXN().cons.size(); k++)
+		{
+			for (int p = -2; p<min(int(Blocks[0].Solid_phase.size()), max_phases); p++)
+			{
+				int _t;
+				if (p < 0) _t = 1; else _t = Blocks[0].Solid_phase[p]->n_phases;
+				for (int l = 0; l < _t; l++)
+				{
+					// LHS
+					for (int i = 0; i < Blocks.size(); i++)
+					{
+						if (get_capacity_star(i, l, p) > 1e-13)
+						{
+							Blocks[i].CG_stored_mass[k][Blocks[i].get_member_no(p, l)] = 0; // newly added
+						}
+
+					}
+				}
+			}
+		}
+	}
+	else set_CG_star(X_old);
+
+}
+
+
+
+CMatrix_arma CMedium::Jacobian_S(CVector_arma &X, double dt, bool base = true)
+{
+	CMatrix_arma M(X.num);
+
+	if (base == true)
+	{
+		CVector_arma F0 = getres_S(X, dt);
+		for (int i = 0; i < X.num; i++)
+		{
+			CVector_arma V = Jacobian_S(X, F0, i, dt);
+			for (int j=0; j<X.num; j++)
+				M(i,j) = V[j];
+		}
+
+	}
+	else
+	{
+		for (int i = 0; i < X.num; i++)
+		{
+			CVector_arma V = Jacobian_S(X, i, dt);
+			for (int j = 0; j < X.num; j++)
+				M(i, j) = V[j];
+		}
+		
+	}
+
+
+	return Transpose(M);
+}
+
+CVector_arma CMedium::Jacobian_S(CVector_arma &V, int &i, double &dt)  //Works also w/o reference (&) 
+{
+	double epsilon;
+	if (V[i]<1e-5) epsilon = -1e-6; else epsilon = 1e-6;   
+	CVector_arma V1(V);
+	V1[i] += epsilon;
+	CVector_arma F1, F0;
+	F1 = getres_S(V1, dt);
+	F0 = getres_S(V, dt);
+
+	return (F1 - F0) / epsilon;
+}
+
+CVector_arma CMedium::Jacobian_S(CVector_arma &V, CVector_arma &F0, int i, double dt)  //Works also w/o reference (&) 
+{
+	double epsilon;
+	epsilon = -1e-6;
+	CVector_arma V1(V);
+	V1[i] += epsilon;
+	CVector_arma F1;
+	F1 = getres_S(V1, dt);
+	CVector_arma grad = (F1 - F0) / epsilon;
+	if (grad.norm2() == 0)
+	{
+		epsilon = 1e-6;
+		V1 = V;
+		V1[i] += epsilon;
+		F1 = getres_S(V1, dt);
+		grad = (F1 - F0) / epsilon;
+	}
+	return grad;
+
+}
+
+
+
+CMatrix_arma CMedium::Jacobian_C(CVector_arma &X, double dt, bool base)
+{
+	CMatrix_arma M(X.num);
+
+	if (base == true)
+	{
+		CVector_arma F0 = getres_C(X, dt);
+		for (int i = 0; i < X.num; i++)
+		{
+			CVector_arma V = Jacobian_C(X, F0, i, dt);
+			for (int j = 0; j < X.num; j++)
+				M(i, j) = V[j];
+		}
+	}
+	else
+	{
+		for (int i = 0; i < X.num; i++)
+		{
+			CVector_arma V = Jacobian_C(X, i, dt);
+			for (int j = 0; j < X.num; j++)
+				M(i, j) = V[j];
+		}
+	}
+
+	return Transpose(M);
+}
+
+CVector_arma CMedium::Jacobian_C(CVector_arma &V, int i, double dt)  //Works also w/o reference (&) 
+{
+	double epsilon;
+	if (V[i]<1e-5) epsilon = -1e-6; else epsilon = 1e-6;
+	CVector_arma V1(V);
+	V1[i] += epsilon;
+	CVector_arma F1, F0;
+	F1 = getres_C(V1, dt);
+	F0 = getres_C(V, dt);
+
+	CVector_arma grad = (F1 - F0) / epsilon;
+	if (grad.norm2() == 0)
+	{
+		epsilon = 1e-6;
+		V1 = V;
+		V1[i] += epsilon;
+		F1 = getres_S(V1, dt);
+		grad = (F1 - F0) / epsilon;
+	}
+	return grad;
+}
+
+CVector_arma CMedium::Jacobian_C(CVector_arma &V, const CVector_arma &F0, int i, double dt)
+{
+	double epsilon;
+	if ((V[i]<1) && (V[i]>-1))
+		if (V[i]<1e-5) epsilon = -1e-6; else epsilon = 1e-6;
+	else
+		epsilon = 1e-6*V[i];
+	CVector_arma V1(V);
+	V1[i] += epsilon;
+	CVector_arma F1;
+	F1 = getres_C(V1, dt);
+
+	return (F1 - F0) / epsilon;
+}
+
+CMatrix_arma CMedium::Jacobian_Q(CVector_arma &X, double dt, bool base)
+{
+	CMatrix_arma M(X.num);
+
+	if (base == true)
+	{
+		CVector_arma F0 = getres_Q(X, dt);
+		for (int i = 0; i<X.num; i++)
+			M.setrow(i, Jacobian_Q(X, F0, i, dt));
+	}
+	else
+	{
+		for (int i = 0; i<X.num; i++)
+			M.setrow(i, Jacobian_Q(X, i, dt));
+	}
+
+	return Transpose(M);
+}
+
+CVector_arma CMedium::Jacobian_Q(CVector_arma &V, int i, double dt)
+{
+	double epsilon;
+	if (V[i]<1e-5) epsilon = -1e-6; else epsilon = 1e-6;
+	CVector_arma V1(V);
+	V1[i] += epsilon;
+	CVector_arma F1, F0;
+	F1 = getres_Q(V1, dt);
+	F0 = getres_Q(V, dt);
+
+	CVector_arma grad = (F1 - F0) / epsilon;
+	if (grad.norm2() == 0)
+	{
+		epsilon = 1e-6;
+		V1 = V;
+		V1[i] += epsilon;
+		F1 = getres_S(V1, dt);
+		grad = (F1 - F0) / epsilon;
+	}
+	return grad;
+}
+
+CVector_arma CMedium::Jacobian_Q(CVector_arma &V, const CVector_arma &F0, int i, double dt)
+{
+	double epsilon;
+	if ((V[i]<1) && (V[i]>-1))
+		if (V[i]<1e-5) epsilon = -1e-6; else epsilon = 1e-6;
+	else
+		epsilon = 1e-6*V[i];
+	CVector_arma V1(V);
+	V1[i] += epsilon;
+	CVector_arma F1;
+	F1 = getres_Q(V1, dt);
+
+	CVector_arma grad = (F1 - F0) / epsilon;
+	if (grad.norm2() == 0)
+	{
+		epsilon = 1e-6;
+		V1 = V;
+		V1[i] += epsilon;
+		F1 = getres_S(V1, dt);
+		grad = (F1 - F0) / epsilon;
+	}
+	return grad;
+}
+
+void CMedium::set_CG_star(CVector_arma &X)
+{
+	int max_phases = 10000;
+	if (!sorption())
+		max_phases = -1;
+	for (int k = 0; k<RXN().cons.size(); k++)
+		for (int p = -2; p<min(int(Blocks[0].Solid_phase.size()), max_phases); p++)
+		{
+			int _t = 1; if (p>-1) _t = Blocks[0].Solid_phase[p]->n_phases;
+			for (int l = 0; l<_t; l++)
+				for (int i = 0; i<Blocks.size(); i++)  Blocks[i].CG_star[k][Blocks[i].get_member_no(p, l)] = X[get_member_no(i, p, l, k)];
+		}
+
+}
+void CMedium::set_CG(CVector_arma &X)
+{
+	int max_phases = 10000;
+	if (!sorption())
+		max_phases = -1;
+	for (int k = 0; k<RXN().cons.size(); k++)
+		for (int p = -2; p<min(int(Blocks[0].Solid_phase.size()), max_phases); p++)
+		{
+			int _t = 1; if (p>-1) _t = Blocks[0].Solid_phase[p]->n_phases;
+			for (int l = 0; l<_t; l++)
+				for (int i = 0; i<Blocks.size(); i++)  Blocks[i].CG[k][Blocks[i].get_member_no(p, l)] = X[get_member_no(i, p, l, k)];
+		}
+
+}
+void CMedium::set_G(CVector_arma &X)
+{
+	for (int p = 0; p<int(Blocks[0].Solid_phase.size()); p++)
+		for (int l = 0; l<Solid_phase()[p].n_phases; l++)
+			for (int i = 0; i<Blocks.size(); i++)  Blocks[i].G[p][l] = X[get_member_no(i, p, l)];
+
+}
+
+void CMedium::set_G_star(CVector_arma & X)
+{
+	int jj = 0;
+	for (int i = 0; i<Blocks.size(); i++)
+		for (int p = 0; p<Blocks[i].Solid_phase.size(); p++)
+			for (int l = 0; l<Blocks[i].Solid_phase[p]->n_phases; l++)
+				Blocks[i].G_star[p][l] = X[get_member_no(i, p, l)];
+}
+

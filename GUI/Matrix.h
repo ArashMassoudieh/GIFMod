@@ -13,6 +13,9 @@ class QVariant;
 //class QString;
 //class QList;
 #include "QMap"
+#include "Matrix_arma.h"
+#include "Vector_arma.h"
+
 using namespace arma;
 class CVector;
 class CMatrix  
@@ -28,10 +31,11 @@ public:
 	CMatrix(int);
 	CMatrix();
 	CMatrix(const CMatrix&);
+	CMatrix(CMatrix_arma&);
 	CMatrix(const CVector&);
 	CVector& operator[](int);
-	int CMatrix::getnumrows();
-	int CMatrix::getnumcols();
+	int CMatrix::getnumrows() const;
+	int CMatrix::getnumcols() const;
 	virtual ~CMatrix();
 	CMatrix& CMatrix::operator=(const CMatrix&);
 	CMatrix& CMatrix::operator+=(const CMatrix&);

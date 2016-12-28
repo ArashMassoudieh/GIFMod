@@ -217,6 +217,15 @@ QVariant Node::getProp(const QString &propName, const QList<Node*> nodes, const 
 		else
 			return props.getPropMultiValues(propName, nodes, parent->experimentsList()).differentValues();
 	}
+	if (role == differentValuesMultiObjectRole)
+	{
+//		if (mValue.ExperimentDependent == "No" || parent->experimentID())
+//			return false;
+//		else if (propName == "Name" && nodes.count())
+			return true;
+//else
+			return props.getPropMultiValues(propName, nodes, parent->experimentsList()).differentValues();
+	}
 	if (role == allUnitsRole) {
 		QStringList allUnits;
 		allUnits.append(getValue(propName).unit);
@@ -258,7 +267,7 @@ QVariant Node::getProp(const QString &propName, const QList<Node*> nodes, const 
 	if (role == fullFileNameRole) return getValue(propName);
 	if (role == Qt::DisplayRole)
 	{
-		if (getProp(propName, nodes, differentValuesRole).toBool())
+		if (getProp(propName, nodes, differentValuesMultiObjectRole).toBool())
 			return QVariant("Different values.");
 		if (mValue.VariableType == "filename") {
 			qDebug() << OnlyFilenames(getValue(propName));

@@ -1,6 +1,6 @@
 /***************************************************************************
 **                                                                        **
-**  QCustomPlot, an easy to use, modern plotting widget for Qt            **
+**  CustomPlotZoom, an easy to use, modern plotting widget for Qt            **
 **  Copyright (C) 2011-2015 Emanuel Eichhammer                            **
 **                                                                        **
 **  This program is free software: you can redistribute it and/or modify  **
@@ -18,14 +18,14 @@
 **                                                                        **
 ****************************************************************************
 **           Author: Emanuel Eichhammer                                   **
-**  Website/Contact: http://www.qcustomplot.com/                          **
+**  Website/Contact: http://www.CustomPlotZoom.com/                          **
 **             Date: 22.12.15                                             **
 **          Version: 1.3.2                                                **
 ****************************************************************************/
 
 /************************************************************************************************************
 **                                                                                                         **
-**  This is the example code for QCustomPlot.                                                              **
+**  This is the example code for CustomPlotZoom.                                                              **
 **                                                                                                         **
 **  It demonstrates basic and some advanced capabilities of the widget. The interesting code is inside     **
 **  the "setup(...)Demo" functions of MainWindow.                                                          **
@@ -64,7 +64,7 @@ plotWindow::plotWindow(GraphWidget *parent, QString windowTitle, QString graphTi
 
 QCPGraph* plotWindow::addHistogramPlot(QString name, QVector<double> t, QVector<double> y, plotformat format)
 {
-	QCustomPlot *customPlot = ui->customPlot;
+	CustomPlotZoom *customPlot = ui->customPlot;
 	if (!rightClickInitialized)
 	{
 		rightClickInitialized = true;
@@ -156,7 +156,7 @@ QCPGraph* plotWindow::addPercentilePlot(QString name, QMap<QString, double> data
 		}
 
 
-	QCustomPlot *customPlot = ui->customPlot;
+	CustomPlotZoom *customPlot = ui->customPlot;
 	if (!rightClickInitialized)
 	{
 		rightClickInitialized = true;
@@ -234,7 +234,7 @@ QCPGraph* plotWindow::addPercentilePlot(QString name, QMap<QString, double> data
 QCPGraph* plotWindow::addScatterPlot(QString name, QVector<double> t, QVector<double> y, bool reformatX, plotformat format)
 {
 	demoName = name; // "Sinc Scatter Demo";
-	QCustomPlot *customPlot = ui->customPlot;
+	CustomPlotZoom *customPlot = ui->customPlot;
 	customPlot->legend->setVisible(format.legend);
 	customPlot->legend->setFont(QFont("Helvetica", 9));
 	// set locale to english, so we get english decimal separator:
@@ -304,7 +304,7 @@ QCPGraph* plotWindow::addScatterPlot(QString name, QVector<double> t, QVector<do
 		y1err[i] = 0.15;
 	}
 	*/
-	// pass data to graphs and let QCustomPlot determine the axes ranges so the whole thing is visible:
+	// pass data to graphs and let CustomPlotZoom determine the axes ranges so the whole thing is visible:
 	//	customPlot->graph(0)->setData(x0, yConfUpper);
 	//	customPlot->graph(1)->setData(x0, yConfLower);
 	graph->setData(t, y);
@@ -353,7 +353,7 @@ QCPGraph* plotWindow::addScatterPlot(QString name, QVector<double> t, QVector<do
 QCPGraph* plotWindow::addDotPlot(vector<double> &x, vector<double> &y, const QString &name, plotformat format)
 {
 	demoName = name; // "Sinc Scatter Demo";
-	QCustomPlot *customPlot = ui->customPlot;
+	CustomPlotZoom *customPlot = ui->customPlot;
 	customPlot->legend->setVisible(format.legend);
 	customPlot->legend->setFont(QFont("Helvetica", 9));
 	// set locale to english, so we get english decimal separator:
@@ -395,7 +395,7 @@ QCPGraph* plotWindow::addDotPlot(vector<double> &x, vector<double> &y, const QSt
 
 QCPGraph* plotWindow::addScatterPlot(QCPGraph *g, plotformat format)
 {
-	QCustomPlot *customPlot = ui->customPlot;
+	CustomPlotZoom *customPlot = ui->customPlot;
 	QPen pen;
 	QCPGraph* graph = customPlot->addGraph();
 	pen.setStyle(Qt::DashLine);
@@ -459,7 +459,7 @@ QCPGraph* plotWindow::addScatterPlot(QCPGraph *g, plotformat format)
 	y1err[i] = 0.15;
 	}
 	*/
-	// pass data to graphs and let QCustomPlot determine the axes ranges so the whole thing is visible:
+	// pass data to graphs and let CustomPlotZoom determine the axes ranges so the whole thing is visible:
 	//	customPlot->graph(0)->setData(x0, yConfUpper);
 	//	customPlot->graph(1)->setData(x0, yConfLower);
 /*	customPlot->graph(1)->setData(t, y);
@@ -605,7 +605,7 @@ void plotWindow::contextMenuEvent(QContextMenuEvent *event)
 }
 void plotWindow::refreshFormat()
 {
-	QCustomPlot *plot = ui->customPlot;
+	CustomPlotZoom *plot = ui->customPlot;
 	plot->xAxis->setScaleType(format[0].xAxisType);
 	if (format[0].xAxisType == QCPAxis::stLogarithmic)
 		plot->xAxis->setScaleLogBase(10);
@@ -678,13 +678,13 @@ void plotWindow::setupDemo(int demoIndex)
     case 18: setupColorMapDemo(ui->customPlot); break;
     case 19: setupFinancialDemo(ui->customPlot); break;
   }
-  setWindowTitle("QCustomPlot: "+demoName);
+  setWindowTitle("CustomPlotZoom: "+demoName);
   statusBar()->clearMessage();
   currentDemoIndex = demoIndex;
   ui->customPlot->replot();
 }
 
-void plotWindow::setupQuadraticDemo(QCustomPlot *customPlot)
+void plotWindow::setupQuadraticDemo(CustomPlotZoom *customPlot)
 {
   demoName = "Quadratic Demo";
   // generate some data:
@@ -705,7 +705,7 @@ void plotWindow::setupQuadraticDemo(QCustomPlot *customPlot)
   customPlot->yAxis->setRange(0, 1);
 }
 
-void plotWindow::setupSimpleDemo(QCustomPlot *customPlot)
+void plotWindow::setupSimpleDemo(CustomPlotZoom *customPlot)
 {
   demoName = "Simple Demo";
   
@@ -744,7 +744,7 @@ void plotWindow::setupSimpleDemo(QCustomPlot *customPlot)
   customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
 }
 
-void plotWindow::setupSincScatterDemo(QCustomPlot *customPlot)
+void plotWindow::setupSincScatterDemo(CustomPlotZoom *customPlot)
 {
   demoName = "Sinc Scatter Demo";
   customPlot->legend->setVisible(true);
@@ -804,7 +804,7 @@ void plotWindow::setupSincScatterDemo(QCustomPlot *customPlot)
     x1[i] *= 1000;
     y1err[i] = 0.15;
   }
-  // pass data to graphs and let QCustomPlot determine the axes ranges so the whole thing is visible:
+  // pass data to graphs and let CustomPlotZoom determine the axes ranges so the whole thing is visible:
   customPlot->graph(0)->setData(x0, yConfUpper);
   customPlot->graph(1)->setData(x0, yConfLower);
   customPlot->graph(2)->setData(x0, y0);
@@ -821,7 +821,7 @@ void plotWindow::setupSincScatterDemo(QCustomPlot *customPlot)
   customPlot->axisRect()->setupFullAxesBox();
 }
 
-void plotWindow::setupScatterStyleDemo(QCustomPlot *customPlot)
+void plotWindow::setupScatterStyleDemo(CustomPlotZoom *customPlot)
 {
   demoName = "Scatter Style Demo";
   customPlot->legend->setVisible(true);
@@ -885,7 +885,7 @@ void plotWindow::setupScatterStyleDemo(QCustomPlot *customPlot)
   customPlot->axisRect()->setupFullAxesBox();
 }
 
-void plotWindow::setupLineStyleDemo(QCustomPlot *customPlot)
+void plotWindow::setupLineStyleDemo(CustomPlotZoom *customPlot)
 {
   demoName = "Line Style Demo";
   customPlot->legend->setVisible(true);
@@ -924,7 +924,7 @@ void plotWindow::setupLineStyleDemo(QCustomPlot *customPlot)
   customPlot->axisRect()->setupFullAxesBox();
 }
 
-void plotWindow::setupScatterPixmapDemo(QCustomPlot *customPlot)
+void plotWindow::setupScatterPixmapDemo(CustomPlotZoom *customPlot)
 {
   demoName = "Scatter Pixmap Demo";
   customPlot->axisRect()->setBackground(QPixmap("./solarpanels.jpg"));
@@ -971,7 +971,7 @@ void plotWindow::setupScatterPixmapDemo(QCustomPlot *customPlot)
   customPlot->legend->setVisible(true);
 }
 
-void plotWindow::setupDateDemo(QCustomPlot *customPlot)
+void plotWindow::setupDateDemo(CustomPlotZoom *customPlot)
 {
   demoName = "Date Demo";
   // set locale to english, so we get english month names:
@@ -1032,7 +1032,7 @@ void plotWindow::setupDateDemo(QCustomPlot *customPlot)
   customPlot->legend->setVisible(true);
 }
 
-void plotWindow::setupTextureBrushDemo(QCustomPlot *customPlot)
+void plotWindow::setupTextureBrushDemo(CustomPlotZoom *customPlot)
 {
   demoName = "Texture Brush Demo";
   // add two graphs with a textured fill:
@@ -1077,7 +1077,7 @@ void plotWindow::setupTextureBrushDemo(QCustomPlot *customPlot)
   customPlot->axisRect()->setupFullAxesBox();
 }
 
-void plotWindow::setupMultiAxisDemo(QCustomPlot *customPlot)
+void plotWindow::setupMultiAxisDemo(CustomPlotZoom *customPlot)
 {
   customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
   demoName = "Multi Axis Demo";
@@ -1200,7 +1200,7 @@ void plotWindow::setupMultiAxisDemo(QCustomPlot *customPlot)
   customPlot->yAxis2->setSubTickLength(1, 1);
 }
 
-void plotWindow::setupLogarithmicDemo(QCustomPlot *customPlot)
+void plotWindow::setupLogarithmicDemo(CustomPlotZoom *customPlot)
 {
   demoName = "Logarithmic Demo";
   customPlot->setNoAntialiasingOnDrag(true); // more performance/responsiveness during dragging
@@ -1279,7 +1279,7 @@ void plotWindow::setupLogarithmicDemo(QCustomPlot *customPlot)
   customPlot->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignLeft|Qt::AlignTop); // make legend align in top left corner or axis rect
 }
 
-void plotWindow::setupRealtimeDataDemo(QCustomPlot *customPlot)
+void plotWindow::setupRealtimeDataDemo(CustomPlotZoom *customPlot)
 {
 #if QT_VERSION < QT_VERSION_CHECK(4, 7, 0)
   QMessageBox::critical(this, "", "You're using Qt < 4.7, the realtime data demo needs functions that are available with Qt 4.7 to work properly");
@@ -1327,7 +1327,7 @@ void plotWindow::setupRealtimeDataDemo(QCustomPlot *customPlot)
   dataTimer.start(0); // Interval 0 means to refresh as fast as possible
 }
 
-void plotWindow::setupParametricCurveDemo(QCustomPlot *customPlot)
+void plotWindow::setupParametricCurveDemo(CustomPlotZoom *customPlot)
 {
   demoName = "Parametric Curves Demo";
   
@@ -1375,7 +1375,7 @@ void plotWindow::setupParametricCurveDemo(QCustomPlot *customPlot)
   customPlot->rescaleAxes();
 }
 
-void plotWindow::setupBarChartDemo(QCustomPlot *customPlot)
+void plotWindow::setupBarChartDemo(CustomPlotZoom *customPlot)
 {
   demoName = "Bar Chart Demo";
   // create empty bar chart objects:
@@ -1453,7 +1453,7 @@ void plotWindow::setupBarChartDemo(QCustomPlot *customPlot)
   customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
 }
 
-void plotWindow::setupStatisticalDemo(QCustomPlot *customPlot)
+void plotWindow::setupStatisticalDemo(CustomPlotZoom *customPlot)
 {
   demoName = "Statistical Demo";
   // create empty statistical box plottables:
@@ -1509,7 +1509,7 @@ void plotWindow::setupStatisticalDemo(QCustomPlot *customPlot)
   customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
 }
 
-void plotWindow::setupSimpleItemDemo(QCustomPlot *customPlot)
+void plotWindow::setupSimpleItemDemo(CustomPlotZoom *customPlot)
 {
   demoName = "Simple Item Demo";
   customPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
@@ -1532,7 +1532,7 @@ void plotWindow::setupSimpleItemDemo(QCustomPlot *customPlot)
   arrow->setHead(QCPLineEnding::esSpikeArrow);
 }
 
-void plotWindow::setupItemDemo(QCustomPlot *customPlot)
+void plotWindow::setupItemDemo(CustomPlotZoom *customPlot)
 {
 #if QT_VERSION < QT_VERSION_CHECK(4, 7, 0)
   QMessageBox::critical(this, "", "You're using Qt < 4.7, the animation of the item demo needs functions that are available with Qt 4.7 to work properly");
@@ -1665,7 +1665,7 @@ void plotWindow::setupItemDemo(QCustomPlot *customPlot)
   dataTimer.start(0); // Interval 0 means to refresh as fast as possible
 }
 
-void plotWindow::setupStyledDemo(QCustomPlot *customPlot)
+void plotWindow::setupStyledDemo(CustomPlotZoom *customPlot)
 {
   demoName = "Styled Demo";
   
@@ -1723,8 +1723,8 @@ void plotWindow::setupStyledDemo(QCustomPlot *customPlot)
   bars2->moveAbove(bars1);
   
   // move bars above graphs and grid below bars:
-  customPlot->addLayer("abovemain", customPlot->layer("main"), QCustomPlot::limAbove);
-  customPlot->addLayer("belowmain", customPlot->layer("main"), QCustomPlot::limBelow);
+  customPlot->addLayer("abovemain", customPlot->layer("main"), CustomPlotZoom::limAbove);
+  customPlot->addLayer("belowmain", customPlot->layer("main"), CustomPlotZoom::limBelow);
   graph1->setLayer("abovemain");
   customPlot->xAxis->grid()->setLayer("belowmain");
   customPlot->yAxis->grid()->setLayer("belowmain");
@@ -1765,7 +1765,7 @@ void plotWindow::setupStyledDemo(QCustomPlot *customPlot)
   customPlot->yAxis->setRange(0, 2);
 }
 
-void plotWindow::setupAdvancedAxesDemo(QCustomPlot *customPlot)
+void plotWindow::setupAdvancedAxesDemo(CustomPlotZoom *customPlot)
 {
   demoName = "Advanced Axes Demo";
   
@@ -1869,7 +1869,7 @@ void plotWindow::setupAdvancedAxesDemo(QCustomPlot *customPlot)
   wideAxisRect->axis(QCPAxis::atLeft, 1)->setRangeLower(0);
 }
 
-void plotWindow::setupColorMapDemo(QCustomPlot *customPlot)
+void plotWindow::setupColorMapDemo(CustomPlotZoom *customPlot)
 {
   demoName = "Color Map Demo";
   
@@ -1923,7 +1923,7 @@ void plotWindow::setupColorMapDemo(QCustomPlot *customPlot)
   customPlot->rescaleAxes();
 }
 
-void plotWindow::setupFinancialDemo(QCustomPlot *customPlot)
+void plotWindow::setupFinancialDemo(CustomPlotZoom *customPlot)
 {
   demoName = "Financial Charts Demo";
   customPlot->legend->setVisible(true);
@@ -2114,7 +2114,7 @@ void plotWindow::bracketDataSlot()
   }
 }
 
-void plotWindow::setupPlayground(QCustomPlot *customPlot)
+void plotWindow::setupPlayground(CustomPlotZoom *customPlot)
 {
   Q_UNUSED(customPlot)
 }
@@ -2154,7 +2154,7 @@ void plotWindow::allScreenShots()
       dataTimer.stop();
     dataTimer.disconnect();
     delete ui->customPlot;
-    ui->customPlot = new QCustomPlot(ui->centralWidget);
+    ui->customPlot = new CustomPlotZoom(ui->centralWidget);
     ui->verticalLayout->addWidget(ui->customPlot);
     setupDemo(currentDemoIndex+1);
     // setup delay for demos that need time to develop proper look:

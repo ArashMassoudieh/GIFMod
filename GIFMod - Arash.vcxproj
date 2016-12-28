@@ -164,7 +164,7 @@ copy *.txt $(OutDir)
       <OutputFile>$(OutDir)\$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>.\lapack-blas_lib_win64;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>lapack_win64_MT.lib;blas_win64_MT.lib;$(QTDIR)\lib\qtmain.lib;shell32.lib;C:\qt\5.5/msvc2013_64/lib\Qt5Core.lib;$(QTDIR)\lib\Qt5Widgets.lib;$(QTDIR)\lib\Qt5Gui.lib;$(QTDIR)\lib\Qt5Core.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;Qt5PrintSupport.lib</AdditionalDependencies>
+      <AdditionalDependencies>lapack_win64_MT.lib;blas_win64_MT.lib;$(QTDIR)\lib\qtmain.lib;shell32.lib;$(QTDIR)\lib\Qt5Widgets.lib;$(QTDIR)\lib\Qt5Gui.lib;$(QTDIR)\lib\Qt5Core.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;Qt5PrintSupport.lib</AdditionalDependencies>
       <Version>1.00</Version>
     </Link>
     <PostBuildEvent>
@@ -181,6 +181,10 @@ copy *.txt $(OutDir)
     <Image Include="Icons\log_icon.png" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_CustomPlotZoom.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_helpWindow.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -191,6 +195,10 @@ copy *.txt $(OutDir)
     </ClCompile>
     <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ConstituentDelegate.cpp" />
     <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ConstituentWindow.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_CustomPlotZoom.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_delegate.cpp" />
     <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ExchangeParametersWindow.cpp" />
     <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_expEditor.cpp" />
@@ -234,6 +242,7 @@ copy *.txt $(OutDir)
     <ClCompile Include="GUI\Copula.cpp" />
     <ClCompile Include="GUI\Copula_GWA.cpp" />
     <ClCompile Include="GUI\Crxtterm.cpp" />
+    <ClCompile Include="GUI\CustomPlotZoom.cpp" />
     <ClCompile Include="GUI\delegate.cpp" />
     <ClCompile Include="GUI\Distribution.cpp" />
     <ClCompile Include="GUI\DistributionNUnif.cpp" />
@@ -260,6 +269,7 @@ copy *.txt $(OutDir)
     <ClCompile Include="GUI\main.cpp" />
     <ClCompile Include="GUI\mainwindow.cpp" />
     <ClCompile Include="GUI\Matrix.cpp" />
+    <ClCompile Include="GUI\Matrix_arma.cpp" />
     <ClCompile Include="GUI\MBBlock.cpp" />
     <ClCompile Include="GUI\MCMC.cpp" />
     <ClCompile Include="GUI\Medium.cpp" />
@@ -309,6 +319,7 @@ copy *.txt $(OutDir)
     <ClCompile Include="GUI\tth_source.c" />
     <ClCompile Include="GUI\utility_funcs.cpp" />
     <ClCompile Include="GUI\Vector.cpp" />
+    <ClCompile Include="GUI\Vector_arma.cpp" />
     <ClCompile Include="GUI\Well.cpp" />
     <ClCompile Include="GUI\wizardDialog.cpp" />
     <ClCompile Include="GUI\Sensor.cpp" />
@@ -338,6 +349,24 @@ copy *.txt $(OutDir)
     <ClInclude Include="GUI\Controller.h" />
     <ClInclude Include="GUI\Copula.h" />
     <ClInclude Include="GUI\Crxtterm.h" />
+    <CustomBuild Include="GUI\CustomPlotZoom.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing CustomPlotZoom.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\GIFMOD\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\GIFMOD\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB "-D\"$(INHERIT)\"" -DARMA_USE_LAPACK -DARMA_USE_BLAS -DQT_PRINTSUPPORT_LIB "-I.\armadillo-header" "-I.\Utility" "-I$(QTDIR)\include" "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I.\GeneratedFiles\GIFMOD\$(ConfigurationName)\." "-I.\GeneratedFiles\GIFMOD"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing CustomPlotZoom.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\GIFMOD\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\GIFMOD\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DARMA_USE_LAPACK -DARMA_USE_BLAS "-D\"$(INHERIT)\"" -DQT_PRINTSUPPORT_LIB -DGIFMOD "-I.\armadillo-header" "-I.\Model" "-I.\Utility" "-I$(QTDIR)\include" "-I.\GeneratedFiles\GIFMOD\$(ConfigurationName)\." "-I.\GeneratedFiles\GWA\$(ConfigurationName)\." "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I.\GeneratedFiles\GIFMOD"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing CustomPlotZoom.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\GIFMOD\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\GIFMOD\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB "-D\"$(INHERIT)\"" -DARMA_USE_LAPACK -DARMA_USE_BLAS -DQT_PRINTSUPPORT_LIB "-I.\armadillo-header" "-I.\GIFMODModel" "-I.\Utility" "-I$(QTDIR)\include" "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I.\GeneratedFiles\GIFMOD\$(ConfigurationName)\." "-I.\GeneratedFiles\GIFMOD"</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing CustomPlotZoom.h...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\GIFMOD\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\GIFMOD\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DARMA_USE_LAPACK -DARMA_USE_BLAS "-D\"$(INHERIT)\"" -DQT_PRINTSUPPORT_LIB -DGIFMOD "-I.\armadillo-header" "-I.\Model" "-I.\Utility" "-I$(QTDIR)\include" "-I.\GeneratedFiles\GIFMOD\$(ConfigurationName)\." "-I.\GeneratedFiles\GWA\$(ConfigurationName)\." "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I.\GeneratedFiles\GIFMOD"</Command>
+    </CustomBuild>
     <ClInclude Include="GUI\Distribution.h" />
     <ClInclude Include="GUI\DistributionNUnif.h" />
     <ClInclude Include="GUI\edge.h" />
@@ -346,6 +375,7 @@ copy *.txt $(OutDir)
     <ClInclude Include="GUI\EnvExchange.h" />
     <ClInclude Include="GUI\Evaporation.h" />
     <ClInclude Include="GUI\ExchangeParametersTableModel.h" />
+    <ClInclude Include="GUI\Matrix_arma.h" />
     <ClInclude Include="GUI\ObjectiveFunction.h" />
     <CustomBuild Include="GUI\expEditor.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
@@ -445,6 +475,7 @@ copy *.txt $(OutDir)
     <ClInclude Include="GUI\UnitTextBox2.h" />
     <ClInclude Include="GUI\variant.h" />
     <ClInclude Include="GUI\Vector.h" />
+    <ClInclude Include="GUI\Vector_arma.h" />
     <ClInclude Include="GUI\Well.h" />
     <CustomBuild Include="GUI\wizardDialog.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

@@ -17,6 +17,9 @@
 #include "Sensor.h"
 #include "utility_funcs.h"
 #include "ObjectiveFunction.h"
+#include "Vector_arma.h"
+#include "Matrix_arma.h"
+
 
 //Sassan 
 #include "qstring.h"
@@ -51,6 +54,7 @@ enum formulas
 class CMedium
 {
 public:
+	bool use_arma = true;
 	string name;
 	CMediumSet *parent;
 	CMedium(void);
@@ -85,7 +89,9 @@ public:
 	void CMedium::set_z0(double down);
 	void CMedium::set_z0(int id, int n, double z0, double dz);
 	void CMedium::setS_star(const CVector &X);
+	void CMedium::setS_star(CVector_arma &X);
 	void CMedium::set_G_star(const CVector &X);
+	
 	void CMedium::setH_star();
 	void CMedium::setH();
 	void CMedium::setQ_star();
@@ -103,6 +109,7 @@ public:
 	CVector CMedium::getres_S(const CVector &X, double dt);
 	CVector CMedium::getres_C(const CVector &X, double dt);
 	CVector CMedium::getres_Q(const CVector &X, double dtt);
+
 	CMatrix CMedium::Jacobian_S(const CVector &X, double dt, bool);
 	CVector CMedium::Jacobian_S(const CVector &V, int &i, double &dt);
 	CVector CMedium::Jacobian_S(const CVector &V, CVector &F0, int i, double dt);
@@ -112,6 +119,31 @@ public:
 	CMatrix CMedium::Jacobian_Q(const CVector &X, double dt, bool base=true);  
 	CVector CMedium::Jacobian_Q(const CVector &V, int i, double dt);  
 	CVector CMedium::Jacobian_Q(const CVector &V, const CVector &F0, int i, double dt);
+
+	//use arma
+	CVector_arma CMedium::getres_S(CVector_arma &X, double dt);
+	CVector_arma CMedium::getres_C(CVector_arma &X, double dt);
+	CVector_arma CMedium::getres_Q(CVector_arma &X, double dtt);
+	CMatrix_arma CMedium::Jacobian_S(CVector_arma &X, double dt, bool);
+	CVector_arma CMedium::Jacobian_S(CVector_arma &V, int &i, double &dt);
+	CVector_arma CMedium::Jacobian_S(CVector_arma &V, CVector_arma &F0, int i, double dt);
+	CMatrix_arma CMedium::Jacobian_C(CVector_arma &X, double dt, bool base = true);
+	CVector_arma CMedium::Jacobian_C(CVector_arma &V, const int i, double dt);
+	CVector_arma CMedium::Jacobian_C(CVector_arma &V, const CVector_arma &F0, int i, double dt);
+	CMatrix_arma CMedium::Jacobian_Q(CVector_arma &X, double dt, bool base = true);
+	CVector_arma CMedium::Jacobian_Q(CVector_arma &V, int i, double dt);
+	CVector_arma CMedium::Jacobian_Q(CVector_arma &V, const CVector_arma &F0, int i, double dt);
+
+	void CMedium::set_CG_star(CVector_arma &X);
+	void CMedium::set_CG(CVector_arma &X);
+	void CMedium::set_G(CVector_arma &X);
+	void CMedium::set_G_star(CVector_arma &X);
+	
+	void CMedium::onestepsolve_flow_ar(double dt);
+	void CMedium::onestepsolve_colloid_ar(double dt);
+	void CMedium::onestepsolve_const_ar(double dtt);
+	//use arma
+
 	CVector CMedium::getH(const CVector &X);
 	CVector CMedium::getQ(const CVector &X);
 	void CMedium::onestepsolve_flow(double dt);
@@ -182,6 +214,14 @@ public:
 	CMatrix InvJ2; //Inverse Jacobian Matrix
 	CMatrix InvJ_C;
 	CMatrix InvJ_Q;
+
+	//arma
+	CMatrix_arma InvJ1_arma; //Inverse Jacobian Matrix
+	CMatrix_arma InvJ2_arma; //Inverse Jacobian Matrix
+	CMatrix_arma InvJ_C_arma;
+	CMatrix_arma InvJ_Q_arma;
+	//arma
+
 	bool J_update,J_update_C, J_update_Q;
 	int& max_J_interval();
 	double cr;
@@ -231,12 +271,15 @@ public:
 	int epoch_count;
 	double& avg_dt_limit();
 	CMatrix M;
+	CMatrix_arma M_arma;
 	string fail_reason;
 	
 	void CMedium::write_state(string filename);
 	void CMedium::read_state(string filename);
 	int& restore_interval();
 	double dtt;
+	double base_dtt;
+	int where_base_dtt_changed = 0;
 	double avg_redo_dtt=0;
 	int redo_count = 0;
 	int CMedium::get_member_no(int solid_id, int phase_no);
@@ -255,6 +298,8 @@ public:
 	void CMedium::set_default();
 	CMatrix M_Q;
 	CMatrix M_C;
+	CMatrix_arma M_Q_arma;
+	CMatrix_arma M_C_arma;
 	string& log_file_name();
 
 	void CMedium::f_get_environmental_params();
@@ -292,6 +337,9 @@ public:
 	CMatrix Preconditioner_Q;
 	CMatrix Preconditioner_C;
 	CMatrix Preconditioner_S;
+	CMatrix_arma Preconditioner_Q_arma;
+	CMatrix_arma Preconditioner_C_arma;
+	CMatrix_arma Preconditioner_S_arma;
 	bool& pos_def_limit();
 	bool& CMedium::check_oscillation();
 	bool& negative_concentration_allowed();

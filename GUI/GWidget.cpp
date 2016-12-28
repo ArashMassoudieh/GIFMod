@@ -449,6 +449,7 @@ void GraphWidget::update(bool fast)
 }
 void GraphWidget::mousePressEvent(QMouseEvent *event)
 {
+	tableProp->setModel(0);
 	Node *node = qgraphicsitem_cast<Node*> (itemAt(event->pos())); //Get the item at the position
 	if (node)
 		qDebug() << "Name: "<< node->Name()<<" Flag:" << node->flags() << "enabled:" << node->isEnabled() << "active:" << node->isActive();
@@ -1491,6 +1492,7 @@ void GraphWidget::clear()
 {
 //expandNode(treeModel->index(-1, -1), false);
 	clearRXN(); 
+	expandNode(treeModel->index(-1, -1), false);
 	for each (Node *n in Nodes())
 		treeModel->deleteNode(n);
 	for each (Edge *e in Edges())
@@ -1530,7 +1532,8 @@ void GraphWidget::experimentsComboClear(bool addExperiment1)
 void GraphWidget::clearRXN()
 {
 	expandNode(treeModel->index(-1, -1), false);
-	for each (Entity *e in Entities)
+	QList<Entity*> entitiesCopy = Entities;
+	for each (Entity *e in entitiesCopy)
 		if (e->objectType.ObjectType == "Reaction parameter" || e->objectType.ObjectType == "Reaction Network" || e->objectType.ObjectType == "Constituent")
 		{
 			delete e;
@@ -3418,7 +3421,7 @@ void GraphWidget::delegateDatePicked(QCalendarWidget *calendar, QModelIndex inde
 	}
 
 	//setModelData(currentEditor, currentModel, currentIndex);
-	int date = currentCalendar->selectedDate().toJulianDay() - QDate(1900, 1, 1).toJulianDay();
+	int date = julian2xldate(currentCalendar->selectedDate().toJulianDay());
 	currentModel->setData(currentIndex, date, Qt::EditRole);
 
 }

@@ -184,6 +184,8 @@ double CBTC::interpol(double x)
 		}
 		else
 		{
+			if (x < t[0]) return C[0];
+			if (x > t[n - 1]) return C[n - 1];
 			double dt = t[1]-t[0];
 			int i = int((x-t[0])/dt);
 			if (i>=n-1) r=C[n-1];

@@ -167,13 +167,15 @@ void runtimeWindow::setLabel(QString label)
 					static double maxT = 0;
 					static int lastProgress = -1;
 					static int interval = 0;
+					static long int counter = 0;
+					counter++;
 					if (vars.value("progress") != "" && vars.value("progress").toInt() != lastProgress)
 					{
 						lastProgress = vars.value("progress").toInt();
 						realtimeDataSlot(t, vars["dtt"].toDouble(), false, "", t < maxT);
 						interval = 0;
 					}
-					int updateInterval = (ui->refreshPlot->isChecked()) ? 1 : 100;
+					int updateInterval = (ui->refreshPlot->isChecked()) ? 1 : max(1, counter/100);
 					if (interval++ % updateInterval == 0)
 						realtimeDataSlot(t, vars["dtt"].toDouble(), false, "", t < maxT);
 					maxT = (t > maxT) ? t : maxT;

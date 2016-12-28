@@ -22,7 +22,7 @@ CConnection::CConnection(void)
 	flow_params[z2] = -1000000;
 	flow_params[flow_exponent] = 0.6667;
 	dispersivity = 0;
-	dispersion_expression = string("f[14]*f[7]/(f[2]+0.00000000001)");
+	dispersion_expression = string("f[14]*f[7]/(f[2]+0.00000001)");
 	dispersion_strng = "f[14]*f[7]/f[2]";
 	settling = -1;
 	const_area = true;

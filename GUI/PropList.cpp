@@ -15,6 +15,12 @@ XString PropList<Node>::getProp(const QString &propName, const QString &experime
 		return parentSub->g(experimentName);
 	if (propName.contains("Constituent initial"))
 		return parentSub->cg(experimentName);
+	if (propName == "Name")
+		return XString(parentSub->Name());
+	if (propName == "Type")
+		return XString(parentSub->objectType.ObjectType);
+	if (propName == "SubType")
+		return XString(parentSub->objectType.SubType);
 
 	if (list.keys().contains(experimentName))
 		return list.value(experimentName).getProp(propName, parentSub);

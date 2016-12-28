@@ -68,7 +68,6 @@
     <ClCompile Include="GUI\Matrix.cpp" />
     <ClCompile Include="GUI\MBBlock.cpp" />
     <ClCompile Include="GUI\MCMC.cpp" />
-    <ClCompile Include="GUI\Medium.cpp" />
     <ClCompile Include="GUI\MediumSet.cpp" />
     <ClCompile Include="GUI\mProp.cpp" />
     <ClCompile Include="GUI\mProplist.cpp" />
@@ -114,10 +113,24 @@
     <ClCompile Include="GUI\wizardDialog.cpp" />
     <ClCompile Include="GUI\Sensor.cpp" />
     <ClCompile Include="GUI\Controller.cpp" />
-    <ClCompile Include="GUI\colorScheme.cpp">
+    <ClCompile Include="GUI\colorScheme.cpp" />
+    <ClCompile Include="GUI\ObjectiveFunction.cpp" />
+    <ClCompile Include="GUI\Matrix_arma.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GUI\ObjectiveFunction.cpp">
+    <ClCompile Include="GUI\Vector_arma.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\CustomPlotZoom.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_CustomPlotZoom.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_CustomPlotZoom.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\Medium.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -204,6 +217,12 @@
     <ClInclude Include="GUI\ObjectiveFunction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GUI\Matrix_arma.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\Vector_arma.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="GUI\expEditor.h" />
@@ -243,6 +262,9 @@
     <CustomBuild Include="GUI\reactionwindow.ui" />
     <CustomBuild Include="GUI\runtimeWindow.ui" />
     <CustomBuild Include="GUI\wizardDialog.ui" />
+    <CustomBuild Include="GUI\CustomPlotZoom.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Icons\log_icon.png" />
@@ -260,6 +282,21 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;cxx;c;def</Extensions>
       <ParseFiles>true</ParseFiles>
+    </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
+      <Extensions>moc;h;cpp</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
+    <Filter Include="Generated Files\Debug">
+      <UniqueIdentifier>{5ea66eca-7a3e-4ed8-a644-a48f605af2a4}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Generated Files\Release">
+      <UniqueIdentifier>{3dafb59c-4f7b-434c-822c-a0422b48042f}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
     </Filter>
   </ItemGroup>
 </Project>

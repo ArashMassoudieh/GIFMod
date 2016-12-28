@@ -27,7 +27,7 @@
 #include "entity.h"
 #include "qmessagebox.h"
 #include "Precipitation.h"
-
+#include <utility_funcs.h>
 #endif
 
 
@@ -147,9 +147,9 @@ void Delegate::setEditorData(QWidget *editor,
 	QString delegateType = index.data(TypeRole).toString();
 	if (delegateType.toLower().contains("date"))
 	{
-		qint64 currentDate = index.model()->data(index, Qt::EditRole).toDouble();
-		currentDate += QDate(1900, 1, 1).toJulianDay();
-		QDate date = QDate::fromJulianDay(currentDate);
+		qint64 selectedDate = index.model()->data(index, Qt::EditRole).toDouble();
+		qint64 julianDate = xldate2julian(selectedDate);// currentDate += 2415020;// QDate(1900, 1, 1).toJulianDay();
+		QDate date = QDate::fromJulianDay(julianDate);
 
 		QCalendarWidget *calendar = static_cast<QCalendarWidget*>(editor);
 		calendar->setSelectedDate(date);
@@ -451,6 +451,7 @@ void Delegate::dirBrowserClicked()
 
 	parent->propModel()->setData(QModelIndex(), Dir, loadIndex);
 }
+
 void Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
 	const QModelIndex &index) const
 {
@@ -475,7 +476,6 @@ void Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
 	else
 		QStyledItemDelegate::paint(painter, option, index);
 }
-
 
 void Delegate::openParticleInitialCondition()
 {
@@ -534,6 +534,7 @@ void Delegate::openParticleInitialCondition()
 
 #endif
 }
+
 void Delegate::openConstituentInitialCondition()
 {
 #ifdef GIFMOD
@@ -603,6 +604,7 @@ void Delegate::openAqueousExchangeParameters()
 
 #endif
 }
+
 void Delegate::browserCheck(QString _fileName)
 {
 	if (!_fileName.contains("Browse ...")) return;
@@ -625,4 +627,3 @@ void Delegate::browserCheck(QString _fileName)
 	delete fileDialog;
 	return;
 }
-

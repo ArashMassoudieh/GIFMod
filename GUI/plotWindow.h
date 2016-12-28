@@ -2,7 +2,7 @@
 
 #include <QMainWindow>
 #include <QTimer>
-#include "qcustomplot.h"
+#include "customplotzoom.h"
 #include "qvector.h"
 #include "BTCSet.h"
 #include "qstring.h"
@@ -12,7 +12,8 @@
 class GraphWidget;
 namespace Ui {
 class plotWindow;
-}
+};
+
 struct plotformat{
 	Qt::GlobalColor color = Qt::red;
 	QBrush brush = QBrush(QColor(240, 255, 200));
@@ -161,28 +162,28 @@ public:
   }
 
   void setupDemo(int demoIndex);
-  void setupQuadraticDemo(QCustomPlot *customPlot);
-  void setupSimpleDemo(QCustomPlot *customPlot);
-  void setupSincScatterDemo(QCustomPlot *customPlot);
-  void setupScatterStyleDemo(QCustomPlot *customPlot);
-  void setupLineStyleDemo(QCustomPlot *customPlot);
-  void setupScatterPixmapDemo(QCustomPlot *customPlot);
-  void setupDateDemo(QCustomPlot *customPlot);
-  void setupTextureBrushDemo(QCustomPlot *customPlot);
-  void setupMultiAxisDemo(QCustomPlot *customPlot);
-  void setupLogarithmicDemo(QCustomPlot *customPlot);
-  void setupRealtimeDataDemo(QCustomPlot *customPlot);
-  void setupParametricCurveDemo(QCustomPlot *customPlot);
-  void setupBarChartDemo(QCustomPlot *customPlot);
-  void setupStatisticalDemo(QCustomPlot *customPlot);
-  void setupSimpleItemDemo(QCustomPlot *customPlot);
-  void setupItemDemo(QCustomPlot *customPlot);
-  void setupStyledDemo(QCustomPlot *customPlot);
-  void setupAdvancedAxesDemo(QCustomPlot *customPlot);
-  void setupColorMapDemo(QCustomPlot *customPlot);
-  void setupFinancialDemo(QCustomPlot *customPlot);
+  void setupQuadraticDemo(CustomPlotZoom *customPlot);
+  void setupSimpleDemo(CustomPlotZoom *customPlot);
+  void setupSincScatterDemo(CustomPlotZoom *customPlot);
+  void setupScatterStyleDemo(CustomPlotZoom *customPlot);
+  void setupLineStyleDemo(CustomPlotZoom *customPlot);
+  void setupScatterPixmapDemo(CustomPlotZoom *customPlot);
+  void setupDateDemo(CustomPlotZoom *customPlot);
+  void setupTextureBrushDemo(CustomPlotZoom *customPlot);
+  void setupMultiAxisDemo(CustomPlotZoom *customPlot);
+  void setupLogarithmicDemo(CustomPlotZoom *customPlot);
+  void setupRealtimeDataDemo(CustomPlotZoom *customPlot);
+  void setupParametricCurveDemo(CustomPlotZoom *customPlot);
+  void setupBarChartDemo(CustomPlotZoom *customPlot);
+  void setupStatisticalDemo(CustomPlotZoom *customPlot);
+  void setupSimpleItemDemo(CustomPlotZoom *customPlot);
+  void setupItemDemo(CustomPlotZoom *customPlot);
+  void setupStyledDemo(CustomPlotZoom *customPlot);
+  void setupAdvancedAxesDemo(CustomPlotZoom *customPlot);
+  void setupColorMapDemo(CustomPlotZoom *customPlot);
+  void setupFinancialDemo(CustomPlotZoom *customPlot);
   
-  void setupPlayground(QCustomPlot *customPlot);
+  void setupPlayground(CustomPlotZoom *customPlot);
   GraphWidget* parent;
   vector<plotformat> format, previousFormat;
   void refreshFormat();

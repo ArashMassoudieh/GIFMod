@@ -132,7 +132,7 @@ void CMediumSet::set_formulas()
 	formulas.formulasH.resize(10);
 
 
-	formulas.formulasH[Soil] = "_frs[(f[5]-(((1/f[53])*(((_max(_min(f[9]:1):0.00001)^(f[54]/(1-f[54])))-1)^(1/f[54])))*((1-f[9])/(0.01+1-f[9])))+(_pos(f[10]-f[51])/f[57]))]";
+	formulas.formulasH[Soil] = "_frs[(f[5]-(((1/f[53])*(((_max(_min(f[9]:1):0.00001)^(f[54]/(1-f[54])))-1)^(1/f[54])))*((1-f[9])/(0.01+1-f[9])))+(_pos(f[9]-1)*f[51]/f[57]))]";
 	formulas.formulasH[Darcy] = "f[6]+f[5]+((f[10]-f[51])/f[57])";
 	formulas.formulasH[Storage] = "f[5]+(_pos(f[4])/(f[2]*f[51]))+(_mon((f[9]-1):0.001)*(f[9]-1)*f[51]/f[57])-(f[65]/(f[9]^f[66]))";
 	formulas.formulasH[NativeSoil] = "f[5]+(f[4]/(f[2]*f[51]))";

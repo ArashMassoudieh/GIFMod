@@ -21,6 +21,7 @@ enum Role {
 	DescriptionCodeRole =				2712,
 	experimentDependentRole =			2713,
 	differentValuesRole =				2714,
+	differentValuesMultiObjectRole =	2716,
 	UnitRole =							2802,
 	defaultUnitRole =					2803,
 	UnitsListRole =						2804,

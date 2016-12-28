@@ -18,7 +18,7 @@
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
-#include "qcustomplot.h"
+#include "customplotzoom.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -27,7 +27,7 @@ class Ui_plotWindow
 public:
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout;
-    QCustomPlot *customPlot;
+    CustomPlotZoom *customPlot;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *plotWindow)
@@ -41,7 +41,7 @@ public:
         verticalLayout->setSpacing(6);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
         verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
-        customPlot = new QCustomPlot(centralWidget);
+        customPlot = new CustomPlotZoom(centralWidget);
         customPlot->setObjectName(QStringLiteral("customPlot"));
 
         verticalLayout->addWidget(customPlot);
