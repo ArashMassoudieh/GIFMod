@@ -353,7 +353,7 @@ bool CMCMC::step(int k)
 		Params[k] = X;
 		logp[k] = logp_0;
 		logp1[k] = logp_1;
-		accepted_count = 0.99*accepted_count+1;
+		accepted_count += 1;
 	}
 	else
 	{
@@ -361,10 +361,10 @@ bool CMCMC::step(int k)
 		Params[k] = Params[k-n_chains];
 		logp[k] = logp[k-n_chains];
 		logp1[k] = logp_1;
-		accepted_count = 0.99*accepted_count;
+		accepted_count = accepted_count;
 
 	}
-	total_count = 0.99*total_count + 1;
+	total_count += 1;
 	return res;
 }
 
@@ -449,8 +449,18 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
 				QCoreApplication::processEvents();
 				cout << jj << "," << pertcoeff[0] << "," << stuckcounter.max() << "," << stuckcounter.min() << endl;
 				qDebug() << jj << "," << pertcoeff[0] << "," << stuckcounter.max() << "," << stuckcounter.min();
-				double error = double(accepted_count) / double(total_count) - acceptance_rate;
-				for (int i = 0; i < nActParams; i++) pertcoeff[i] /= pow(purtscale, error);
+				if (jj % 500 == 0)
+				{
+					if (double(accepted_count) / double(total_count)>acceptance_rate) 
+						for (int i = 0; i < nActParams; i++) pertcoeff[i] /= purtscale;
+					else
+						for (int i = 0; i < nActParams; i++) pertcoeff[i] *= purtscale;
+					accepted_count = 0;
+					total_count = 0;
+
+				}
+				//double error = double(accepted_count) / double(total_count) - acceptance_rate;
+				//for (int i = 0; i < nActParams; i++) pertcoeff[i] /= pow(purtscale, error);
 
 				QCoreApplication::processEvents();
 

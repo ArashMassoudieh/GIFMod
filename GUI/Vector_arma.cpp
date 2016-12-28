@@ -205,7 +205,7 @@ double norm(CVector_arma v)
 	double sum = 0;
 	for (int i=0; i<v.num; i++)
 		sum += pow(v.vect(i),2);
-	return sqrt(sum);
+	return sqrt(sum/v.num);
 }
 
 CVector_arma operator*(double a, CVector_arma v)
@@ -337,7 +337,7 @@ double CVector_arma::norm2()
 	double a = 0;
 	for (int i=0;i<num; i++)
 	{
-		a+=vect(i)*vect(i);
+		a+=vect(i)*vect(i)/double(num);
 	}
 	return pow(a,0.5);
 

@@ -2084,7 +2084,7 @@ void CMedium::solve_fts_m2(double dt)
 				return;
 			}
 
-			if ((((iii > 100) && ((t - Timemin) / double(iii) / dt0 < avg_dt_limit())) || (epoch_count > epoch_limit())) && dt <= dt_last)
+			if (((((iii > 100) && ((t - Timemin) / double(iii) / dt0 < avg_dt_limit())) || (epoch_count > epoch_limit())) && dt <= dt_last) || (dtt<1e-20))
 			{
 				if (write_details())
 				{
