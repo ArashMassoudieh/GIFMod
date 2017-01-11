@@ -347,13 +347,13 @@ bool CMCMC::step(int k)
 	double logp_1 = logp_0;
 	bool res;
 	
-	if (ND.unitrandom()<exp(logp_0-logp[k-n_chains]))
+	if (ND.unitrandom() <exp(logp_0-logp[k-n_chains]))
 	{
 		res=true;
 		Params[k] = X;
 		logp[k] = logp_0;
 		logp1[k] = logp_1;
-		accepted_count = 0.99*accepted_count+1;
+		accepted_count += 1;
 	}
 	else
 	{
@@ -361,10 +361,10 @@ bool CMCMC::step(int k)
 		Params[k] = Params[k-n_chains];
 		logp[k] = logp[k-n_chains];
 		logp1[k] = logp_1;
-		accepted_count = 0.99*accepted_count;
+		accepted_count = accepted_count;
 
 	}
-	total_count = 0.99*total_count + 1;
+	total_count += 1;
 	return res;
 }
 
@@ -416,7 +416,7 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
 		omp_set_num_threads(numberOfThreads);
 #pragma omp parallel
 		{
-			srand(int(time(NULL)) ^ omp_get_thread_num());
+			srand(int(time(NULL)) ^ omp_get_thread_num()+kk);
 #pragma omp for
 
 			for (int jj = kk; jj < min(kk + n_chains, nsamples); jj++)
@@ -441,6 +441,7 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
 						fprintf(file, "%le, ", Params[jj][i]);
 					fprintf(file, "%le, %le, %f,", logp[jj], logp1[jj], stuckcounter[jj - kk]);
 					for (int j = 0; j < pertcoeff.size(); j++) fprintf(file, "%le,", pertcoeff[j]);
+					//fprintf(file, "%le", u[jj]);
 					// plot pertcoeff of each param vs jj
 					// plot acceptance_count/jj
 					fprintf(file, "\n");
@@ -449,8 +450,19 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
 				QCoreApplication::processEvents();
 				cout << jj << "," << pertcoeff[0] << "," << stuckcounter.max() << "," << stuckcounter.min() << endl;
 				qDebug() << jj << "," << pertcoeff[0] << "," << stuckcounter.max() << "," << stuckcounter.min();
-				double error = double(accepted_count) / double(total_count) - acceptance_rate;
-				for (int i = 0; i < nActParams; i++) pertcoeff[i] /= pow(purtscale, error);
+				//if (jj<n_burnout)
+				if (jj % 500 == 0)
+				{
+					if (double(accepted_count) / double(total_count)>acceptance_rate) 
+						for (int i = 0; i < nActParams; i++) pertcoeff[i] /= purtscale;
+					else
+						for (int i = 0; i < nActParams; i++) pertcoeff[i] *= purtscale;
+					accepted_count = 0;
+					total_count = 0;
+
+				}
+				//double error = double(accepted_count) / double(total_count) - acceptance_rate;
+				//for (int i = 0; i < nActParams; i++) pertcoeff[i] /= pow(purtscale, error);
 
 				QCoreApplication::processEvents();
 

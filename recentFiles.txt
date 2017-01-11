@@ -19,4 +19,12 @@ c:/users/user/documents/gifmod projects/radial 2.gifm
 c:/users/user/documents/gifmod projects/multiselect.gifm
 c:/users/user/dropbox/gui/gifmod user's manual/examples/do_control/do_control.gifm
 c:/users/user/dropbox/asm/final polishing.gifm
-C:/Users/Arash-Home/Documents/GIFMod Projects/Infiltration_Basin/Infiltration_Basin.GIFM
+c:/users/arash-home/documents/gifmod projects/infiltration_basin/infiltration_basin.gifm
+c:/users/arash-home/documents/gifmod projects/arma_test.gifm
+c:/users/arash-home/dropbox/gui/gifmod user's manual/examples/1drechards/1drichards.gifm
+c:/users/arash-home/dropbox/gui/gifmod user's manual/examples/2dconfinedaquifer/2dconfined-transport.gifm
+c:/users/arash-home/dropbox/gui/gifmod user's manual/examples/2dunconfined/2dunconfined.gifm
+c:/users/arash-home/dropbox/gui/gifmod user's manual/examples/wetpond/wetpond.gifm
+c:/users/arash-home/dropbox/gui/gifmod user's manual/examples/infiltration_basin/infiltration_basin.gifm
+c:/users/arash-home/dropbox/gui/gifmod user's manual/examples/bod_aeration_inverse_modeling/dummy.gifm
+c:/users/arash-home/dropbox/gui/gifmod user's manual/examples/bod_aeration_inverse_modeling/bod_aeration_inverse_modeling.gifm

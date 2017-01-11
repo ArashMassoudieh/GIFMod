@@ -146,6 +146,7 @@
 1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC number of chains,nchains                    ,!,!,integer,8,TextBox,Global,Input,No,100199,>0;<{nmcmcsamples},E;E,Number of chains must be a positive number;Number of chains must be less than number of MCMC samples
 1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC data file,mcmcoutputfile             ,!,!,filename,./mcmcoutput.txt,Browser,Global,Input,No,100200,not empty,W,MCMC output file is not defined.
 1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC purturbation scale,purtfac                    ,!,!,float+Estimate,0.05,TextBox,Global,Input,No,100202,>0,E,Purturbation scale must be positive
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC purturbation scale rate of change,purtscale                    ,!,!,float+Estimate,0.75,TextBox,Global,Input,No,100501,>0,E,Rate of change of purturbation scale must be positive
 1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC sample output interval,writeinterval              ,!,!,integer,1,TextBox,Global,Input,No,100203,>0,E,MCMC sample output interval must be greater than 0
 1,Entity,Genetic algorithm,Genetic algorithm,!,Mutation probability,pmute                      ,!,!,float+Estimate,0.008,TextBox,Global,Input,No,100204,(0:0.01],E,Mutation probability must be between 0 and 0.01
 1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Number of bins used for calculating posterior distributions,no_bins                    ,!,!,integer,20,TextBox,Global,Input,No,100205,>0,E,Number of bins must be positive integer
@@ -311,6 +312,7 @@
 1,Entity,Project settings,Project settings,!,Simulation start time,time_min,!,!,datetime+getnumber,1,DateTime,Global,Input,Yes,100144,,,
 1,Entity,Reaction,Reaction,!,Rate,rate,!,!,string,!,reaction,Global,Input,No,100137,,,
 1,Entity,Solver settings,Solver settings,!,Failure criteria number of interations,nr_failure_criteria,!,!,integer,200,TextBox,Global,Input,No,100113,>0,E,Failure criteria number of interations must be positive
+1,Entity,Solver settings,Solver settings,!,Maximum number of matrix inversions allowed,epoch_limit,!,!,integer,20000,TextBox,Global,Input,No,100350,>0,E,Maximum Matrix inversions allowed must be positive
 1,Entity,Solver settings,Solver settings,!,Initial time step size,dt,day;hr;min;s,day,float+Estimate,0.01,UnitBox,Global,Input,No,100115,>0,E,Initial time step must be greater than zero
 1,Entity,Solver settings,Solver settings,!,Jackobian update interval,max_j_update_interval,!,!,integer,40,TextBox,Global,Input,No,100117,>=0,E,Jackobian matrix update interval must be non-negative
 1,Entity,Solver settings,Solver settings,!,Newton-Raphson acceptance tolerance,tol,!,!,float+Estimate,0.001,TextBox,Global,Input,No,100125,>0,E,Newton-Raphson acceptance tolerance must be positive
