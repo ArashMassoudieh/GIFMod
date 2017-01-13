@@ -4737,7 +4737,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 {
 	int indicator = 1;
 	int done = 0;
-	CVector pos_def;
+	CVector_arma pos_def;
 	vector<int> old_fixed_connect_status = get_fixed_connect_status();
 	CVector_arma X_old = getS();
 
@@ -4795,7 +4795,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 				J_h_update_count++;
 				M_arma = Jacobian_S(X, dtt,true);
 				CMatrix_arma M1 = normalize_diag(M_arma, M_arma);
-				pos_def = M.diag_ratio();
+				pos_def = M_arma.diag_ratio();
 				epoch_count++;
 				double xx = diag(M).max();
 

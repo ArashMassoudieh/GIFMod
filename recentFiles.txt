@@ -28,3 +28,5 @@ c:/users/arash-home/dropbox/gui/gifmod user's manual/examples/wetpond/wetpond.gi
 c:/users/arash-home/dropbox/gui/gifmod user's manual/examples/infiltration_basin/infiltration_basin.gifm
 c:/users/arash-home/dropbox/gui/gifmod user's manual/examples/bod_aeration_inverse_modeling/dummy.gifm
 c:/users/arash-home/dropbox/gui/gifmod user's manual/examples/bod_aeration_inverse_modeling/bod_aeration_inverse_modeling.gifm
+C:/Users/Arash-Home/Dropbox/GUI/GIFMOD User's manual/Examples/Nitrification_inverse_modeling/Nitrification_Inverse_modeling.GIFM
+C:/Users/Arash-Home/Dropbox/GIF inverse model paper/GIFMod Model/RainGardenModel-storage.GIFM
