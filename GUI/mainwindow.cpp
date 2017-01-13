@@ -1,5 +1,5 @@
 #ifndef GIFMOD_VERSION
-#define GIFMOD_VERSION "0.1.2"
+#define GIFMOD_VERSION "0.1.3"
 #endif
 #define RECENT "recentFiles.txt"
 #include "mainwindow.h"
@@ -1092,7 +1092,7 @@ void MainWindow::getNumber(double initial)
 		return;
 	}
 
-	double value = QInputDialog::getDouble(this, "Input Dialog Box", "Enter number:", initialValue, 1, 2147483647, 4);// item->text();
+	double value = QInputDialog::getDouble(this, "Input Dialog Box", "Enter number:", initialValue, 0, 2147483647, 4);// item->text();
 
 	tableProp->model()->setData(addParameterIndex(), value);
 }

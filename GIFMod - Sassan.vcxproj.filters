@@ -184,6 +184,12 @@
     <ClCompile Include="GeneratedFiles\files\moc_CustomPlotZoom.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GUI\Matrix_arma.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\Vector_arma.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GUI\Binary.h" />
@@ -305,6 +311,12 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_wizardDialog.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\Matrix_arma.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\Vector_arma.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>

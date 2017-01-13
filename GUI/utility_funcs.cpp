@@ -35,6 +35,9 @@ int max(int x, int y)
 
 QString float2date(const float d, QString format)
 {
+	if (d < 18264)
+		return QString::number(d);
+
 	qint64 julian = xldate2julian(d);
 	QDate date = QDate::fromJulianDay(julian);
 
@@ -58,3 +61,17 @@ qint64 julian2xldate(const qint64 juliandate)
 		date++;
 	return date;
 }
+/*
+std::string GetSystemFolderPaths(int csidl)
+{
+	wchar_t Folder[1024];
+	HRESULT hr = SHGetFolderPathW(0, CSIDL_MYDOCUMENTS, 0, 0, Folder);
+	if (SUCCEEDED(hr))
+	{
+		char str[1024];
+		wcstombs(str, Folder, 1023);
+		return str;
+	}
+	else return "";
+}
+*/
