@@ -115,24 +115,16 @@
     <ClCompile Include="GUI\Controller.cpp" />
     <ClCompile Include="GUI\colorScheme.cpp" />
     <ClCompile Include="GUI\ObjectiveFunction.cpp" />
-    <ClCompile Include="GUI\Matrix_arma.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\Vector_arma.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GUI\CustomPlotZoom.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_CustomPlotZoom.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_CustomPlotZoom.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GUI\Medium.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <ClCompile Include="GUI\CustomPlotZoom.cpp" />
+    <ClCompile Include="GUI\Matrix_arma.cpp" />
+    <ClCompile Include="GUI\Medium.cpp" />
+    <ClCompile Include="GUI\Vector_arma.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_ConstituentWindow.h" />
