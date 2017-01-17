@@ -190,6 +190,12 @@
     <ClCompile Include="GUI\Vector_arma.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GUI\csvEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\files\moc_csvEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GUI\Binary.h" />
@@ -319,6 +325,9 @@
     <ClInclude Include="GUI\Vector_arma.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_csvEditor.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="GUI\expEditor.h" />
@@ -368,6 +377,12 @@
     </CustomBuild>
     <CustomBuild Include="GUI\CustomPlotZoom.h">
       <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GUI\csvEditor.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GUI\csvEditor.ui">
+      <Filter>Form Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
