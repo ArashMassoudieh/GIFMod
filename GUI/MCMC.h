@@ -67,6 +67,7 @@ public:
 	vector<double> pertcoeff;
 	vector<double> logp;
 	vector<double> logp1;
+	vector<double> u;
 	double posterior(vector<double> par);
 	void initialize();
 	void CMCMC::initialize(vector<double> par);

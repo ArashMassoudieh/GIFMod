@@ -5063,6 +5063,7 @@ void CMedium::onestepsolve_const_ar(double dtt)
 	J_q_update_count = 0;
 	while (err>tol())
 	{
+		CVector_arma dx;
 		if ((J_update_Q == true) || (M_Q_arma.getnumrows() != X.num))
 		{
 			J_q_update_count++;
@@ -5087,17 +5088,28 @@ void CMedium::onestepsolve_const_ar(double dtt)
 			InvJ_Q_arma = inv(Preconditioner_Q_arma*M1);
 			if (InvJ_Q_arma.getnumcols() == 0)
 			{
-				set_CG_star(X_old);
-				fail_reason = "Matrix not invertible in wq";
-				failed_const = true;
-				return;
-
+				//set_CG_star(X_old);
+				//fail_reason = "Matrix not invertible in wq";
+				//failed_const = true;
 			}
 			J_update_Q = false;
 			dtt_J_q = dtt;
 		}
 
-		CVector_arma dx = dtt / dtt_J_q*(InvJ_Q_arma*Preconditioner_Q_arma*normalize_diag(F, M_Q_arma));
+		
+		if (InvJ_Q_arma.getnumcols() != 0)
+			dx = dtt / dtt_J_q*(InvJ_Q_arma*Preconditioner_Q_arma*normalize_diag(F, M_Q_arma));
+		else if (M_Q_arma.getnumcols() > 0)
+		{
+			dx = dtt/dtt_J_q*solve_ar(M_Q_arma, F);
+			if (dx.num==0)
+			{   set_CG_star(X_old);
+				fail_reason = "Matrix not invertible in wq";
+				failed_const = true; 
+				return;
+			}
+		}
+
 
 		X -= lambda*dx;
 

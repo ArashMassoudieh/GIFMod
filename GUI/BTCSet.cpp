@@ -392,7 +392,7 @@ double CBTCSet::mintime()
 
 double diff(CBTCSet B1, CBTCSet B2)
 {
-	int sum = 0;
+	double sum = 0;
 	for (int i=0; i<B1.nvars; i++)
 		sum += diff(B1.BTC[i],B2.BTC[i]);
 
@@ -456,11 +456,29 @@ vector<double> CBTCSet::mean(int limit)
 
 }
 
+vector<double> CBTCSet::mean(int limit, vector<int> index)
+{
+	vector<double> v;
+	for (int i = 0; i<index.size(); i++)
+		v.push_back(BTC[index[i]].mean(limit));
+	return v;
+
+}
+
 vector<double> CBTCSet::std(int limit)
 {
 	vector<double> v;
 	for (int i=0; i<nvars; i++)
 		v.push_back(BTC[i].std(limit));
+	return v;
+
+}
+
+vector<double> CBTCSet::std(int limit, vector<int> index)
+{
+	vector<double> v;
+	for (int i = 0; i<index.size(); i++)
+		v.push_back(BTC[index[i]].std(limit));
 	return v;
 
 }
@@ -503,6 +521,16 @@ vector<double> CBTCSet::percentile(double x, int limit)
 
 	return v;
 }
+
+vector<double> CBTCSet::percentile(double x, int limit, vector<int> index)
+{
+	vector<double> v;
+	for (int i = 0; i<index.size(); i++)
+		v.push_back(BTC[index[i]].percentile(x, limit));
+
+	return v;
+}
+
 CBTCSet CBTCSet::sort(int burnOut)
 {
 	CBTCSet r(nvars);
