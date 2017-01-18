@@ -1,10 +1,11 @@
 #ifndef GIFMOD_VERSION
-#define GIFMOD_VERSION "0.1.2"
+#define GIFMOD_VERSION "0.1.3"
 #endif
 #define RECENT "recentFiles.txt"
 #include "mainwindow.h"
 #ifdef GIFMOD
 #include "ui_mainwindowGIFMod.h"
+#include "csvEditor.h"
 #endif
 #ifdef GWA
 #include "ui_mainwindowGWA.h"
@@ -248,6 +249,10 @@ MainWindow::MainWindow(QWidget *parent, QString applicationName, QString shortNa
 	connect(ui->menuWaterQuality->menuAction(), SIGNAL(hovered()), this, SLOT(menuWaterQuality_hovered()));
 	connect(ui->menuWaterQuality, SIGNAL(triggered()), this, SLOT(menuWaterQuality_triggered()));
 
+
+	//removeIt
+//	csvEditor *a = new csvEditor(this);
+	
 }
 
 void MainWindow::readRecentFilesList()
@@ -1040,9 +1045,10 @@ void MainWindow::tablePropShowContextMenu(const QPoint&pos)
 				graphNames.append(QString::fromStdString(name));
 			else mainGraphWidget->warning(QString("Duplicate header %1 in time series, file %1").arg(QString::fromStdString(name)).arg(file));
 		}
+		QMenu *menu = new QMenu;
+		menu->addAction("Edit time series");
 		if (graphNames.count())
 		{
-			QMenu *menu = new QMenu;
 			bool convertXtoTime = true;
 			if (i1.data(TypeRole).toString().toLower().contains("age"))
 				convertXtoTime = false;
@@ -1053,8 +1059,11 @@ void MainWindow::tablePropShowContextMenu(const QPoint&pos)
 				plotTimeSeries(action, data[subTitle.toStdString()], subTitle, convertXtoTime);
 			}
 			connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(plotTimeSeries(QAction*)));
-			menu->exec(tableProp->mapToGlobal(pos));
 		}
+		QAction *action = menu->exec(tableProp->mapToGlobal(pos));
+		if (action)
+			if (action->text() == "Edit time series")
+				csvEditor *editor = new csvEditor(this, fullfile, fullfile);
 	}
 }
 void MainWindow::showHelp(int code, QString variableName)
@@ -1092,7 +1101,7 @@ void MainWindow::getNumber(double initial)
 		return;
 	}
 
-	double value = QInputDialog::getDouble(this, "Input Dialog Box", "Enter number:", initialValue, 1, 2147483647, 4);// item->text();
+	double value = QInputDialog::getDouble(this, "Input Dialog Box", "Enter number:", initialValue, 0, 2147483647, 4);// item->text();
 
 	tableProp->model()->setData(addParameterIndex(), value);
 }

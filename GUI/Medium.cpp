@@ -2090,10 +2090,10 @@ void CMedium::solve_fts_m2(double dt)
 				{
 					FILEBTC = fopen((outputpathname() + "Solution_details.txt").c_str(), "a");
 					write_state(outputpathname() + "state.txt");
-					fprintf(FILEBTC, "dt too small, epoch = %i, avarage_dt = %e < %e", epoch_count, (t - Timemin) / double(iii), avg_dt_limit()*dt0);
+					fprintf(FILEBTC, "dt too small, epoch = %i, average_dt = %e < %e", epoch_count, (t - Timemin) / double(iii), avg_dt_limit()*dt0);
 					fclose(FILEBTC);
 				}
-				fail_reason = "dt too small, epoch = " + numbertostring(epoch_count) + ", avarage_dt = " + numbertostring((t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii);
+				fail_reason = "dt too small, epoch = " + numbertostring(epoch_count) + ", average_dt = " + numbertostring((t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii);
 				failed = true;
 				for (int i = 0; i < controllers().size(); i++)
 					ANS_control.BTC[i] = controllers()[i].output;
@@ -4202,7 +4202,7 @@ double CMedium::get_nextcontrolinterval(double _t)
 	double t_min = 1e100;
 	for (int i = 0; i<controllers().size(); i++)
 	{
-		double t_1 = (int((_t - Timemin) / controllers()[i].interval) + 1)*controllers()[i].interval;
+		double t_1 = Timemin + (int((_t - Timemin) / controllers()[i].interval) + 1)*controllers()[i].interval;
 		if (t_1 == _t) t_1 = _t+controllers()[i].interval;
 		t_min = min(t_min, t_1);
 	}
@@ -4737,7 +4737,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 {
 	int indicator = 1;
 	int done = 0;
-	CVector pos_def;
+	CVector_arma pos_def;
 	vector<int> old_fixed_connect_status = get_fixed_connect_status();
 	CVector_arma X_old = getS();
 
@@ -4795,7 +4795,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 				J_h_update_count++;
 				M_arma = Jacobian_S(X, dtt,true);
 				CMatrix_arma M1 = normalize_diag(M_arma, M_arma);
-				pos_def = M.diag_ratio();
+				pos_def = M_arma.diag_ratio();
 				epoch_count++;
 				double xx = diag(M).max();
 
