@@ -22,6 +22,8 @@ CEvaporation::CEvaporation(const CEvaporation &B)
 	name = B.name;
 	parameters = B.parameters;
 	evaporation_filename = B.evaporation_filename;
+	single_crop_coefficient_filename = B.single_crop_coefficient_filename;
+	single_crop_coefficient = B.single_crop_coefficient;
 	evaporation_TS = B.evaporation_TS;
 	uptake = B.uptake;
 
@@ -63,6 +65,13 @@ CEvaporation::CEvaporation(string _model)
 		parameters[3] = 66;
 	}
 
+	if (model == "fao-56")
+	{
+		expression = CStringOP("(f[6004]*f[18]/(1+(0.0000004*f[6003]*((237.3+f[19])^2)*_exp(17.27*f[19]/(237.3+f[19]))))/(2501000-(2370*f[19]))/1000)+((f[6000]*611*f[6003])/((f[6003]*_exp(-17.27*f[19]/(237.3 + f[19])))+(2503878/((237.3+f[19])^2)))*f[20]*(1-f[21]))*f[6501]**_min(_max((f[10]-f[6001])/(f[6002]-f[6001]):1):0)/f[3]");
+		parameters.resize(5);
+		parameters[3] = 66;
+	}
+
 
 }
 CEvaporation& CEvaporation::operator=(const CEvaporation &B)
@@ -73,6 +82,8 @@ CEvaporation& CEvaporation::operator=(const CEvaporation &B)
 	parameters = B.parameters;
 	evaporation_filename = B.evaporation_filename;
 	evaporation_TS = B.evaporation_TS;
+	single_crop_coefficient_filename = B.single_crop_coefficient_filename;
+	single_crop_coefficient = B.single_crop_coefficient;
 	uptake = B.uptake;
 	return *this;
 }

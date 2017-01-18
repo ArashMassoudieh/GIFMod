@@ -30,3 +30,5 @@ c:/users/arash-home/dropbox/gui/gifmod user's manual/examples/bod_aeration_inver
 c:/users/arash-home/dropbox/gui/gifmod user's manual/examples/bod_aeration_inverse_modeling/bod_aeration_inverse_modeling.gifm
 C:/Users/Arash-Home/Dropbox/GUI/GIFMOD User's manual/Examples/Nitrification_inverse_modeling/Nitrification_Inverse_modeling.GIFM
 C:/Users/Arash-Home/Dropbox/GIF inverse model paper/GIFMod Model/RainGardenModel-storage.GIFM
+C:/Users/Arash-Home/Documents/GIFMod Projects/Evaporation/Evaporation.GIFM
+C:/Users/Arash-Home/Dropbox/GIF inverse model paper/GIFMod Model/UpperRainGarden.GIFM
