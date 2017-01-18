@@ -33,8 +33,11 @@ int max(int x, int y)
 	return -min(-x, -y);
 }
 
-QString float2date(const float d, QString format)
+QString float2date(const float d, QString format, bool ignorefirst50years)
 {
+	if (ignorefirst50years && d < 18264)
+		return QString::number(d);
+
 	qint64 julian = xldate2julian(d);
 	QDate date = QDate::fromJulianDay(julian);
 
@@ -58,3 +61,33 @@ qint64 julian2xldate(const qint64 juliandate)
 		date++;
 	return date;
 }
+
+int dayOfYear(const qint64 xldate)
+{
+	qint64 julian = xldate2julian(xldate);
+	QDate date = QDate::fromJulianDay(julian);
+	return date.dayOfYear();
+}
+double dayOfYear(const double xldate)
+{
+	double fraction = fmod(xldate, 1.0);
+	qint64 julian = xldate2julian(xldate);
+	QDate date = QDate::fromJulianDay(julian);
+	double dayofyear = date.dayOfYear() + fraction;
+	return dayofyear;
+
+}
+/*
+std::string GetSystemFolderPaths(int csidl)
+{
+	wchar_t Folder[1024];
+	HRESULT hr = SHGetFolderPathW(0, CSIDL_MYDOCUMENTS, 0, 0, Folder);
+	if (SUCCEEDED(hr))
+	{
+		char str[1024];
+		wcstombs(str, Folder, 1023);
+		return str;
+	}
+	else return "";
+}
+*/

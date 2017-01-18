@@ -20,7 +20,9 @@ struct range //properties of unknown parameters
 	vector<string> experiment_id;
 	vector<int> location_type; //0: block, 1: connector; 2: both
 };
-QString float2date(const float d, QString format = "MMM dd yyyy");
+QString float2date(const float d, QString format = "MMM dd yyyy", bool ignorefirst50years = true);
 qint64 xldate2julian(const qint64 xldate);
 
 qint64 julian2xldate(const qint64 juliandate);
+int dayOfYear(const qint64 xldate);
+double dayOfYear(const double xldate);
