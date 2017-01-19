@@ -31,9 +31,13 @@ public:
 	QString text();
 	private slots:
 	void on_buttonBox_clicked(QAbstractButton * button);
+	void on_pushButton_clicked();
 
 public slots:
 void showContextMenu(const QPoint&);
+void on_horizontal_sectionClicked(int);
+void on_horizontal_sectionDoubleClicked(int);
+
 
 private:
 	Ui::csvEditor *ui;
