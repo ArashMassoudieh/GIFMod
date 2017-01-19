@@ -170,19 +170,23 @@
 1,Entity,Evapotranspiration,*,Default  Values Template,SubType,!,!,!,string,populate at runtime; SubType,ComboBox,Geometry,Select,No,100224,,,
 1,Entity,Evapotranspiration,*,!,Rate expression,expression,!,!,expression,!,TextBox,Global,Select,No,100225,,,
 1,Entity,Evapotranspiration,Time Series,!,Time series,time_series,!,!,filename,!,Browser;time series,Global,Select,No,100226,,,
+1,Entity,Evapotranspiration,FAO-56,!,FAO-56 crop coefficient time series,fao_56_kc_coefficient,!,!,filename,!,Browser;time series,Global,Select,No,100502,"!=""""",,
 1,Entity,Evapotranspiration,Time Series,!,Uptake constituents,uptake_constituents,!,!,string,No;Yes,ComboBox,Global,Select,No,100227,,,
 1,Entity,Evapotranspiration,Aerodynamic,!,Uptake constituents,uptake_constituents,!,!,string,No;Yes,ComboBox,Global,Select,No,100227,,,
 1,Entity,Evapotranspiration,Transpiration Based on moisture content,!,Uptake constituents,uptake_constituents,!,!,string,Yes;No,ComboBox,Global,Select,No,100227,,,
 1,Entity,Evapotranspiration,Transpiration Based on Matric Potential,!,Uptake constituents,uptake_constituents,!,!,string,Yes;No,ComboBox,Global,Select,No,100227,,,
 1,Entity,Evapotranspiration,Priestley-Taylor,!,Uptake constituents,uptake_constituents,!,!,string,No;Yes,ComboBox,Global,Select,No,100227,,,
 1,Entity,Evapotranspiration,Penman,!,Uptake constituents,uptake_constituents,!,!,string,No;Yes,ComboBox,Global,Select,No,100227,,,
+1,Entity,Evapotranspiration,FAO-56,!,Uptake constituents,uptake_constituents,!,!,string,No;Yes,ComboBox,Global,Select,No,100227,,,
 1,Entity,Evapotranspiration,Aerodynamic,!,Coefficient,coefficient,!,!,float+Estimate,!,TextBox,Global,Input,No,100233,!=0;>0,W;E,Coefficient is zero;Coefficient must be non-negative
 1,Entity,Evapotranspiration,Transpiration Based on moisture content,!,Coefficient,coefficient,!,!,float+Estimate,!,TextBox,Global,Input,No,100233,!=0;>0,W;E,Coefficient is zero;Coefficient must be non-negative
 1,Entity,Evapotranspiration,Transpiration Based on Matric Potential,!,Coefficient,coefficient,!,!,float+Estimate,!,TextBox,Global,Input,No,100233,!=0;>0,W;E,Coefficient is zero;Coefficient must be non-negative
+1,Entity,Evapotranspiration,FAO-56,!,Wind coefficient,coefficient,!,!,float+Estimate,!,TextBox,Global,Input,No,100233,!=0;>0,W;E,Coefficient is zero;Coefficient must be non-negative
 1,Entity,Evapotranspiration,Transpiration Based on moisture content,!,Wilting_point_water_content,wilting_point_water_content,!,!,float+Estimate,!,TextBox,Global,Input,No,100236,(0:1),E,Wilting point should be between zero and one
 1,Entity,Evapotranspiration,Transpiration Based on moisture content,!,Field_capacity_moisture,field_capacity_moisture,!,!,float+Estimate,!,TextBox,Global,Input,No,100237,(0:1),E,Field Capacity should be between zero and one
 1,Entity,Evapotranspiration,Transpiration Based on Matric Potential,!,Wilting point matric potential,wilting_point_matric_potential,!,!,float+Estimate,!,TextBox,Global,Input,No,100238,<0,E,Wilting point should be between zero and one
-1,Entity,Evapotranspiration,Transpiration Based on Matric Potential,!,Field capacity matric potential,field_capacity_matric_potential,!,!,float+Estimate,!,TextBox,Global,Input,No,100239,<0,E,Field Capacity should be between zero and one
+1,Entity,Evapotranspiration,Transpiration Based on Matric Potential,!,Field capacity matric potential,field_capacity_matric_potential,!,!,float+Estimate,!,TextBox,Global,Input,No,100239,<0,E,Field Capacity matric potential should be negative
+1,Entity,Evapotranspiration,FAO-56,!,Field_capacity_moisture,field_capacity_matric_potential,!,!,float+Estimate,!,TextBox,Global,Input,No,100239,(0:1),E,Field Capacity should be between zero and one
 1,Entity,Climate settings,Climate settings,!,Temperature,temperature,!,!,filename,!,Browser;time series,Global,Select,No,100240,,,
 1,Entity,Climate settings,Climate settings,!,Wind,wind,!,!,filename,!,Browser;time series,Global,Select,No,100241,,,
 1,Entity,Constituent,Constituent,!,Settling velocity,vs,m/day;cm/day;cm/s;mm/s;ft/day;in/day;in/s,m/day,float+Estimate,!,UnitBox,Material,Input,No,100250,>=0,E,settling velocity must be non-negative
@@ -398,3 +402,5 @@
 1,Entity,Objective function,*,!,SubType,loc_type,!,!,string,Block;Connector,ComboBox,Global,Select,No,100344,,,
 1,Entity,Objective function,Block,!,Location,id,!,!,string,populate at runtime;Block,ComboBox,Global,Select,No,100347,,,
 1,Entity,Objective function,Connector,!,Location,id,!,!,string,populate at runtime;Connector,ComboBox,Global,Select,No,100348,,,
+1,Entity,Evapotranspiration,FAO-56,,Psychrometric constant,psychrometric_constant,Pa/~degreeC,Pa/~degreeC,string,66.8,UnitBox,Global,Select,No,100319,>0,E,Psychrometric constant must be non-negative
+1,Entity,Evapotranspiration,FAO-56,,Solar-radiation coefficient,coefficient_light,!,!,string,!,TextBox,Global,Select,No,100321,!=0;>0,W;E,Coefficient is zero;Coefficient must be non-negative
