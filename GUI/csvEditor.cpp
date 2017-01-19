@@ -12,7 +12,7 @@
 //#include "qheaderview.h"
 #include <QInputDialog>
 
-csvEditor::csvEditor(MainWindow *parent, QString title, QString fileName, QString fileType, bool modal) :
+csvEditor::csvEditor(MainWindow *parent, bool precipitationSeries, QString title, QString fileName, QTableView* tableProp, QModelIndex index, QString fileType, bool modal):
 	QDialog(parent),
 	ui(new Ui::csvEditor)
 {
@@ -23,17 +23,29 @@ csvEditor::csvEditor(MainWindow *parent, QString title, QString fileName, QStrin
 	this->fileName = fileName;
 	mainWindow = parent;
 	setModal(modal);
-	ui->tableWidget->setHorizontalHeaderLabels(QStringList() << "time" << "value");
+	table = tableProp;
+	this->index = index;
+
+	precipitation = precipitationSeries;
+
+	int minCol = (precipitation) ? 3 : 2;
+	if (ui->tableWidget->columnCount() < minCol)
+		ui->tableWidget->setColumnCount(minCol);
+	if (ui->tableWidget->rowCount() < 1)
+		ui->tableWidget->setRowCount(1);
+
+	if (precipitation)
+		ui->tableWidget->setHorizontalHeaderLabels(QStringList() << "Start time" << "End time" << "Volume");
+	else 
+		ui->tableWidget->setHorizontalHeaderLabels(QStringList() << "Time" << "Value");
 	load(fileName);
 	show();
 //	load("D:/a.csv");
 	ui->tableWidget->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(ui->tableWidget, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenu(const QPoint&)));
-	if (ui->tableWidget->columnCount() < 2)
-		ui->tableWidget->setColumnCount(2);
-	if (ui->tableWidget->rowCount() < 1)
-		ui->tableWidget->setRowCount(1);
-	connect(ui->tableWidget->horizontalHeader(), SIGNAL(sectionDoubleClicked(int)), this, SLOT(on_horizontal_sectionDoubleClicked(int)));
+	
+	if (!precipitation)
+		connect(ui->tableWidget->horizontalHeader(), SIGNAL(sectionDoubleClicked(int)), this, SLOT(on_horizontal_sectionDoubleClicked(int)));
 }
 
 void csvEditor::showContextMenu(const QPoint&p)
@@ -52,11 +64,11 @@ void csvEditor::showContextMenu(const QPoint&p)
 	QMenu menu;
 	menu.addAction("insert row");
 	menu.addAction("delete row");
-	menu.addAction("insert column");
-	menu.addAction("delete column");
-	//menu.addAction("");
-	//menu.addAction("");
-	//menu.addAction("");
+	if (!precipitation)
+	{
+		menu.addAction("insert column");
+		menu.addAction("delete column");
+	}
 
 	QAction *ac = menu.exec(mapToGlobal(p));
 	if (!ac)
@@ -99,7 +111,7 @@ void csvEditor::load(QString fileName)
 				ui->tableWidget->setRowCount(row + 1);
 			if (ui->tableWidget->columnCount() < col + 1)
 				ui->tableWidget->setColumnCount(col + 1);
-			if (list[0].toLower().contains("names"))
+			if (list[0].toLower().contains("names") && !precipitation)
 			{
 				if (col > 0) {
 					if (ui->tableWidget->columnCount() < 2 * (col))
@@ -131,7 +143,7 @@ void csvEditor::save(QString fileName)
 		checkHeaders += (ui->tableWidget->horizontalHeaderItem(j)) ? 1 : 0;
 	}
 
-	if (checkHeaders)
+	if (checkHeaders && !precipitation)
 	{
 		QStringList list;
 		list << "names, "; 
@@ -142,6 +154,7 @@ void csvEditor::save(QString fileName)
 		QString line = list.join(",");
 		file << line.toStdString() << "\n";
 	}
+
 	for (int i = 0; i < ui->tableWidget->rowCount(); i++)
 	{
 		QStringList list;
@@ -201,6 +214,9 @@ void csvEditor::on_pushButton_clicked()
 			return;
 		else {
 			save(file);
+			if (fileName.isEmpty() || fileName == "Unititled.csv")
+				if (table)
+					table->model()->setData(index, file, Qt::EditRole);
 		}
 	}
 
