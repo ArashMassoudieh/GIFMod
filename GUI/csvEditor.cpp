@@ -146,7 +146,7 @@ void csvEditor::save(QString fileName)
 	if (checkHeaders && !precipitation)
 	{
 		QStringList list;
-		list << "names, "; 
+		list << "names"; 
 		for (int j = 1; j < ui->tableWidget->columnCount(); j += 2)
 		{
 			list.append(ui->tableWidget->horizontalHeaderItem(j) ? ui->tableWidget->horizontalHeaderItem(j)->text() : QString("value %1").arg((j + 1) / 2));
@@ -158,6 +158,8 @@ void csvEditor::save(QString fileName)
 	for (int i = 0; i < ui->tableWidget->rowCount(); i++)
 	{
 		QStringList list;
+		if (i)
+			list << "/n";
 		for (int j = 0; j < ui->tableWidget->columnCount(); j++)
 		{
 			qDebug() << i << j;
@@ -165,7 +167,7 @@ void csvEditor::save(QString fileName)
 			qDebug() << i<<j<< (ui->tableWidget->item(i, j) ? ui->tableWidget->item(i, j)->text() : "");
 		}
 		QString line = list.join(",");
-		file << line.toStdString() << "\n";
+		file << line.toStdString() ;
 	}
 	file.close();
 	dataChanged = false;
