@@ -7,6 +7,9 @@
 #include "qabstractbutton.h"
 #include "vector.h"
 
+#include "PropModel.h"
+#include "qtableview.h"
+
 class MainWindow;
 
 namespace Ui {
@@ -18,7 +21,7 @@ class csvEditor : public QDialog
 	Q_OBJECT
 
 public:
-	explicit csvEditor(MainWindow *parent, QString title = "Editor", QString fileName = "Untitled.csv", QString fileType = "Comma Seperated File (*.csv)", bool modal = false);
+	explicit csvEditor(MainWindow *parent, bool precipitationSeries, QString title = "Editor", QString fileName = "Untitled.csv", QTableView* tableProp = 0, QModelIndex index = QModelIndex(), QString fileType = "Comma Seperated File (*.csv)", bool modal = false);
 	~csvEditor() {};
 	void load(QString fileName);
 	void save(QString fileName);
@@ -31,9 +34,13 @@ public:
 	QString text();
 	private slots:
 	void on_buttonBox_clicked(QAbstractButton * button);
+	void on_pushButton_clicked();
 
 public slots:
 void showContextMenu(const QPoint&);
+void on_horizontal_sectionClicked(int);
+void on_horizontal_sectionDoubleClicked(int);
+
 
 private:
 	Ui::csvEditor *ui;
@@ -41,6 +48,8 @@ private:
 	MainWindow *mainWindow;
 	QString wtitle, fileName, fileType;
 	bool dataChanged;
-
+	bool precipitation;
+	QTableView* table;
+	QModelIndex index;
 };
 
