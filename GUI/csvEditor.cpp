@@ -114,8 +114,10 @@ void csvEditor::load(QString fileName)
 			if (list[0].toLower().contains("names") && !precipitation)
 			{
 				if (col > 0) {
-					if (ui->tableWidget->columnCount() < 2 * (col))
-						ui->tableWidget->setColumnCount(2 * (col));
+//					if (ui->tableWidget->columnCount() < 2 * (col))
+//						ui->tableWidget->setColumnCount(2 * (col));
+					if (ui->tableWidget->columnCount() < 2 * (list.size() - 1))
+						ui->tableWidget->setColumnCount(2 * (list.size() - 1));
 
 					ui->tableWidget->setHorizontalHeaderItem((col -1) * 2, new QTableWidgetItem("time"));
 					ui->tableWidget->setHorizontalHeaderItem((col -1)* 2 + 1, new QTableWidgetItem(list[col]));
