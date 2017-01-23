@@ -491,6 +491,12 @@ void CMedium::f_load_inflows()
 			CBTC E = CBTC(pathname() + evaporation_model()[j].evaporation_filename);
 			if (E.n>0) evaporation_model()[j].evaporation_TS = E;
 		}
+
+		if (evaporation_model()[j].single_crop_coefficient_filename != "")
+		{
+			CBTC E = CBTC(pathname() + evaporation_model()[j].single_crop_coefficient_filename);
+			if (E.n>0) evaporation_model()[j].evaporation_TS = E;
+		}
 	}
 	for (int j = 0; j<temperature_filename.size(); j++)
 		{
@@ -2353,6 +2359,7 @@ void CMedium::finalize_set_param()
 {
 	for (int ii=0; ii<Blocks.size(); ii++)
 	{	
+		Blocks[ii].parent = this; 
 		if (Blocks[ii].fs_params[5]==0)
 			if (Blocks[ii].fs_params[4] != 0) Blocks[ii].fs_params[5]=1-1.0/Blocks[ii].fs_params[4];
 

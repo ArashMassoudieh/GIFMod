@@ -2,6 +2,7 @@
 #include "MBBlock.h"
 #include "StringOP.h"
 #include "Function.h"
+#include "Medium.h"
 
 
 CMBBlock::CMBBlock(void)
@@ -409,7 +410,7 @@ double CMBBlock::get_val_star(int i, vector<int> ii)
 		else
 			return (S_star/V - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);   //allow s to be above 1
 		}
-	if (i==12) return DS;
+	//if (i==12) return DS;
 	if (i==13) return vapor_diffusion;
 
 	if (i==10) 
@@ -456,7 +457,8 @@ double CMBBlock::get_val_star(int i, vector<int> ii)
 	if (i>=3000 && i<4000) return Solid_phase[ii[0]]->get_val(i);
 	if (i>=4000 && i<5000) return envexchange[ii[1]]->parameters[i-4000];
 	if (i >= 5000 && i<6000) return RXN->cons[ii[0]].get_val(i);
-	if (i >= 6000 && i<7000) return evaporation_m[ii[0]]->parameters[i - 6000];
+	if (i >= 6000 && i<6500) return evaporation_m[ii[0]]->parameters[i - 6000];
+	if (i == 6501) return evaporation_m[ii[0]]->single_crop_coefficient.interpol(dayOfYear(parent->t));
 	if (i >= 10000 && i<20000) return G[(i - 10000) / 1000][(i - 10000) % 1000];
 	if (i >= 100000 && i<200000) return CG[(i - 100000) / 10000][(i - 100000) % 10000];
 }
@@ -797,7 +799,6 @@ void CMBBlock::set_val(int i, double val)
 	if (i==5) z0 = val;
 	if (i==9) S = V*(val*(fs_params[theta_s]-fs_params[theta_r]) + fs_params[theta_r]);
 	if (i==10) S = V*val;
-	if (i==12) DS=val;
 	if (i==13) vapor_diffusion=val;
 	if (i==14) bulk_density = val;	
 	if (i>=50 && i<100) fs_params[i-50] = val;
@@ -817,7 +818,6 @@ void CMBBlock::set_val_star(int i, double val)
 	if (i==5) z0 = val;
 	if (i==9) S_star = V*(val*(fs_params[theta_s]-fs_params[theta_r]) + fs_params[theta_r]);
 	if (i==10) S_star = V*val;
-	if (i==12) DS=val;
 	if (i==13) vapor_diffusion=val;
 	if (i==14) bulk_density = val;
 
@@ -851,7 +851,7 @@ void CMBBlock::set_val(const string &SS, double val)
 		if (tolower(trim(s[0]))=="depth") V = A*val;
 		if (tolower(trim(s[0]))=="h0") S = A*val*fs_params[theta_s];   //fs_params[1] must be read earlier than h0
 		if (tolower(trim(s[0]))=="porosity") fs_params[theta_s] = val;
-		if (tolower(trim(s[0]))=="depression") DS=val;
+		if (tolower(trim(s[0]))=="depression") fs_params[depression_storage]=val;
 		
 		if (tolower(trim(s[0]))=="ks") fs_params[ks] = val;	
 		if (tolower(trim(s[0]))=="theta_s") fs_params[theta_s] = val;

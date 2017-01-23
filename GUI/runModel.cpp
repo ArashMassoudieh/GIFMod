@@ -1956,6 +1956,7 @@ void CMediumSet::g_get_evapotranspiration()
 
 		if (e->val("expression") != "") S.expression = e->val("expression").toStdString();
 		if (e->val("time_series") != "") S.evaporation_filename = e->val("time_series").toFileName(gw->modelPathname()).toStdString();
+		if (e->val("fao_56_kc_coefficient") != "") S.single_crop_coefficient_filename = e->val("fao_56_kc_coefficient").toFileName(gw->modelPathname()).toStdString();
 		if (e->val("uptake_constituents") != "") S.uptake = e->val("uptake_constituents").toBool();
 
 		for each (QString code in e->codes())
@@ -2150,6 +2151,12 @@ void CMedium::g_load_inflows()
 		{
 			CBTC E = CBTC(evaporation_model()[j].evaporation_filename);
 			if (E.n>0) evaporation_model()[j].evaporation_TS = E;
+		}
+
+		if (evaporation_model()[j].single_crop_coefficient_filename != "")
+		{
+			CBTC E = CBTC(evaporation_model()[j].single_crop_coefficient_filename);
+			if (E.n>0) evaporation_model()[j].single_crop_coefficient = E;
 		}
 	}
 	for (int j = 0; j<temperature_filename.size(); j++)
