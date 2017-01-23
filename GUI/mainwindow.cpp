@@ -1034,7 +1034,7 @@ void MainWindow::tablePropShowContextMenu(const QPoint&pos)
 		CBTCSet data;
 #ifdef GIFMOD
 		if (i1.data(TypeRole).toString().toLower().contains("precipitation"))
-			data = CPrecipitation(fullfile.toStdString()).getflow(1);
+			data = CPrecipitation(fullfile.toStdString()).getflow(1,1.0/24.0/4.0);
 		else
 #endif
 			data = CBTCSet(fullfile.toStdString(), 1);

@@ -146,14 +146,26 @@ void CPrecipitation::getfromfile(string filename)
 }
 
 
-CBTCSet CPrecipitation::getflow (double A)
+CBTCSet CPrecipitation::getflow (double A, double dt)
 {
 	CBTCSet Rainflowout(1);
 	Rainflowout.names.clear();
 	Rainflowout.names.push_back("flow");
-	for (int ii=0; ii<n; ii++) 
-		Rainflowout.BTC[0].append((e[ii]+s[ii])*0.5,i[ii]/(e[ii]-s[ii])*A);  //i [m]
+	for (double t = s[0]; t<e[n-1]; t+=dt)
+		Rainflowout.BTC[0].append(t,getval(t)*A);  //i [m]
 	
+	Rainflowout.BTC[0].assign_D();
+	return Rainflowout;
+}
+
+CBTCSet CPrecipitation::getflow(double A)
+{
+	CBTCSet Rainflowout(1);
+	Rainflowout.names.clear();
+	Rainflowout.names.push_back("flow");
+	for (int ii = 0; ii<n; ii++)
+		Rainflowout.BTC[0].append((e[ii] + s[ii])*0.5, i[ii] / (e[ii] - s[ii])*A);  //i [m]
+
 	Rainflowout.BTC[0].assign_D();
 	return Rainflowout;
 }
