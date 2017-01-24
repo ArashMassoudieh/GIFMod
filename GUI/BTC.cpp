@@ -99,7 +99,7 @@ CBTC::CBTC(string Filename)
 //			return;
 		}
 		if (s.size()>=2)
-		if (s[0].substr(0,2)!="//")
+		if ((s[0].substr(0,2)!="//") && (tolower(s[0])!="names"))
 		{
 			t.push_back(atof(s[0].c_str()));
 			C.push_back(atof(s[1].c_str()));

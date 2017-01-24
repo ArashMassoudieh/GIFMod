@@ -31,3 +31,4 @@ c:/users/arash-home/dropbox/gui/gifmod user's manual/examples/bod_aeration_inver
 E:/Dropbox/GIFMod Projects/Nit-DeNit-3tanks/Nit_Denit_3tanks.GIFM
 E:/Dropbox/GIFMod Projects/Nit-DeNit-3tanks/Nit_Denit_3tanks_am_test.GIFM
 E:/Dropbox/GIF inverse model paper/GIFMod Model/UpperRainGarden.GIFM
+E:/Dropbox/GUI/GIFMOD User's manual/Examples/Evaporation/Evaporation.GIFM

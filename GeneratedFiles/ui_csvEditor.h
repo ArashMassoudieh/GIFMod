@@ -18,6 +18,7 @@
 #include <QtWidgets/QDialogButtonBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QTableWidget>
 #include <QtWidgets/QVBoxLayout>
@@ -33,6 +34,7 @@ public:
     QSpacerItem *horizontalSpacer;
     QSpacerItem *horizontalSpacer_3;
     QSpacerItem *horizontalSpacer_2;
+    QPushButton *pushButton;
     QDialogButtonBox *buttonBox;
 
     void setupUi(QDialog *csvEditor)
@@ -64,12 +66,17 @@ public:
 
         horizontalLayout->addItem(horizontalSpacer_2);
 
+        pushButton = new QPushButton(csvEditor);
+        pushButton->setObjectName(QStringLiteral("pushButton"));
+
+        horizontalLayout->addWidget(pushButton);
+
         buttonBox = new QDialogButtonBox(csvEditor);
         buttonBox->setObjectName(QStringLiteral("buttonBox"));
         buttonBox->setEnabled(true);
         buttonBox->setLocale(QLocale(QLocale::English, QLocale::UnitedStates));
         buttonBox->setOrientation(Qt::Horizontal);
-        buttonBox->setStandardButtons(QDialogButtonBox::Reset|QDialogButtonBox::Save);
+        buttonBox->setStandardButtons(QDialogButtonBox::Save);
         buttonBox->setCenterButtons(false);
 
         horizontalLayout->addWidget(buttonBox);
@@ -86,6 +93,7 @@ public:
     void retranslateUi(QDialog *csvEditor)
     {
         csvEditor->setWindowTitle(QApplication::translate("csvEditor", "Editor", 0));
+        pushButton->setText(QApplication::translate("csvEditor", "Add row", 0));
     } // retranslateUi
 
 };

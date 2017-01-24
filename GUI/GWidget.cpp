@@ -3065,6 +3065,9 @@ QStringList GraphWidget::variableValuesHasError()
 	Edge *e0 = 0;
 	deselectAll();
 	QString savedExperiment = experimentName();
+
+
+
 	for each (QString experiment in experimentsList())
 	{
 		experiments->setCurrentText(experiment);
@@ -3332,6 +3335,21 @@ QStringList GraphWidget::variableValuesHasError()
 			}
 
 		}
+		//check for constituents in buildup
+		for each (Entity* e in entitiesByType("Build-up"))
+			for each (QString experiment in experimentsList())
+				if (!EntityNames("Constituent").contains(e->val("Constituent")))
+				{
+					e->errors["Constituent"] = QString("%1 was not found in the model").arg(e->val("Constituent"));
+					numberofErrors++;
+					log(QString("Error: %1, %2: %3, %4").arg(experiment).arg(e->getValue("Type")).arg(e->Name()).arg(e->errors["Constituent"]));
+				}
+/*		//check for constituents in initial conditions
+		for each (Entity* e in entitiesByType("Build-up"))
+			for each (QString experiment in experimentsList())
+				if (!EntityNames("Constituent").contains(e->val("Constituent")))
+					e->errors["Constituent"] = QString("%1 was not found in the model").arg(e->val("Constituent"));
+					*/
 #endif
 	}
 	QStringList r;

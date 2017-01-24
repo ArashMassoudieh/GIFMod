@@ -240,6 +240,13 @@ double CMBBlock::get_val(int i, vector<int> ii)
 	if (i == physical_params::temperature)
 		return *current_temperature;
 
+	if (i == physical_params::vapor_pressure)
+		return 611 * exp(17.27*(*current_temperature) / ((*current_temperature) + 237.3));
+
+	if (i == physical_params::latent_heat_of_evaporation)
+		return 2.501e6 - 2370*(*current_temperature);
+
+
 	if (i>=50 && i<100) return fs_params[i-50];
 	if (i>=100 && i<1000) return G[ii[0]][i];
 	if (i>=1000 && i<2000) return CG[ii[0]][i];
@@ -441,6 +448,11 @@ double CMBBlock::get_val_star(int i, vector<int> ii)
 	if (i == physical_params::humidity)
 		return *current_humidity;
 
+	if (i == physical_params::vapor_pressure)
+		return 611 * exp(17.27*(*current_temperature) / ((*current_temperature) + 237.3));
+
+	if (i == physical_params::latent_heat_of_evaporation)
+		return 2.501e6 - 2370 * (*current_temperature);
 
 	if (i>=50 && i<100) return fs_params[i-50];
 	if (i>=100 && i<1000) return G_star[ii[0]][i];

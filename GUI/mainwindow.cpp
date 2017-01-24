@@ -1,5 +1,5 @@
 #ifndef GIFMOD_VERSION
-#define GIFMOD_VERSION "0.1.3"
+#define GIFMOD_VERSION "0.1.4"
 #endif
 #define RECENT "recentFiles.txt"
 #include "mainwindow.h"
@@ -1034,7 +1034,7 @@ void MainWindow::tablePropShowContextMenu(const QPoint&pos)
 		CBTCSet data;
 #ifdef GIFMOD
 		if (i1.data(TypeRole).toString().toLower().contains("precipitation"))
-			data = CPrecipitation(fullfile.toStdString()).getflow(1);
+			data = CPrecipitation(fullfile.toStdString()).getflow(1,1.0/24.0/4.0);
 		else
 #endif
 			data = CBTCSet(fullfile.toStdString(), 1);
@@ -1061,9 +1061,11 @@ void MainWindow::tablePropShowContextMenu(const QPoint&pos)
 			connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(plotTimeSeries(QAction*)));
 		}
 		QAction *action = menu->exec(tableProp->mapToGlobal(pos));
+		bool precipitation = (i1.data(TypeRole).toString().toLower().contains("precipitation")) ? true : false;
 		if (action)
 			if (action->text() == "Edit time series")
-				csvEditor *editor = new csvEditor(this, fullfile, fullfile);
+				csvEditor *editor = new csvEditor(this, precipitation, fullfile, fullfile, tableProp, tableProp->indexAt(pos));
+
 	}
 }
 void MainWindow::showHelp(int code, QString variableName)

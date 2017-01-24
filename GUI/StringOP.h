@@ -9,7 +9,7 @@ using namespace std;
 
 enum physical_params
 {
-	ks = 0, theta_s = 1, theta_r = 2, vg_alpha = 3, vg_n = 4, vg_m = 5, lambda = 6, storativity = 7, depression_storage = 12, storage_epsilon = 15, storage_n = 16, light = 18, temperature = 19, wind = 20, humidity = 21
+	ks = 0, theta_s = 1, theta_r = 2, vg_alpha = 3, vg_n = 4, vg_m = 5, lambda = 6, storativity = 7, depression_storage = 12, storage_epsilon = 15, storage_n = 16, light = 18, temperature = 19, wind = 20, humidity = 21, vapor_pressure=22, latent_heat_of_evaporation = 23
 };
 
 enum functions

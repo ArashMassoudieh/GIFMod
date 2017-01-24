@@ -69,6 +69,13 @@
       </spacer>
      </item>
      <item>
+      <widget class="QPushButton" name="pushButton">
+       <property name="text">
+        <string>Add row</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QDialogButtonBox" name="buttonBox">
        <property name="enabled">
         <bool>true</bool>
@@ -80,7 +87,7 @@
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="standardButtons">
-        <set>QDialogButtonBox::Reset|QDialogButtonBox::Save</set>
+        <set>QDialogButtonBox::Save</set>
        </property>
        <property name="centerButtons">
         <bool>false</bool>
