@@ -181,12 +181,13 @@
 1,Entity,Evapotranspiration,Aerodynamic,!,Coefficient,coefficient,!,!,float+Estimate,!,TextBox,Global,Input,No,100233,!=0;>0,W;E,Coefficient is zero;Coefficient must be non-negative
 1,Entity,Evapotranspiration,Transpiration Based on moisture content,!,Coefficient,coefficient,!,!,float+Estimate,!,TextBox,Global,Input,No,100233,!=0;>0,W;E,Coefficient is zero;Coefficient must be non-negative
 1,Entity,Evapotranspiration,Transpiration Based on Matric Potential,!,Coefficient,coefficient,!,!,float+Estimate,!,TextBox,Global,Input,No,100233,!=0;>0,W;E,Coefficient is zero;Coefficient must be non-negative
-1,Entity,Evapotranspiration,FAO-56,!,Wind coefficient,coefficient,!,!,float+Estimate,!,TextBox,Global,Input,No,100233,!=0;>0,W;E,Coefficient is zero;Coefficient must be non-negative
-1,Entity,Evapotranspiration,Transpiration Based on moisture content,!,Wilting_point_water_content,wilting_point_water_content,!,!,float+Estimate,!,TextBox,Global,Input,No,100236,(0:1),E,Wilting point should be between zero and one
-1,Entity,Evapotranspiration,Transpiration Based on moisture content,!,Field_capacity_moisture,field_capacity_moisture,!,!,float+Estimate,!,TextBox,Global,Input,No,100237,(0:1),E,Field Capacity should be between zero and one
+1,Entity,Evapotranspiration,FAO-56,!,Wind coefficient,coefficient,!,!,float+Estimate,!,TextBox,Global,Input,No,100233,!=0;>=0,W;E,Coefficient is zero;Coefficient must be non-negative
+1,Entity,Evapotranspiration,Transpiration Based on moisture content,!,Wilting point water content,wilting_point_water_content,!,!,float+Estimate,!,TextBox,Global,Input,No,100236,(0:1),E,Wilting point should be between zero and one
+1,Entity,Evapotranspiration,Transpiration Based on moisture content,!,Field capacity moisture content,field_capacity_moisture,!,!,float+Estimate,!,TextBox,Global,Input,No,100237,(0:1),E,Field Capacity should be between zero and one
 1,Entity,Evapotranspiration,Transpiration Based on Matric Potential,!,Wilting point matric potential,wilting_point_matric_potential,!,!,float+Estimate,!,TextBox,Global,Input,No,100238,<0,E,Wilting point should be between zero and one
 1,Entity,Evapotranspiration,Transpiration Based on Matric Potential,!,Field capacity matric potential,field_capacity_matric_potential,!,!,float+Estimate,!,TextBox,Global,Input,No,100239,<0,E,Field Capacity matric potential should be negative
-1,Entity,Evapotranspiration,FAO-56,!,Field_capacity_moisture,field_capacity_matric_potential,!,!,float+Estimate,!,TextBox,Global,Input,No,100239,(0:1),E,Field Capacity should be between zero and one
+1,Entity,Evapotranspiration,FAO-56,!,Field capacity moisture content,field_capacity_matric_potential,!,!,float+Estimate,!,TextBox,Global,Input,No,100239,(0:1),E,Field Capacity should be between zero and one
+1,Entity,Evapotranspiration,FAO-56,!,Wilting point water content,wilting_point_water_content,!,!,float+Estimate,!,TextBox,Global,Input,No,100236,(0:1),E,Wilting point should be between zero and one
 1,Entity,Climate settings,Climate settings,!,Temperature,temperature,!,!,filename,!,Browser;time series,Global,Select,No,100240,,,
 1,Entity,Climate settings,Climate settings,!,Wind,wind,!,!,filename,!,Browser;time series,Global,Select,No,100241,,,
 1,Entity,Constituent,Constituent,!,Settling velocity,vs,m/day;cm/day;cm/s;mm/s;ft/day;in/day;in/s,m/day,float+Estimate,!,UnitBox,Material,Input,No,100250,>=0,E,settling velocity must be non-negative
@@ -280,7 +281,7 @@
 1,Entity,Constituent,Constituent,!,Exchange rate,rate,!,!,dialog,...;Solid aqueous exchange parameters,PushButton,Global,Input,No,100318,,,
 1,Entity,Evapotranspiration,Priestley-Taylor,,Psychrometric constant,psychrometric_constant,Pa/~degreeC,Pa/~degreeC,string,66.8,UnitBox,Global,Select,No,100319,>0,E,Psychrometric constant must be non-negative
 //1,Block,Pond,Pond,!,Length,d,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100319,,,
-1,Entity,Evapotranspiration,Penman,,Wind coefficient,coefficient,!,!,string,!,TextBox,Global,Select,No,100320,!=0;>0,W;E,Coefficient is zero;Coefficient must be non-negative
+1,Entity,Evapotranspiration,Penman,,Wind coefficient,coefficient,!,!,string,!,TextBox,Global,Select,No,100320,!=0;>=0,W;E,Coefficient is zero;Coefficient must be non-negative
 1,Block,Storage,Storage,!,Suction head coefficient under dry condition,storage_epsilon,m;cm;ft;in,m,float+Estimate,0.01,UnitBox,Geometry,Input,Yes,100320,>0,E,Suction head coefficient should be positive
 1,Entity,Evapotranspiration,Penman,,Solar-radiation coefficient,coefficient_light,!,!,string,!,TextBox,Global,Select,No,100321,!=0;>0,W;E,Coefficient is zero;Coefficient must be non-negative
 1,Block,Storage,Storage,!,Suction head power under dry condition,storage_n,!,!,float+Estimate,2,TextBox,Geometry,Input,Yes,100321,>0,E,Suction head power should be positive

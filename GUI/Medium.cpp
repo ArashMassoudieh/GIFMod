@@ -539,7 +539,7 @@ void CMedium::f_load_inflows()
 		{
 			if (Blocks[i].precipitation_swch == true)
 				for (int j = 0; j<Precipitation_filename.size(); j++)
-					Blocks[i].inflow.push_back(Precipitation[j].getflow(Blocks[i].A));
+					Blocks[i].inflow.push_back(Precipitation[j].getflow(Blocks[i].A, 1.0 / 24.0 / 4));
 		}
 	}
 
@@ -4797,7 +4797,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 			}
 
 
-			if (((J_update1 == true) || (InvJ1.getnumrows() == 0)) && (fixed_connect == false))
+			if (((J_update1 == true) || (InvJ1_arma.getnumrows() == 0)) && (fixed_connect == false))
 			{
 				J_h_update_count++;
 				M_arma = Jacobian_S(X, dtt,true);
@@ -4818,7 +4818,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 				J_update1 = false;
 			}
 
-			if (((J_update2 == true) || (InvJ2.getnumrows() == 0)) && (fixed_connect == true))
+			if (((J_update2 == true) || (InvJ2_arma.getnumrows() == 0)) && (fixed_connect == true))
 			{
 				J_h_update_count++;
 				M_arma = Jacobian_S(X, dtt, true);
@@ -5070,6 +5070,7 @@ void CMedium::onestepsolve_const_ar(double dtt)
 	J_q_update_count = 0;
 	while (err>tol())
 	{
+		CVector_arma dx;
 		if ((J_update_Q == true) || (M_Q_arma.getnumrows() != X.num))
 		{
 			J_q_update_count++;
@@ -5094,17 +5095,28 @@ void CMedium::onestepsolve_const_ar(double dtt)
 			InvJ_Q_arma = inv(Preconditioner_Q_arma*M1);
 			if (InvJ_Q_arma.getnumcols() == 0)
 			{
-				set_CG_star(X_old);
-				fail_reason = "Matrix not invertible in wq";
-				failed_const = true;
-				return;
-
+				//set_CG_star(X_old);
+				//fail_reason = "Matrix not invertible in wq";
+				//failed_const = true;
 			}
 			J_update_Q = false;
 			dtt_J_q = dtt;
 		}
 
-		CVector_arma dx = dtt / dtt_J_q*(InvJ_Q_arma*Preconditioner_Q_arma*normalize_diag(F, M_Q_arma));
+		
+		if (InvJ_Q_arma.getnumcols() != 0)
+			dx = dtt / dtt_J_q*(InvJ_Q_arma*Preconditioner_Q_arma*normalize_diag(F, M_Q_arma));
+		else if (M_Q_arma.getnumcols() > 0)
+		{
+			dx = dtt/dtt_J_q*solve_ar(M_Q_arma, F);
+			if (dx.num==0)
+			{   set_CG_star(X_old);
+				fail_reason = "Matrix not invertible in wq";
+				failed_const = true; 
+				return;
+			}
+		}
+
 
 		X -= lambda*dx;
 

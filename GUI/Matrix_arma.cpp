@@ -15,6 +15,7 @@
 #include <vector>
 #include "Vector.h"
 
+
 using namespace arma;
 
 
@@ -246,7 +247,8 @@ CVector_arma operator*(CMatrix_arma &m, CVector_arma &v)
 CVector_arma operator/(CVector_arma &V, CMatrix_arma &M)
 {
 	CVector_arma X(M.getnumcols()); 
-	X.vect = solve( M.matr, V.vect);
+	bool status = solve( X.vect, M.matr, V.vect);
+	if (status == false) X.num = 0;
 	return X; 
 }
 
@@ -404,8 +406,8 @@ void CMatrix_arma::print(string s)
 CVector_arma solve_ar(CMatrix_arma &M, CVector_arma &V)
 {
 
-	CVector_arma ansr(V.num);
-	ansr.vect = V.vect / M.matr;
+	CVector_arma ansr;
+	solve(ansr.vect, M.matr,V.vect);
 		
 	return ansr;
 }

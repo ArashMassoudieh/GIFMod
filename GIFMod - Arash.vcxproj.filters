@@ -125,6 +125,15 @@
     <ClCompile Include="GUI\Matrix_arma.cpp" />
     <ClCompile Include="GUI\Medium.cpp" />
     <ClCompile Include="GUI\Vector_arma.cpp" />
+    <ClCompile Include="GUI\csvEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_csvEditor.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_csvEditor.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_ConstituentWindow.h" />
@@ -215,6 +224,9 @@
     <ClInclude Include="GUI\Vector_arma.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GeneratedFiles\GIFMOD\ui_csvEditor.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="GUI\expEditor.h" />
@@ -257,6 +269,12 @@
     <CustomBuild Include="GUI\CustomPlotZoom.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="GUI\csvEditor.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GUI\csvEditor.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Icons\log_icon.png" />
@@ -289,6 +307,11 @@
       <UniqueIdentifier>{3dafb59c-4f7b-434c-822c-a0422b48042f}</UniqueIdentifier>
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Form Files">
+      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
+      <Extensions>ui</Extensions>
+      <ParseFiles>true</ParseFiles>
     </Filter>
   </ItemGroup>
 </Project>
