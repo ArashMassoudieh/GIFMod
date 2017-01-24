@@ -78,13 +78,27 @@ void csvEditor::showContextMenu(const QPoint&p)
 		ui->tableWidget->insertRow(row);
 
 	if (ac->text() == "insert column")
+	{
+		if ((col % 2))
+			col++;
 		ui->tableWidget->insertColumn(col);
-	
+		ui->tableWidget->setHorizontalHeaderItem(col, new QTableWidgetItem("Value"));
+		ui->tableWidget->insertColumn(col);
+		ui->tableWidget->setHorizontalHeaderItem(col, new QTableWidgetItem("Time"));
+	}
 	if (ac->text() == "delete row")
 		ui->tableWidget->removeRow(row);
 	
 	if (ac->text() == "delete column")
+	{
+		if (ui->tableWidget->columnCount() == 2)
+			return;
+		if (col % 2)
+			col--;
+		ui->tableWidget->removeColumn(col + 1);
 		ui->tableWidget->removeColumn(col);
+	}
+
 
 	
 }
@@ -144,12 +158,11 @@ void csvEditor::save(QString fileName)
 	{
 		checkHeaders += (ui->tableWidget->horizontalHeaderItem(j)) ? 1 : 0;
 	}
-
 	if (checkHeaders && !precipitation)
 	{
 		QStringList list;
 		list << "names"; 
-		for (int j = 1; j < ui->tableWidget->columnCount(); j += 2)
+		for (int j = 1; j < ui->tableWidget->columnCount(); j +=2)
 		{
 			list.append(ui->tableWidget->horizontalHeaderItem(j) ? ui->tableWidget->horizontalHeaderItem(j)->text() : QString("value %1").arg((j + 1) / 2));
 		}
@@ -160,8 +173,6 @@ void csvEditor::save(QString fileName)
 	for (int i = 0; i < ui->tableWidget->rowCount(); i++)
 	{
 		QStringList list;
-		if (i)
-			list << "/n";
 		for (int j = 0; j < ui->tableWidget->columnCount(); j++)
 		{
 			qDebug() << i << j;
@@ -169,6 +180,9 @@ void csvEditor::save(QString fileName)
 			qDebug() << i<<j<< (ui->tableWidget->item(i, j) ? ui->tableWidget->item(i, j)->text() : "");
 		}
 		QString line = list.join(",");
+		bool lastRow = (i == ui->tableWidget->rowCount() - 1) ? true : false;
+		if (!lastRow)
+			line.append("\n");
 		file << line.toStdString() ;
 	}
 	file.close();
@@ -283,6 +297,8 @@ void csvEditor::on_horizontal_sectionClicked(int i)
 
 void csvEditor::on_horizontal_sectionDoubleClicked(int i)
 {
+	if (!(i % 2))
+		return; //does not rename the time columns
 	bool ok;
 	QString currentHeader = (ui->tableWidget->horizontalHeaderItem(i)) ? ui->tableWidget->horizontalHeaderItem(i)->text() : "";
 	QString text = QInputDialog::getText(this, QString("Column number %1 header").arg(i),
