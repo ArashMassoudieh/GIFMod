@@ -98,9 +98,6 @@ void csvEditor::showContextMenu(const QPoint&p)
 		ui->tableWidget->removeColumn(col + 1);
 		ui->tableWidget->removeColumn(col);
 	}
-
-
-	
 }
 
 void csvEditor::load(QString fileName)
@@ -195,6 +192,7 @@ void csvEditor::append(QString text)
 	//ui->textEdit->append(QTime::currentTime().toString().append(", ").append(text));
 	//QApplication::processEvents();
 }
+
 void csvEditor::append(vector<string> text)
 {
 //	QStringList list;
@@ -202,6 +200,7 @@ void csvEditor::append(vector<string> text)
 //		list.append(QString::fromStdString(text[i]));
 //	append(list);
 }
+
 void csvEditor::setHtml(vector<string> text)
 {
 //	QString html;
@@ -209,6 +208,7 @@ void csvEditor::setHtml(vector<string> text)
 //		html.append(QString::fromStdString(text[i]));
 ///	ui->textEdit->setHtml(html);
 }
+
 void csvEditor::append(QStringList text)
 {
 //	for each (QString line in text)
@@ -219,6 +219,7 @@ void csvEditor::on_pushButton_clicked()
 {
 		ui->tableWidget->setRowCount(ui->tableWidget->rowCount() + 1);
 }
+
 	void csvEditor::on_buttonBox_clicked(QAbstractButton * button)
 {
 	if (button->text() == "Add row")
@@ -259,6 +260,7 @@ void csvEditor::on_pushButton_clicked()
 //		}
 //	}
 }
+
 void csvEditor::writetotempfile()
 {
 //	QString fileName = (!logfilename.isEmpty()) ? logfilename : mainWindow->modelPathname() + "/temp.log";
@@ -306,5 +308,4 @@ void csvEditor::on_horizontal_sectionDoubleClicked(int i)
 		currentHeader, &ok);
 	if (ok && !text.isEmpty())
 		ui->tableWidget->setHorizontalHeaderItem(i, new QTableWidgetItem(text));
-
 }
