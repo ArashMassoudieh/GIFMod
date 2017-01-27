@@ -309,6 +309,7 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
     <ClCompile Include="GUI\Well.cpp" />
     <ClCompile Include="GUI\wizardDialog.cpp" />
     <ClCompile Include="GUI\Sensor.cpp" />
+    <ClCompile Include="TableWidgetDateItem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_ConstituentWindow.h" />
@@ -335,6 +336,7 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
     <ClInclude Include="GUI\Controller.h" />
     <ClInclude Include="GUI\Copula.h" />
     <ClInclude Include="GUI\Crxtterm.h" />
+    <ClInclude Include="TableWidgetDateItem.h" />
     <CustomBuild Include="GUI\CustomPlotZoom.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing CustomPlotZoom.h...</Message>
@@ -397,12 +399,12 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
     </CustomBuild>
+    <ClInclude Include="GUI\Header1.h" />
     <ClInclude Include="GUI\Matrix_arma.h" />
     <ClInclude Include="GUI\node.h" />
     <ClInclude Include="GUI\ObjectiveFunction.h" />
     <ClInclude Include="GUI\texfonts.h" />
     <ClInclude Include="GUI\Vector_arma.h" />
-    <ClInclude Include="Header.h" />
     <CustomBuild Include="GUI\expEditor.h">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing expEditor.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\files\moc_%(Filename).cpp</Outputs>

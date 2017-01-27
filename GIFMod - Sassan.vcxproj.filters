@@ -196,6 +196,9 @@
     <ClCompile Include="GeneratedFiles\files\moc_csvEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="TableWidgetDateItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GUI\Binary.h" />
@@ -271,9 +274,6 @@
     <ClInclude Include="GUI\colorScheme.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="Header.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
     <ClInclude Include="GUI\ObjectiveFunction.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
@@ -326,6 +326,12 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_csvEditor.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\Header1.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TableWidgetDateItem.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
