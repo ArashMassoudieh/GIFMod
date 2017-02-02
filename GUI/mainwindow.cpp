@@ -1,5 +1,5 @@
 #ifndef GIFMOD_VERSION
-#define GIFMOD_VERSION "0.1.5"
+#define GIFMOD_VERSION "0.1.6"
 #endif
 #define RECENT "recentFiles.txt"
 #include "mainwindow.h"
@@ -46,7 +46,7 @@
 //#ifdef GWA
 #include "mainwindow.h"
 #include "entity.h"
-
+#include "folders.h"
 
 
 void MainWindow::on_actionAdd_Well_triggered()
@@ -257,7 +257,9 @@ MainWindow::MainWindow(QWidget *parent, QString applicationName, QString shortNa
 
 void MainWindow::readRecentFilesList()
 {
-	ifstream file(RECENT);
+//	qDebug() << localAppFolderAddress();
+//	QString add = localAppFolderAddress();
+	ifstream file(localAppFolderAddress().toStdString()+RECENT);
 	if (file.good())
 	{
 		string line;
@@ -300,7 +302,7 @@ void MainWindow::addToRecentFiles(QString fileName, bool addToFile)
 
 		if (addToFile)
 		{
-			ofstream file(RECENT, fstream::app);
+			ofstream file(localAppFolderAddress().toStdString() + RECENT, fstream::app);
 			if (file.good())
 				file << fileName.toStdString() << endl;
 			file.close();
@@ -2402,7 +2404,7 @@ void MainWindow::removeFromRecentList(QAction* selectedFileAction)
 }
 void MainWindow::writeRecentFilesList()
 {
-	ofstream file(RECENT);
+	ofstream file(localAppFolderAddress().toStdString() + RECENT);
 	if (file.good())
 	{
 		int i = recentFiles.removeDuplicates();

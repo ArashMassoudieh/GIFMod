@@ -336,6 +336,7 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
     <ClInclude Include="GUI\Controller.h" />
     <ClInclude Include="GUI\Copula.h" />
     <ClInclude Include="GUI\Crxtterm.h" />
+    <ClInclude Include="GUI\folders.h" />
     <ClInclude Include="GUI\TableWidgetDateItem.h" />
     <CustomBuild Include="GUI\CustomPlotZoom.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

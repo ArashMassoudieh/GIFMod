@@ -331,6 +331,9 @@
     <ClInclude Include="GUI\TableWidgetDateItem.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
+    <ClInclude Include="GUI\folders.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="GUI\expEditor.h" />

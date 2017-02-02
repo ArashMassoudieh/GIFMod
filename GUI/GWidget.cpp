@@ -817,6 +817,7 @@ void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QStri
 		{
 			float factor = 1;
 			float shift = 0;
+			bool remove = false;
 			int index = model->getblocksq(nodeNames[i].toStdString());
 			if (propertyName == "Storage") {
 				data.push_back(model->ANS[index]);
@@ -831,6 +832,7 @@ void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QStri
 				{
 					n->color.color1 = QColor(255, 255, 255, 128);
 					removedNodes.append(nodeNames[i]);
+					remove = true;
 				}
 				else
 				{
@@ -850,8 +852,11 @@ void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QStri
 			{
 				data.push_back(model->ANS[model->Connector.size() + 2 * model->Blocks.size() + index]);
 			}
-			factors.push_back(factor);
-			shifts.push_back(shift);
+			if (!remove)
+			{
+				factors.push_back(factor);
+				shifts.push_back(shift);
+			}
 		}
 		for each (QString rN in removedNodes)
 			nodeNames.removeAll(rN);
