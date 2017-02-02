@@ -33,7 +33,7 @@ int max(int x, int y)
 	return -min(-x, -y);
 }
 
-QString float2date(const float d, QString format, bool ignorefirst50years)
+QString float2date(const double d, QString format, bool ignorefirst50years)
 {
 	if (ignorefirst50years && d < 18264)
 		return QString::number(d);
@@ -41,7 +41,7 @@ QString float2date(const float d, QString format, bool ignorefirst50years)
 	qint64 julian = xldate2julian(d);
 	QDate date = QDate::fromJulianDay(julian);
 
-	//			QDateTime r = QDateTime::fromTime_t(getValue(propName).toFloat() * 86400 - 2209161600, QTimeZone(0));
+	//			QDateTime r = QDateTime::fromTime_t(getValue(propName).todouble() * 86400 - 2209161600, QTimeZone(0));
 	//			return r.toString("MMM dd yyyy HH:mm");// QDateTime(getValue(propName));
 	return date.toString(format); // "MMM dd yyyy");// QDateTime(getValue(propName));
 }
@@ -71,7 +71,8 @@ int dayOfYear(const qint64 xldate)
 double dayOfYear(const double xldate)
 {
 	double fraction = fmod(xldate, 1.0);
-	qint64 julian = xldate2julian(xldate);
+	qint64 xldateint = xldate;
+	qint64 julian = xldate2julian(xldateint);
 	QDate date = QDate::fromJulianDay(julian);
 	double dayofyear = date.dayOfYear() + fraction;
 	return dayofyear;
@@ -91,3 +92,56 @@ std::string GetSystemFolderPaths(int csidl)
 	else return "";
 }
 */
+double xldate2julian(const double xldate)
+{
+	double julian = xldate + 2415020;
+	if (xldate >= 60)
+		julian--;
+
+	return julian;
+}
+
+double julian2xldate(const double juliandate)
+{
+	double date = juliandate - 2415020;// QDate(1900, 1, 1).toJulianDay();
+	if (date >= 60)
+		date++;
+	return date;
+}
+
+double timetodayfraction(int hh, int mm, int ss)
+{
+	double fraction;
+	fraction = ss / 60.0;
+	fraction = (fraction + mm) / 60.0;
+	fraction = (fraction + hh) / 24.0;
+	return fraction;
+}
+
+QList<int> dayfractiontotime(double dayFraction)
+{
+	QTime qtime;
+	dayFraction = fmod(dayFraction, 1.0);
+	int hh = dayFraction * 24;
+	dayFraction = dayFraction * 24.0 - hh;
+	int mm = dayFraction * 60;
+	dayFraction = dayFraction * 60.0 - mm;
+	int ss = dayFraction* 60.0;
+
+	return QList<int>() << hh << mm << ss;
+}
+
+QString float2datetime(const double d, QString format, bool ignorefirst50years)
+{
+	if (ignorefirst50years && d < 18264)
+		return QString::number(d);
+
+	double julian = xldate2julian(d);
+	QDate date = QDate::fromJulianDay(julian);
+	QList<int> timeList = dayfractiontotime(d);
+	QTime time = QTime(timeList[0], timeList[1], timeList[2]);
+	QDateTime dateTime = QDateTime(date, time);
+	//			QDateTime r = QDateTime::fromTime_t(getValue(propName).todouble() * 86400 - 2209161600, QTimeZone(0));
+	//			return r.toString("MMM dd yyyy HH:mm");// QDateTime(getValue(propName));
+	return dateTime.toString(format); // "MMM dd yyyy");// QDateTime(getValue(propName));
+}

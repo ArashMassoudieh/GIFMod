@@ -38,6 +38,10 @@ csvEditor::csvEditor(MainWindow *parent, bool precipitationSeries, QString title
 		ui->tableWidget->setHorizontalHeaderLabels(QStringList() << "Start time" << "End time" << "Volume");
 	else 
 		ui->tableWidget->setHorizontalHeaderLabels(QStringList() << "Time" << "Value");
+	for (int i = 0; i < ui->tableWidget->rowCount(); i++)
+		for (int j = 0; j < ui->tableWidget->columnCount(); j += 2)
+			ui->tableWidget->setItem(i, j, new TableWidgetDateItem());
+
 	load(fileName);
 	show();
 //	load("D:/a.csv");
@@ -75,7 +79,11 @@ void csvEditor::showContextMenu(const QPoint&p)
 		return;
 
 	if (ac->text() == "insert row")
+	{
 		ui->tableWidget->insertRow(row);
+		for (int i = 0; i < ui->tableWidget->columnCount(); i+=2)
+			ui->tableWidget->setItem(row, i, new TableWidgetDateItem());
+	}
 
 	if (ac->text() == "insert column")
 	{
@@ -85,6 +93,8 @@ void csvEditor::showContextMenu(const QPoint&p)
 		ui->tableWidget->setHorizontalHeaderItem(col, new QTableWidgetItem("Value"));
 		ui->tableWidget->insertColumn(col);
 		ui->tableWidget->setHorizontalHeaderItem(col, new QTableWidgetItem("Time"));
+		for (int i = 0; i < ui->tableWidget->rowCount(); i++)
+			ui->tableWidget->setItem(i, col, new TableWidgetDateItem());
 	}
 	if (ac->text() == "delete row")
 		ui->tableWidget->removeRow(row);
@@ -125,8 +135,6 @@ void csvEditor::load(QString fileName)
 			if (list[0].toLower().contains("names") && !precipitation)
 			{
 				if (col > 0) {
-//					if (ui->tableWidget->columnCount() < 2 * (col))
-//						ui->tableWidget->setColumnCount(2 * (col));
 					if (ui->tableWidget->columnCount() < 2 * (list.size() - 1))
 						ui->tableWidget->setColumnCount(2 * (list.size() - 1));
 
@@ -135,7 +143,24 @@ void csvEditor::load(QString fileName)
 				}
 				addRow = 0;;
 			}
-			else ui->tableWidget->setItem(row, col, new QTableWidgetItem(list[col]));
+			else
+			{ 
+				if (!precipitation)
+				{
+					if (col % 2 == 0) // time columns
+						ui->tableWidget->setItem(row, col, new TableWidgetDateItem(list[col])); 
+					else //value column
+						ui->tableWidget->setItem(row, col, new QTableWidgetItem(list[col]));
+				}
+				else //precipitation table
+				{
+					if (col < 2 ) // time columns
+						ui->tableWidget->setItem(row, col, new TableWidgetDateItem(list[col]));
+					else //value column
+						ui->tableWidget->setItem(row, col, new QTableWidgetItem(list[col]));
+				}
+
+			}
 			qDebug() << row << col;
 		}
 		row += addRow;
@@ -147,7 +172,7 @@ void csvEditor::load(QString fileName)
 void csvEditor::save(QString fileName)
 {
 	ofstream file(fileName.toStdString());
-	if (!file.good()) 
+	if (!file.good())
 		return;
 
 	int checkHeaders = 0;
@@ -155,6 +180,20 @@ void csvEditor::save(QString fileName)
 	{
 		checkHeaders += (ui->tableWidget->horizontalHeaderItem(j)) ? 1 : 0;
 	}
+	for (int j = 0; j < ui->tableWidget->columnCount(); j++)
+		if (ui->tableWidget->horizontalHeaderItem(j + 1)->text() == "Time")
+		{
+			for (int i = 0; i < ui->tableWidget->rowCount(); i++)
+			{
+				if (ui->tableWidget->item(i, j)->data(1000).toInt() == -1)
+				{
+					QMessageBox::critical(this, "Error", "There is undefined value(s) in 'Time' columns.\nTable could not be saved with undefined value(s).");
+					return;
+				}
+			}
+		}
+
+		
 	if (checkHeaders && !precipitation)
 	{
 		QStringList list;
@@ -173,8 +212,21 @@ void csvEditor::save(QString fileName)
 		for (int j = 0; j < ui->tableWidget->columnCount(); j++)
 		{
 			qDebug() << i << j;
-			list.append(ui->tableWidget->item(i, j) ? ui->tableWidget->item(i, j)->text() : "");
-			qDebug() << i<<j<< (ui->tableWidget->item(i, j) ? ui->tableWidget->item(i, j)->text() : "");
+			if (!precipitation) // time vaule tables
+			{
+				if (j%2==0)//time columns
+					list.append(ui->tableWidget->item(i, j) ? ui->tableWidget->item(i, j)->data(1000).toString() : "");
+				else// value columns
+					list.append(ui->tableWidget->item(i, j) ? ui->tableWidget->item(i, j)->text() : "");
+			}
+			else // precipitation tables
+			{
+				if (j < 2)//time columns
+					list.append(ui->tableWidget->item(i, j) ? ui->tableWidget->item(i, j)->data(1000).toString() : "");
+				else// value columns
+					list.append(ui->tableWidget->item(i, j) ? ui->tableWidget->item(i, j)->text() : "");
+			}
+			qDebug() << i << j << list.last();
 		}
 		QString line = list.join(",");
 		bool lastRow = (i == ui->tableWidget->rowCount() - 1) ? true : false;
@@ -218,6 +270,10 @@ void csvEditor::append(QStringList text)
 void csvEditor::on_pushButton_clicked()
 {
 		ui->tableWidget->setRowCount(ui->tableWidget->rowCount() + 1);
+		int row = ui->tableWidget->rowCount() - 1;
+		for (int i = 0; i < ui->tableWidget->columnCount(); i += 2)
+			ui->tableWidget->setItem(row, i, new TableWidgetDateItem());
+
 }
 
 	void csvEditor::on_buttonBox_clicked(QAbstractButton * button)

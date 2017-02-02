@@ -9,6 +9,7 @@
 
 #include "PropModel.h"
 #include "qtableview.h"
+#include "tablewidgetDateItem.h"
 
 class MainWindow;
 
