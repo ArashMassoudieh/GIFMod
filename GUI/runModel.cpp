@@ -1704,6 +1704,7 @@ void CMediumSet::g_get_constituents()
 		CConstituent S(_settling_model);
 		S.name = e->Name().toStdString();
 		S.exchange_rate_scale_factor = CStringOP(e->val("exchange_rate_factor").toStdString());
+		if (e->val("mobile") != "") S.mobile = e->val("mobile").toBool();
 		
 		//S.diffusion = e->val("diffusion").toFloat(); 
 		for each (QString code in e->codes())

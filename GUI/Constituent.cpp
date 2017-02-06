@@ -61,6 +61,7 @@ CConstituent& CConstituent::operator==(const CConstituent& CC)
 	vs_coefficient = CC.vs_coefficient;
 	settling_parameters = CC.settling_parameters;
 	settling_model = CC.settling_model;
+	mobile = CC.mobile;
 	return *this;
 
 }
@@ -95,6 +96,7 @@ CConstituent::CConstituent(const CConstituent &CC)
 	vs_coefficient = CC.vs_coefficient;
 	settling_parameters = CC.settling_parameters;
 	settling_model = CC.settling_model;
+	mobile = CC.mobile;
 }
 
 double CConstituent::get_capacity(string &i) const

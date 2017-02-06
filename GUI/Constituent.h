@@ -51,5 +51,6 @@ public:
 	string settling_model;
 	vector<double> settling_parameters;
 	double CConstituent::get_val(int i);
+	bool mobile = true; 
 };
 
