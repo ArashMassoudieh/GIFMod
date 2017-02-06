@@ -250,7 +250,7 @@ copy *.txt $(OutDir)
     <ClCompile Include="GUI\Copula.cpp" />
     <ClCompile Include="GUI\Copula_GWA.cpp" />
     <ClCompile Include="GUI\Crxtterm.cpp" />
-    <ClCompile Include="GUI\csvEditor.cpp" />
+    <ClCompile Include="GUI\csvEditor2.cpp" />
     <ClCompile Include="GUI\CustomPlotZoom.cpp" />
     <ClCompile Include="GUI\delegate.cpp" />
     <ClCompile Include="GUI\Distribution.cpp" />
