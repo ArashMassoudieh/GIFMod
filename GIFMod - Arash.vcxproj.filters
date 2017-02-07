@@ -125,14 +125,14 @@
     <ClCompile Include="GUI\Matrix_arma.cpp" />
     <ClCompile Include="GUI\Medium.cpp" />
     <ClCompile Include="GUI\Vector_arma.cpp" />
-    <ClCompile Include="GUI\csvEditor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_csvEditor.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_csvEditor.cpp">
       <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\csvEditor2.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -3614,14 +3614,14 @@ CVector_arma CMedium::getres_Q(CVector_arma &X, double dtt)
 
 						if (w()*Q_adv + (1 - w())*Q_adv_star>0)
 						{
-							F[get_member_no(getblocksq(Connector[i].Block1ID), p, l, k)] += (w()*Q_adv*Blocks[getblocksq(Connector[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block1ID)].CG_star[k][get_member_no(p, l)]);
-							F[get_member_no(getblocksq(Connector[i].Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connector[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block1ID)].CG_star[k][get_member_no(p, l)]);
+							F[get_member_no(getblocksq(Connector[i].Block1ID), p, l, k)] += (w()*Q_adv*Blocks[getblocksq(Connector[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block1ID)].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
+							F[get_member_no(getblocksq(Connector[i].Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connector[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block1ID)].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
 
 						}
 						if (Q_adv<0)
 						{
-							F[get_member_no(getblocksq(Connector[i].Block1ID), p, l, k)] += (w()*Q_adv*Blocks[getblocksq(Connector[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block2ID)].CG_star[k][get_member_no(p, l)]);
-							F[get_member_no(getblocksq(Connector[i].Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connector[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block2ID)].CG_star[k][get_member_no(p, l)]);
+							F[get_member_no(getblocksq(Connector[i].Block1ID), p, l, k)] += (w()*Q_adv*Blocks[getblocksq(Connector[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block2ID)].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
+							F[get_member_no(getblocksq(Connector[i].Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connector[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block2ID)].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
 						}
 
 					}
@@ -3655,7 +3655,7 @@ CVector_arma CMedium::getres_Q(CVector_arma &X, double dtt)
 				{
 					if (p == -2)
 					{
-						double exchange = Connector[i].A*(w()*Connector[i].dispersion[k] + (1 - w())*Connector[i].dispersion_star[k]) / Connector[i].d*min(Heavyside(get_capacity_star(getblocksq(Connector[i].Block2ID), l, p) - 1e-13), Heavyside(get_capacity_star(getblocksq(Connector[i].Block1ID), l, p) - 1e-13));
+						double exchange = Connector[i].A*(w()*Connector[i].dispersion[k] + (1 - w())*Connector[i].dispersion_star[k]) / Connector[i].d*min(Heavyside(get_capacity_star(getblocksq(Connector[i].Block2ID), l, p) - 1e-13), Heavyside(get_capacity_star(getblocksq(Connector[i].Block1ID), l, p) - 1e-13))*RXN().cons[k].mobile;
 						double term1 = w()*Blocks[getblocksq(Connector[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[getblocksq(Connector[i].Block2ID)].CG_star[k][get_member_no(p, l)];
 						double term2 = w()*Blocks[getblocksq(Connector[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[getblocksq(Connector[i].Block1ID)].CG_star[k][get_member_no(p, l)];
 						exchange *= (term1 - term2);
