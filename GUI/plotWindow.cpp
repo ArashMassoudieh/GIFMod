@@ -231,7 +231,8 @@ QCPGraph* plotWindow::addPercentilePlot(QString name, QMap<QString, double> data
 	return 0;
 }
 
-QCPGraph* plotWindow::addScatterPlot(QString name, QVector<double> t, QVector<double> y, bool reformatX, plotformat format)
+//QCPGraph* plotWindow::addScatterPlot(QString name, QVector<double> t, QVector<double> y, bool reformatX, plotformat format)
+QCPGraph* plotWindow::addScatterPlot(QString name, QVector<double> t, QVector<double> y, plotformat format)
 {
 	demoName = name; // "Sinc Scatter Demo";
 	CustomPlotZoom *customPlot = ui->customPlot;
@@ -307,6 +308,11 @@ QCPGraph* plotWindow::addScatterPlot(QString name, QVector<double> t, QVector<do
 	// pass data to graphs and let CustomPlotZoom determine the axes ranges so the whole thing is visible:
 	//	customPlot->graph(0)->setData(x0, yConfUpper);
 	//	customPlot->graph(1)->setData(x0, yConfLower);
+	if (format.xAxisTimeFormat)
+		for (int i = 0; i < t.size(); i++)
+			t[i] = xtoTime(t[i]);
+	
+	
 	graph->setData(t, y);
 /*	QVector<qreal> y1(y.count());
 	for (int i = 0; i < y.count(); i++)
@@ -317,7 +323,7 @@ QCPGraph* plotWindow::addScatterPlot(QString name, QVector<double> t, QVector<do
 	//	customPlot->graph(3)->rescaleAxes(true);
 	// setup look of bottom tick labels:
 	
-	if (reformatX)
+	if (format.xAxisTimeFormat)
 	{
 		QDateTime start = QDateTime::fromTime_t(t[0], QTimeZone(0));
 		QDateTime end = QDateTime::fromTime_t(t[t.count() - 1], QTimeZone(0));
@@ -512,6 +518,7 @@ void plotWindow::contextMenuEvent(QContextMenuEvent *event)
 		menu.addSeparator();
 		QMenu *prop = menu.addMenu("Graph Properties");
 		QMenu *xAxis = prop->addMenu("X-Axis");
+		xAxis->addActions(subActions(format[0].axisTimeFormats, format[0].xAxisTimeFormat, xAxis, 0, "xAxisTimeFormat"));
 		xAxis->addActions(subActions(format[0].axisTypes, format[0].xAxisType, xAxis, 0, "xAxisType"));
 		QMenu *yAxis = prop->addMenu("Y-Axis");
 		yAxis->addActions(subActions(format[0].axisTypes, format[0].yAxisType, yAxis, 0, "yAxisType"));
@@ -555,6 +562,21 @@ void plotWindow::contextMenuEvent(QContextMenuEvent *event)
 				//			previousFormat = format;
 				if (prop == "xAxisType")
 					format[i].xAxisType = QCPAxis::ScaleType(format[i].axisTypes[text]);
+				if (prop == "xAxisTimeFormat")
+				{
+					bool newTimeFormat = (text == "1") ? true : false;
+					if (format[i].xAxisTimeFormat != newTimeFormat)
+					{
+						format[i].xAxisTimeFormat = newTimeFormat;
+						for (int c = 0; c < )
+							if (newTimeFormat)
+								= xToTime();
+							else
+								= timeToX();
+					}
+					
+				}
+					
 				if (prop == "yAxisType")
 					format[i].yAxisType = QCPAxis::ScaleType(format[i].axisTypes[text]);
 				if (prop == "legend")

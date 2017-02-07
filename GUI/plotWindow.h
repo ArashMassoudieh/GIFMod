@@ -26,9 +26,11 @@ struct plotformat{
 	QCPAxis::ScaleType xAxisType = QCPAxis::stLinear;
 	QCPAxis::ScaleType yAxisType = QCPAxis::stLinear;
 	QString xAxisLabel = "", yAxisLabel = "";
+	bool xAxisTimeFormat = false;
 	QMap<QString, int> lineStyles = QMap<QString, int>{ { "Line", QCPGraph::lsLine }, { "None", QCPGraph::lsNone } };
 	QMap<QString, int> scatterStyles = QMap<QString, int>{ { "None", QCPScatterStyle::ssNone }, { "Cross", QCPScatterStyle::ssCross }, { "Cross Circle", QCPScatterStyle::ssCrossCircle }, { "Dot", QCPScatterStyle::ssDot } };
 	QMap<QString, int> axisTypes = QMap<QString, int>{ { "Normal", QCPAxis::ScaleType::stLinear }, { "Log", QCPAxis::ScaleType::stLogarithmic } };
+	QMap<QString, int> axisTimeFormats = QMap<QString, int>{ { "Number", 0 },{ "Time", 1 } };
 	QMap<QString, int> penStyles = QMap<QString, int>{ { "Solid Line", Qt::SolidLine }, { "Dot Line", Qt::DotLine }, { "Dash Line", Qt::DashLine }, { "Dash Dot Line", Qt::DashDotLine }, { "Dash Dot Dot Line", Qt::DashDotDotLine } };
 	QMap<QString, int> colors = QMap<QString, int> { { "Red", Qt::red }, { "Black", Qt::black }, { "Blue", Qt::blue }, { "Green", Qt::green }, { "Cyan", Qt::cyan }, { "Dark Green", Qt::darkGreen },
 	{ "Dark Red", Qt::darkRed }, { "Dark Blue", Qt::darkBlue }, { "Dark Gray", Qt::darkGray }, { "Magenta", Qt::magenta }, { "Light Gray", Qt::lightGray }, { "Yellow", Qt::yellow } };
@@ -45,7 +47,8 @@ public:
 	explicit plotWindow(GraphWidget *parent = 0, QString windowTitle = "Plot Window", QString graphTitle = "");
 //  explicit plotWindow(QWidget *parent, QVector<double> &x, QVector<double> &y);
   ~plotWindow();
-  QCPGraph* addScatterPlot(QString name, QVector<double> x, QVector<double> y, bool reformatX = true, plotformat format = plotformat());
+//  QCPGraph* addScatterPlot(QString name, QVector<double> x, QVector<double> y, bool reformatX = true, plotformat format = plotformat());
+  QCPGraph* addScatterPlot(QString name, QVector<double> x, QVector<double> y, plotformat format = plotformat());
   QCPGraph* addScatterPlot(QCPGraph *g, plotformat format);
   QCPGraph* addDotPlot(vector<double> &x, vector<double> &y, const QString &name, plotformat format = plotformat());
   QCPGraph* addScatterDotPlot(CBTCSet &ANS, int index, QString name = "", bool convertXtoTime = true, plotformat format = plotformat()) {
@@ -109,14 +112,22 @@ public:
 		  convertXtoTime = false;
 	  for (int i = 0; i < ANS.n; i++)
 	  {
-		  if (convertXtoTime)
-			  x[i] = ANS.t[i] * 86400 - 2209161600;
-		  else
+//		  if (convertXtoTime)
+//			  x[i] = ANS.t[i] * 86400 - 2209161600;
+//		  else
 			  x[i] = ANS.t[i];
 		  y[i] = ANS.C[i];
 	  }
-	  return addScatterPlot(name, x, y, convertXtoTime, format);
+	  format.xAxisTimeFormat = convertXtoTime;
+	  return addScatterPlot(name, x, y, format);
   };
+  double xtoTime(const double &x) {
+	  return x * 86400 - 2209161600;
+  };
+  double timetoX(const double &time) {
+	  return (time + 2209161600) / 86400;
+  };
+
   vector<QCPGraph*> addScatterPlot(CBTCSet DataSet, bool convertTimes = true, plotformat format = plotformat()) {
 	  vector<QCPGraph*> r;
 	  format.legend = false;
