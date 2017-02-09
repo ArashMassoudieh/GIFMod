@@ -131,7 +131,10 @@
     <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_csvEditor.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GUI\csvEditor2.cpp">
+    <ClCompile Include="GUI\csvEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\TableWidgetDateItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -226,6 +229,9 @@
     </ClInclude>
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_csvEditor.h">
       <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\TableWidgetDateItem.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
