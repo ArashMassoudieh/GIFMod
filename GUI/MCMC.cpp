@@ -839,21 +839,20 @@ void CMCMC::getrealizations(CBTCSet &MCMCout)
 		realized_paramsList.append(j, param);
 	}
 	qDebug() << 612;
-	qDebug() << "realized_paramsList_size: " << realized_paramsList.BTC[0].n<<endl;
 	//progress->setValue(0);
 	double pValue = 0;
 	double inc = 100.0 / n_realizations;
-	
 	for (int jj = 0; jj <= n_realizations/numberOfThreads; jj++)
 	{
-		qDebug() << 613;
 #ifdef GIFMOD
 		vector<vector<CMediumSet>> Sys1(numberOfThreads);
 #endif
 #ifdef GWA
 		vector<vector<CGWA>> Sys1(numberOfThreads);
 #endif
-		for (int i = 0; i < numberOfThreacnumberOfThreads);
+		for (int i = 0; i < numberOfThreads; i++) Sys1[i].resize(1);
+
+		omp_set_num_threads(numberOfThreads);
 #pragma omp parallel for 
 		for (int j = 0; j < min(numberOfThreads, n_realizations - jj*numberOfThreads); j++)
 		{

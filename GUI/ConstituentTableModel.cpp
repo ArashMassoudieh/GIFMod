@@ -136,11 +136,11 @@ bool ConstituentTableModel::setData(const QModelIndex & index, const QVariant & 
 	item.Value = "0";// value.toFloat();
 	
 	
-	node->constituentInitialCondition().append(item);
+//	node->constituentInitialCondition().append(item);
 	insertRows(rowCount(), 1);
 	if (node->experimentName() != "All experiments")
 	{
-		//		node->particleInitialCondition().append(item);
+		node->constituentInitialCondition().append(item);
 		gWidget->log(QString("Constituent initial condition (%1, %2, %3, %4) added to block: %5 for experiment %6.").arg(item.Constituent).arg(item.Particle).arg(item.Model).arg(item.Value).arg(node->Name()).arg(node->experimentName()));
 		return true;
 	}
