@@ -231,7 +231,8 @@ QCPGraph* plotWindow::addPercentilePlot(QString name, QMap<QString, double> data
 	return 0;
 }
 
-QCPGraph* plotWindow::addScatterPlot(QString name, QVector<double> t, QVector<double> y, bool reformatX, plotformat format)
+//QCPGraph* plotWindow::addScatterPlot(QString name, QVector<double> t, QVector<double> y, bool reformatX, plotformat format)
+QCPGraph* plotWindow::addScatterPlot(QString name, QVector<double> t, QVector<double> y, plotformat format)
 {
 	demoName = name; // "Sinc Scatter Demo";
 	CustomPlotZoom *customPlot = ui->customPlot;
@@ -307,6 +308,11 @@ QCPGraph* plotWindow::addScatterPlot(QString name, QVector<double> t, QVector<do
 	// pass data to graphs and let CustomPlotZoom determine the axes ranges so the whole thing is visible:
 	//	customPlot->graph(0)->setData(x0, yConfUpper);
 	//	customPlot->graph(1)->setData(x0, yConfLower);
+	if (format.xAxisTimeFormat)
+		for (int i = 0; i < t.size(); i++)
+			t[i] = xtoTime(t[i]);
+	
+	
 	graph->setData(t, y);
 /*	QVector<qreal> y1(y.count());
 	for (int i = 0; i < y.count(); i++)
@@ -317,7 +323,7 @@ QCPGraph* plotWindow::addScatterPlot(QString name, QVector<double> t, QVector<do
 	//	customPlot->graph(3)->rescaleAxes(true);
 	// setup look of bottom tick labels:
 	
-	if (reformatX)
+	if (format.xAxisTimeFormat)
 	{
 		QDateTime start = QDateTime::fromTime_t(t[0], QTimeZone(0));
 		QDateTime end = QDateTime::fromTime_t(t[t.count() - 1], QTimeZone(0));
@@ -512,7 +518,9 @@ void plotWindow::contextMenuEvent(QContextMenuEvent *event)
 		menu.addSeparator();
 		QMenu *prop = menu.addMenu("Graph Properties");
 		QMenu *xAxis = prop->addMenu("X-Axis");
-		xAxis->addActions(subActions(format[0].axisTypes, format[0].xAxisType, xAxis, 0, "xAxisType"));
+		xAxis->addActions(subActions(format[0].axisTimeFormats, format[0].xAxisTimeFormat, xAxis, 0, "xAxisTimeFormat", format[0].xAxisType == QCPAxis::stLinear));
+		xAxis->addSeparator();
+		xAxis->addActions(subActions(format[0].axisTypes, format[0].xAxisType, xAxis, 0, "xAxisType", !format[0].xAxisTimeFormat));
 		QMenu *yAxis = prop->addMenu("Y-Axis");
 		yAxis->addActions(subActions(format[0].axisTypes, format[0].yAxisType, yAxis, 0, "yAxisType"));
 		QMenu *legend = prop->addMenu("Legend");
@@ -555,6 +563,48 @@ void plotWindow::contextMenuEvent(QContextMenuEvent *event)
 				//			previousFormat = format;
 				if (prop == "xAxisType")
 					format[i].xAxisType = QCPAxis::ScaleType(format[i].axisTypes[text]);
+				if (prop == "xAxisTimeFormat")
+				{
+					bool newTimeFormat = text.toLower().contains("time");
+					if (format[i].xAxisTimeFormat != newTimeFormat)
+					{
+						format[i].xAxisTimeFormat = newTimeFormat;
+						int n = ui->customPlot->graph(i)->data()->keys().size();
+						QVector<double> x(n), y(n);
+						QCPData data;
+						QList<qreal> oldX = ui->customPlot->graph(i)->data()->keys();
+						QList<QCPData> oldY = ui->customPlot->graph(i)->data()->values();
+						for (int c = 0; c < n; ++c)
+						{
+							qDebug() << c;
+							if (newTimeFormat)
+								x[c] = xtoTime(oldX[c]);
+							else
+								x[c] = timetoX(oldX[c]);
+							y[c] = oldY[c].value;
+						}
+						ui->customPlot->graph(i)->setData(x, y);
+
+						if (format[i].xAxisTimeFormat)
+						{
+							QDateTime start = QDateTime::fromTime_t(x[0], QTimeZone(0));
+							QDateTime end = QDateTime::fromTime_t(x[x.count() - 1], QTimeZone(0));
+							ui->customPlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
+							QString format;
+							if (start.secsTo(end) < 600) format = "mm:ss:zzz";
+							if (start.secsTo(end) > 3600) format = "hh:mm:ss";
+							if (start.daysTo(end) > 1) format = "MMM dd\nhh:mm:ss";
+							if (start.daysTo(end) > 5) format = "MMM dd, yyyy\nhh:mm";
+							if (start.daysTo(end) > 180)format = "MMM dd, yyyy\nhAP";
+							if (start.daysTo(end) > 2 * 365)format = "MMMM\nyyyy";
+							ui->customPlot->xAxis->setDateTimeFormat(format);
+						}
+						else
+							ui->customPlot->xAxis->setTickLabelType(QCPAxis::ltNumber);
+
+					}
+				}
+
 				if (prop == "yAxisType")
 					format[i].yAxisType = QCPAxis::ScaleType(format[i].axisTypes[text]);
 				if (prop == "legend")
@@ -584,13 +634,13 @@ void plotWindow::contextMenuEvent(QContextMenuEvent *event)
 				ui->customPlot->setPalette(mypalette);
 				QPixmap pixmap = QPixmap::grabWidget(this);
 				clipboard->setPixmap(pixmap);
-/*				QString txt;
-				//				for (int i = 0; i < ui->customPlot->graphCount(); i++)
-				txt.append(QString("%1(x); %1(y); \n").arg(ui->customPlot->graph(0)->name()));
-				//				for (int i = 0; i < ui->customPlot->graphCount(); i++)
-				for (int j = 0; j < ui->customPlot->graph(0)->data()->values().size(); j++)
-					txt.append(QString("%1; %2; \n").arg(ui->customPlot->graph(0)->data()->values()[j].key).arg(ui->customPlot->graph(0)->data()->values()[j].value));
-				clipboard->setText(txt);*/
+				/*				QString txt;
+								//				for (int i = 0; i < ui->customPlot->graphCount(); i++)
+								txt.append(QString("%1(x); %1(y); \n").arg(ui->customPlot->graph(0)->name()));
+								//				for (int i = 0; i < ui->customPlot->graphCount(); i++)
+								for (int j = 0; j < ui->customPlot->graph(0)->data()->values().size(); j++)
+									txt.append(QString("%1; %2; \n").arg(ui->customPlot->graph(0)->data()->values()[j].key).arg(ui->customPlot->graph(0)->data()->values()[j].value));
+								clipboard->setText(txt);*/
 			}
 
 
@@ -629,14 +679,17 @@ void plotWindow::refreshFormat()
 		pen.setStyle(format[i].penStyle);
 		plot->graph(i)->setPen(pen);
 	}
+	plot->rescaleAxes();
 	plot->replot();
 }
-QList<QAction *> subActions(const QMap<QString, int> &list, const int &value, QMenu * menuItem, int graphIndex, QVariant val)
+QList<QAction *> subActions(const QMap<QString, int> &list, const int &value, QMenu * menuItem, int graphIndex, QVariant val, bool enabled)
 {
 	QList <QAction *> r;
 	for (int i = 0; i < list.keys().count(); i++)
 	{
-		r.append(menuItem->addAction(list.keys()[i]));
+		QAction *a = menuItem->addAction(list.keys()[i]);
+		a->setEnabled(enabled);
+		r.append(a);
 		r[i]->setProperty("Graph", graphIndex);
 		r[i]->setProperty("Prop", val);
 		r[i]->setCheckable(true);

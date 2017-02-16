@@ -1,5 +1,5 @@
 #ifndef GIFMOD_VERSION
-#define GIFMOD_VERSION "0.1.6"
+#define GIFMOD_VERSION "0.1.8"
 #endif
 #define RECENT "recentFiles.txt"
 #include "mainwindow.h"
@@ -719,8 +719,20 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 				menu->addSeparator();
 			}
 		}
+		if (type == "Parameter" && mainGraphWidget->results)
+		{
+			if (mainGraphWidget->results->globalSensitivityMatrix.getnumrows())
+				menu->addAction(QString("Show global sensitivity matrix"), this, SLOT(showGlobalSensitivityMatrix()));
+			if (mainGraphWidget->results->localSensitivityMatrix.getnumrows())
+				menu->addAction(QString("Show local sensitivity matrix"), this, SLOT(showLocalSensitivityMatrix()));
+			if (mainGraphWidget->results->correlationMatrix.getnumrows())
+				menu->addAction(QString("Show correlation matrix"), this, SLOT(showCorrelationMatrix()));
+			if (mainGraphWidget->results->localSensitivityMatrix.getnumrows() || mainGraphWidget->results->globalSensitivityMatrix.getnumrows() || mainGraphWidget->results->correlationMatrix.getnumrows())
+				menu->addSeparator();
+		}
+
 		menu->addAction(QString("Add %1").arg(type) , this, SLOT(addProjectExplorerTreeItem()));
-		menu->exec(projectExplorer->mapToGlobal(pos));
+//		menu->exec(projectExplorer->mapToGlobal(pos));
 	}
 	if (projectExplorer->indexAt(pos).data(Role::TreeItemType) == TreeItem::Type::NodeItem)
 	{
@@ -1506,6 +1518,7 @@ void MainWindow::plotRealization(CBTCSet data, QString name)
 #endif
 		for (int i = 0; i < _data.nvars; i++)
 		{
+			qDebug() << QString::fromStdString(_data[i].name);
 			plot->addScatterPlot(_data[i], QString::fromStdString(_data[i].name), convertTime, format);
 		}
 		plot->show();

@@ -842,7 +842,7 @@ void CMCMC::getrealizations(CBTCSet &MCMCout)
 	//progress->setValue(0);
 	double pValue = 0;
 	double inc = 100.0 / n_realizations;
-	for (int jj = 0; jj < n_realizations/numberOfThreads; jj++)
+	for (int jj = 0; jj <= n_realizations/numberOfThreads; jj++)
 	{
 #ifdef GIFMOD
 		vector<vector<CMediumSet>> Sys1(numberOfThreads);

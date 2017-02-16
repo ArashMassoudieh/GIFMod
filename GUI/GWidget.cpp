@@ -3497,6 +3497,7 @@ int GraphWidget::experimentID()
 }
 QString GraphWidget::experimentName()
 {
+	QString a = experiments->currentText();
 	return experiments->currentText();
 }
 

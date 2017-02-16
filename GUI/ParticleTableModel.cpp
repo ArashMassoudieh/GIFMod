@@ -94,11 +94,11 @@ bool ParticleTableModel::setData(const QModelIndex & index, const QVariant & val
 	item.Value = "0";
 
 //	insertRows(rowCount(), 1);
-	node->particleInitialCondition().append(item);
+//	node->particleInitialCondition().append(item);
 	insertRows(rowCount(), 1);
 	if (node->experimentName() != "All experiments")
 	{
-//		node->particleInitialCondition().append(item);
+		node->particleInitialCondition().append(item);
 		gWidget->log(QString("Particle initial condition (%1, %2, %3) added to block: %4 for experiment %5.").arg(item.Particle).arg(item.Model).arg(item.Value).arg(node->Name()).arg(node->parent->experimentName()));
 		return true;
 	}

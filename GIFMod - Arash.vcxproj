@@ -250,7 +250,7 @@ copy *.txt $(OutDir)
     <ClCompile Include="GUI\Copula.cpp" />
     <ClCompile Include="GUI\Copula_GWA.cpp" />
     <ClCompile Include="GUI\Crxtterm.cpp" />
-    <ClCompile Include="GUI\csvEditor2.cpp" />
+    <ClCompile Include="GUI\csvEditor.cpp" />
     <ClCompile Include="GUI\CustomPlotZoom.cpp" />
     <ClCompile Include="GUI\delegate.cpp" />
     <ClCompile Include="GUI\Distribution.cpp" />
@@ -321,6 +321,7 @@ copy *.txt $(OutDir)
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="GUI\StringOP.cpp" />
+    <ClCompile Include="GUI\TableWidgetDateItem.cpp" />
     <ClCompile Include="GUI\texToHtml.cpp" />
     <ClCompile Include="GUI\Tracer.cpp" />
     <ClCompile Include="GUI\treeitem.cpp" />
@@ -495,6 +496,7 @@ copy *.txt $(OutDir)
     <ClInclude Include="GUI\Solid_Phase.h" />
     <ClInclude Include="GUI\stdafx.h" />
     <ClInclude Include="GUI\StringOP.h" />
+    <ClInclude Include="GUI\TableWidgetDateItem.h" />
     <ClInclude Include="GUI\targetver.h" />
     <ClInclude Include="GUI\texToHtml.h" />
     <ClInclude Include="GUI\Tracer.h" />
