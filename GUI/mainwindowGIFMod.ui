@@ -202,7 +202,6 @@
     <bool>false</bool>
    </attribute>
    <addaction name="action_New"/>
-   <addaction name="actionNew_from_template"/>
    <addaction name="action_Open"/>
    <addaction name="action_Save"/>
    <addaction name="separator"/>

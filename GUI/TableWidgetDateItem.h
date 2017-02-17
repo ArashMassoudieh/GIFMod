@@ -4,7 +4,9 @@ class TableWidgetDateItem :
 	public QTableWidgetItem
 {
 public:
-	TableWidgetDateItem(const QString & text, int type = Type) :QTableWidgetItem(text, type) {};
+	TableWidgetDateItem(const QString & text, int type = Type) :QTableWidgetItem(text, type) {
+		setData(Qt::EditRole, text);
+	};
 	TableWidgetDateItem(int type = Type) :QTableWidgetItem("", type) {};
 	virtual ~TableWidgetDateItem() {};
 
