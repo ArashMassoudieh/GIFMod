@@ -575,6 +575,7 @@ QMap<QString, condition> Edge::variableNameConditions() const
 }
 XString Edge::val(const QString & code) const
 {
+	qDebug() << code;
 	for each (mProp mP in getmList(objectType).List)
 		if (mP.VariableCode.toLower() == code.toLower())
 		{

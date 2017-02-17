@@ -37,6 +37,7 @@
 #ifdef GIFMOD
 #include "Medium.h"
 #include "MediumSet.h"
+#include "wizard.h"
 #endif
 
 #include "plotWindow.h"
@@ -368,6 +369,33 @@ void MainWindow::on_action_New_triggered()
 	log->append("New Model Created.");
 	mainGraphWidget->deleteSolutionResults();
 	mainGraphWidget->changedState = false;
+}
+
+void MainWindow::on_actionNew_from_template_triggered()
+{
+	wizard w(this);
+
+//	QDialog w;
+//	w.
+	int result = w.exec();
+	if (result == w.Rejected)
+		return;
+
+
+	QFileDialog fd;
+	fd.setModal(Qt::Popup);
+	fd.setFileMode(QFileDialog::ExistingFile);
+	QString folder = QDir::currentPath() + "/icons/wizards";
+//	fd.setDirectory(mainGraphWidget->defaultDir() + "/wizards"); // / Icons / Wizards");
+//	qDebug() << QDir::currentPath();
+	fd.setDirectory(folder);
+	fd.setViewMode(QFileDialog::List);
+	fd.setFilter(QDir::Files);
+	fd.setNameFilters(QStringList() << "*.png");
+
+	fd.exec();
+
+
 }
 
 void MainWindow::on_action_Open_triggered()

@@ -70,6 +70,7 @@
      </property>
     </widget>
     <addaction name="action_New"/>
+    <addaction name="actionNew_from_template"/>
     <addaction name="action_Open"/>
     <addaction name="action_Save"/>
     <addaction name="actionSave_As"/>
@@ -201,6 +202,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="action_New"/>
+   <addaction name="actionNew_from_template"/>
    <addaction name="action_Open"/>
    <addaction name="action_Save"/>
    <addaction name="separator"/>
@@ -814,6 +816,15 @@
   <action name="actionReset_colors">
    <property name="text">
     <string>Reset colors</string>
+   </property>
+  </action>
+  <action name="actionNew_from_template">
+   <property name="icon">
+    <iconset>
+     <normaloff>../Icons/wizard blue.png</normaloff>../Icons/wizard blue.png</iconset>
+   </property>
+   <property name="text">
+    <string>New from &amp;template...</string>
    </property>
   </action>
  </widget>
