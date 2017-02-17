@@ -2515,8 +2515,8 @@ void CMedium::finalize_set_param()
 
 void CMedium::set_default_params()
 {
-	for (int i=0; i<parameters().size(); i++)
-		set_param(i, parameters()[i].value);
+	//for (int i=0; i<parameters().size(); i++)
+	//	set_param(i, parameters()[i].value);
 
 
 	finalize_set_param();

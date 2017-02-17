@@ -98,6 +98,7 @@ public:
     QAction *actionColorCodeConnectorArea;
     QAction *actionColorCodeConnectorVaporExchangeEate;
     QAction *actionReset_colors;
+    QAction *actionNew_from_template;
     QWidget *centralWidget;
     QMenuBar *menuBar;
     QMenu *menu_File;
@@ -379,6 +380,11 @@ public:
         actionColorCodeConnectorVaporExchangeEate->setObjectName(QStringLiteral("actionColorCodeConnectorVaporExchangeEate"));
         actionReset_colors = new QAction(MainWindow);
         actionReset_colors->setObjectName(QStringLiteral("actionReset_colors"));
+        actionNew_from_template = new QAction(MainWindow);
+        actionNew_from_template->setObjectName(QStringLiteral("actionNew_from_template"));
+        QIcon icon30;
+        icon30.addFile(QStringLiteral("../Icons/wizard blue.png"), QSize(), QIcon::Normal, QIcon::Off);
+        actionNew_from_template->setIcon(icon30);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         MainWindow->setCentralWidget(centralWidget);
@@ -443,6 +449,7 @@ public:
         menuBar->addAction(menuPost_Processing->menuAction());
         menuBar->addAction(menu_Help->menuAction());
         menu_File->addAction(action_New);
+        menu_File->addAction(actionNew_from_template);
         menu_File->addAction(action_Open);
         menu_File->addAction(action_Save);
         menu_File->addAction(actionSave_As);
@@ -502,6 +509,7 @@ public:
         menuConnectors->addAction(actionColorCodeConnectorVaporExchangeEate);
         menuWaterQuality->addSeparator();
         mainToolBar->addAction(action_New);
+        mainToolBar->addAction(actionNew_from_template);
         mainToolBar->addAction(action_Open);
         mainToolBar->addAction(action_Save);
         mainToolBar->addSeparator();
@@ -631,6 +639,7 @@ public:
         actionColorCodeConnectorArea->setText(QApplication::translate("MainWindow", "Area", 0));
         actionColorCodeConnectorVaporExchangeEate->setText(QApplication::translate("MainWindow", "Vapor exchange rate", 0));
         actionReset_colors->setText(QApplication::translate("MainWindow", "Reset colors", 0));
+        actionNew_from_template->setText(QApplication::translate("MainWindow", "New from &template...", 0));
         menu_File->setTitle(QApplication::translate("MainWindow", "&File", 0));
         menuRecent->setTitle(QApplication::translate("MainWindow", "Recent", 0));
         menu_Help->setTitle(QApplication::translate("MainWindow", "&Help", 0));

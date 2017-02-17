@@ -80,7 +80,6 @@
     <ClCompile Include="GUI\utility_funcs.cpp" />
     <ClCompile Include="GUI\Vector.cpp" />
     <ClCompile Include="GUI\Well.cpp" />
-    <ClCompile Include="GUI\wizardDialog.cpp" />
     <ClCompile Include="GUI\Sensor.cpp" />
     <ClCompile Include="GUI\Controller.cpp">
       <Filter>Generated Files</Filter>
@@ -172,9 +171,6 @@
     <ClCompile Include="GeneratedFiles\files\moc_treemodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\files\moc_wizardDialog.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GUI\node.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -197,6 +193,12 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GUI\TableWidgetDateItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\files\moc_wizard.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\wizard.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -316,9 +318,6 @@
     <ClInclude Include="GeneratedFiles\ui_runtimeWindow.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="GeneratedFiles\ui_wizardDialog.h">
-      <Filter>Generated Files</Filter>
-    </ClInclude>
     <ClInclude Include="GUI\Matrix_arma.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
@@ -332,6 +331,12 @@
       <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="GUI\folders.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_Widget.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_wizard.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -368,14 +373,10 @@
     <CustomBuild Include="GUI\ExchangeParametersWindow.ui" />
     <CustomBuild Include="GUI\reactionwindow.ui" />
     <CustomBuild Include="GUI\runtimeWindow.ui" />
-    <CustomBuild Include="GUI\wizardDialog.ui" />
     <CustomBuild Include="GUI\mainwindowGIFMod.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
     <CustomBuild Include="GUI\helpWindow.h">
-      <Filter>Generated Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="GUI\wizardDialog.h">
       <Filter>Generated Files</Filter>
     </CustomBuild>
     <CustomBuild Include="GUI\GWidget.h">
@@ -389,6 +390,15 @@
     </CustomBuild>
     <CustomBuild Include="GUI\csvEditor.ui">
       <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GUI\Widget.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GUI\wizard.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GUI\wizard.h">
+      <Filter>Generated Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

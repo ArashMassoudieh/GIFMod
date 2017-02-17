@@ -118,6 +118,7 @@ private slots:
 
 	void MainWindow::updateToolbarToggles(Operation_Modes OMode = Operation_Modes::NormalMode);
 	void on_action_New_triggered();
+	void on_actionNew_from_template_triggered();
 
 	void on_action_Open_triggered();
 
