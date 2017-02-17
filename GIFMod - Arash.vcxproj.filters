@@ -110,7 +110,6 @@
     <ClCompile Include="GUI\utility_funcs.cpp" />
     <ClCompile Include="GUI\Vector.cpp" />
     <ClCompile Include="GUI\Well.cpp" />
-    <ClCompile Include="GUI\wizardDialog.cpp" />
     <ClCompile Include="GUI\Sensor.cpp" />
     <ClCompile Include="GUI\Controller.cpp" />
     <ClCompile Include="GUI\colorScheme.cpp" />
@@ -136,6 +135,15 @@
     </ClCompile>
     <ClCompile Include="GUI\TableWidgetDateItem.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\wizard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_wizard.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_wizard.cpp">
+      <Filter>Generated Files\Release</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -233,12 +241,14 @@
     <ClInclude Include="GUI\TableWidgetDateItem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GeneratedFiles\GIFMOD\ui_wizard.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="GUI\expEditor.h" />
     <CustomBuild Include="GUI\helpWindow.h" />
     <CustomBuild Include="GUI\ExchangeParametersWindow.h" />
-    <CustomBuild Include="GUI\wizardDialog.h" />
     <CustomBuild Include="GUI\treemodel.h" />
     <CustomBuild Include="GUI\statusviewer.h" />
     <CustomBuild Include="GUI\runtimeWindow.h" />
@@ -271,7 +281,6 @@
     <CustomBuild Include="GUI\mainwindowGIFMod.ui" />
     <CustomBuild Include="GUI\reactionwindow.ui" />
     <CustomBuild Include="GUI\runtimeWindow.ui" />
-    <CustomBuild Include="GUI\wizardDialog.ui" />
     <CustomBuild Include="GUI\CustomPlotZoom.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
@@ -279,6 +288,12 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="GUI\csvEditor.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GUI\wizard.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GUI\wizard.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
   </ItemGroup>
