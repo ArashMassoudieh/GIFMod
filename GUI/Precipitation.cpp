@@ -54,13 +54,13 @@ double CPrecipitation::getval(double time)
 	{	
 		for (int ii=0; ii<n; ii++)
 			if ((time<e[ii]) && (time>=s[ii]))
-				res = i[ii];
+				res = i[ii]/(e[ii]-s[ii]);
 	}
 	else
 	{
 		int ii = static_cast<int>((time-s[0])/dt);
 		if (ii<n)
-			res = i[ii];
+			res = i[ii]/(e[ii]-s[ii]);
 		else
 			res = 0;
 
