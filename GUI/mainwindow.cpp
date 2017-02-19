@@ -1,5 +1,5 @@
 #ifndef GIFMOD_VERSION
-#define GIFMOD_VERSION "0.1.8"
+#define GIFMOD_VERSION "0.1.10"
 #endif
 #define RECENT "recentFiles.txt"
 #include "mainwindow.h"
@@ -730,9 +730,10 @@ void MainWindow::on_projectExplorer_clicked(const QModelIndex &index)
 
 void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos)
 {
+	QMenu *menu = new QMenu;
 	if (projectExplorer->indexAt(pos).data(Role::TreeItemType) == TreeItem::Type::Branch)
 	{
-		QMenu *menu = new QMenu;
+		//QMenu *menu = new QMenu;
 		TreeModel *model = projModel;
 		TreeItem *item = model->itemFromIndex(projectExplorer->indexAt(pos));
 		QString type = projModel->singularform(projectExplorer->indexAt(pos).data().toString());
@@ -764,7 +765,7 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 	}
 	if (projectExplorer->indexAt(pos).data(Role::TreeItemType) == TreeItem::Type::NodeItem)
 	{
-		QMenu *menu = new QMenu;
+		//QMenu *menu = new QMenu;
 		TreeModel *model = projModel;
 		TreeItem *item = model->itemFromIndex(projectExplorer->indexAt(pos));
 		QString name = projectExplorer->indexAt(pos).data().toString();
@@ -775,7 +776,7 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 	}
 	if (projectExplorer->indexAt(pos).data(Role::TreeItemType) == TreeItem::Type::EdgeItem)
 	{
-		QMenu *menu = new QMenu;
+		//QMenu *menu = new QMenu;
 		TreeModel *model = projModel;
 		TreeItem *item = model->itemFromIndex(projectExplorer->indexAt(pos));
 		QString name = projectExplorer->indexAt(pos).data().toString();
@@ -786,7 +787,7 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 	}
 	if (projectExplorer->indexAt(pos).data(Role::TreeItemType) == TreeItem::Type::Item)
 	{
-		QMenu *menu = new QMenu;
+		//QMenu *menu = new QMenu;
 		TreeModel *model = projModel;
 		TreeItem *item = model->itemFromIndex(projectExplorer->indexAt(pos));
 		if (item->Name() == "Markov chain Monte Carlo")
@@ -803,7 +804,7 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 	}
 	if (projectExplorer->indexAt(pos).data(Role::TreeItemType) == TreeItem::Type::EntityItem)
 	{
-		QMenu *menu = new QMenu;
+		//QMenu *menu = new QMenu;
 		TreeModel *model = projModel;
 		TreeItem *item = model->itemFromIndex(projectExplorer->indexAt(pos));
 		QString name = projectExplorer->indexAt(pos).data().toString();
@@ -999,10 +1000,11 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 	}
 	if (projectExplorer->indexAt(pos).data(Role::TreeItemType) == TreeItem::Type::ReactionNetworkItem)
 	{
-		QMenu *menu = new QMenu;
+		//QMenu *menu = new QMenu;
 		menu->addAction(QString("Open reaction network window"), this, SLOT(openRXNWindow()));
 		menu->exec(projectExplorer->mapToGlobal(pos));
 	}
+	menu->exec(projectExplorer->mapToGlobal(pos));
 }
 void MainWindow::on_actionmenuRecent_triggered()//QString fileName)
 {
