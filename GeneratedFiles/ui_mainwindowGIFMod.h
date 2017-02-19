@@ -509,7 +509,6 @@ public:
         menuConnectors->addAction(actionColorCodeConnectorVaporExchangeEate);
         menuWaterQuality->addSeparator();
         mainToolBar->addAction(action_New);
-        mainToolBar->addAction(actionNew_from_template);
         mainToolBar->addAction(action_Open);
         mainToolBar->addAction(action_Save);
         mainToolBar->addSeparator();
