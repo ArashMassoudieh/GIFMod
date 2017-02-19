@@ -193,7 +193,7 @@ copy *.txt $(OutDir)
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_wizardDialog.cpp">
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_wizard.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -232,7 +232,7 @@ copy *.txt $(OutDir)
     <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_runtimeWindow.cpp" />
     <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_statusviewer.cpp" />
     <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_treemodel.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_wizardDialog.cpp">
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_wizard.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -331,9 +331,9 @@ copy *.txt $(OutDir)
     <ClCompile Include="GUI\Vector.cpp" />
     <ClCompile Include="GUI\Vector_arma.cpp" />
     <ClCompile Include="GUI\Well.cpp" />
-    <ClCompile Include="GUI\wizardDialog.cpp" />
     <ClCompile Include="GUI\Sensor.cpp" />
     <ClCompile Include="GUI\ObjectiveFunction.cpp" />
+    <ClCompile Include="GUI\wizard.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_ConstituentWindow.h" />
@@ -348,7 +348,7 @@ copy *.txt $(OutDir)
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_plotwindow.h" />
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_reactionwindow.h" />
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_runtimeWindow.h" />
-    <ClInclude Include="GeneratedFiles\GIFMOD\ui_wizardDialog.h" />
+    <ClInclude Include="GeneratedFiles\GIFMOD\ui_wizard.h" />
     <ClInclude Include="GUI\Binary.h" />
     <ClInclude Include="GUI\BTC.h" />
     <ClInclude Include="GUI\BTCSet.h" />
@@ -507,21 +507,21 @@ copy *.txt $(OutDir)
     <ClInclude Include="GUI\Vector.h" />
     <ClInclude Include="GUI\Vector_arma.h" />
     <ClInclude Include="GUI\Well.h" />
-    <CustomBuild Include="GUI\wizardDialog.h">
+    <CustomBuild Include="GUI\wizard.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing wizardDialog.h...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing wizard.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\GIFMOD\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\GIFMOD\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB "-D\"$(INHERIT)\"" -DARMA_USE_LAPACK -DARMA_USE_BLAS -DQT_PRINTSUPPORT_LIB "-I.\armadillo-header" "-I.\Utility" "-I$(QTDIR)\include" "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I.\GeneratedFiles\GIFMOD\$(ConfigurationName)\." "-I.\GeneratedFiles\GIFMOD"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing wizardDialog.h...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing wizard.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\GIFMOD\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\GIFMOD\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DARMA_USE_LAPACK -DARMA_USE_BLAS "-D\"$(INHERIT)\"" -DQT_PRINTSUPPORT_LIB -DGIFMOD "-I.\armadillo-header" "-I.\Model" "-I.\Utility" "-I$(QTDIR)\include" "-I.\GeneratedFiles\GIFMOD\$(ConfigurationName)\." "-I.\GeneratedFiles\GWA\$(ConfigurationName)\." "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I.\GeneratedFiles\GIFMOD"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing wizardDialog.h...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing wizard.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\GIFMOD\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\GIFMOD\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB "-D\"$(INHERIT)\"" -DARMA_USE_LAPACK -DARMA_USE_BLAS -DQT_PRINTSUPPORT_LIB "-I.\armadillo-header" "-I.\GIFMODModel" "-I.\Utility" "-I$(QTDIR)\include" "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I.\GeneratedFiles\GIFMOD\$(ConfigurationName)\." "-I.\GeneratedFiles\GIFMOD"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing wizardDialog.h...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing wizard.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\GIFMOD\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\GIFMOD\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DARMA_USE_LAPACK -DARMA_USE_BLAS "-D\"$(INHERIT)\"" -DQT_PRINTSUPPORT_LIB -DGIFMOD "-I.\armadillo-header" "-I.\Model" "-I.\Utility" "-I$(QTDIR)\include" "-I.\GeneratedFiles\GIFMOD\$(ConfigurationName)\." "-I.\GeneratedFiles\GWA\$(ConfigurationName)\." "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I.\GeneratedFiles\GIFMOD"</Command>
     </CustomBuild>
@@ -1137,7 +1137,7 @@ copy *.txt $(OutDir)
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\GIFMOD\ui_%(Filename).h;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\GIFMOD\ui_%(Filename).h" "%(FullPath)"</Command>
     </CustomBuild>
-    <CustomBuild Include="GUI\wizardDialog.ui">
+    <CustomBuild Include="GUI\wizard.ui">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Uic%27ing %(Identity)...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\GIFMOD\ui_%(Filename).h;%(Outputs)</Outputs>

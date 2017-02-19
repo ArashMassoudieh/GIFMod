@@ -54,10 +54,17 @@ CMediumSet::CMediumSet(GraphWidget* gw, runtimeWindow *rtw)
 		Medium[i - 1].g_set_default_block_expressions();
 		Medium[i - 1].g_load_inflows();
 		Medium[i - 1].get_funcs();
-		Medium[i - 1].set_default_params();
+//		Medium[i - 1].set_default_params();
 		Medium[i - 1].log_file_name() = "log.txt";
 	}
-
+	for (int i = 0; i < parameters.size(); i++)
+	{
+		set_param(i, parameters[i].value);
+	}
+	for (int i = 1; i < gw->experiments->count(); i++)
+	{
+		Medium[i - 1].set_default_params();
+	}
 
 	gw->experiments->setCurrentText(savedExperiment);
 
@@ -1345,7 +1352,7 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 					parameters()[lookup_parameters(n->val(code).toStdString())].conversion_factor.push_back(n->val(code).conversionCoefficient(n->val(code).unit, n->val(code).defaultUnit));
 					parameters()[lookup_parameters(n->val(code).toStdString())].quan.push_back(code.toStdString());
 					parameters()[lookup_parameters(n->val(code).toStdString())].location_type.push_back(0);
-					parameters()[lookup_parameters(n->val(code).toStdString())].experiment_id.push_back("");
+					parameters()[lookup_parameters(n->val(code).toStdString())].experiment_id.push_back(name);
 				}
 			}
 		}
@@ -1358,7 +1365,7 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 					controllers()[lookup_controllers(n->val(code).toStdString())].application_spec.conversion_factor.push_back(n->val(code).conversionCoefficient(n->val(code).unit, n->val(code).defaultUnit));
 					controllers()[lookup_controllers(n->val(code).toStdString())].application_spec.quan.push_back(code.toStdString());
 					controllers()[lookup_controllers(n->val(code).toStdString())].application_spec.location_type.push_back(0);
-					controllers()[lookup_controllers(n->val(code).toStdString())].application_spec.experiment_id.push_back("");
+					controllers()[lookup_controllers(n->val(code).toStdString())].application_spec.experiment_id.push_back(name);
 				}
 			}
 		}
@@ -1419,7 +1426,7 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 					parameters()[lookup_parameters(e->val(code).toStdString())].conversion_factor.push_back(e->val(code).conversionCoefficient(e->val(code).unit, e->val(code).defaultUnit));
 					parameters()[lookup_parameters(e->val(code).toStdString())].quan.push_back(code.toStdString());
 					parameters()[lookup_parameters(e->val(code).toStdString())].location_type.push_back(1);
-					parameters()[lookup_parameters(e->val(code).toStdString())].experiment_id.push_back("");
+					parameters()[lookup_parameters(e->val(code).toStdString())].experiment_id.push_back(name);
 				}
 			}
 		}
@@ -1432,7 +1439,7 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 					controllers()[lookup_controllers(e->val(code).toStdString())].application_spec.conversion_factor.push_back(e->val(code).conversionCoefficient(e->val(code).unit, e->val(code).defaultUnit));
 					controllers()[lookup_controllers(e->val(code).toStdString())].application_spec.quan.push_back(code.toStdString());
 					controllers()[lookup_controllers(e->val(code).toStdString())].application_spec.location_type.push_back(1);
-					controllers()[lookup_controllers(e->val(code).toStdString())].application_spec.experiment_id.push_back("");
+					controllers()[lookup_controllers(e->val(code).toStdString())].application_spec.experiment_id.push_back(name);
 				}
 			}
 		}
