@@ -1,5 +1,5 @@
 #ifndef GIFMOD_VERSION
-#define GIFMOD_VERSION "0.1.10"
+#define GIFMOD_VERSION "0.1.11"
 #endif
 #define RECENT "recentFiles.txt"
 #include "mainwindow.h"
@@ -1184,7 +1184,9 @@ void MainWindow::plotTimeSeries(QAction* action, CBTC data, QString name, bool c
 			if (action == graphs[i].action)
 			{
 				plotWindow *plot = new plotWindow(mainGraphWidget);
-				plot->addScatterPlot(graphs[i].data, graphs[i].name, graphs[i].convertXtoTime, plotformat());
+				plotformat format;
+				format.xAxisTimeFormat = graphs[i].convertXtoTime;
+				plot->addScatterPlot(graphs[i].data, graphs[i].name, format);
 				plot->show();
 				return;
 			}
@@ -1447,15 +1449,16 @@ void MainWindow::plotModeledData(CBTC modeled, CBTC observed, QString _name)
 		format.lineStyle = QCPGraph::LineStyle::lsNone;
 		format.color = Qt::blue;
 		format.scatterStyle = QCPScatterStyle::ssPlusCircle;
-		bool convertTime = true;
+		format.xAxisTimeFormat = true;
 #ifdef GWA
 		convertTime = false;
 #endif
-		plot->addScatterPlot(obs, name + "(Observed)", convertTime, format);
+		plot->addScatterPlot(obs, name + "(Observed)", format);
 		
 		format2.penStyle = Qt::SolidLine;
 		format2.scatterStyle = QCPScatterStyle::ssNone;
-		plot->addScatterPlot(model, name, convertTime, format2);
+		format2.xAxisTimeFormat = true;
+		plot->addScatterPlot(model, name, format2);
 		plot->show();
 	}
 }
@@ -1478,15 +1481,16 @@ void MainWindow::plotModeledDataDot(CBTC modeled, CBTC observed, QString _name)
 		format.lineStyle = QCPGraph::LineStyle::lsNone;
 		format.color = Qt::blue;
 		format.scatterStyle = QCPScatterStyle::ssPlusCircle;
-		bool convertTime = true;
+		format.xAxisTimeFormat = true;
 #ifdef GWA
 		convertTime = false;
 #endif
-		plot->addScatterPlot(obs, name + "(Observation)", convertTime, format);
+		plot->addScatterPlot(obs, name + "(Observation)", format);
 	
 		format2.penStyle = Qt::SolidLine;
 		format2.scatterStyle = QCPScatterStyle::ssPlusCircle;
-		plot->addScatterPlot(model, name + "(Modeled)", convertTime, format2);
+		format2.xAxisTimeFormat = true;
+		plot->addScatterPlot(model, name + "(Modeled)", format2);
 		plot->show();
 	}
 }
@@ -1514,11 +1518,13 @@ void MainWindow::plotAgreementPlotData(CBTC observation, CBTC modeled, QString n
 			format.color = Qt::blue;
 			format.xAxisLabel = "Observation";
 			format.yAxisLabel = "Modeled";
+			format.xAxisTimeFormat = true;
 
 			plot->addDotPlot(_obs.C, _mod.C, "Agreement Plot", format);
 			CBTC regLine(reg["a"], reg["b"], _obs.C);
 			format2.scatterStyle = QCPScatterStyle::ssNone;
-			plot->addScatterPlot(regLine, "Agreement regression", false, format2);
+			format2.xAxisTimeFormat = false;
+			plot->addScatterPlot(regLine, "Agreement regression", format2);
 			plot->show();
 		}
 	}
@@ -1542,14 +1548,14 @@ void MainWindow::plotRealization(CBTCSet data, QString name)
 		plotformat format;
 		format.legend = false;
 		format.penWidth = 1;
-		bool convertTime = true;
+		format.xAxisTimeFormat = true;
 #ifdef GWA
 		convertTime = false;
 #endif
 		for (int i = 0; i < _data.nvars; i++)
 		{
 			qDebug() << QString::fromStdString(_data[i].name);
-			plot->addScatterPlot(_data[i], QString::fromStdString(_data[i].name), convertTime, format);
+			plot->addScatterPlot(_data[i], QString::fromStdString(_data[i].name), format);
 		}
 		plot->show();
 	}
@@ -1603,10 +1609,10 @@ void MainWindow::plotRealizationPercentile(CBTCSet data, QString name)
 			plotformat format;
 			format.penWidth = 1;
 			format.color = Qt::GlobalColor(i);
-			
+			format.xAxisTimeFormat = convertTime;
 			if (i == _data.nvars - 1)
 				format.fillGraph = g1;
-			g2 = plot->addScatterPlot(_data[i], QString::fromStdString(_data[i].name), convertTime, format);
+			g2 = plot->addScatterPlot(_data[i], QString::fromStdString(_data[i].name), format);
 			if (i == 1)
 				g1 = g2;
 		}

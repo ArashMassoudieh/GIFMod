@@ -2798,37 +2798,40 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 			}
 			
 		}
+		plotformat format;
+		format.xAxisTimeFormat = true;
+
 		if (selectedAction->text() == "Plot Storage")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
-			plot->addScatterPlot(model->ANS, model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Storage"));
+			plot->addScatterPlot(model->ANS, model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Storage"), 1, 0, format);
 			plot->show();
 		}
 		if (selectedAction->text() == "Plot Head")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
-			plot->addScatterPlot(model->ANS, model->Connector.size() + model->Blocks.size() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Head"));
+			plot->addScatterPlot(model->ANS, model->Connector.size() + model->Blocks.size() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Head"), 1, 0, format);
 			plot->show();
 		}
 		if (selectedAction->text() == "Moisture Content")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
 			double volume = n->val("a").convertToDefaultUnit().toDouble() * n->val("depth").convertToDefaultUnit().toDouble(); //model->Blocks[model->getblocksq(n->Name().toStdString())].V; //ask Arash
-			plot->addScatterPlot(model->ANS, model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Moisture Content"), 1.0 / volume);
+			plot->addScatterPlot(model->ANS, model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Moisture Content"), 1.0 / volume, 0, format);
 			plot->show();
 		}
 		if (selectedAction->text() == "Water Depth")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
 			double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
-			plot->addScatterPlot(model->ANS, model->Connector.size() + model->Blocks.size() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Water Depth"), 1, -z0);
+			plot->addScatterPlot(model->ANS, model->Connector.size() + model->Blocks.size() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Water Depth"), 1, -z0, format);
 			plot->show();
 		}
 		if (selectedAction->text() == "Evapotranspiration Rate")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
 			double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
-			plot->addScatterPlot(model->ANS, model->Connector.size() + 2 * model->Blocks.size() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Evapotranspiration Rate"), 1, 0);
+			plot->addScatterPlot(model->ANS, model->Connector.size() + 2 * model->Blocks.size() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Evapotranspiration Rate"), 1, 0, format);
 			plot->show();
 		}
 #endif
@@ -2837,7 +2840,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
 			QString file = n->getValue("Atmospheric Record").toQString();
 			CBTC record = CBTC(file.replace("./", modelPathname().append('/')).toStdString());
-			plot->addScatterPlot(record, n->Name(), false);
+			plot->addScatterPlot(record, n->Name(), plotformat());
 			plot->show();
 		}
 #ifdef GWA
@@ -2890,13 +2893,13 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 			if (menuKey[selectedAction][0] == "Constituent")
 			{
 				plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
-				plot->addScatterPlot(model->ANS_constituents, menuKey[selectedAction][1].toInt());
+				plot->addScatterPlot(model->ANS_constituents, menuKey[selectedAction][1].toInt(), "", 1, 0, format);
 				plot->show();
 			}
 			if (menuKey[selectedAction][0] == "Particle")
 			{
 				plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
-				plot->addScatterPlot(model->ANS_colloids, menuKey[selectedAction][1].toInt());
+				plot->addScatterPlot(model->ANS_colloids, menuKey[selectedAction][1].toInt(), "", 1, 0, format);
 				plot->show();
 			}
 			if (menuKey[selectedAction][0] == "Inflow")
@@ -2906,7 +2909,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 					if (selectedAction->text().toStdString() == inflow.names[i])
 					{
 						plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
-						plot->addScatterDotPlot(inflow, i);
+						plot->addScatterDotPlot(inflow, i, "", format);
 						plot->show();
 					}
 			}
