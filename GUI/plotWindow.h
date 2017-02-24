@@ -89,13 +89,13 @@ public:
   QCPGraph* plotWindow::addPercentilePlot(QString name, QMap<QString, double> data, plotformat format = plotformat());
   QCPGraph* addScatterPlot(CBTC data, QString name, double coefficient = 1, double offset = 0, bool convertXtoTime = true, plotformat format = plotformat()) {
 	  QVector<double> x(data.n), y(data.n);
-	  if (convertXtoTime)
-		  for (int i = 0; i < data.n; i++)
-		  {
-			  x[i] = data.t[i] * 86400 - 2209161600;
-			  y[i] = data.C[i] * coefficient + offset;
-		  }
-	  else
+//	  if (convertXtoTime)
+//		  for (int i = 0; i < data.n; i++)
+//		  {
+//			  x[i] = data.t[i] * 86400 - 2209161600;
+//			  y[i] = data.C[i] * coefficient + offset;
+//		  }
+//	  else
 		  for (int i = 0; i < data.n; i++)
 		  {
 			  x[i] = data.t[i];
@@ -108,9 +108,9 @@ public:
   QCPGraph* addScatterPlot(CBTC &ANS, QString name = "", plotformat format = plotformat()) {
 	  //if (name == "") name = QString::fromStdString(ANS.names[index]);
 	  QVector<double> x(ANS.n), y(ANS.n);
-	  int numberOfTimePoints = ANS.t.size();
-	  if (format.xAxisTimeFormat && (ANS.t[numberOfTimePoints - 1] - ANS.t[0]) < 5)
-		  format.xAxisTimeFormat = false;
+//	  int numberOfTimePoints = ANS.t.size();
+//	  if (format.xAxisTimeFormat && (ANS.t[numberOfTimePoints - 1] - ANS.t[0]) < 5)
+//		  format.xAxisTimeFormat = false;
 	  for (int i = 0; i < ANS.n; i++)
 	  {
 //		  if (convertXtoTime)

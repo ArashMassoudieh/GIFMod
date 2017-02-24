@@ -308,6 +308,12 @@ QCPGraph* plotWindow::addScatterPlot(QString name, QVector<double> t, QVector<do
 	// pass data to graphs and let CustomPlotZoom determine the axes ranges so the whole thing is visible:
 	//	customPlot->graph(0)->setData(x0, yConfUpper);
 	//	customPlot->graph(1)->setData(x0, yConfLower);
+
+
+	int numberOfTimePoints = t.size();
+	if (format.xAxisTimeFormat && ((t[numberOfTimePoints - 1] - t[0]) < 5 || t[numberOfTimePoints - 1]< 18264))
+		format.xAxisTimeFormat = false;
+
 	if (format.xAxisTimeFormat)
 		for (int i = 0; i < t.size(); i++)
 			t[i] = xtoTime(t[i]);

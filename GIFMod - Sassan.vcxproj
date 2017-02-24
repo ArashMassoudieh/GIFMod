@@ -143,6 +143,7 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
       <AdditionalLibraryDirectories>.\lapack-blas_lib_win64;$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalDependencies>lapack_win64_MT.lib;blas_win64_MT.lib;Qt5PrintSupport.lib</AdditionalDependencies>
+      <Profile>true</Profile>
     </Link>
     <PostBuildEvent>
       <Command>copy lapack-blas_lib_win64\*.dll $(OutDir)</Command>
@@ -169,6 +170,7 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <AdditionalDependencies>lapack_win64_MT.lib;blas_win64_MT.lib;$(QTDIR)\lib\qtmain.lib;shell32.lib;C:\qt\5.5/msvc2013_64/lib\Qt5Core.lib;$(QTDIR)\lib\Qt5Widgets.lib;$(QTDIR)\lib\Qt5Gui.lib;$(QTDIR)\lib\Qt5Core.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;Qt5PrintSupport.lib</AdditionalDependencies>
       <Version>1.00</Version>
+      <Profile>true</Profile>
     </Link>
     <PostBuildEvent>
       <Command>copy lapack-blas_lib_win64\*.dll $(OutDir)
