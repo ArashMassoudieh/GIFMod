@@ -823,7 +823,7 @@ void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QStri
 				data.push_back(model->ANS[index]);
 			}
 			if (propertyName == "Head") {
-				data.push_back(model->ANS[model->Connector.size() + model->Blocks.size() + index]);
+				data.push_back(model->ANS[Edges().count() + Nodes().count() + index]);
 			}
 			if (propertyName == "Moisture content")
 			{
@@ -846,11 +846,11 @@ void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QStri
 				Node *n = node(nodeNames[i]);
 				double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
 				shift = -z0;
-				data.push_back(model->ANS[model->Connector.size() + model->Blocks.size() + index]);
+				data.push_back(model->ANS[Edges().count() + Nodes().count() + index]);
 			}
 			if (propertyName == "Evapotranspiration rate")
 			{
-				data.push_back(model->ANS[model->Connector.size() + 2 * model->Blocks.size() + index]);
+				data.push_back(model->ANS[Edges().count() + 2 * Nodes().count() + index]);
 			}
 			if (!remove)
 			{
@@ -2810,7 +2810,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 		if (selectedAction->text() == "Plot Head")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
-			plot->addScatterPlot(model->ANS, model->Connector.size() + model->Blocks.size() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Head"), 1, 0, format);
+			plot->addScatterPlot(model->ANS, Edges().count() + Nodes().count() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Head"), 1, 0, format);
 			plot->show();
 		}
 		if (selectedAction->text() == "Moisture Content")
@@ -2824,14 +2824,14 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
 			double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
-			plot->addScatterPlot(model->ANS, model->Connector.size() + model->Blocks.size() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Water Depth"), 1, -z0, format);
+			plot->addScatterPlot(model->ANS, Edges().count() + Nodes().count() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Water Depth"), 1, -z0, format);
 			plot->show();
 		}
 		if (selectedAction->text() == "Evapotranspiration Rate")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
 			double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
-			plot->addScatterPlot(model->ANS, model->Connector.size() + 2 * model->Blocks.size() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Evapotranspiration Rate"), 1, 0, format);
+			plot->addScatterPlot(model->ANS, Edges().count() + 2 * Nodes().count() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Evapotranspiration Rate"), 1, 0, format);
 			plot->show();
 		}
 #endif

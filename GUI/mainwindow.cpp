@@ -1,5 +1,5 @@
 #ifndef GIFMOD_VERSION
-#define GIFMOD_VERSION "0.1.11"
+#define GIFMOD_VERSION "0.1.12"
 #endif
 #define RECENT "recentFiles.txt"
 #include "mainwindow.h"
@@ -1406,9 +1406,13 @@ void MainWindow::plotObservationData(CBTC data, QString name)
 #ifdef GWA
 		convertTime = false;
 #endif
-		plot->addScatterPlot(_data, _name + "(Observation)", convertTime);
+		plotformat format;
+		format.xAxisTimeFormat = convertTime;
+		plot->addScatterPlot(_data, _name + "(Observation)", format);
+		//plot->addScatterPlot(_data, _name + "(Observation)", convertTime);
 		plot->show();
 	}
+	return;
 }
 
 void MainWindow::plotControllerData(CBTC data, QString name)

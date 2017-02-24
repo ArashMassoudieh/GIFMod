@@ -181,7 +181,7 @@ void csvEditor::save(QString fileName)
 		checkHeaders += (ui->tableWidget->horizontalHeaderItem(j)) ? 1 : 0;
 	}
 	for (int j = 0; j < ui->tableWidget->columnCount(); j++)
-		if (ui->tableWidget->horizontalHeaderItem(j + 1)->text() == "Time")
+		if (ui->tableWidget->horizontalHeaderItem(j)->text() == "Time")
 		{
 			for (int i = 0; i < ui->tableWidget->rowCount(); i++)
 			{
