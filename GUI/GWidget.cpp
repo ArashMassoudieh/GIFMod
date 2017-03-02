@@ -36,6 +36,8 @@
 #include "ui_mainwindowGIFMod.h"
 #include "MediumSet.h"
 #include "BTCSet.h"
+#include "reactionwindow.h"
+#include "reactiontablemodel.h"
 #endif
 #ifdef GWA
 #include "gwa.h"
@@ -3092,7 +3094,6 @@ QStringList GraphWidget::variableValuesHasError()
 			e->warnings.clear();
 			e->errors.clear();
 			QStringList list = e->variableNames();
-//#pragma omp parallel for
 			for (int i = 0; i < list.count(); i++)
 			{
 				QString variableName = list[i];
@@ -3125,7 +3126,6 @@ QStringList GraphWidget::variableValuesHasError()
 					}
 			}
 			list = e->variableNameConditions().keys();
-//#pragma omp parallel for
 			for (int i = 0; i < list.count(); i++)
 			{
 				QString variableName = list[i];
@@ -3169,7 +3169,6 @@ QStringList GraphWidget::variableValuesHasError()
 			e->warnings.clear();
 			e->errors.clear();
 			QStringList list = e->variableNames();
-//#pragma omp parallel for
 			for (int i = 0; i < list.count(); i++)
 			{
 				QString variableName = list[i];
@@ -3212,7 +3211,6 @@ QStringList GraphWidget::variableValuesHasError()
 				}
 #endif
 			list = e->variableNameConditions().keys();
-//#pragma omp parallel for
 			for (int i = 0; i < list.count(); i++)
 			{
 				QString variableName = list[i];
@@ -3358,6 +3356,15 @@ QStringList GraphWidget::variableValuesHasError()
 				if (!EntityNames("Constituent").contains(e->val("Constituent")))
 					e->errors["Constituent"] = QString("%1 was not found in the model").arg(e->val("Constituent"));
 					*/
+
+		// Check reaction Network
+		ReactionWindowPri d;
+		for (int i = 0; i < Processes.count(); i++)
+			if (!ReactionTableModel::validateNetworkRXNExp(Processes[i]->rate, this, d.Functions, d.Physical))
+			{
+				numberofErrors++;
+				log(QString("Error: Reaction network, Process: %1, has error").arg(Processes[i]->name));
+			}
 #endif
 	}
 	QStringList r;

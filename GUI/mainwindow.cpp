@@ -1,5 +1,5 @@
 #ifndef GIFMOD_VERSION
-#define GIFMOD_VERSION "0.1.12"
+#define GIFMOD_VERSION "0.1.13"
 #endif
 #define RECENT "recentFiles.txt"
 #include "mainwindow.h"
@@ -38,6 +38,7 @@
 #include "Medium.h"
 #include "MediumSet.h"
 #include "wizard.h"
+//#include "classWizard.h"
 #endif
 
 #include "plotWindow.h"
@@ -373,7 +374,12 @@ void MainWindow::on_action_New_triggered()
 
 void MainWindow::on_actionNew_from_template_triggered()
 {
-	wizard w(this);
+
+//	ClassWizard* wzrd;
+//	wzrd = new ClassWizard;
+//	wzrd->show();
+
+/*	wizard w(this);
 
 //	QDialog w;
 //	w.
@@ -395,7 +401,7 @@ void MainWindow::on_actionNew_from_template_triggered()
 
 	fd.exec();
 
-
+	*/
 }
 
 void MainWindow::on_action_Open_triggered()
