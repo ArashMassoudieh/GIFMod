@@ -201,6 +201,12 @@
     <ClCompile Include="GUI\wizard.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GUI\classwizard.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\files\moc_classwizard.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GUI\Binary.h" />
@@ -398,6 +404,9 @@
       <Filter>Form Files</Filter>
     </CustomBuild>
     <CustomBuild Include="GUI\wizard.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GUI\classwizard.h">
       <Filter>Generated Files</Filter>
     </CustomBuild>
   </ItemGroup>

@@ -12,7 +12,7 @@
 #include "enums.h"
 
 #include "MBBlock.h"
-#include "gwidget.h"
+class GraphWidget;
 class runtimeWindow;
 
 using namespace std;

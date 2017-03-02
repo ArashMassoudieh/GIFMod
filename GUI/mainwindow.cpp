@@ -1,5 +1,5 @@
 #ifndef GIFMOD_VERSION
-#define GIFMOD_VERSION "0.1.12"
+#define GIFMOD_VERSION "0.1.13"
 #endif
 #define RECENT "recentFiles.txt"
 #include "mainwindow.h"
@@ -38,6 +38,7 @@
 #include "Medium.h"
 #include "MediumSet.h"
 #include "wizard.h"
+#include "classWizard.h"
 #endif
 
 #include "plotWindow.h"
@@ -226,9 +227,11 @@ MainWindow::MainWindow(QWidget *parent, QString applicationName, QString shortNa
 	//		loadModel(modelfilename);
 	qDebug() << 5;
 	ui->setupUi(this);
+#ifdef GIFMOD
 	mainGraphWidget->experiments = new QComboBox(ui->experimentsToolbar);
 	mainGraphWidget->experiments->addItem("All experiments");
 	mainGraphWidget->experiments->addItem("experiment1");
+
 	//	mainGraphWidget->experiments->addItem("experiment2");
 	connect(mainGraphWidget->experiments, SIGNAL(currentIndexChanged(const QString&)), mainGraphWidget, SLOT(experimentSelect(const QString&)));
 	if (ui->experimentsToolbar->height() < mainGraphWidget->experiments->height())
@@ -244,11 +247,15 @@ MainWindow::MainWindow(QWidget *parent, QString applicationName, QString shortNa
 
 	mainGraphWidget->experiments->setGeometry(rect);
 	mainGraphWidget->experiments->show();
+#endif
 	//	ui->experimantsToolbar->insertWidget()
 	mainGraphWidget->add_to_undo_list();
 	mainGraphWidget->trackingUndo = true;
+
+#ifdef GIFMOD
 	connect(ui->menuWaterQuality->menuAction(), SIGNAL(hovered()), this, SLOT(menuWaterQuality_hovered()));
 	connect(ui->menuWaterQuality, SIGNAL(triggered()), this, SLOT(menuWaterQuality_triggered()));
+#endif
 
 
 	//removeIt
@@ -370,10 +377,15 @@ void MainWindow::on_action_New_triggered()
 	mainGraphWidget->deleteSolutionResults();
 	mainGraphWidget->changedState = false;
 }
-
+#ifdef gifmod
 void MainWindow::on_actionNew_from_template_triggered()
 {
-	wizard w(this);
+
+	ClassWizard* wzrd;
+	wzrd = new ClassWizard;
+	wzrd->show();
+
+/*	wizard w(this);
 
 //	QDialog w;
 //	w.
@@ -395,9 +407,9 @@ void MainWindow::on_actionNew_from_template_triggered()
 
 	fd.exec();
 
-
+	*/
 }
-
+#endif
 void MainWindow::on_action_Open_triggered()
 {
     //open

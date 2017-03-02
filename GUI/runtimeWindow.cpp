@@ -66,7 +66,7 @@ void runtimeWindow::setLabel(QString label)
 	}
 	QCoreApplication::processEvents();
 }
-	void runtimeWindow::setMode(QString mode)
+void runtimeWindow::setMode(QString mode)
 {
 #ifdef GIFMOD
 	useStartFinishTimes = false;
@@ -119,15 +119,17 @@ void runtimeWindow::setLabel(QString label)
 	setupRealtimeDataDemo(customPlot);
 	setupRealtimeDataDemo(ui->customPlot2);
 
-	}
+}
 	
-	void runtimeWindow::setExperiment(CMedium *model)
-	{
-		ui->btnStop->setEnabled(true);
-		experiment = model;
-		QString title = (windowTitle().split(", ").count() > 1) ? windowTitle().split(", ")[1] : windowTitle();
-		setWindowTitle(QString("%1, %2").arg(QString::fromStdString(model->name)).arg(title));
-	}
+void runtimeWindow::setExperiment(CMedium *model)
+{
+#ifdef GIFMOD
+	ui->btnStop->setEnabled(true);
+	experiment = model;
+	QString title = (windowTitle().split(", ").count() > 1) ? windowTitle().split(", ")[1] : windowTitle();
+	setWindowTitle(QString("%1, %2").arg(QString::fromStdString(model->name)).arg(title));
+#endif
+}
 
 	void runtimeWindow::update(QMap<QString, QVariant> &vars)
 	{

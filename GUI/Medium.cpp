@@ -4737,9 +4737,6 @@ int CMedium::lookup_objective_functions(string S)
 }
 
 
-
-#endif
-
 void CMedium::onestepsolve_flow_ar(double dt)
 {
 	int indicator = 1;
@@ -5460,3 +5457,4 @@ void CMedium::set_G_star(CVector_arma & X)
 				Blocks[i].G_star[p][l] = X[get_member_no(i, p, l)];
 }
 
+#endif

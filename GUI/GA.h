@@ -102,7 +102,8 @@ public:
 #endif	
 #ifdef GWA
 	vector<CGWA> Sys1;
-	vector<CGWA> Sys_out;
+//	vector<CGWA> Sys_out;
+	CGWA Sys_out;
 	CGWA Sys;
 #endif	
 	CDistribution fitdist;

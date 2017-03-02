@@ -36,6 +36,8 @@
 #include "ui_mainwindowGIFMod.h"
 #include "MediumSet.h"
 #include "BTCSet.h"
+#include "reactionwindow.h"
+#include "reactiontablemodel.h"
 #endif
 #ifdef GWA
 #include "gwa.h"
@@ -874,6 +876,7 @@ void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QStri
 	colorScheme::colorandLegend(colors, time, "Blue-Red", false, 8);
 	applyColorstoNodes();
 }
+#ifdef GIFMOD
 void GraphWidget::updateNodesColorCodes_WaterQuality(QStringList property, bool logged, QString colorTheme, vector<double> predifinedMinMax, float time)
 {
 	if (!hasResults)
@@ -1009,7 +1012,7 @@ void GraphWidget::applyColorstoEdges()
 	colorScheme::showColorandLegend(colors, title, this);
 	//	update();
 }
-
+#endif
 void GraphWidget::settableProp(QTableView*_tableProp)
 {
 	tableProp = _tableProp;
@@ -1374,7 +1377,7 @@ QList<QMap<QString, QVariant>> GraphWidget::compact() const// QDataStream &out, 
 //	qDebug() << r["GUI"].toString() << ", " << r["Name"].toString() << " saved.";
 	if (hasResults){
 		getTime();
-
+#ifdef GIFMOD
 		for (int i = 0; i < modelSet->Medium.size(); i++)
 		{
 			QString expName = QString::fromStdString(modelSet->Medium[i].name);
@@ -1396,6 +1399,7 @@ QList<QMap<QString, QVariant>> GraphWidget::compact() const// QDataStream &out, 
 
 
 		r["ANS_obs"] = QString::fromStdString(modelSet->FI.detoutfilename_obs); 
+#endif
 		qDebug() << "ANS_obs" << " " << getTime();
 
 //		r["ANS_obs_noise"] = "";
@@ -1408,6 +1412,7 @@ QList<QMap<QString, QVariant>> GraphWidget::compact() const// QDataStream &out, 
 
 	if (hasResults)
 	{
+#ifdef GIFMOD
 		QMap<QString, QVariant> r;
 		r["GUI"] = "Block Index";
 		for (int i = 0; i < modelSet->Medium[0].Blocks.size(); i++)
@@ -1416,14 +1421,17 @@ QList<QMap<QString, QVariant>> GraphWidget::compact() const// QDataStream &out, 
 
 		list.append(r);
 		qDebug() << "append to list" << " " << getTime();
+#endif
 	}
 	if (hasResults)
 	{
 		QMap<QString, QVariant> r;
 
 		r["GUI"] = "Connector Index";
+#ifdef GIFMOD
 		for (int i = 0; i < modelSet->Medium[0].Connector.size(); i++)
 			r[QString::fromStdString(modelSet->Medium[0].Connector[i].ID)] = i;
+#endif
 		qDebug() << "Connector Index" << " " << getTime();
 		list.append(r);
 		qDebug() << "append to list" << " " << getTime();
@@ -1557,6 +1565,7 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 		{
 			qDebug() << list[i].value("GUI").toString() << " Added.";
 			undo_counter = 0;// list[i].value("Undo Counter"].toInt();
+#ifdef GIFMOD
 			ModelSpace.Model = list[i].value("Model Space").toString();
 			inflowFileNames = list[i].value("Inflow Filenames").toStringList();
 			hasResults = list[i].value("hasResults").toBool();
@@ -1610,6 +1619,7 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 			QCoreApplication::processEvents();
 			list[i] = QMap<QString, QVariant>();
 
+#endif
 		}
 
 		if (list[i].value("GUI").toString() == "Results")
@@ -1834,7 +1844,9 @@ GraphWidget* GraphWidget::unCompact12(QList<QMap<QString, QVariant>> &list, bool
 			ModelSpace.Model = list[i].value("Model Space").toString();
 			inflowFileNames = list[i].value("Inflow Filenames").toStringList();
 			hasResults = list[i].value("hasResults").toBool();
+#ifdef GIFMOD
 			modelSet = new CMediumSet;
+#endif
 			//if (hasResults)
 			//              {
 			experimentsComboClear(false);
@@ -3092,7 +3104,6 @@ QStringList GraphWidget::variableValuesHasError()
 			e->warnings.clear();
 			e->errors.clear();
 			QStringList list = e->variableNames();
-//#pragma omp parallel for
 			for (int i = 0; i < list.count(); i++)
 			{
 				QString variableName = list[i];
@@ -3125,7 +3136,6 @@ QStringList GraphWidget::variableValuesHasError()
 					}
 			}
 			list = e->variableNameConditions().keys();
-//#pragma omp parallel for
 			for (int i = 0; i < list.count(); i++)
 			{
 				QString variableName = list[i];
@@ -3169,7 +3179,6 @@ QStringList GraphWidget::variableValuesHasError()
 			e->warnings.clear();
 			e->errors.clear();
 			QStringList list = e->variableNames();
-//#pragma omp parallel for
 			for (int i = 0; i < list.count(); i++)
 			{
 				QString variableName = list[i];
@@ -3212,7 +3221,6 @@ QStringList GraphWidget::variableValuesHasError()
 				}
 #endif
 			list = e->variableNameConditions().keys();
-//#pragma omp parallel for
 			for (int i = 0; i < list.count(); i++)
 			{
 				QString variableName = list[i];
@@ -3358,6 +3366,15 @@ QStringList GraphWidget::variableValuesHasError()
 				if (!EntityNames("Constituent").contains(e->val("Constituent")))
 					e->errors["Constituent"] = QString("%1 was not found in the model").arg(e->val("Constituent"));
 					*/
+
+		// Check reaction Network
+		ReactionWindowPri d;
+		for (int i = 0; i < Processes.count(); i++)
+			if (!ReactionTableModel::validateNetworkRXNExp(Processes[i]->rate, this, d.Functions, d.Physical))
+			{
+				numberofErrors++;
+				log(QString("Error: Reaction network, Process: %1, has error").arg(Processes[i]->name));
+			}
 #endif
 	}
 	QStringList r;

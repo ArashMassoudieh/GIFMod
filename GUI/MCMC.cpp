@@ -10,6 +10,7 @@
 //Sassan
 #include "qdebug.h"
 #include "runtimeWindow.h"
+#include "qcoreapplication.h"
 
 CMCMC::CMCMC(void)
 {
@@ -390,8 +391,9 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
 	{	file = fopen(filename.c_str(),"w");
 		fclose(file);
 	}
+#ifdef gifmod
 	QCoreApplication::processEvents();
-	
+#endif
 	char buffer[33];
 	if (continue_mcmc == false)
 	{

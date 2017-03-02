@@ -206,7 +206,9 @@ public:
 		if (resultsSet.size()) 
 			resultsSet.clear();
 	*/	model = 0;		results = 0;
-		modelSet = 0;
+#ifdef GIFMOD
+	modelSet = 0;
+#endif
 		hasResults = false;
 	}
 	QMap<QCPGraph *, plotformat> graphsClipboard; // scatterPlotsList;

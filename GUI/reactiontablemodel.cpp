@@ -438,3 +438,145 @@ bool ReactionTableModel::validateExp(const QString &tt) const
  //   }
     return validExpression;
 }
+bool ReactionTableModel::validateNetworkRXNExp(const QString &exp, GraphWidget *gw,	const QStringList &functions, const QStringList &physicals)
+{
+	QString t = exp.trimmed();
+	if (t.isEmpty()) return true;
+	ReactionTableModelPri dd;
+
+
+	QStringList constituents = gw->EntityNames("Constituent"),
+		parameters = gw->EntityNames("Reaction parameter");
+	QStringList words;
+	words << constituents << parameters << physicals << functions;
+
+
+
+	QStringList opts; opts << dd.Brackets << dd.BinaryOperators;
+
+	QStringList optWithBackslash; foreach(QString opt, opts)optWithBackslash << ("\\" + opt);
+	QRegularExpression re(optWithBackslash.join('|'));
+	QRegularExpressionMatchIterator i = re.globalMatch(t);
+	QStringList delims;
+	while (i.hasNext()) {
+		QRegularExpressionMatch match = i.next();
+		for (int i = 0; i <= match.lastCapturedIndex(); ++i) {
+			delims << match.captured(i);
+		}
+	}
+
+	QStringList parts;
+	int iStart = 0, iEnd;
+	foreach(QString delim, delims) {
+		iEnd = t.indexOf(delim, iStart);
+		QString part = t.mid(iStart, iEnd - iStart).trimmed();
+		iStart = iEnd + 1;
+		if (!part.isEmpty()) {
+			parts << part;
+		}
+		parts << delim;
+	}
+	QString part = t.mid(iStart).trimmed();
+	if (!part.isEmpty()) {
+		parts << part;
+	}
+
+	bool validExpression = true;
+	QString msg;
+
+	// check braces counting
+	QList<int> counters;
+	foreach(QString brace, dd.Brackets) {
+		counters << parts.count(brace);
+	}
+	for (int i = 0; i < counters.length() - 1; i++) {
+		if (counters[i] != counters[i + 1]) {
+			msg = "bracket mismatch";
+			validExpression = false; break;
+		}
+	}
+
+	if (validExpression) {
+		// check binary operators;
+		foreach(QString opt, dd.BinaryOperators) {
+			int ind = 1;
+			while (ind >= 1) {
+				ind = parts.indexOf(opt, ind);
+				if (ind > 0 && ind < parts.length() - 1) {
+					QString left = parts[ind - 1], right = parts[ind + 1];
+					if (!isNumber(left) && !constituents.contains(left) && !physicals.contains(left) && !parameters.contains(left) && left != ")" && !functions.contains(left)) {
+						//						wrongSymbol = left;
+						msg = QString("bad expression with operator (%1)").arg(opt);
+						validExpression = false; break;
+					}
+					if (!isNumber(right) && !constituents.contains(right) && !physicals.contains(right) && !parameters.contains(right) && right != "(" && !functions.contains(right)) {
+						//						wrongSymbol = right;
+						msg = QString("bad expression with operator (%1)").arg(opt);
+						validExpression = false; break;
+					}
+				}
+				else if (ind == 0 || ind == parts.length() - 1) {
+					msg = QString("operator %1 in wrong position!").arg(opt);
+					validExpression = false; break;
+				}
+				if (ind >= 1) ind++;
+			}
+			if (!validExpression)break;
+		}
+	}
+
+	if (validExpression) {
+		// for every two operands there must be an operator in between them
+		int INVALID = -1;
+		int current = INVALID, next = INVALID;
+		for (int i = 0; i < parts.length(); i++) {
+			QString part = parts[i];
+			if (constituents.contains(part)) {
+				next = i;
+			}
+			if (parameters.contains(part)) {
+				next = i;
+			}
+			if (physicals.contains(part)) {
+				next = i;
+			}
+			if (next > INVALID) {
+				if (current > INVALID) {
+					// do the checking here
+					bool alright = false;
+					for (int j = current + 1; j < next; j++) {
+						if (dd.BinaryOperators.contains(parts[j])) {
+							alright = true; break;
+						}
+					}
+					if (!alright) {
+						msg = QString("no operator between operands (%1) (%2)").arg(parts[current], parts[next]);
+						validExpression = false; break;
+					}
+					current = next; next = INVALID;
+				}
+				else {
+					current = next;
+					next = INVALID;
+				}
+			}
+		}
+	}
+
+	if (validExpression) {
+		// general checking: check everything is there
+		foreach(QString part, parts) {
+			if (part.isEmpty()) continue;
+			if (words.contains(part)) continue;
+			if (opts.contains(part)) continue;
+			if (isNumber(part)) continue;
+			msg = QString("invalid symbol (%1) in the expression!").arg(part);
+			//			wrongSymbol = part;
+			validExpression = false; break;
+		}
+	}
+	//   if (!validExpression) {
+	//       emit invalidExpressoinDetected(msg);
+	//   }
+	return validExpression;
+}

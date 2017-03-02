@@ -69,6 +69,8 @@
     <addaction name="action_Save"/>
     <addaction name="actionSave_As"/>
     <addaction name="separator"/>
+    <addaction name="actionRecent"/>
+    <addaction name="separator"/>
     <addaction name="actionE_xit"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
@@ -657,6 +659,11 @@
    </property>
    <property name="text">
     <string>runInverse</string>
+   </property>
+  </action>
+  <action name="actionRecent">
+   <property name="text">
+    <string>Recents</string>
    </property>
   </action>
  </widget>
