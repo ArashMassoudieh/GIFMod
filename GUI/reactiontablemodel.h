@@ -25,7 +25,8 @@ public:
 	QStringList physicals() const;
     QStringList parameters() const;
     QStringList operators() const;
-    bool validateExp(const QString& exp) const;
+	bool validateExp(const QString& exp) const;
+static	bool validateNetworkRXNExp(const QString &exp, GraphWidget *gw, const QStringList &functions, const QStringList &physicals);
 
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
     int rowCount(const QModelIndex &parentt = QModelIndex()) const;

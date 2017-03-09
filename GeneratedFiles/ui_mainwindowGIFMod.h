@@ -113,13 +113,13 @@ public:
     QMenu *menuBlocks;
     QMenu *menuConnectors;
     QMenu *menuWaterQuality;
-    QToolBar *mainToolBar;
     QStatusBar *statusBar;
     QToolBar *toolBar;
     QToolBar *toolBar_2;
     QToolBar *toolBar_4;
     QToolBar *experimentsToolbar;
     QToolBar *toolBar_3;
+    QToolBar *mainToolBar;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -416,11 +416,6 @@ public:
         menuWaterQuality = new QMenu(menuPost_Processing);
         menuWaterQuality->setObjectName(QStringLiteral("menuWaterQuality"));
         MainWindow->setMenuBar(menuBar);
-        mainToolBar = new QToolBar(MainWindow);
-        mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
-        mainToolBar->setMouseTracking(true);
-        mainToolBar->setWindowOpacity(1);
-        MainWindow->addToolBar(Qt::TopToolBarArea, mainToolBar);
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName(QStringLiteral("statusBar"));
         MainWindow->setStatusBar(statusBar);
@@ -440,6 +435,11 @@ public:
         toolBar_3 = new QToolBar(MainWindow);
         toolBar_3->setObjectName(QStringLiteral("toolBar_3"));
         MainWindow->addToolBar(Qt::LeftToolBarArea, toolBar_3);
+        mainToolBar = new QToolBar(MainWindow);
+        mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
+        mainToolBar->setMouseTracking(true);
+        mainToolBar->setWindowOpacity(1);
+        MainWindow->addToolBar(Qt::TopToolBarArea, mainToolBar);
 
         menuBar->addAction(menu_File->menuAction());
         menuBar->addAction(menu_Edit->menuAction());
@@ -449,8 +449,8 @@ public:
         menuBar->addAction(menuPost_Processing->menuAction());
         menuBar->addAction(menu_Help->menuAction());
         menu_File->addAction(action_New);
-        menu_File->addAction(actionNew_from_template);
         menu_File->addAction(action_Open);
+        menu_File->addAction(actionNew_from_template);
         menu_File->addAction(action_Save);
         menu_File->addAction(actionSave_As);
         menu_File->addSeparator();
@@ -508,16 +508,6 @@ public:
         menuConnectors->addAction(actionColorCodeConnectorArea);
         menuConnectors->addAction(actionColorCodeConnectorVaporExchangeEate);
         menuWaterQuality->addSeparator();
-        mainToolBar->addAction(action_New);
-        mainToolBar->addAction(action_Open);
-        mainToolBar->addAction(action_Save);
-        mainToolBar->addSeparator();
-        mainToolBar->addAction(action_Undo);
-        mainToolBar->addAction(action_Redo);
-        mainToolBar->addSeparator();
-        mainToolBar->addAction(action_Cut);
-        mainToolBar->addAction(action_Copy);
-        mainToolBar->addAction(action_Paste);
         toolBar->addAction(actionAdd_Pond);
         toolBar->addSeparator();
         toolBar->addAction(actionAdd_Soil);
@@ -541,6 +531,16 @@ public:
         experimentsToolbar->addAction(actionCopyFromCurrentExperiment);
         experimentsToolbar->addAction(actionremoveCurrentExperiment);
         experimentsToolbar->addSeparator();
+        mainToolBar->addAction(action_New);
+        mainToolBar->addAction(action_Open);
+        mainToolBar->addAction(action_Save);
+        mainToolBar->addSeparator();
+        mainToolBar->addAction(action_Undo);
+        mainToolBar->addAction(action_Redo);
+        mainToolBar->addSeparator();
+        mainToolBar->addAction(action_Cut);
+        mainToolBar->addAction(action_Copy);
+        mainToolBar->addAction(action_Paste);
 
         retranslateUi(MainWindow);
 

@@ -36,6 +36,8 @@
 #include "ui_mainwindowGIFMod.h"
 #include "MediumSet.h"
 #include "BTCSet.h"
+#include "reactionwindow.h"
+#include "reactiontablemodel.h"
 #endif
 #ifdef GWA
 #include "gwa.h"
@@ -823,7 +825,7 @@ void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QStri
 				data.push_back(model->ANS[index]);
 			}
 			if (propertyName == "Head") {
-				data.push_back(model->ANS[model->Connector.size() + model->Blocks.size() + index]);
+				data.push_back(model->ANS[Edges().count() + Nodes().count() + index]);
 			}
 			if (propertyName == "Moisture content")
 			{
@@ -846,11 +848,11 @@ void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QStri
 				Node *n = node(nodeNames[i]);
 				double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
 				shift = -z0;
-				data.push_back(model->ANS[model->Connector.size() + model->Blocks.size() + index]);
+				data.push_back(model->ANS[Edges().count() + Nodes().count() + index]);
 			}
 			if (propertyName == "Evapotranspiration rate")
 			{
-				data.push_back(model->ANS[model->Connector.size() + 2 * model->Blocks.size() + index]);
+				data.push_back(model->ANS[Edges().count() + 2 * Nodes().count() + index]);
 			}
 			if (!remove)
 			{
@@ -2798,37 +2800,40 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 			}
 			
 		}
+		plotformat format;
+		format.xAxisTimeFormat = true;
+
 		if (selectedAction->text() == "Plot Storage")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
-			plot->addScatterPlot(model->ANS, model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Storage"));
+			plot->addScatterPlot(model->ANS, model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Storage"), 1, 0, format);
 			plot->show();
 		}
 		if (selectedAction->text() == "Plot Head")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
-			plot->addScatterPlot(model->ANS, model->Connector.size() + model->Blocks.size() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Head"));
+			plot->addScatterPlot(model->ANS, Edges().count() + Nodes().count() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Head"), 1, 0, format);
 			plot->show();
 		}
 		if (selectedAction->text() == "Moisture Content")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
 			double volume = n->val("a").convertToDefaultUnit().toDouble() * n->val("depth").convertToDefaultUnit().toDouble(); //model->Blocks[model->getblocksq(n->Name().toStdString())].V; //ask Arash
-			plot->addScatterPlot(model->ANS, model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Moisture Content"), 1.0 / volume);
+			plot->addScatterPlot(model->ANS, model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Moisture Content"), 1.0 / volume, 0, format);
 			plot->show();
 		}
 		if (selectedAction->text() == "Water Depth")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
 			double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
-			plot->addScatterPlot(model->ANS, model->Connector.size() + model->Blocks.size() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Water Depth"), 1, -z0);
+			plot->addScatterPlot(model->ANS, Edges().count() + Nodes().count() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Water Depth"), 1, -z0, format);
 			plot->show();
 		}
 		if (selectedAction->text() == "Evapotranspiration Rate")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
 			double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
-			plot->addScatterPlot(model->ANS, model->Connector.size() + 2 * model->Blocks.size() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Evapotranspiration Rate"), 1, 0);
+			plot->addScatterPlot(model->ANS, Edges().count() + 2 * Nodes().count() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Evapotranspiration Rate"), 1, 0, format);
 			plot->show();
 		}
 #endif
@@ -2837,7 +2842,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
 			QString file = n->getValue("Atmospheric Record").toQString();
 			CBTC record = CBTC(file.replace("./", modelPathname().append('/')).toStdString());
-			plot->addScatterPlot(record, n->Name(), false);
+			plot->addScatterPlot(record, n->Name(), plotformat());
 			plot->show();
 		}
 #ifdef GWA
@@ -2890,13 +2895,13 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 			if (menuKey[selectedAction][0] == "Constituent")
 			{
 				plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
-				plot->addScatterPlot(model->ANS_constituents, menuKey[selectedAction][1].toInt());
+				plot->addScatterPlot(model->ANS_constituents, menuKey[selectedAction][1].toInt(), "", 1, 0, format);
 				plot->show();
 			}
 			if (menuKey[selectedAction][0] == "Particle")
 			{
 				plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
-				plot->addScatterPlot(model->ANS_colloids, menuKey[selectedAction][1].toInt());
+				plot->addScatterPlot(model->ANS_colloids, menuKey[selectedAction][1].toInt(), "", 1, 0, format);
 				plot->show();
 			}
 			if (menuKey[selectedAction][0] == "Inflow")
@@ -2906,7 +2911,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 					if (selectedAction->text().toStdString() == inflow.names[i])
 					{
 						plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
-						plot->addScatterDotPlot(inflow, i);
+						plot->addScatterDotPlot(inflow, i, "", format);
 						plot->show();
 					}
 			}
@@ -3089,7 +3094,6 @@ QStringList GraphWidget::variableValuesHasError()
 			e->warnings.clear();
 			e->errors.clear();
 			QStringList list = e->variableNames();
-//#pragma omp parallel for
 			for (int i = 0; i < list.count(); i++)
 			{
 				QString variableName = list[i];
@@ -3122,7 +3126,6 @@ QStringList GraphWidget::variableValuesHasError()
 					}
 			}
 			list = e->variableNameConditions().keys();
-//#pragma omp parallel for
 			for (int i = 0; i < list.count(); i++)
 			{
 				QString variableName = list[i];
@@ -3166,7 +3169,6 @@ QStringList GraphWidget::variableValuesHasError()
 			e->warnings.clear();
 			e->errors.clear();
 			QStringList list = e->variableNames();
-//#pragma omp parallel for
 			for (int i = 0; i < list.count(); i++)
 			{
 				QString variableName = list[i];
@@ -3209,7 +3211,6 @@ QStringList GraphWidget::variableValuesHasError()
 				}
 #endif
 			list = e->variableNameConditions().keys();
-//#pragma omp parallel for
 			for (int i = 0; i < list.count(); i++)
 			{
 				QString variableName = list[i];
@@ -3355,6 +3356,15 @@ QStringList GraphWidget::variableValuesHasError()
 				if (!EntityNames("Constituent").contains(e->val("Constituent")))
 					e->errors["Constituent"] = QString("%1 was not found in the model").arg(e->val("Constituent"));
 					*/
+
+		// Check reaction Network
+		ReactionWindowPri d;
+		for (int i = 0; i < Processes.count(); i++)
+			if (!ReactionTableModel::validateNetworkRXNExp(Processes[i]->rate, this, d.Functions, d.Physical))
+			{
+				numberofErrors++;
+				log(QString("Error: Reaction network, Process: %1, has error").arg(Processes[i]->name));
+			}
 #endif
 	}
 	QStringList r;

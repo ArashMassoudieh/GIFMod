@@ -5105,7 +5105,15 @@ void CMedium::onestepsolve_const_ar(double dtt)
 
 		
 		if (InvJ_Q_arma.getnumcols() != 0)
+		{
 			dx = dtt / dtt_J_q*(InvJ_Q_arma*Preconditioner_Q_arma*normalize_diag(F, M_Q_arma));
+			if ((dx == dx) == false)
+			{
+				fail_reason = "dx was calculated as NAN";
+				failed_const = true;
+				return;
+			}
+		}
 		else if (M_Q_arma.getnumcols() > 0)
 		{
 			dx = dtt/dtt_J_q*solve_ar(M_Q_arma, F);
