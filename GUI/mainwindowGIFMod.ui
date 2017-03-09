@@ -188,6 +188,31 @@
    <addaction name="menuPost_Processing"/>
    <addaction name="menu_Help"/>
   </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <property name="mouseTracking">
+    <bool>true</bool>
+   </property>
+   <property name="windowOpacity">
+    <double>1.000000000000000</double>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="action_New"/>
+   <addaction name="action_Open"/>
+   <addaction name="actionNew_from_template"/>
+   <addaction name="action_Save"/>
+   <addaction name="separator"/>
+   <addaction name="action_Undo"/>
+   <addaction name="action_Redo"/>
+   <addaction name="separator"/>
+   <addaction name="action_Cut"/>
+   <addaction name="action_Copy"/>
+   <addaction name="action_Paste"/>
+  </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
@@ -269,30 +294,6 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-  </widget>
-  <widget class="QToolBar" name="mainToolBar">
-   <property name="mouseTracking">
-    <bool>true</bool>
-   </property>
-   <property name="windowOpacity">
-    <double>1.000000000000000</double>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-   <addaction name="action_New"/>
-   <addaction name="action_Open"/>
-   <addaction name="action_Save"/>
-   <addaction name="separator"/>
-   <addaction name="action_Undo"/>
-   <addaction name="action_Redo"/>
-   <addaction name="separator"/>
-   <addaction name="action_Cut"/>
-   <addaction name="action_Copy"/>
-   <addaction name="action_Paste"/>
   </widget>
   <action name="action_New">
    <property name="icon">

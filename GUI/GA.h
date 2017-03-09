@@ -101,9 +101,10 @@ public:
 	CMediumSet Sys;
 #endif	
 #ifdef GWA
-	vector<CGWA> Sys1;
-	vector<CGWA> Sys_out;
-	CGWA Sys;
+	vector<CGWASet> Sys1;
+//	vector<CGWA> Sys_out;
+	CGWASet Sys_out;
+	CGWASet Sys;
 #endif	
 	CDistribution fitdist;
 

@@ -1,5 +1,5 @@
 #pragma once
-
+#ifdef GIFMOD
 #include "Medium.h"
 #include "Sensor.h"
 #include "Controller.h"
@@ -171,3 +171,4 @@ public:
 
 };
 
+#endif

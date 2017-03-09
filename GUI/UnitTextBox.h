@@ -9,6 +9,21 @@ class UnitTextBox :
 {	
 public:
 	UnitTextBox() {};
+	UnitTextBox(const XString &X, QWidget * parent = 0) :QWidget(parent)
+	{
+		textBox = new QLineEdit(this);
+		unitBox = new QComboBox(textBox);
+		validator = new QDoubleValidator(this);
+		textBox->setValidator(validator);
+//		Rect = option.rect;
+
+		setXString(X);
+		unitBox->show();
+		textBox->show();
+		this->show();
+
+	};
+
 	UnitTextBox(const QStyleOptionViewItem &option, QWidget * parent = 0) :QWidget(parent)
 	{
 		textBox = new QLineEdit(this);

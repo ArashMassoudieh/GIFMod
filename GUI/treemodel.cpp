@@ -187,12 +187,14 @@ TreeModel::~TreeModel()
 void TreeModel::addChildFromMenu(const QString name, QModelIndex *parentIndex)
 {
 	TreeItem *parent = 0;
+#ifdef GIFMOD
 	if (name == "Controller")
 		parent = this->controller;
 	if (name == "Sensor")
 		parent = this->sensor;
 	if (name == "Objective function")
 		parent = this->objectiveFunction;
+#endif
 	if (name == "Constituent")
 		parent = this->constituent;
 	if (name == "Particle")
@@ -498,12 +500,15 @@ void TreeModel::add(Edge *edge)
 TreeItem * TreeModel::entityParentItemfromType(QString type) const
 {
 	TreeItem *parent = 0;
+#ifdef Gifmod
 	if (type == "Sensor")
 		parent = this->sensor;
 	if (type == "Objective function")
 		parent = this->objectiveFunction;
 	if (type == "Controller")
 		parent = this->controller;
+#endif
+
 	if (type == "Constituent")
 		parent = this->constituent;
 	if (type == "Particle")

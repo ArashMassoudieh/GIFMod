@@ -37,21 +37,31 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
+#ifdef GIFMOD
+
 
 #include <QtWidgets>
 
 #include "classwizard.h"
+#include "UnitTextBox.h"
+
 
 //! [0] //! [1]
 ClassWizard::ClassWizard(QWidget *parent)
     : QWizard(parent)
 {
+	setWizardStyle(QWizard::ModernStyle);
+
 	for (int i = 0; i < data.items.count(); i++)
 	{
-		if (data.items[i].type == "intro")
-			addPage(new IntroPage(data.items[i]));
+		if (data.items[i].type.toLower().contains("intro"))
+			addPage(new IntroPage(data.items[i], this));
+		if (data.items[i].type.toLower().contains("property"))
+			addPage(new PropertyPage(data.items[i], this));
+		if (data.items[i].type.toLower().contains("property"))
+			addPage(new PropertyPage(data.items[i], this));
+
 	}
-    addPage(new ClassInfoPage);
     addPage(new CodeStylePage);
     addPage(new OutputFilesPage);
     addPage(new ConclusionPage);
@@ -209,7 +219,7 @@ IntroPage::IntroPage(wizardDataItem data, QWidget *parent)
 {
 	setTitle(data.name);
     if (data.watermark!="")
-		setPixmap(QWizard::WatermarkPixmap, QPixmap(data.watermark);
+		setPixmap(QWizard::WatermarkPixmap, QPixmap(data.watermark));
 
     label = new QLabel(data.desc);
     label->setWordWrap(true);
@@ -234,11 +244,11 @@ PropertyPage::PropertyPage(wizardDataItem data, QWidget *parent)
 
 		//! [10]
 		labels.append(QList<QLabel*>());
-		lineEdits.append(QList<QLineEdit*>());
+		lineEdits.append(QList<UnitTextBox*>());
 		for (int j = 0; j < data.labels[i].count(); j++)
 		{
 			labels[i].append(new QLabel(data.labels[i][j]));
-			lineEdits[i].append(new QLineEdit(data.variableNames[i][j]));
+			lineEdits[i].append(new UnitTextBox(data.variables[i][j]));
 			labels[i][j]->setBuddy(lineEdits[i][j]);
 
 		/*	baseClassLabel = new QLabel(tr("B&ase class:"));
@@ -249,49 +259,60 @@ PropertyPage::PropertyPage(wizardDataItem data, QWidget *parent)
     //qobjectMacroCheckBox = new QCheckBox(tr("Generate Q_OBJECT &macro"));
 
 //! [10]
-    groupBox = new QGroupBox(tr("C&onstructor"));
+   // groupBox = new QGroupBox(tr("C&onstructor"));
 //! [9]
 
-    qobjectCtorRadioButton = new QRadioButton(tr("&QObject-style constructor"));
-    qwidgetCtorRadioButton = new QRadioButton(tr("Q&Widget-style constructor"));
-    defaultCtorRadioButton = new QRadioButton(tr("&Default constructor"));
-    copyCtorCheckBox = new QCheckBox(tr("&Generate copy constructor and "
-                                        "operator="));
+    //qobjectCtorRadioButton = new QRadioButton(tr("&QObject-style constructor"));
+    //qwidgetCtorRadioButton = new QRadioButton(tr("Q&Widget-style constructor"));
+    //defaultCtorRadioButton = new QRadioButton(tr("&Default constructor"));
+    //copyCtorCheckBox = new QCheckBox(tr("&Generate copy constructor and "
+    //                                    "operator="));
 
-    defaultCtorRadioButton->setChecked(true);
+    //defaultCtorRadioButton->setChecked(true);
 
-    connect(defaultCtorRadioButton, &QAbstractButton::toggled,
-            copyCtorCheckBox, &QWidget::setEnabled);
+    //connect(defaultCtorRadioButton, &QAbstractButton::toggled,
+    //        copyCtorCheckBox, &QWidget::setEnabled);
 
 //! [11] //! [12]
 	for (int i = 0; i < data.groups.count(); i++)
 	{
 		for (int j = 0; j < data.labels[i].count(); j++)
-			registerField(data.labels[i][j], lineEdits[i][j]);
+			registerField(data.variables[i][j].toQString(), lineEdits[i][j]);
 	}
-    registerField("baseClass", baseClassLineEdit);
-    registerField("qobjectMacro", qobjectMacroCheckBox);
+//    registerField("baseClass", baseClassLineEdit);
+ //   registerField("qobjectMacro", qobjectMacroCheckBox);
 //! [11]
-    registerField("qobjectCtor", qobjectCtorRadioButton);
-    registerField("qwidgetCtor", qwidgetCtorRadioButton);
-    registerField("defaultCtor", defaultCtorRadioButton);
-    registerField("copyCtor", copyCtorCheckBox);
+//    registerField("qobjectCtor", qobjectCtorRadioButton);
+//    registerField("qwidgetCtor", qwidgetCtorRadioButton);
+//    registerField("defaultCtor", defaultCtorRadioButton);
+//    registerField("copyCtor", copyCtorCheckBox);
 
-    QVBoxLayout *groupBoxLayout = new QVBoxLayout;
+//    QVBoxLayout *groupBoxLayout = new QVBoxLayout;
 //! [12]
-    groupBoxLayout->addWidget(qobjectCtorRadioButton);
-    groupBoxLayout->addWidget(qwidgetCtorRadioButton);
-    groupBoxLayout->addWidget(defaultCtorRadioButton);
-    groupBoxLayout->addWidget(copyCtorCheckBox);
-    groupBox->setLayout(groupBoxLayout);
+//    groupBoxLayout->addWidget(qobjectCtorRadioButton);
+//    groupBoxLayout->addWidget(qwidgetCtorRadioButton);
+//    groupBoxLayout->addWidget(defaultCtorRadioButton);
+//    groupBoxLayout->addWidget(copyCtorCheckBox);
+//    groupBox->setLayout(groupBoxLayout);
 
-    QGridLayout *layout = new QGridLayout;
-    layout->addWidget(classNameLabel, 0, 0);
-    layout->addWidget(classNameLineEdit, 0, 1);
-    layout->addWidget(baseClassLabel, 1, 0);
-    layout->addWidget(baseClassLineEdit, 1, 1);
-    layout->addWidget(qobjectMacroCheckBox, 2, 0, 1, 2);
-    layout->addWidget(groupBox, 3, 0, 1, 2);
+	int rowCounter = 0;
+	QGridLayout *layout = new QGridLayout;
+	for (int i = 0; i < data.groups.count(); i++)
+	{
+		for (int j = 0; j < data.labels[i].count(); j++)
+		{
+			layout->addWidget(labels[i][j], rowCounter, 0);
+			layout->addWidget(lineEdits[i][j], rowCounter++, 1);
+		}
+		rowCounter++;
+	}
+
+//	layout->addWidget(classNameLabel, 0, 0);
+//   layout->addWidget(classNameLineEdit, 0, 1);
+//    layout->addWidget(baseClassLabel, 1, 0);
+//    layout->addWidget(baseClassLineEdit, 1, 1);
+//   layout->addWidget(qobjectMacroCheckBox, 2, 0, 1, 2);
+//    layout->addWidget(groupBox, 3, 0, 1, 2);
     setLayout(layout);
 //! [13]
 }
@@ -440,3 +461,4 @@ void ConclusionPage::initializePage()
     label->setText(tr("Click %1 to generate the class skeleton.")
                    .arg(finishText));
 }
+#endif

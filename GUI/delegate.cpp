@@ -432,13 +432,15 @@ void Delegate::browserClicked()
 		tr("Select the File"),
 		parent->modelPathname(),
 		tr("(*.txt *.csv)"));
+#ifdef GIFMOD
 	if (parent->propModel()->data(QModelIndex(), loadIndexandVariableTypeRole).toString().toLower().contains("precipitation"))
 		if (!CPrecipitation::isFileValid(file.toStdString())){
 			QMessageBox::warning(qApp->activeWindow(),
 				"Precipitation file", "Selected file is not a valid [Precipitation file]."				);
 			return;
 		}
-		file = relativePathFilename(file, parent->modelPathname());
+#endif
+	file = relativePathFilename(file, parent->modelPathname());
 	parent->propModel()->setData(QModelIndex(), file, loadIndex);
 }
 void Delegate::dirBrowserClicked()

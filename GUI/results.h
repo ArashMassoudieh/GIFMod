@@ -12,7 +12,7 @@ class CMediumSet;
 //#include "medium.h"
 #endif
 #ifdef GWA
-#include "gwa.h"
+#include "GWA.h"
 #endif
 
 //#include "XString.h"

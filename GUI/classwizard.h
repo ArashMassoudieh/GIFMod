@@ -1,3 +1,4 @@
+#ifdef GIFMOD
 /****************************************************************************
 **
 ** Copyright (C) 2015 The Qt Company Ltd.
@@ -42,6 +43,9 @@
 #define CLASSWIZARD_H
 
 #include <QWizard>
+#include "XString.h"
+#include "UnitTextBox.h"
+
 
 QT_BEGIN_NAMESPACE
 class QCheckBox;
@@ -51,16 +55,19 @@ class QLineEdit;
 class QRadioButton;
 QT_END_NAMESPACE
 
-struct wizardData
-{
-	QList<wizardDataItem> items;
-};
 struct wizardDataItem
 {
 	QString name, desc, type, watermark="";
 	QStringList groups;
-	QList<QStringList> labels, variableNames;
+	QList<QStringList> labels;
+	QList<QList<XString>> variables;
 };
+
+struct wizardData
+{
+	QList<wizardDataItem> items;
+};
+
 //! [0]
 class ClassWizard : public QWizard
 {
@@ -71,6 +78,7 @@ public:
 
     void accept() Q_DECL_OVERRIDE;
 	wizardData data;
+	QMap<QString, XString> variablesAndValues;
 };
 //! [0]
 
@@ -100,7 +108,7 @@ public:
 private:
     QList<QList<QLabel*>> labels;
     QLabel *baseClassLabel;
-    QList<QList<QLineEdit*>> lineEdits;
+    QList<QList<UnitTextBox*>> lineEdits;
     QLineEdit *baseClassLineEdit;
     QCheckBox *qobjectMacroCheckBox;
     QGroupBox *groupBox;
@@ -168,3 +176,4 @@ private:
 };
 
 #endif
+#endif //GIFMOD

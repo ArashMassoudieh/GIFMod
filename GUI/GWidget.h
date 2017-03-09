@@ -192,6 +192,7 @@ public:
 #endif
 #ifdef GWA
 	CGWA *model = 0;
+	CGWASet* modelSet = 0;
 #endif
 	Results *results = 0;
 	helpWindow* help = 0;
@@ -206,8 +207,9 @@ public:
 		if (resultsSet.size()) 
 			resultsSet.clear();
 	*/	model = 0;		results = 0;
-		modelSet = 0;
-		hasResults = false;
+
+	modelSet = 0;
+	hasResults = false;
 	}
 	QMap<QCPGraph *, plotformat> graphsClipboard; // scatterPlotsList;
 	QString modelFilename = "";
