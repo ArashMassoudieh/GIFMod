@@ -41,6 +41,7 @@
 #endif
 #ifdef GWA
 #include "gwa.h"
+#include "utility_funcs.h"
 #endif
 
 
@@ -800,6 +801,7 @@ void GraphWidget::updateNodeCoordinates()
 		}
 	}
 }
+#ifdef GIFMOD
 void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QString colorTheme, vector<double> predifinedMinMax, float time)
 {
 	if (!hasResults)
@@ -876,7 +878,7 @@ void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QStri
 	colorScheme::colorandLegend(colors, time, "Blue-Red", false, 8);
 	applyColorstoNodes();
 }
-#ifdef GIFMOD
+
 void GraphWidget::updateNodesColorCodes_WaterQuality(QStringList property, bool logged, QString colorTheme, vector<double> predifinedMinMax, float time)
 {
 	if (!hasResults)
@@ -1847,6 +1849,9 @@ GraphWidget* GraphWidget::unCompact12(QList<QMap<QString, QVariant>> &list, bool
 #ifdef GIFMOD
 			modelSet = new CMediumSet;
 #endif
+#ifdef GWA
+			modelSet = new CGWASet;
+#endif
 			//if (hasResults)
 			//              {
 			experimentsComboClear(false);
@@ -1877,6 +1882,7 @@ GraphWidget* GraphWidget::unCompact12(QList<QMap<QString, QVariant>> &list, bool
 					list[i] = QMap<QString, QVariant>();
 					}
 					*/
+#ifdef GIFMOD
 					if (list[i].value("GUI").toString() == "Block Index")
 					{
 						//          r.remove ("GUI");
@@ -1897,7 +1903,7 @@ GraphWidget* GraphWidget::unCompact12(QList<QMap<QString, QVariant>> &list, bool
 						list[i] = QMap<QString, QVariant>();
 
 					}
-
+#endif
 					if (list[i].value("GUI").toString() == "Results")
 					{
 						qDebug() << list[i].value("GUI").toString() << " Added.";

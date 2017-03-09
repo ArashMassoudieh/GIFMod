@@ -1,11 +1,11 @@
 #ifndef GIFMOD_VERSION
-#define GIFMOD_VERSION "0.1.13"
+#define GIFMOD_VERSION "0.1.14"
 #endif
 #define RECENT "recentFiles.txt"
 #include "mainwindow.h"
+#include "csvEditor.h"
 #ifdef GIFMOD
 #include "ui_mainwindowGIFMod.h"
-#include "csvEditor.h"
 #endif
 #ifdef GWA
 #include "ui_mainwindowGWA.h"
@@ -377,10 +377,10 @@ void MainWindow::on_action_New_triggered()
 	mainGraphWidget->deleteSolutionResults();
 	mainGraphWidget->changedState = false;
 }
-#ifdef gifmod
+#ifdef GIFMOD
 void MainWindow::on_actionNew_from_template_triggered()
 {
-
+	return;
 	ClassWizard* wzrd;
 	wzrd = new ClassWizard;
 	wzrd->show();
@@ -1467,7 +1467,7 @@ void MainWindow::plotModeledData(CBTC modeled, CBTC observed, QString _name)
 		format.scatterStyle = QCPScatterStyle::ssPlusCircle;
 		format.xAxisTimeFormat = true;
 #ifdef GWA
-		convertTime = false;
+		format.xAxisTimeFormat = false;
 #endif
 		plot->addScatterPlot(obs, name + "(Observed)", format);
 		
@@ -1499,7 +1499,7 @@ void MainWindow::plotModeledDataDot(CBTC modeled, CBTC observed, QString _name)
 		format.scatterStyle = QCPScatterStyle::ssPlusCircle;
 		format.xAxisTimeFormat = true;
 #ifdef GWA
-		convertTime = false;
+		format.xAxisTimeFormat = false;
 #endif
 		plot->addScatterPlot(obs, name + "(Observation)", format);
 	
@@ -1566,7 +1566,7 @@ void MainWindow::plotRealization(CBTCSet data, QString name)
 		format.penWidth = 1;
 		format.xAxisTimeFormat = true;
 #ifdef GWA
-		convertTime = false;
+		format.xAxisTimeFormat = false;
 #endif
 		for (int i = 0; i < _data.nvars; i++)
 		{
@@ -2115,7 +2115,7 @@ void MainWindow::on_actionRun_Model_triggered()
 	statusBar()->showMessage("Assembling model configuration.");
 	QCoreApplication::processEvents();
 	runtimeWindow *rtw = new runtimeWindow(mainGraphWidget);
-	mainGraphWidget->deleteSolution();
+	mainGraphWidget->deleteSolutionResults();
 	mainGraphWidget->model = new CGWA(mainGraphWidget, rtw);
 	mainGraphWidget->results = new Results;
 	//rtw->show();
@@ -2245,7 +2245,7 @@ void MainWindow::on_actionRun_Inverse_Model_triggered()
 	mainGraphWidget->logW->writetotempfile();
 	QCoreApplication::processEvents();
 	runtimeWindow *rtw = new runtimeWindow(mainGraphWidget, "inverse");
-	mainGraphWidget->deleteSolution();
+	mainGraphWidget->deleteSolutionResults();
 	mainGraphWidget->model = new CGWA(mainGraphWidget, rtw);
 	rtw->show();
 	mainGraphWidget->log("Running Simulation.");
@@ -2338,7 +2338,7 @@ void MainWindow::on_actionReset_colors_triggered()
 	mainGraphWidget->colorSchemeLegend_closed();
 }
 
-
+#ifdef GIFMOD
 void MainWindow::menuWaterQuality_hovered()
 {
 	static double t = 0;
@@ -2427,6 +2427,7 @@ void MainWindow::menuWaterQuality_hovered()
 		}
 	}
 }
+#endif
 void MainWindow::updateAction(QAction *a, QString particleConstituent, QString p, QString c, QString phase)
 {
 	QStringList data;

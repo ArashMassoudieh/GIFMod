@@ -2077,6 +2077,13 @@ void CMedium::solve_fts_m2(double dt)
 					fprintf(FILEBTC, "failed count > 30");
 					fclose(FILEBTC);
 				}
+				// Sassan					
+					failed = true;
+					fail_reason = "failed count > 30";
+					for (int i = 0; i < controllers().size(); i++)
+						ANS_control.BTC[i] = controllers()[i].output;
+					updateProgress();
+
 				return;
 			}
 			// Sassan					

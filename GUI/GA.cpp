@@ -402,9 +402,17 @@ void CGA::assignfitnesses()
 		Sys1[k] = Sys;
 
 		int l = 0;
+#ifdef GIFMOD
 		for (int i = 0; i < nParam; i++)
 			Sys1[k].set_param(params[i], inp[k][i]);
 		Sys1[k].finalize_set_param();
+#endif
+#ifdef GWA
+		for (int i = 0; i < nParam; i++)
+			Sys1[k].Medium[0].set_param(params[i], inp[k][i]);
+		Sys1[k].Medium[0].finalize_set_param();
+#endif
+
 	}
 		
 omp_set_num_threads(numberOfThreads);
@@ -441,7 +449,7 @@ omp_set_num_threads(numberOfThreads);
 				epochs[k] += Sys1[k].epoch_count();
 #endif
 #ifdef GWA
-				epochs[k] += Sys1[k].epoch_count;
+				epochs[k] += Sys1[k].epoch_count();
 #endif
 			}
 			time_[k] = ((float)(clock() - t0))/CLOCKS_PER_SEC;
@@ -449,7 +457,7 @@ omp_set_num_threads(numberOfThreads);
 			FileOut = fopen((Sys.FI.pathname+"detail_GA.txt").c_str(),"a");
 #endif
 #ifdef GWA
-			FileOut = fopen((Sys.pathname+"detail_GA.txt").c_str(),"a");
+			FileOut = fopen((Sys.Medium[0].pathname+"detail_GA.txt").c_str(),"a");
 #endif
 			fprintf(FileOut, "%i, fitness=%le, time=%e, epochs=%i\n", k, Ind[k].actual_fitness, time_[k], epochs[k]);
 			fclose(FileOut);
@@ -675,7 +683,7 @@ int CGA::optimize()
 
 	return maxfitness();
 }
-#ifdef GIFMod
+#ifdef GIFMOD
 double CGA::assignfitnesses(vector<double> inp)
 {
 

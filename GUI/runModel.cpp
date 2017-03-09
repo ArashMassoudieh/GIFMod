@@ -418,7 +418,9 @@ int CGA::optimize(runtimeWindow* rtw)
 		vars["i"] = QString::number(i);
 		vars["likelihood"] = QString::number(-Fitness[i][0]);
 		qDebug() << i << -Fitness[i][0];
+
 		rtw->experiment = &Sys.Medium[0];//should represent experiment
+
 		updateProgress(rtw, vars);
 		//QApplication::processEvents();
 
@@ -632,15 +634,18 @@ void CGA::assignfitnesses(runtimeWindow* rtw)
 		Sys1[k] = Sys;
 #ifdef GIFMOD
 		Sys1[k].FI.write_details = false;
-#endif
-
-#ifdef GWA
-		Sys1[k].project = false;
-		//			Sys1[k][ts].write_details = false;
-#endif
 		int l = 0;
 		for (int i = 0; i < nParam; i++) Sys1[k].set_param(i, inp[k][i]);
 		Sys1[k].finalize_set_param();
+#endif
+
+#ifdef GWA
+	Sys1[k].Medium[0].project = false;
+	//			Sys1[k][ts].write_details = false;
+	int l = 0;
+	for (int i = 0; i < nParam; i++) Sys1[k].Medium[0].set_param(i, inp[k][i]);
+	Sys1[k].Medium[0].finalize_set_param();
+#endif
 	}
 	updateProgress(rtw, true);
 
@@ -688,7 +693,7 @@ void CGA::assignfitnesses(runtimeWindow* rtw)
 		FileOut = fopen((Sys.FI.outputpathname + "detail_GA.txt").c_str(), "a");
 #endif
 #ifdef GWA
-		FileOut = fopen((Sys.pathname + "detail_GA.txt").c_str(), "a");
+		FileOut = fopen((Sys.Medium[0].pathname + "detail_GA.txt").c_str(), "a");
 #endif
 
 		std::fprintf(FileOut, "%i, fitness=%le, time=%e, epochs=%i\n", k, Ind[k].actual_fitness, time_[k], epochs[k]);
@@ -698,7 +703,7 @@ void CGA::assignfitnesses(runtimeWindow* rtw)
 
 	Sys_out = Sys1[maxfitness()];
 #ifdef GWA
-	Sys_out[0].project = Sys.project;
+	Sys_out.Medium[0].project = Sys.Medium[0].project;
 #endif
 	inp.clear();
 	assignfitness_rank(N);
@@ -2115,7 +2120,10 @@ void CMediumSet::solve(runtimeWindow *rtw)
 		ANS_colloids.push_back(&Medium[i].ANS_colloids);
 		ANS_constituents.push_back(&Medium[i].ANS_constituents);
 		ANS_colloids.push_back(&Medium[i].ANS_control);
-		gw->log(QString("%1 finished").arg(QString::fromStdString(Medium[i].name)));
+		if (Medium[i].failed)
+			gw->log(QString("%1 failed, (%2)").arg(QString::fromStdString(Medium[i].name)).arg(QString::fromStdString(Medium[i].fail_reason)));
+		else
+			gw->log(QString("%1 finished").arg(QString::fromStdString(Medium[i].name)));
 
 	}
 
@@ -2496,10 +2504,10 @@ void MainWindow::inverseRun(CGWA *model, runtimeWindow* progress)
 			}
 
 			//			GA.Sys_out.modeled.writetofile(system.outpathname + GA.Sys.detoutfilename);
-			GA.Sys_out.modeled.writetofile(system.outpathname + "detout.txt");
-			if (GA.Sys_out.project == true)
+			GA.Sys_out.Medium[0].modeled.writetofile(system.outpathname + "detout.txt");
+			if (GA.Sys_out.Medium[0].project == true)
 			{
-				GA.Sys_out.projected.writetofile(system.outpathname + "projected.txt");
+				GA.Sys_out.Medium[0].projected.writetofile(system.outpathname + "projected.txt");
 			}
 
 
@@ -2508,18 +2516,18 @@ void MainWindow::inverseRun(CGWA *model, runtimeWindow* progress)
 			QList<Entity*> GUIparameters = mainGraphWidget->entitiesByType("Parameter");
 
 			for (int i = 0; i < GUIparameters.size(); i++)
-				GUIparameters[i]->setValue("Value", QString::number(GA.final_params[GA.Sys.lookup_parameters(GUIparameters[i]->name.toStdString())]));
+				GUIparameters[i]->setValue("Value", QString::number(GA.final_params[GA.Sys.Medium[0].lookup_parameters(GUIparameters[i]->name.toStdString())]));
 			mainGraphWidget->trackingUndo = true;
 			mainGraphWidget->changedState = true;
 
 			if (mainGraphWidget->model->modeled.nvars == 0)
 			{
 				delete mainGraphWidget->model;
-				mainGraphWidget->model = new CGWA(GA.Sys_out);
+				mainGraphWidget->model = new CGWA(GA.Sys_out.Medium[0]);
 			}
 
-			mainGraphWidget->results->ANS_obs = GA.Sys_out.modeled;
-			mainGraphWidget->results->projected = GA.Sys_out.projected;
+			mainGraphWidget->results->ANS_obs = GA.Sys_out.Medium[0].modeled;
+			mainGraphWidget->results->projected = GA.Sys_out.Medium[0].projected;
 
 		}
 //		if (mainGraphWidget->model != 0) delete mainGraphWidget->model;

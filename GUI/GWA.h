@@ -152,4 +152,39 @@ public:
 	bool stop_triggered = false;
 };
 
+class CGWASet
+{
+public:
+	CGWASet() {};
+	~CGWASet() {};
+	CGWASet(const CGWASet &M)
+	{
+		Medium = M.Medium;
+	};
+	CGWASet& CGWASet::operator=(const CGWASet &BB)
+	{
+		Medium = BB.Medium;
+		return *this;
+	}
+	vector<CGWA> Medium;
+	vector<range> parameters;
+
+
+
+	double CGWASet::calc_log_likelihood() //calculate sum log likelihood for time series data ts
+	{
+//ASK Arash
+		return 0;
+	}
+
+	int CGWASet::epoch_count()
+	{
+		int out = 0;
+		for (int i = 0; i < Medium.size(); i++) out += Medium[i].epoch_count;
+
+		return out;
+	}
+
+};
+
 #endif

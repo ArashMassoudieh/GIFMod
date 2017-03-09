@@ -244,7 +244,6 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
     <ClCompile Include="GUI\mainwindow.cpp" />
     <ClCompile Include="GUI\Matrix.cpp" />
     <ClCompile Include="GUI\Matrix_arma.cpp" />
-    <ClCompile Include="GUI\MBBlock.cpp" />
     <ClCompile Include="GUI\MCMC.cpp" />
     <ClCompile Include="GUI\mProp.cpp" />
     <ClCompile Include="GUI\mProplist.cpp" />
@@ -466,7 +465,6 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
     <ClInclude Include="GUI\Individual.h" />
     <ClInclude Include="GUI\LIDconfig.h" />
     <ClInclude Include="GUI\Matrix.h" />
-    <ClInclude Include="GUI\MBBlock.h" />
     <ClInclude Include="GUI\MCMC.h" />
     <ClInclude Include="GUI\mProp.h" />
     <ClInclude Include="GUI\mProplist.h" />
