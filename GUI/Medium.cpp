@@ -2896,7 +2896,6 @@ void CMedium::onestepsolve_const(double dtt)
 				fail_reason = "Matrix not invertible in wq";
 				failed_const = true;
 				return;
-
 			}
 			J_update_Q=false;
 			dtt_J_q = dtt;
@@ -3921,7 +3920,7 @@ int CMedium::get_member_no(int solid_id, int phase_no)
 double CMedium::get_capacity(int block_no, int phase_no, int particle_no)
 {
 	if (particle_no==-2) 
-		return Blocks[block_no].S;
+		return Blocks[block_no].S+1e-3;
 	else if (particle_no==-1) 
 		return Blocks[block_no].V*Blocks[block_no].bulk_density;
 	else
@@ -3931,7 +3930,7 @@ double CMedium::get_capacity(int block_no, int phase_no, int particle_no)
 double CMedium::get_capacity_star(int block_no, int phase_no, int particle_no)
 {
 	if (particle_no==-2) 
-		return Blocks[block_no].S_star;
+		return Blocks[block_no].S_star+1e-3;
 	else if (particle_no==-1) 
 		return Blocks[block_no].V*Blocks[block_no].bulk_density;
 	else
@@ -5111,17 +5110,11 @@ void CMedium::onestepsolve_const_ar(double dtt)
 		if (InvJ_Q_arma.getnumcols() != 0)
 		{
 			dx = dtt / dtt_J_q*(InvJ_Q_arma*Preconditioner_Q_arma*normalize_diag(F, M_Q_arma));
-			if ((dx == dx) == false)
-			{
-				fail_reason = "dx was calculated as NAN";
-				failed_const = true;
-				return;
-			}
 		}
-		else if (M_Q_arma.getnumcols() > 0)
+		else if (M_Q_arma.getnumcols() > 0 || (dx==dx)!=true)
 		{
 			dx = dtt/dtt_J_q*solve_ar(M_Q_arma, F);
-			if (dx.num==0)
+			if ((dx.num==0) || (dx==dx)!=true)
 			{   set_CG_star(X_old);
 				fail_reason = "Matrix not invertible in wq";
 				failed_const = true; 

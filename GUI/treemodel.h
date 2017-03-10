@@ -2,7 +2,7 @@
 #include <QModelIndex>
 #include <QVariant>
 #include <QAbstractItemModel>
-#include "node.h";
+#include "node.h"
 #include "qdebug.h"
 #include "treeitem.h"
 
