@@ -37,6 +37,9 @@
 #ifdef GIFMOD
 #include "Medium.h"
 #include "MediumSet.h"
+#endif
+
+#ifdef WIZARD
 #include "wizard.h"
 #include "classWizard.h"
 #endif
@@ -380,11 +383,13 @@ void MainWindow::on_action_New_triggered()
 #ifdef GIFMOD
 void MainWindow::on_actionNew_from_template_triggered()
 {
-	return;
+
+
+#ifdef WIZARD
 	ClassWizard* wzrd;
 	wzrd = new ClassWizard;
 	wzrd->show();
-
+#endif
 /*	wizard w(this);
 
 //	QDialog w;
