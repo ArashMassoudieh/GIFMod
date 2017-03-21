@@ -26,7 +26,9 @@ public:
 	double interval;
 	double min_val = 0;
 	double max_val = 1e12;
+#ifdef GIFMOD
 	range application_spec;
+#endif
 	string zn_controller_type;
 	double integral = 0; 
 	void set_zn();

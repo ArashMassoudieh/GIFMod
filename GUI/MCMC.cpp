@@ -60,8 +60,8 @@ vector<CBTCSet> CMCMC::model(vector<double> par)
 
 	for (int ts=0; ts<1; ts++)	
 	{
-		CGWA G1 = G;
-		G1.project = false;
+		CGWASet G1 = G;
+		G1.Medium[0].project = false;
 		for (int i=0; i<nActParams; i++)
 		{
 			if (apply_to_all[i] == true)	
@@ -69,7 +69,7 @@ vector<CBTCSet> CMCMC::model(vector<double> par)
 				if (MCMCParam[i].type == 1) sum -= pow(log(par[getparamno(i,ts)])-log(MCMCParam[i].mean),2)/(2.0*pow(MCMCParam[i].std,2))/1;
 				if (MCMCParam[i].type == 2)
 					if (par[getparamno(i, ts)]<MCMCParam[i].low || par[getparamno(i, ts)]>MCMCParam[i].high) sum -= 3000;
-				G1.set_param(i,par[getparamno(i,0)]);
+				G1.Medium[0].set_param(i,par[getparamno(i,0)]);
 			}
 			else
 			{
@@ -77,13 +77,13 @@ vector<CBTCSet> CMCMC::model(vector<double> par)
 				if (MCMCParam[i].type == 1) sum -= pow(log(par[getparamno(i,ts)])-log(MCMCParam[i].mean),2)/(2.0*pow(MCMCParam[i].std,2));
 				if (MCMCParam[i].type == 2) 
 					if (par[getparamno(i, ts)]<MCMCParam[i].low || par[getparamno(i, ts)]>MCMCParam[i].high) sum -= 3000;
-				G1.set_param(i,par[getparamno(i,ts)]);
+				G1.Medium[0].set_param(i,par[getparamno(i,ts)]);
 			}	
 		}
-		G1.finalize_set_param();	
-		sum+=G1.calc_log_likelihood(ts);
+		G1.Medium[0].finalize_set_param();	
+		sum+=G1.Medium[0].calc_log_likelihood(ts);
 		
-		res.push_back(G1.ANS);
+		res.push_back(G1.Medium[0].ANS);
 	}
 	return res;
 }
@@ -94,37 +94,54 @@ vector<CBTCSet> CMCMC::model_lumped(vector<double> par)
 	double sum = 0;
 	vector<CBTCSet> res;
 
-	for (int ts=0; ts<1; ts++)	
+	for (int ts = 0; ts < 1; ts++)
 	{
 #ifdef GIFMOD
 		CMediumSet G1 = G;
 #endif
 #ifdef GWA
-		CGWA G1 = G;
-		G1.project = false;
+		CGWASet G1 = G;
+		G1.Medium[0].project = false;
 #endif
-		for (int i = 0; i<nActParams; i++)
+		for (int i = 0; i < nActParams; i++)
 		{
-			if (apply_to_all[i] == true)	
-			{	if (MCMCParam[i].type == 0) sum -= pow(par[getparamno(i,ts)]-MCMCParam[i].mean,2)/(2.0*pow(MCMCParam[i].std,2))/1;
-				if (MCMCParam[i].type == 1) sum -= pow(log(par[getparamno(i,ts)])-log(MCMCParam[i].mean),2)/(2.0*pow(MCMCParam[i].std,2))/1;
-				if (MCMCParam[i].type == 2) 
+			if (apply_to_all[i] == true)
+			{
+				if (MCMCParam[i].type == 0) sum -= pow(par[getparamno(i, ts)] - MCMCParam[i].mean, 2) / (2.0*pow(MCMCParam[i].std, 2)) / 1;
+				if (MCMCParam[i].type == 1) sum -= pow(log(par[getparamno(i, ts)]) - log(MCMCParam[i].mean), 2) / (2.0*pow(MCMCParam[i].std, 2)) / 1;
+				if (MCMCParam[i].type == 2)
 					if (par[getparamno(i, ts)]<MCMCParam[i].low || par[getparamno(i, ts)]>MCMCParam[i].high) sum -= 3000;
-				G1.set_param(i,par[getparamno(i,0)]);
+#ifdef GIFMOD
+				G1.set_param(i, par[getparamno(i, 0)]);
+#endif
+#ifdef GWA
+				G1.Medium[0].set_param(i, par[getparamno(i, 0)]);
+#endif
 			}
 			else
 			{
-				if (MCMCParam[i].type == 0) sum -= pow(par[getparamno(i,ts)]-MCMCParam[i].mean,2)/(2.0*pow(MCMCParam[i].std,2));
-				if (MCMCParam[i].type == 1) sum -= pow(log(par[getparamno(i,ts)])-log(MCMCParam[i].mean),2)/(2.0*pow(MCMCParam[i].std,2));
-				if (MCMCParam[i].type == 2) 
+				if (MCMCParam[i].type == 0) sum -= pow(par[getparamno(i, ts)] - MCMCParam[i].mean, 2) / (2.0*pow(MCMCParam[i].std, 2));
+				if (MCMCParam[i].type == 1) sum -= pow(log(par[getparamno(i, ts)]) - log(MCMCParam[i].mean), 2) / (2.0*pow(MCMCParam[i].std, 2));
+				if (MCMCParam[i].type == 2)
 					if (par[getparamno(i, ts)]<MCMCParam[i].low || par[getparamno(i, ts)]>MCMCParam[i].high) sum -= 3000;
-				G1.set_param(i,par[getparamno(i,ts)]);
-			}	
+#ifdef GIFMOD
+				G1.set_param(i, par[getparamno(i, ts)]);
+			}
 		}
 		G1.finalize_set_param();
-		sum+=G1.calc_log_likelihood();
+		sum += G1.calc_log_likelihood();
 
 		res.push_back(G1.ANS_obs);
+#endif
+#ifdef GWA
+		G1.Medium[0].set_param(i, par[getparamno(i, ts)]);
+			}
+		}
+G1.Medium[0].finalize_set_param();
+sum += G1.Medium[0].calc_log_likelihood();
+
+res.push_back(G1.Medium[0].ANS_obs);
+#endif
 	}
 	return res;
 }
@@ -185,8 +202,8 @@ double CMCMC::posterior(vector<double> par)
 		G1.FI.write_details = false;
 #endif
 #ifdef GWA
-		CGWA G1 = G;
-		G1.project = false;
+		CGWASet G1 = G;
+		G1.Medium[0].project = false;
 #endif
 		for (int i=0; i<nActParams; i++)
 		{
@@ -194,11 +211,21 @@ double CMCMC::posterior(vector<double> par)
 				if (MCMCParam[i].type == 1) sum -= pow(log(par[getparamno(i,ts)])-log(MCMCParam[i].mean),2)/(2.0*pow(MCMCParam[i].std,2));
 				if (MCMCParam[i].type == 2)
 					if (par[getparamno(i, ts)]<MCMCParam[i].low || par[getparamno(i, ts)]>MCMCParam[i].high) sum -= 3000;
+#ifdef GIFMOD
 				G1.set_param(i,par[getparamno(i,ts)]);
 		}
 		G1.finalize_set_param();
-		sum+=G1.calc_log_likelihood();
-	}
+		sum += G1.calc_log_likelihood();
+
+#endif
+#ifdef GWA
+		G1.Medium[0].set_param(i, par[getparamno(i, ts)]);
+		}
+	G1.Medium[0].finalize_set_param();
+	sum += G1.Medium[0].calc_log_likelihood();
+#endif
+
+		}
 	return sum; 
 }
 
@@ -208,14 +235,14 @@ double CMCMC::posterior(vector<double> par, bool out)
 	CMediumSet G1 = G;
 #endif
 #ifdef GWA
-	CGWA G1 = G;
-	G1.project = false;
+	CGWASet G1 = G;
+	G1.Medium[0].project = false;
 #endif
 	double sum = 0;	
 	for (int i=0; i<nActParams; i++)
 	{	for (int ts=0; ts<1; ts++)
-			G1.set_param(i,par[getparamno(i,ts)]);
-		G1.finalize_set_param();
+			G1.Medium[0].set_param(i,par[getparamno(i,ts)]);
+		G1.Medium[0].finalize_set_param();
 	}
 
 	for (int i=0; i<nActParams; i++)
@@ -226,7 +253,12 @@ double CMCMC::posterior(vector<double> par, bool out)
 				if (par[getparamno(i, 0)]<MCMCParam[i].low || par[getparamno(i, 0)]>MCMCParam[i].high) sum -= 3000;
 			if (MCMCParam[i].type == 0) sum -= pow(par[params[getparamno(i,0)]]-MCMCParam[i].mean,2)/(2.0*pow(MCMCParam[i].std,2));
 			if (MCMCParam[i].type == 1) sum -= pow(log(par[params[getparamno(i,0)]])-log(MCMCParam[i].mean),2)/(2.0*pow(MCMCParam[i].std,2));
+#ifdef GIFMOD
 			for (int ts=0; ts<1; ts++) G.set_param(i,par[getparamno(i,0)]);
+#endif
+#ifdef GWA
+			for (int ts = 0; ts<1; ts++) G.Medium[0].set_param(i, par[getparamno(i, 0)]);
+#endif
 		}
 			else
 				for (int ts=0; ts<1; ts++)
@@ -236,13 +268,26 @@ double CMCMC::posterior(vector<double> par, bool out)
 					
 					if (MCMCParam[i].type == 0) sum -= pow(par[getparamno(i,ts)]-MCMCParam[i].mean,2)/(2.0*pow(MCMCParam[i].std,2));
 					if (MCMCParam[i].type == 1) sum -= pow(log(par[getparamno(i,ts)])-log(MCMCParam[i].mean),2)/(2.0*pow(MCMCParam[i].std,2));
+#ifdef GIFMOD
 					G.set_param(i,par[getparamno(i,ts)]);
 				}
 	}
-	
-	for (int ts=0; ts<1; ts++)	
-	{	G1 = G;
-		sum+=G1.calc_log_likelihood();
+
+	for (int ts = 0; ts<1; ts++)
+	{
+		G1 = G;
+		sum += G1.calc_log_likelihood();
+#endif
+#ifdef GWA
+					G.Medium[0].set_param(i, par[getparamno(i, ts)]);
+	}
+}
+
+for (int ts = 0; ts<1; ts++)
+{
+	G1 = G;
+	sum += G1.Medium[0].calc_log_likelihood();
+#endif
 	}
 		
 
@@ -674,8 +719,13 @@ CMatrix CMCMC::sensitivity_mat_lumped(double d, vector<double> par)
 {
 	
 	vector<CBTCSet> base = model_lumped(par);
+#ifdef GIFMOD
 	int ii = G.measured_quan.size();
-	
+#endif
+#ifdef GWA
+	int ii = G.Medium[0].measured_quan.size();
+#endif
+
 	CMatrix X(n,ii);
 	for (int i=0; i<n; i++)
 	{	
@@ -698,7 +748,12 @@ CMatrix CMCMC::sensitivity_mat_lumped(double d, vector<double> par, CGWA &G) con
 {
 
 	vector<CBTCSet> base = model_lumped(par, G);
+#ifdef GIFMOD
 	int ii = G.measured_quan().size();
+#endif
+#ifdef GWA
+	int ii = G.measured_quan.size();
+#endif
 
 	CMatrix X(n, ii);
 	for (int i = 0; i<n; i++)
@@ -815,7 +870,12 @@ void CMCMC::getrealizations(CBTCSet &MCMCout)
 {
 	BTCout_obs.resize(1);
 	BTCout_obs_noise.resize(1);
+#ifdef GIFMOD
 	int n_BTCout_obs = G.measured_quan.size();
+#endif
+#ifdef GWA
+	int n_BTCout_obs = G.Medium[0].measured_quan.size();
+#endif
 	for (int i = 0; i < 1; i++)
 	{
 		BTCout_obs[i].resize(n_BTCout_obs);
@@ -850,7 +910,7 @@ void CMCMC::getrealizations(CBTCSet &MCMCout)
 		vector<vector<CMediumSet>> Sys1(numberOfThreads);
 #endif
 #ifdef GWA
-		vector<vector<CGWA>> Sys1(numberOfThreads);
+		vector<vector<CGWASet>> Sys1(numberOfThreads);
 #endif
 		for (int i = 0; i < numberOfThreads; i++) Sys1[i].resize(1);
 
@@ -867,14 +927,20 @@ void CMCMC::getrealizations(CBTCSet &MCMCout)
 			Sys1[j][0].FI.write_details = false;
 #endif
 #ifdef GWA
-			Sys1[j][ts].project = false;
+			Sys1[j][0].Medium[0].project = false;
 #endif
 			int l = 0;
 			for (int i = 0; i < nActParams; i++)
-				Sys1[j][0].set_param(i, param[i]);
+#ifdef GIFMOD
+			Sys1[j][0].set_param(i, param[i]);
 			Sys1[j][0].finalize_set_param();
 			Sys1[j][0].calc_log_likelihood();
-
+#endif
+#ifdef GWA
+			Sys1[j][0].Medium[0].set_param(i, param[i]);
+			Sys1[j][0].Medium[0].finalize_set_param();
+			Sys1[j][0].Medium[0].calc_log_likelihood();
+#endif
 			if (global_sensitivity == true)
 				global_sens_lumped.push_back(sensitivity_mat_lumped(dp_sens, param));
 
@@ -882,6 +948,7 @@ void CMCMC::getrealizations(CBTCSet &MCMCout)
 			{
 				for (int ts = 0; ts < 1; ts++)
 				{
+#ifdef GIFMOD
 					BTCout_obs[ts][i].BTC[realizationNumber] = Sys1[j][ts].ANS_obs.BTC[i];
 					BTCout_obs[ts][i].names.push_back(Sys1[j][ts].ANS_obs.names[i] + "_" + to_string(realizationNumber));
 
@@ -890,6 +957,17 @@ void CMCMC::getrealizations(CBTCSet &MCMCout)
 						BTCout_obs_noise[ts][i].BTC[realizationNumber] = Sys1[j][ts].ANS_obs_noise.BTC[i];
 						BTCout_obs_noise[ts][i].names.push_back(Sys1[j][ts].ANS_obs_noise.names[i] + "_" + to_string(realizationNumber));
 					}
+#endif
+#ifdef GWA
+					BTCout_obs[ts][i].BTC[realizationNumber] = Sys1[j][ts].Medium[0].ANS_obs.BTC[i];
+					BTCout_obs[ts][i].names.push_back(Sys1[j][ts].Medium[0].ANS_obs.names[i] + "_" + to_string(realizationNumber));
+
+					if (noise_realization_writeout)
+					{
+						BTCout_obs_noise[ts][i].BTC[realizationNumber] = Sys1[j][ts].Medium[0].ANS_obs_noise.BTC[i];
+						BTCout_obs_noise[ts][i].names.push_back(Sys1[j][ts].Medium[0].ANS_obs_noise.names[i] + "_" + to_string(realizationNumber));
+					}
+#endif
 				}
 			}
 			qDebug() << "Realization Completed : " << realizationNumber << endl;
@@ -924,8 +1002,13 @@ void CMCMC::get_outputpercentiles(CBTCSet &MCMCout)
 	qDebug() << 501;
 	getrealizations(MCMCout);
 	qDebug() << 502;
+#ifdef GIFMOD
 	int n_BTCout_obs = G.measured_quan.size();
-	qDebug() << 503;
+#endif
+#ifdef GWA
+	int n_BTCout_obs = G.Medium[0].measured_quan.size();
+#endif
+qDebug() << 503;
 	BTCout_obs_prcntle.resize(1); for (int j = 0; j < 1; j++) BTCout_obs_prcntle[j].resize(n_BTCout_obs);
 	BTCout_obs_prcntle_noise.resize(1); for (int j = 0; j < 1; j++) BTCout_obs_prcntle_noise[j].resize(n_BTCout_obs);
 	qDebug() << 504;
@@ -939,7 +1022,7 @@ void CMCMC::get_outputpercentiles(CBTCSet &MCMCout)
 				BTCout_obs_prcntle[j][i].writetofile(G.FI.outputpathname + "BTC_obs_prcntl_" + G.measured_quan[i].name + ".txt", G.FI.write_interval);
 #endif
 #ifdef GWA
-				BTCout_obs_prcntle[j][i].writetofile(G.pathname + "BTC_obs_prcntl" + to_string(i) + "_" + to_string(j) + ".txt", G.writeinterval);
+				BTCout_obs_prcntle[j][i].writetofile(G().pathname + "BTC_obs_prcntl" + to_string(i) + "_" + to_string(j) + ".txt", G.Medium[0].writeinterval);
 #endif
 
 				if (noise_realization_writeout)
@@ -948,7 +1031,7 @@ void CMCMC::get_outputpercentiles(CBTCSet &MCMCout)
 				BTCout_obs_prcntle_noise[j][i].writetofile(G.FI.outputpathname + "BTC_obs_prcntl_noise_" + G.measured_quan[i].name + ".txt", G.FI.write_interval);
 #endif
 #ifdef GWA
-				BTCout_obs_prcntle_noise[j][i].writetofile(G.pathname + "BTC_obs_prcntl_noise" + to_string(i) + "_" + to_string(j) + ".txt", G.writeinterval);
+				BTCout_obs_prcntle_noise[j][i].writetofile(G().pathname + "BTC_obs_prcntl_noise" + to_string(i) + "_" + to_string(j) + ".txt", G.Medium[0].writeinterval);
 #endif
 
 			}

@@ -22,6 +22,7 @@ Entity::Entity(const QString _type, QString _name, GraphWidget *_parent)
 	objectType.ObjectType = _type;
 	mProp filter;
 	filter = objectType;
+	QStringList a = (*parent->mList).filter(filter).SubTypes();
 	objectType.SubType = (*parent->mList).filter(filter).SubTypes()[0];
 	static int ID;
 	if (_name == "No Name" || _name == "") 
@@ -240,8 +241,10 @@ XString Entity::getValue(const QString& propName) const
 		(objectType.ObjectType == "Observation" && propName == "BlockConnector") || 
 		(objectType.ObjectType == "Particle" && propName == "Model") ||
 		(objectType.ObjectType == "Controller" && propName == "Type")) return ObjectType().SubType;
+#ifdef GIFMOD
 	if (experimentName() == "All experiments" && !getProp(propName, differentValuesRole).toBool())
 		return props.getProp(propName, parent->experimentsList()[0]);
+#endif
 	if (getProp(propName, VariableTypeRole).toString().toLower() == "filename" || getProp(propName, VariableTypeRole).toString().toLower() == "directory")
 		return (relativePathFilename(props.getProp(propName, experimentName()), parent->modelPathname()));
 	if (propName =="Exchange rate")
@@ -250,7 +253,6 @@ XString Entity::getValue(const QString& propName) const
 		return QString("%1 ...").arg(partitioningCoefficient());
 	if (propName == "Type") return ObjectType().ObjectType;
 	if (propName == "SubType") return ObjectType().SubType;
-
 	return props.getProp(propName, experimentName());
 }
 bool Entity::setProp(const QString &propName, const QVariant &Value, const int role)
@@ -343,13 +345,13 @@ Entity* Entity::unCompact(QMap<QString, QVariant> n, GraphWidget *gwidget, bool 
 #ifdef GWA
 	if (n["Name"] == "Solver setting") return 0;
 	QStringList subTypeConversionEntities;
-	subTypeConversionEntities << "Global Settings" << "Genetic Algorithm" << "Markov Chain Monte Carlo";
+	subTypeConversionEntities << "Project Settings" << "Genetic Algorithm" << "Markov Chain Monte Carlo";
 
 	if (n["SubType"] == "*" && subTypeConversionEntities.contains(n["Name"].toString()))
 		n["SubType"] = n["Name"];
 #endif
 	QStringList list;
-	list << "solver settings" << "global Settings" << "climate settings" << "genetic algorithm" << "markov chain monte carlo";
+	list << "solver settings" << "global settings" << "climate settings" << "genetic algorithm" << "markov chain monte carlo";
 	if (n["Type"].toString().contains("Solver"))
 	{
 		n["Type"] = "Solver settings";
@@ -453,7 +455,6 @@ Entity* Entity::unCompact(QMap<QString, QVariant> n, GraphWidget *gwidget, bool 
 		entity->solidAqueousExchangeParameters.append(item);
 	}
 	n.remove("Solid exchange parameters");
-
 	if (!entity->props.list.size() && oldVersion)
 		for each(QString key in n.keys())
 			entity->props.setProp(key.toLower(), XString::unCompact(n[key].toString()), "experiment1");

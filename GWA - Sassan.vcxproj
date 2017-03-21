@@ -188,13 +188,9 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
     <Image Include="Icons\log_icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GeneratedFiles\files\moc_classwizard.cpp" />
-    <ClCompile Include="GeneratedFiles\files\moc_csvEditor.cpp" />
     <ClCompile Include="GeneratedFiles\files\moc_CustomPlotZoom.cpp" />
     <ClCompile Include="GeneratedFiles\files\moc_delegate.cpp" />
     <ClCompile Include="GeneratedFiles\files\moc_ExchangeParametersWindow.cpp" />
-    <ClCompile Include="GeneratedFiles\files\moc_expEditor.cpp" />
-    <ClCompile Include="GeneratedFiles\files\moc_expressioneditor.cpp" />
     <ClCompile Include="GeneratedFiles\files\moc_GWidget.cpp" />
     <ClCompile Include="GeneratedFiles\files\moc_helpWindow.cpp" />
     <ClCompile Include="GeneratedFiles\files\moc_logwindow.cpp" />
@@ -208,13 +204,9 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
     <ClCompile Include="GeneratedFiles\files\moc_runtimeWindow.cpp" />
     <ClCompile Include="GeneratedFiles\files\moc_statusviewer.cpp" />
     <ClCompile Include="GeneratedFiles\files\moc_treemodel.cpp" />
-    <ClCompile Include="GeneratedFiles\files\moc_wizard.cpp" />
     <ClCompile Include="GUI\Binary.cpp" />
     <ClCompile Include="GUI\BTC.cpp" />
     <ClCompile Include="GUI\BTCSet.cpp" />
-    <ClCompile Include="GUI\Buildup.cpp" />
-    <ClCompile Include="GUI\Connection.cpp" />
-    <ClCompile Include="GUI\Constituent.cpp" />
     <ClCompile Include="GUI\Copula.cpp" />
     <ClCompile Include="GUI\Copula_GWA.cpp" />
     <ClCompile Include="GUI\Crxtterm.cpp" />
@@ -224,14 +216,9 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
     <ClCompile Include="GUI\DistributionNUnif.cpp" />
     <ClCompile Include="GUI\edge.cpp" />
     <ClCompile Include="GUI\entity.cpp" />
-    <ClCompile Include="GUI\EnvExchange.cpp" />
-    <ClCompile Include="GUI\Evaporation.cpp" />
     <ClCompile Include="GUI\ExchangeParametersTableModel.cpp" />
     <ClCompile Include="GUI\ExchangeParametersWindow.cpp" />
-    <ClCompile Include="GUI\expEditor.cpp" />
     <ClCompile Include="GUI\Expression.cpp" />
-    <ClCompile Include="GUI\expressiondelegate.cpp" />
-    <ClCompile Include="GUI\expressioneditor.cpp" />
     <ClCompile Include="GUI\Function.cpp" />
     <ClCompile Include="GUI\GA.cpp" />
     <ClCompile Include="GUI\GWA.cpp" />
@@ -269,10 +256,8 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
     <ClCompile Include="GUI\results.cpp" />
     <ClCompile Include="GUI\runModel.cpp" />
     <ClCompile Include="GUI\runtimeWindow.cpp" />
-    <ClCompile Include="GUI\RxnNetwork.cpp" />
     <ClCompile Include="GUI\scriptExport.cpp" />
     <ClCompile Include="GUI\Solid_Phase.cpp" />
-    <ClCompile Include="GUI\csvEditor.cpp" />
     <ClCompile Include="GUI\statusviewer.cpp" />
     <ClCompile Include="GUI\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -290,12 +275,10 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
     <ClCompile Include="GUI\Vector.cpp" />
     <ClCompile Include="GUI\Vector_arma.cpp" />
     <ClCompile Include="GUI\Well.cpp" />
-    <ClCompile Include="GUI\wizard.cpp" />
     <ClCompile Include="GUI\Sensor.cpp" />
     <ClCompile Include="GUI\TableWidgetDateItem.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GeneratedFiles\ui_csvEditor.h" />
     <ClInclude Include="GeneratedFiles\ui_ExchangeParametersWindow.h" />
     <ClInclude Include="GeneratedFiles\ui_helpWindow.h" />
     <ClInclude Include="GeneratedFiles\ui_logwindow.h" />
@@ -304,34 +287,12 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
     <ClInclude Include="GeneratedFiles\ui_ParticleWindow.h" />
     <ClInclude Include="GeneratedFiles\ui_plotwindow.h" />
     <ClInclude Include="GeneratedFiles\ui_runtimeWindow.h" />
-    <ClInclude Include="GeneratedFiles\ui_Widget.h" />
-    <ClInclude Include="GeneratedFiles\ui_wizard.h" />
     <ClInclude Include="GUI\Binary.h" />
     <ClInclude Include="GUI\BTC.h" />
     <ClInclude Include="GUI\BTCSet.h" />
-    <ClInclude Include="GUI\Buildup.h" />
-    <ClInclude Include="GUI\Connection.h" />
     <ClInclude Include="GUI\Copula.h" />
     <ClInclude Include="GUI\Crxtterm.h" />
     <ClInclude Include="GUI\folders.h" />
-    <CustomBuild Include="GUI\wizard.h">
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing wizard.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\files\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\files\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB "-D\"$(INHERIT)\"" -DARMA_USE_LAPACK -DARMA_USE_BLAS -DQT_PRINTSUPPORT_LIB "-I.\armadillo-header" "-I.\Utility" "-I$(QTDIR)\include" "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I.\GeneratedFiles\files" "-I.\GeneratedFiles"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing wizard.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\files\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\files\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DARMA_USE_LAPACK -DARMA_USE_BLAS "-D\"$(INHERIT)\"" -DQT_PRINTSUPPORT_LIB -DGIFMOD "-I.\armadillo-header" "-I$(QTDIR)\include" "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I$(SolutionDir)\GeneratedFiles\$(ProjectName)\." "-I.\GeneratedFiles\files" "-I.\GeneratedFiles"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing wizard.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\files\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\files\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB "-D\"$(INHERIT)\"" -DARMA_USE_LAPACK -DARMA_USE_BLAS -DQT_PRINTSUPPORT_LIB "-I.\armadillo-header" "-I.\GIFMODModel" "-I.\Utility" "-I$(QTDIR)\include" "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I.\GeneratedFiles\files" "-I.\GeneratedFiles"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath);$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing wizard.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\files\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\files\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DARMA_USE_LAPACK -DARMA_USE_BLAS "-D\"$(INHERIT)\"" -DQT_PRINTSUPPORT_LIB -DGIFMOD "-I.\armadillo-header" "-I$(QTDIR)\include" "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I$(SolutionDir)\GeneratedFiles\$(ProjectName)\." "-I.\GeneratedFiles\files" "-I.\GeneratedFiles"</Command>
-    </CustomBuild>
     <ClInclude Include="GUI\TableWidgetDateItem.h" />
     <CustomBuild Include="GUI\CustomPlotZoom.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
@@ -351,31 +312,11 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\files\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\files\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DARMA_USE_LAPACK -DARMA_USE_BLAS "-D\"$(INHERIT)\"" -DQT_PRINTSUPPORT_LIB -DGIFMOD  "-I.\armadillo-header" "-I$(QTDIR)\include" "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I$(SolutionDir)\GeneratedFiles\$(ProjectName)\." "-I.\GeneratedFiles\files" "-I.\GeneratedFiles"</Command>
     </CustomBuild>
-    <CustomBuild Include="GUI\csvEditor.h">
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing csvEditor.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\files\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\files\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB "-D\"$(INHERIT)\"" -DARMA_USE_LAPACK -DARMA_USE_BLAS -DQT_PRINTSUPPORT_LIB "-I.\armadillo-header" "-I.\Utility" "-I$(QTDIR)\include" "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I.\GeneratedFiles\files" "-I.\GeneratedFiles"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing csvEditor.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\files\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\files\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DARMA_USE_LAPACK -DARMA_USE_BLAS "-D\"$(INHERIT)\"" -DQT_PRINTSUPPORT_LIB -DGIFMOD  "-I.\armadillo-header" "-I$(QTDIR)\include" "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I$(SolutionDir)\GeneratedFiles\$(ProjectName)\." "-I.\GeneratedFiles\files" "-I.\GeneratedFiles"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing csvEditor.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\files\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\files\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB "-D\"$(INHERIT)\"" -DARMA_USE_LAPACK -DARMA_USE_BLAS -DQT_PRINTSUPPORT_LIB "-I.\armadillo-header" "-I.\GIFMODModel" "-I.\Utility" "-I$(QTDIR)\include" "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I.\GeneratedFiles\files" "-I.\GeneratedFiles"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing csvEditor.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\files\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\files\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DARMA_USE_LAPACK -DARMA_USE_BLAS "-D\"$(INHERIT)\"" -DQT_PRINTSUPPORT_LIB -DGIFMOD  "-I.\armadillo-header" "-I$(QTDIR)\include" "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I$(SolutionDir)\GeneratedFiles\$(ProjectName)\." "-I.\GeneratedFiles\files" "-I.\GeneratedFiles"</Command>
-    </CustomBuild>
     <ClInclude Include="GUI\Distribution.h" />
     <ClInclude Include="GUI\DistributionNUnif.h" />
     <ClInclude Include="GUI\edge.h" />
     <ClInclude Include="GUI\entity.h" />
     <ClInclude Include="GUI\enums.h" />
-    <ClInclude Include="GUI\EnvExchange.h" />
-    <ClInclude Include="GUI\Evaporation.h" />
     <ClInclude Include="GUI\ExchangeParametersTableModel.h" />
     <CustomBuild Include="GUI\GWidget.h">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing GWidget.h...</Message>
@@ -400,24 +341,6 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
     <ClInclude Include="GUI\ObjectiveFunction.h" />
     <ClInclude Include="GUI\texfonts.h" />
     <ClInclude Include="GUI\Vector_arma.h" />
-    <CustomBuild Include="GUI\expEditor.h">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing expEditor.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\files\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\files\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB "-D\"$(INHERIT)\"" -DARMA_USE_LAPACK -DARMA_USE_BLAS -DQT_PRINTSUPPORT_LIB  "-I.\armadillo-header" "-I.\Utility" "-I$(QTDIR)\include" "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I.\GeneratedFiles\files" "-I.\GeneratedFiles"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing expEditor.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\files\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\files\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DARMA_USE_LAPACK -DARMA_USE_BLAS "-D\"$(INHERIT)\"" -DQT_PRINTSUPPORT_LIB -DGIFMOD  "-I.\armadillo-header" "-I$(QTDIR)\include" "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I$(SolutionDir)\GeneratedFiles\$(ProjectName)\." "-I.\GeneratedFiles\files" "-I.\GeneratedFiles"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing expEditor.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\files\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\files\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB "-D\"$(INHERIT)\"" -DARMA_USE_LAPACK -DARMA_USE_BLAS -DQT_PRINTSUPPORT_LIB  "-I.\armadillo-header" "-I.\GIFMODModel" "-I.\Utility" "-I$(QTDIR)\include" "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I.\GeneratedFiles\files" "-I.\GeneratedFiles"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing expEditor.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\files\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\files\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DARMA_USE_LAPACK -DARMA_USE_BLAS "-D\"$(INHERIT)\"" -DQT_PRINTSUPPORT_LIB -DGIFMOD  "-I.\armadillo-header" "-I$(QTDIR)\include" "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I$(SolutionDir)\GeneratedFiles\$(ProjectName)\." "-I.\GeneratedFiles\files" "-I.\GeneratedFiles"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-    </CustomBuild>
     <CustomBuild Include="GUI\helpWindow.h">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing helpWindow.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\files\moc_%(Filename).cpp</Outputs>
@@ -456,7 +379,6 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
     </CustomBuild>
     <ClInclude Include="GUI\Expression.h" />
-    <ClInclude Include="GUI\expressiondelegate.h" />
     <ClInclude Include="GUI\Function.h" />
     <ClInclude Include="GUI\GA.h" />
     <ClInclude Include="GUI\GWA.h" />
@@ -481,7 +403,6 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
     <ClInclude Include="GUI\resource.h" />
     <ClInclude Include="GUI\RestoreInfo.h" />
     <ClInclude Include="GUI\results.h" />
-    <ClInclude Include="GUI\RxnNetwork.h" />
     <ClInclude Include="GUI\Solid_Phase.h" />
     <ClInclude Include="GUI\stdafx.h" />
     <ClInclude Include="GUI\StringOP.h" />
@@ -694,24 +615,6 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
     </CustomBuild>
-    <CustomBuild Include="GUI\expressioneditor.h">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing expressioneditor.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\files\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\files\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB "-D\"$(INHERIT)\"" -DARMA_USE_LAPACK -DARMA_USE_BLAS -DQT_PRINTSUPPORT_LIB  "-I.\armadillo-header" "-I.\Utility" "-I$(QTDIR)\include" "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I.\GeneratedFiles\files" "-I.\GeneratedFiles"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing expressioneditor.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\files\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\files\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DARMA_USE_LAPACK -DARMA_USE_BLAS "-D\"$(INHERIT)\"" -DQT_PRINTSUPPORT_LIB -DGIFMOD  "-I.\armadillo-header" "-I$(QTDIR)\include" "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I$(SolutionDir)\GeneratedFiles\$(ProjectName)\." "-I.\GeneratedFiles\files" "-I.\GeneratedFiles"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing expressioneditor.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\files\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\files\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB "-D\"$(INHERIT)\"" -DARMA_USE_LAPACK -DARMA_USE_BLAS -DQT_PRINTSUPPORT_LIB  "-I.\armadillo-header" "-I.\GIFMODModel" "-I.\Utility" "-I$(QTDIR)\include" "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I.\GeneratedFiles\files" "-I.\GeneratedFiles"</Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing expressioneditor.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\files\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\files\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DARMA_USE_LAPACK -DARMA_USE_BLAS "-D\"$(INHERIT)\"" -DQT_PRINTSUPPORT_LIB -DGIFMOD  "-I.\armadillo-header" "-I$(QTDIR)\include" "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I$(SolutionDir)\GeneratedFiles\$(ProjectName)\." "-I.\GeneratedFiles\files" "-I.\GeneratedFiles"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-    </CustomBuild>
     <CustomBuild Include="GUI\delegate.h">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing delegate.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\files\moc_%(Filename).cpp</Outputs>
@@ -850,24 +753,6 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
     </CustomBuild>
-    <CustomBuild Include="GUI\csvEditor.ui">
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
-    </CustomBuild>
     <None Include="GUI\Icons\Save File Icon Stock Photography - Image_ 517502.html" />
     <None Include="GUI\Icons\Save File Icon Stock Photography - Image_ 517502_files\BhKMRj1sUPu(1).html" />
     <None Include="GUI\Icons\Save File Icon Stock Photography - Image_ 517502_files\BhKMRj1sUPu.html" />
@@ -876,24 +761,6 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
     <None Include="GUI\Icons\Save File Icon Stock Photography - Image_ 517502_files\like.html" />
     <None Include="GUI\Icons\Save File Icon Stock Photography - Image_ 517502_files\postmessageRelay.html" />
     <None Include="GUI\Icons\Save File Icon Stock Photography - Image_ 517502_files\saved_resource.html" />
-    <CustomBuild Include="GUI\wizard.ui">
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
-    </CustomBuild>
     <CustomBuild Include="GUI\mainwindowGWA.ui">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Uic%27ing %(Identity)...</Message>
@@ -914,24 +781,6 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
     </CustomBuild>
     <None Include="GUI\PropList.csv" />
     <CustomBuild Include="GUI\runtimeWindow.ui">
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
-    </CustomBuild>
-    <CustomBuild Include="GUI\Widget.ui">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Uic%27ing %(Identity)...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>

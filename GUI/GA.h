@@ -121,9 +121,9 @@ public:
 	CGA(CMediumSet *model, runtimeWindow* progress);
 #endif
 #ifdef GWA
-	CGA::CGA(string filename, CGWA &Sys);
-	vector<CGWA>& CGA::assignfitnesses_p(vector<double> inp);
-	CGA(CGWA *model, runtimeWindow* progress);
+	CGA::CGA(string filename, CGWASet &Sys);
+	vector<CGWASet>& CGA::assignfitnesses_p(vector<double> inp);
+	CGA(CGWASet *model, runtimeWindow* progress);
 #endif
 
 	virtual ~CGA();

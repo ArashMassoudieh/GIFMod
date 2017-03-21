@@ -8,7 +8,9 @@
 #include "qstring.h"
 #include "plotWindow.h"
 class CMedium;
+class CGWA;
 class GraphWidget;
+
 namespace Ui {
 class runtimeWindow;
 }

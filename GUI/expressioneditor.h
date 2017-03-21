@@ -1,6 +1,6 @@
 #ifndef ExpressionEditor_H
 #define ExpressionEditor_H
-
+#ifdef GIFMOD
 #include <QLineEdit>
 
 struct ExpressionEditorPri;
@@ -30,5 +30,5 @@ private:
 private:
     ExpressionEditorPri* d;
 };
-
+#endif //GIFMOD
 #endif // ExpressionEditor_H

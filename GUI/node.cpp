@@ -135,8 +135,11 @@ QVariant Node::getProp(const QString &propName, const int role) const
 			return QBrush((QColor(255, 111, 28)));
 		if (errors.keys().contains(propName)) 
 			return QBrush(Qt::red);
+#ifdef GIFMOD
 		if (getProp(propName, differentValuesRole).toBool())
 			return QBrush(Qt::gray);
+#endif
+		return QVariant();
 	}
 	if (role == Qt::FontRole) 
 	{
@@ -145,7 +148,9 @@ QVariant Node::getProp(const QString &propName, const int role) const
 		redBoldFont.setBold(true);
 		if (parent->applicationShortName == "GWA" && propName == "Name") return boldFont;
 		if (parent->applicationShortName != "GWA" && (propName == "Name" || propName == "Type" || propName == "SubType")) return boldFont;
+#ifdef GIFMOD
 		if (mValue.DefaultValuesStringList(0, 0, parent).indexOf(getValue(propName)) != -1) return boldFont;
+#endif
 		else return QFont();
 	}
 	if (role == Qt::CheckStateRole)
@@ -310,9 +315,10 @@ XString Node::getValue(const QString& propName) const
 		return QString ("%1 ...").arg(g());
 	if (propName.contains("Constituent initial")) 
 		return QString("%1 ...").arg(cg());
+#ifdef GIFMOD
 	if (experimentName() == "All experiments" && !getProp(propName, differentValuesRole).toBool())
 		return props.getProp(propName, parent->experimentsList()[0]);
-
+#endif
 	return props.getProp(propName, experimentName());
 }
 

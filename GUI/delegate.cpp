@@ -14,9 +14,10 @@
 #include "qlistwidget.h"
 //#include "logwindow.h"
 #include "qtextedit.h"
-#include "expEditor.h"
+#include <utility_funcs.h>
 
 #ifdef GIFMOD
+#include "expEditor.h"
 
 #include "node.h"
 #include "ParticleWindow.h"
@@ -133,8 +134,10 @@ QWidget *Delegate::createEditor(QWidget *parent,
 	if (delegateType.contains("expressionEditor"))
 	{
 		QStringList words = index.data(allowableWordsRole).toStringList();
+#ifdef GIFMOD
 		expEditor* editor = new expEditor(words, 0, parent);
 		return editor;
+#endif
 	}
 	return QStyledItemDelegate::createEditor(parent, option, index);
 }
@@ -247,8 +250,11 @@ void Delegate::setEditorData(QWidget *editor,
 	}
 	if (delegateType.contains("expressionEditor"))
 	{
+#ifdef GIFMOD
 		expEditor* expressionEditor = static_cast<expEditor*>(editor);
+
 		expressionEditor->setText(index.model()->data(index, Qt::EditRole).toString());
+#endif
 		return;
 	}
 
@@ -358,9 +364,11 @@ void Delegate::setModelData(QWidget *editor, QAbstractItemModel *model,
 	}
 	if (delegateType.contains("expressionEditor"))
 	{
+#ifdef GIFMOD
 		expEditor* expression = static_cast<expEditor*>(editor);
 		if (index.model()->data(index, Qt::EditRole).toString() != expression->text())
 			model->setData(index, expression->text(), Qt::EditRole);
+#endif
 		return;
 	}
 	if (delegateType.toLower().contains("text"))

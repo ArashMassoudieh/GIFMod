@@ -2070,10 +2070,13 @@ void CMedium::solve_fts_m2(double dt)
 			}
 			if (fail_counter > 30)
 			{
+				//runtimewindow->parent->logW->append("failed, trying to write details.");
 				if (write_details())
 				{
+					//runtimewindow->parent->logW->append("failed, trying to write to solution_details.");
 					FILEBTC = fopen((outputpathname() + "Solution_details.txt").c_str(), "a");
-					write_state(pathname() + "state.txt");
+					//runtimewindow->parent->logW->append("failed, trying to write state.txt.");
+					write_state(outputpathname() + "state.txt");
 					fprintf(FILEBTC, "failed count > 30");
 					fclose(FILEBTC);
 				}

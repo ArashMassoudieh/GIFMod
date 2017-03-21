@@ -1,6 +1,6 @@
 #ifndef expEditor_H
 #define expEditor_H
-
+#ifdef GIFMOD
 #include <QLineEdit>
 
 struct expEditorPri;
@@ -31,4 +31,5 @@ private:
     expEditorPri* d;
 };
 int lastIndexOfNonVariable(const QString& str);
+#endif //GIFMOD
 #endif // expEditor_H

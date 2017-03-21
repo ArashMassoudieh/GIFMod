@@ -61,7 +61,7 @@ public:
 #endif
 #ifdef GWA
 	TreeItem *rootItem, *settings, *blocks, *connectors, *evapotranspiration, *waterQuality, *constituent, *buildUp, *extrenalFlux, *particle,
-		*globalSettings, *solver, *reactions, *reaction, *reactionNetwork, *reactionParameter, *GA, *MCMC, *inverseModeling, *parameter,
+		*projectSettings, *solver, *reactions, *reaction, *reactionNetwork, *reactionParameter, *GA, *MCMC, *inverseModeling, *parameter,
 		*observed, *wells, *tracers;
 #endif
 

@@ -30,6 +30,7 @@ class TreeModel;
 class CMedium;
 class CMediumSet;
 class CGWA;
+class CGWASet;
 class Results;
 struct plotformat;
 
@@ -193,6 +194,8 @@ public:
 #ifdef GWA
 	CGWA *model = 0;
 	CGWASet* modelSet = 0;
+	vector<Results *> resultsSet;
+
 #endif
 	Results *results = 0;
 	helpWindow* help = 0;
@@ -262,13 +265,20 @@ public:
 	void GraphWidget::experimentsComboClear(bool addExperiment1 = true);
 	void GraphWidget::updateNodeCoordinates();
 	QMap<QString, QMap<QString, QString>> specs;
+#ifdef GIFMOD
 	void updateNodesColorCodes(QString propertyItem, bool logged = false, QString colorTheme = "Green", vector<double> predifinedMinMax = vector<double>(), float time = -1);
 	void updateNodesColorCodes_WaterQuality(QStringList property, bool logged = false, QString colorTheme = "Green", vector<double> predifinedMinMax = vector<double>(), float time = -1);
 	void updateEdgesColorCodes(QString propertyItem, bool logged = false, QString colorTheme = "Green", vector<double> predifinedMinMax = vector<double>(), float time = -1);
-	QSlider *legendSliderTime=0;
-	colorlegend colors;
+	void colorSchemeLegend_closed();
+	void legendSliderChanged_Nodes(int value);
+	void legendSliderChanged_Edges(int value);
 	void applyColorstoNodes();
 	void applyColorstoEdges();
+	void experimentSelect(const QString &experimentName);
+
+#endif
+	QSlider *legendSliderTime=0;
+	colorlegend colors;
 public slots:
 	void shuffle();
 	void zoomIn();
@@ -306,10 +316,6 @@ public slots:
 	void entityChanged(Entity*);
 	void delegateDatePicked(QCalendarWidget *calendar = 0, QModelIndex index = QModelIndex());
 	//QComboBox* experiments;
-	void experimentSelect(const QString &experimentName);
-	void colorSchemeLegend_closed();
-	void legendSliderChanged_Nodes(int value);
-	void legendSliderChanged_Edges(int value);
 
 signals:
 	void Mouse_Pos(int, int, QString);

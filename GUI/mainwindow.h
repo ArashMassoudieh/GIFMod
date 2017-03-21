@@ -19,6 +19,7 @@ class CMedium;
 class CMediumSet;
 class logWindow;
 class CGWA;
+class CGWASet;
 
 namespace Ui {
 class MainWindow;
@@ -64,8 +65,8 @@ public:
 	void inverseRun(CMediumSet *model, runtimeWindow* progress);
 #endif
 #ifdef GWA
-	void forwardRun(CGWA *model, runtimeWindow *runtimewindow);
-	void inverseRun(CGWA *model, runtimeWindow* progress);
+	void forwardRun(CGWASet *model, runtimeWindow *runtimewindow);
+	void inverseRun(CGWASet *model, runtimeWindow* progress);
 #endif
 
 	//void forwardRun(CMedium *model) { forwardRun(model, new runtimeWindow); };
@@ -118,7 +119,6 @@ private slots:
 
 	void MainWindow::updateToolbarToggles(Operation_Modes OMode = Operation_Modes::NormalMode);
 	void on_action_New_triggered();
-	void on_actionNew_from_template_triggered();
 
 	void on_action_Open_triggered();
 
@@ -224,10 +224,20 @@ private slots:
 	void on_actionShowRuntimeWindow_triggered();
 	void on_actionRecent_triggered();
 	void on_actionReset_colors_triggered();
+
+//#ifdef GIFMOD
 	void menuWaterQuality_hovered();
+	void menuWaterQuality_triggered();
+	void on_actionNew_from_template_triggered();
+
+
+
+
+
+//#endif
+
 	void updateAction(QAction *a, QString particleConstituent, QString p, QString c="", QString phase="get from action");
 	void waterQualityPostProcessing_clicked();
-	void menuWaterQuality_triggered();
 	void on_actionContact_Us_triggered();
 	void on_actionContact_Us_hovered(); 
 	void removeFromRecentList(QAction*);

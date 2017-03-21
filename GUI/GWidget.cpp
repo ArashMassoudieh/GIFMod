@@ -147,9 +147,9 @@ GraphWidget::GraphWidget(QWidget *_parent, QString applicationShortName, QString
 #endif
 
 #ifdef GWA
-	new Entity("Global Settings", "Global Settings", this);
-	new Entity("Genetic Algorithm", "Genetic Algorithm", this);
-	new Entity("Markov Chain Monte Carlo", "Markov Chain Monte Carlo", this);
+	new Entity("Project settings", "Project settings", this);
+	new Entity("Genetic algorithm", "Genetic algorithm", this);
+	new Entity("Markov chain Monte Carlo", "Markov chain Monte Carlo", this);
 #endif
 	QList <QString> QL = ModelSpace.getList();
 	setMode();
@@ -1377,9 +1377,9 @@ QList<QMap<QString, QVariant>> GraphWidget::compact() const// QDataStream &out, 
 	
 
 //	qDebug() << r["GUI"].toString() << ", " << r["Name"].toString() << " saved.";
+#ifdef GIFMOD
 	if (hasResults){
 		getTime();
-#ifdef GIFMOD
 		for (int i = 0; i < modelSet->Medium.size(); i++)
 		{
 			QString expName = QString::fromStdString(modelSet->Medium[i].name);
@@ -1391,7 +1391,6 @@ QList<QMap<QString, QVariant>> GraphWidget::compact() const// QDataStream &out, 
 
 			r[QString("%1 ANS_constituents").arg(expName)] = QString::fromStdString(modelSet->Medium[i].detoutfilename_wq);
 			qDebug() << QString("%1 ANS_constituents").arg(expName) << " " << getTime();
-
 			if (modelSet->SP.mass_balance_check)
 			{
 				r[QString("%1 ANS_MB").arg(expName)] = QString::fromStdString(modelSet->FI.outputpathname + "output_MB" + modelSet->Medium[i].name + ".txt");
@@ -1401,7 +1400,6 @@ QList<QMap<QString, QVariant>> GraphWidget::compact() const// QDataStream &out, 
 
 
 		r["ANS_obs"] = QString::fromStdString(modelSet->FI.detoutfilename_obs); 
-#endif
 		qDebug() << "ANS_obs" << " " << getTime();
 
 //		r["ANS_obs_noise"] = "";
@@ -1414,7 +1412,6 @@ QList<QMap<QString, QVariant>> GraphWidget::compact() const// QDataStream &out, 
 
 	if (hasResults)
 	{
-#ifdef GIFMOD
 		QMap<QString, QVariant> r;
 		r["GUI"] = "Block Index";
 		for (int i = 0; i < modelSet->Medium[0].Blocks.size(); i++)
@@ -1423,7 +1420,6 @@ QList<QMap<QString, QVariant>> GraphWidget::compact() const// QDataStream &out, 
 
 		list.append(r);
 		qDebug() << "append to list" << " " << getTime();
-#endif
 	}
 	if (hasResults)
 	{
@@ -1453,6 +1449,7 @@ QList<QMap<QString, QVariant>> GraphWidget::compact() const// QDataStream &out, 
 //			list.append(r);
 //		qDebug() << "results + append to list" << " " << getTime();
 	}
+#endif
 
 
 	for each (Node *n in Nodes())
@@ -1567,13 +1564,17 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 		{
 			qDebug() << list[i].value("GUI").toString() << " Added.";
 			undo_counter = 0;// list[i].value("Undo Counter"].toInt();
-#ifdef GIFMOD
+
 			ModelSpace.Model = list[i].value("Model Space").toString();
 			inflowFileNames = list[i].value("Inflow Filenames").toStringList();
 			hasResults = list[i].value("hasResults").toBool();
+#ifdef GIFMOD
 			modelSet = new CMediumSet;
-			//if (hasResults)
-			//				{
+#endif
+#ifdef GWA
+			modelSet = new CGWASet;
+#endif
+			//if (hasResults)			//				{
 			experimentsComboClear(false);
 			for each (QString experiment in list[i].value("Experiments").toStringList())
 				if (!experimentsList().contains(experiment))
@@ -1581,10 +1582,17 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 					experiments->addItem(experiment);
 					if (experiment.toLower() != "all experiments")
 					{
+#ifdef GIFMOD
 						CMedium med;
 						med.name = experiment.toStdString();
+
+#endif
+#ifdef GWA
+						CGWA med;
+#endif
 						if (list[i].contains(QString("%1 ANS").arg(experiment)))
 							med.ANS = CBTCSet(list[i].take(QString("%1 ANS").arg(experiment)).toString().toStdString(), true);
+#ifdef GIFMOD
 						if (list[i].contains(QString("%1 ANS_colloids").arg(experiment)))
 							med.ANS_colloids = CBTCSet(list[i].take(QString("%1 ANS_colloids").arg(experiment)).toString().toStdString(), true);
 						if (list[i].contains(QString("%1 ANS_constituents").arg(experiment)))
@@ -1592,11 +1600,17 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 						if (list[i].contains(QString("%1 ANS_MB").arg(experiment)))
 							med.ANS_MB = CBTCSet(list[i].take(QString("%1 ANS_MB").arg(experiment)).toString().toStdString(), true);
 						med.parent = modelSet;
+#endif
 						modelSet->Medium.push_back(med);
 					}
 				}
 			if (list[i].contains("ANS_obs"))
+#ifdef GIFMOD
 				modelSet->ANS_obs = CBTCSet(list[i].take("ANS_obs").toString().toStdString(), true);
+#endif
+#ifdef GWA
+			modelSet->Medium[0].ANS_obs = CBTCSet(list[i].take("ANS_obs").toString().toStdString(), true);
+#endif
 			QCoreApplication::processEvents();
 
 		}
@@ -1621,7 +1635,6 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 			QCoreApplication::processEvents();
 			list[i] = QMap<QString, QVariant>();
 
-#endif
 		}
 
 		if (list[i].value("GUI").toString() == "Results")
@@ -1669,7 +1682,12 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 	}
 
 	QStringList missingList;
-	missingList << "Markov chain Monte Carlo" << "Solver settings" << "Project settings" << "Climate settings";
+	missingList << "Markov chain Monte Carlo" << "Project settings";
+
+#ifdef GIFMOD
+	missingList << "Solver settings" << "Climate settings";
+
+#endif
 	for each (QString missing  in missingList)
 	{
 		Entity *e = entityByName(missing);
@@ -2940,7 +2958,9 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 					if (model->projected.names[i] == name.toStdString())
 					{
 						plotWindow *plot = new plotWindow(this);
-						plot->addScatterDotPlot(model->projected, i, "", false);
+						plotformat format;
+						format.xAxisTimeFormat = false;
+						plot->addScatterDotPlot(model->projected, i, "", format);
 						plot->show();
 					}
 			}
@@ -3267,6 +3287,8 @@ QStringList GraphWidget::variableValuesHasError()
 			e->errors.clear();
 			for each(QString variableName in e->variableNames())
 			{
+				if (variableName == "Read GA analysis from file")
+					int i = 0;
 				if (e->getProp(variableName, VariableTypeRole).toString().toLower() == "directory")
 					if (!e->getValue(variableName).isEmpty() && !QFile::exists(e->getValue(variableName)))
 					{
@@ -3306,14 +3328,23 @@ QStringList GraphWidget::variableValuesHasError()
 						QString condition = c.Condition[i];
 						for each(QString code in e->codes())
 							if (condition.contains(QString("{%1}").arg(code)))
-								condition = condition.replace(QString("{%1}").arg(code), e->val(code));
+								condition = condition.replace(QString("{%1}").arg(code), QString::number(e->val(code).toDouble()));
 						if (e->props.getProp(variableName, experimentName()).isEmpty())
 						{
 							if (condition.toLower().contains("not empty"))
 							{
-								numberofErrors++;
-								e->errors[variableName] = variableName + " should not be empty.";
-								log(QString("Error: %1, %2: %3, %4").arg(experiment).arg(e->getValue("Type")).arg(e->Name()).arg(variableName + " should not be empty."));
+								if (c.error[i].toLower() == "e")
+								{
+									numberofErrors++;
+									e->errors[variableName] = c.errorDesc[i];// variableName + " should not be empty.";
+									log(QString("Error: %1, %2: %3, %4").arg(experiment).arg(e->getValue("Type")).arg(e->Name()).arg(c.errorDesc[i]));// variableName + " should not be empty."));
+								}
+								if (c.error[i].toLower() == "w")
+								{
+									numberofWarnings++;
+									e->errors[variableName] = c.errorDesc[i];// variableName + " should not be empty.";
+									log(QString("Warning: %1, %2: %3, %4").arg(experiment).arg(e->getValue("Type")).arg(e->Name()).arg(c.errorDesc[i]));// variableName + " should not be empty."));
+								}
 							}
 						}
 						else
@@ -3523,6 +3554,10 @@ int GraphWidget::experimentID()
 }
 QString GraphWidget::experimentName()
 {
+#ifdef GWA
+	return "experiment1";
+#endif
+
 	QString a = experiments->currentText();
 	return experiments->currentText();
 }

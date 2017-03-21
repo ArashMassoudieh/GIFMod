@@ -23,7 +23,7 @@
    <bool>true</bool>
   </property>
   <property name="windowTitle">
-   <string>Versatile Water Quality Modeling (WQVers)</string>
+   <string>Ground water age modeling</string>
   </property>
   <property name="windowIcon">
    <iconset>
