@@ -499,7 +499,7 @@ public:
         actionRun_Model_from_Script->setText(QApplication::translate("MainWindow", "Run Model from Script", 0));
         action_Hydraulic_Outputs->setText(QApplication::translate("MainWindow", "&Hydraulic Outputs", 0));
         actionExport_to_Script_Language->setText(QApplication::translate("MainWindow", "Export to &Script Language", 0));
-        actionAbout->setText(QApplication::translate("MainWindow", "About WQVers", 0));
+        actionAbout->setText(QApplication::translate("MainWindow", "About GWA", 0));
         actionAdd_Well->setText(QApplication::translate("MainWindow", "Add &Well", 0));
 #ifndef QT_NO_TOOLTIP
         actionAdd_Well->setToolTip(QApplication::translate("MainWindow", "Add Well", 0));

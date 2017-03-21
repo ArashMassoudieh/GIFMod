@@ -1,5 +1,5 @@
 #ifndef GIFMOD_VERSION
-#define GIFMOD_VERSION "0.1.16"
+#define GIFMOD_VERSION "0.1.17"
 #endif
 #ifndef GWA_VERSION
 #define GWA_VERSION "0.0.1"
@@ -2152,7 +2152,12 @@ void MainWindow::on_actionRun_Model_triggered()
 	QCoreApplication::processEvents();
 	runtimeWindow *rtw = new runtimeWindow(mainGraphWidget);
 	mainGraphWidget->deleteSolutionResults();
-	mainGraphWidget->model = new CGWA(mainGraphWidget, rtw);
+
+	mainGraphWidget->modelSet = new CGWASet;
+	mainGraphWidget->modelSet->Medium.push_back(CGWA(mainGraphWidget, rtw));
+	mainGraphWidget->model = &mainGraphWidget->modelSet->operator()();
+	mainGraphWidget->modelSet->parameters = mainGraphWidget->model->parameters;
+
 	mainGraphWidget->results = new Results;
 	//rtw->show();
 	mainGraphWidget->log("Running Simulation.");

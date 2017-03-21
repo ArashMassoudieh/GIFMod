@@ -312,7 +312,7 @@
 1,Entity,Observation,*,!,Observed data,observed_data,!,!,filename,!,Browser;time series,Global,Select,No,100126,,,
 1,Entity,Observation,Block,!,Quantity,quan,!,!,string,h;S;Z0;Se;~theta;add at runtime particle phases;add at runtime constituent phases,ObservedComboBox,Global,Select,No,100136,,,
 1,Entity,Parameter,Parameter,!,Maximum value,high,!,!,float,!,TextBox,Global,Input,No,100119,>{low},E,Upper limit must be larger than the lower limit
-1,Entity,Parameter,Parameter,!,Minimum value,low,!,!,float,!,TextBox,Global,Input,No,100121,,,
+1,Entity,Parameter,Parameter,!,Minimum value,low,!,!,float,!,TextBox,Global,Input,No,100121,not empty,,
 1,Entity,Parameter,Parameter,!,Prior distribution,log,!,!,string,Normal;Log-Normal,ComboBox,Global,Select,No,100135,,,
 1,Entity,Project settings,Project settings,!,Simulation start time,time_min,!,!,datetime+getnumber,0,DateTime,Global,Input,Yes,100144,,,
 1,Entity,Reaction,Reaction,!,Rate,rate,!,!,string,!,reaction,Global,Input,No,100137,,,

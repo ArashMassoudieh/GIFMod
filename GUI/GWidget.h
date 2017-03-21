@@ -265,6 +265,11 @@ public:
 	void GraphWidget::experimentsComboClear(bool addExperiment1 = true);
 	void GraphWidget::updateNodeCoordinates();
 	QMap<QString, QMap<QString, QString>> specs;
+	QSlider *legendSliderTime = 0;
+	colorlegend colors;
+
+	public slots:
+
 #ifdef GIFMOD
 	void updateNodesColorCodes(QString propertyItem, bool logged = false, QString colorTheme = "Green", vector<double> predifinedMinMax = vector<double>(), float time = -1);
 	void updateNodesColorCodes_WaterQuality(QStringList property, bool logged = false, QString colorTheme = "Green", vector<double> predifinedMinMax = vector<double>(), float time = -1);
@@ -277,9 +282,6 @@ public:
 	void experimentSelect(const QString &experimentName);
 
 #endif
-	QSlider *legendSliderTime=0;
-	colorlegend colors;
-public slots:
 	void shuffle();
 	void zoomIn();
 	void zoomOut();

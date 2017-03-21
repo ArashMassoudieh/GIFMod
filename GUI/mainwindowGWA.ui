@@ -630,7 +630,7 @@
   </action>
   <action name="actionAbout">
    <property name="text">
-    <string>About WQVers</string>
+    <string>About GWA</string>
    </property>
   </action>
   <action name="actionAdd_Well">
