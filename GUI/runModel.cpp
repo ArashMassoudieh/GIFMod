@@ -1744,6 +1744,7 @@ void CMediumSet::g_get_constituents()
 		//S.diffusion = e->val("diffusion").toFloat(); 
 		for each (QString code in e->codes())
 		{
+			qDebug() << code;
 			if (!e->val(code).isEmpty()) S.set_val(code.toStdString(), e->val(code).toFloat());
 		}
 

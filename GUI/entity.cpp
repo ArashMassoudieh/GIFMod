@@ -261,6 +261,7 @@ bool Entity::setProp(const QString &propName, const QVariant &Value, const int r
 	if ((parent->applicationShortName == "GIFMod" && objectType.ObjectType == "Evapotranspiration" && propName == "Model") ||
 		(parent->applicationShortName == "GIFMod" && objectType.ObjectType == "Particle" && propName == "Model") ||
 		(parent->applicationShortName == "GIFMod" && objectType.ObjectType == "Observation" && propName == "Block/connector") ||
+		(parent->applicationShortName == "GIFMod" && objectType.ObjectType == "Constituent" && propName == "Settling model") ||
 		(parent->applicationShortName == "GIFMod" && objectType.ObjectType == "Controller" && propName == "Type"))
 
 		return setProp("SubType", Value, role);

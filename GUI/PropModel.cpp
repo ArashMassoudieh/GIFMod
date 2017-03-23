@@ -282,6 +282,8 @@ QVariant PropModel<Entity>::data(const QModelIndex & index, int role) const
 				return "Model";
 			if (parent->parent->applicationShortName == "GIFMod" && VariableName == "SubType" && parent->objectType.ObjectType == "Observation")
 				return "Block/connector";
+			if (parent->parent->applicationShortName == "GIFMod" && VariableName == "SubType" && parent->objectType.ObjectType == "Constituent")
+				return "Settling model";
 			return VariableName;
 		}
 		if (role == Qt::ToolTipRole)

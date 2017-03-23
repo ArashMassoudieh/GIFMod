@@ -384,7 +384,7 @@ QCPGraph* plotWindow::addDotPlot(vector<double> &x, vector<double> &y, const QSt
 	graph->setName(name);
 	graph->setLineStyle(format.lineStyle);
 	QCPScatterStyle style = format.scatterStyle;
-	style.setSize(5);
+//	style.setSize(5);
 	graph->setScatterStyle(format.scatterStyle);
 	graph->setName(name);
 	int n = x.size();
