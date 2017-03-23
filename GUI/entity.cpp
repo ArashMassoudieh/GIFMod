@@ -236,12 +236,13 @@ QVariant Entity::getProp(const QString &propName, const int role) const
 XString Entity::getValue(const QString& propName) const
 {
 	if (propName == "Name") return Name();
+#ifdef GIFMOD
 	if (propName == "SubType" || 
 		(objectType.ObjectType=="Evapotranspiration" && propName == "Model") ||
 		(objectType.ObjectType == "Observation" && propName == "BlockConnector") || 
 		(objectType.ObjectType == "Particle" && propName == "Model") ||
 		(objectType.ObjectType == "Controller" && propName == "Type")) return ObjectType().SubType;
-#ifdef GIFMOD
+
 	if (experimentName() == "All experiments" && !getProp(propName, differentValuesRole).toBool())
 		return props.getProp(propName, parent->experimentsList()[0]);
 #endif

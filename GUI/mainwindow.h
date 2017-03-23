@@ -175,6 +175,7 @@ private slots:
 	void plotModeledData(CBTC modeled = CBTC(), CBTC observed = CBTC(), QString name = "");
 	void plotModeledDataDot(CBTC modeled = CBTC(), CBTC observed = CBTC(), QString name = "");
 	void plotAgreementPlotData(CBTC observation = CBTC(), CBTC modeled = CBTC(), QString name = "");
+	void plotAgreementPlotDataforGroups(vector<CBTC> obs_modData = vector<CBTC>(), vector<QString> names = vector<QString>());
 	void plotPercentileData(percentileData data = percentileData(), QString name = "");
 	void plotAllPercentileData(vector<percentileData> data = vector<percentileData>(), QString name = "");
 	void plotPriorHistogram(CBTC histogram = CBTC(), QString name = "");

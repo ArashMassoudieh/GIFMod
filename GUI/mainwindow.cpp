@@ -785,6 +785,82 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 			if (mainGraphWidget->results->localSensitivityMatrix.getnumrows() || mainGraphWidget->results->globalSensitivityMatrix.getnumrows() || mainGraphWidget->results->correlationMatrix.getnumrows())
 				menu->addSeparator();
 		}
+#ifdef GIFMOD
+/*		if (type == "Observation" && mainGraphWidget->results)
+		{
+			if (mainGraphWidget->modelSet != nullptr)
+			{
+				vector<CBTC> graphData;
+				QMap<string, int> tracerIndex;
+				QStringList tracerNames;
+				for (int i = 0; i < mainGraphWidget->model->measured_quan.size(); i++)
+				{
+					int tracerId = mainGraphWidget->model->measured_quan[i].quan;
+					string tracerName = mainGraphWidget->model->Tracer[tracerId].name;
+					tracerNames << QString::fromStdString(tracerName);
+					if (!tracerIndex.keys().contains(tracerName))
+					{
+						graphData.push_back(CBTC());
+						tracerIndex[tracerName] = graphData.size() - 1;
+					}
+					for (int j = 0; j < mainGraphWidget->model->measured_quan[i].observed_data.t.size(); j++)
+					{
+						double obs, mod;
+						obs = mainGraphWidget->model->measured_quan[i].observed_data.C[j];
+						mod = mainGraphWidget->model->ANS_obs.BTC[i].C[j];
+						graphData[tracerIndex[tracerName]].append(obs, mod);
+					}
+				}
+				tracerNames.removeDuplicates();
+				vector<QString> names;
+				names.resize(graphData.size());
+				for (int i = 0; i < names.size(); i++)
+					names[tracerIndex[tracerNames[i].toStdString()]] = tracerNames[i];
+				plotAgreementPlotDataforGroups(graphData, names);
+				menu->addAction(QString("Plot Modeles vs Observations"), this, SLOT(plotAgreementPlotDataforGroups()));
+				menu->addSeparator();
+			}
+		}
+		*/
+#endif
+
+#ifdef GWA
+		if (type == "Observation" && mainGraphWidget->results)
+		{
+			if (mainGraphWidget->modelSet != nullptr)
+			{
+				vector<CBTC> graphData;
+				QMap<string, int> tracerIndex;
+				QStringList tracerNames;
+				for (int i = 0; i < mainGraphWidget->model->measured_quan.size(); i++)
+				{
+					int tracerId = mainGraphWidget->model->measured_quan[i].quan;
+					string tracerName = mainGraphWidget->model->Tracer[tracerId].name;
+					tracerNames << QString::fromStdString(tracerName);
+					if (!tracerIndex.keys().contains(tracerName))
+					{
+						graphData.push_back(CBTC());
+						tracerIndex[tracerName] = graphData.size() - 1;
+					}
+					for (int j = 0; j < mainGraphWidget->model->measured_quan[i].observed_data.t.size(); j++)
+					{
+						double obs, mod;
+						obs = mainGraphWidget->model->measured_quan[i].observed_data.C[j];
+						mod = mainGraphWidget->model->ANS_obs.BTC[i].C[j];
+						graphData[tracerIndex[tracerName]].append(obs, mod);
+					}
+				}
+				tracerNames.removeDuplicates();
+				vector<QString> names;
+				names.resize(graphData.size());
+				for (int i = 0; i < names.size(); i++)
+					names[tracerIndex[tracerNames[i].toStdString()]] = tracerNames[i];
+				plotAgreementPlotDataforGroups(graphData, names);
+				menu->addAction(QString("Plot Modeles vs Observations"), this, SLOT(plotAgreementPlotDataforGroups()));
+				menu->addSeparator();
+			}
+		}
+#endif
 
 		menu->addAction(QString("Add %1").arg(type) , this, SLOT(addProjectExplorerTreeItem()));
 //		menu->exec(projectExplorer->mapToGlobal(pos));
@@ -1560,7 +1636,58 @@ void MainWindow::plotAgreementPlotData(CBTC observation, CBTC modeled, QString n
 		}
 	}
 }
+void MainWindow::plotAgreementPlotDataforGroups(vector<CBTC> obs_modData, vector<QString> names)
+{
+	static vector<CBTC> _obs_modData;
+	static vector<QString> _names;
+	if (obs_modData.size())
+	{
+		_obs_modData = obs_modData;
+		_names = names;
+		return;
+	}
+	else
+	{
+		QList<QCPScatterStyle::ScatterShape> shapes;
+		shapes << QCPScatterStyle::ssCross << QCPScatterStyle::ssPlus << QCPScatterStyle::ssCircle << QCPScatterStyle::ssDisc << QCPScatterStyle::ssSquare
+			<< QCPScatterStyle::ssDiamond << QCPScatterStyle::ssStar << QCPScatterStyle::ssTriangle << QCPScatterStyle::ssTriangleInverted
+			<< QCPScatterStyle::ssCrossSquare << QCPScatterStyle::ssPlusSquare << QCPScatterStyle::ssCrossCircle << QCPScatterStyle::ssPlusCircle
+			<< QCPScatterStyle::ssPeace;
+		QList<Qt::GlobalColor> colors;
+		colors << Qt::blue << Qt::red << Qt::magenta << Qt::cyan << Qt::darkYellow << Qt::gray << Qt::darkCyan << Qt::darkRed << Qt::darkBlue;
 
+		int shapeCounter = -1, colorCounter = 0;
+		plotWindow *plot = new plotWindow(mainGraphWidget);
+		//map<string, double> reg = regression(_obs.C, _mod.C);
+		//if (reg["error"] == 0)
+		//{
+			plotformat format, format2;
+			format.lineStyle = QCPGraph::LineStyle::lsNone;
+			
+			format.xAxisLabel = "Observation";
+			format.yAxisLabel = "Modeled";
+			format.xAxisTimeFormat = true;
+			format.yAxisType = QCPAxis::stLogarithmic;
+			format.penStyle = Qt::SolidLine;
+			for (int i = 0; i < _names.size(); i++)
+			{
+				if (++shapeCounter == shapes.size())
+				{
+					shapeCounter = 0;
+					colorCounter++;
+				}
+				format.scatterStyle = shapes[shapeCounter];
+				format.color = colors[colorCounter];
+				plot->addDotPlot(_obs_modData[i].t, _obs_modData[i].C, _names[i], format);
+			}
+//			CBTC regLine(reg["a"], reg["b"], _obs.C);
+//			format2.scatterStyle = QCPScatterStyle::ssNone;
+//			format2.xAxisTimeFormat = false;
+//			plot->addScatterPlot(regLine, "Agreement regression", format2);
+			plot->show();
+		//}
+	}
+}
 void MainWindow::plotRealization(CBTCSet data, QString name)
 {
 	qDebug() << "called";
