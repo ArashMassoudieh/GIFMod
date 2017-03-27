@@ -4,11 +4,11 @@
 #include <QtWidgets>
 
 #include "classwizard.h"
-#include "UnitTextBox.h"
+#include "UnitTextBox3.h"
 
 
 //! [0] //! [1]
-ClassWizard::ClassWizard(QWidget *parent)
+ClassWizard::ClassWizard(wizardData &data, QWidget *parent)
     : QWizard(parent)
 {
 	setWizardStyle(QWizard::ModernStyle);
@@ -19,13 +19,15 @@ ClassWizard::ClassWizard(QWidget *parent)
 			addPage(new IntroPage(data.items[i], this));
 		if (data.items[i].type.toLower().contains("property"))
 			addPage(new PropertyPage(data.items[i], this));
-		if (data.items[i].type.toLower().contains("property"))
-			addPage(new PropertyPage(data.items[i], this));
+//		if (data.items[i].type.toLower().contains("output"))
+//			addPage(new OutputFilesPage(data.items[i], this));
+//		if (data.items[i].type.toLower().contains("conclusion"))
+//			addPage(new ConclusionPage(data.items[i], this));
 
 	}
-    addPage(new CodeStylePage);
-    addPage(new OutputFilesPage);
-    addPage(new ConclusionPage);
+//    addPage(new CodeStylePage);
+//    addPage(new OutputFilesPage);
+//    addPage(new ConclusionPage);
 //! [0]
 
     setPixmap(QWizard::BannerPixmap, QPixmap("C:/Users/user/Dropbox/GitHub/GIFMod/GUI/images/banner.png"));
@@ -197,10 +199,10 @@ PropertyPage::PropertyPage(wizardDataItem data, QWidget *parent)
 {
 //! [8]
     setTitle(data.name);
+	setSubTitle(data.desc);
 
 	for (int i = 0; i < data.groups.count(); i++)
 	{
-		setSubTitle(data.groups[i]);
 		//setPixmap(QWizard::LogoPixmap, QPixmap("C:/Users/user/Dropbox/GitHub/GIFMod/GUI/images/logo1.png"));
 
 		//! [10]
@@ -220,7 +222,7 @@ PropertyPage::PropertyPage(wizardDataItem data, QWidget *parent)
     //qobjectMacroCheckBox = new QCheckBox(tr("Generate Q_OBJECT &macro"));
 
 //! [10]
-   // groupBox = new QGroupBox(tr("C&onstructor"));
+   groupBox = new QGroupBox(tr("C&onstructor"));
 //! [9]
 
     //qobjectCtorRadioButton = new QRadioButton(tr("&QObject-style constructor"));
@@ -260,14 +262,25 @@ PropertyPage::PropertyPage(wizardDataItem data, QWidget *parent)
 	QGridLayout *layout = new QGridLayout;
 	for (int i = 0; i < data.groups.count(); i++)
 	{
+		layout->addWidget(new QLabel(data.groups[i]));
+		rowCounter++;
 		for (int j = 0; j < data.labels[i].count(); j++)
 		{
 			layout->addWidget(labels[i][j], rowCounter, 0);
-			layout->addWidget(lineEdits[i][j], rowCounter++, 1);
+			UnitTextBox3 * a = new UnitTextBox3(XString("XString"), this);
+			layout->addWidget(a, rowCounter, 1);
+			
+			a->show();
+			a->repaint();
+			layout->addWidget(new QLineEdit("text"), rowCounter, 2);
+
+//			layout->addWidget(lineEdits[i][j], rowCounter, 2);
+			rowCounter++;
 		}
 		rowCounter++;
 	}
-
+	groupBox->setLayout(layout);
+	
 //	layout->addWidget(classNameLabel, 0, 0);
 //   layout->addWidget(classNameLineEdit, 0, 1);
 //    layout->addWidget(baseClassLabel, 1, 0);
@@ -276,8 +289,14 @@ PropertyPage::PropertyPage(wizardDataItem data, QWidget *parent)
 //    layout->addWidget(groupBox, 3, 0, 1, 2);
     setLayout(layout);
 //! [13]
+//! [8]
 }
 //! [13]
+
+
+
+
+
 
 //! [14]
 CodeStylePage::CodeStylePage(QWidget *parent)

@@ -1,9 +1,15 @@
 #ifndef GIFMOD_VERSION
-#define GIFMOD_VERSION "0.1.17"
+#define GIFMOD_VERSION "0.1.18"
 #endif
 #ifndef GWA_VERSION
 #define GWA_VERSION "0.0.1"
 #endif
+
+#ifdef DEBUG
+#define WIZARD
+#endif // DEBUG
+
+
 #define RECENT "recentFiles.txt"
 #include "mainwindow.h"
 #ifdef GIFMOD
@@ -396,7 +402,43 @@ void MainWindow::on_actionNew_from_template_triggered()
 
 #ifdef WIZARD
 	ClassWizard* wzrd;
-	wzrd = new ClassWizard;
+
+	wizardData wzData;
+	wizardDataItem item;
+
+	item.name = "First WIZARD";
+	item.desc = "Introduction page\nThis is the introduction part, all detail describtions can appear here.";
+	item.type = "introduction";
+
+	wzData.items.append(item);
+	
+	item.name = "First WIZARD page 2";
+	item.desc = "Properties page\nIn this page variable defined for the model.";
+	item.type = "property";
+
+	item.groups << "Group1" << "Group2";
+	QStringList labels1, labels2;
+	labels1 << "G1.L1" << "G1.L2";
+	labels2 << "G2.L1" << "G2.L2";
+
+	item.labels << labels1 << labels2;
+	
+	XString var1;
+	var1.unitsList << "m" << "ft" << "in";
+	var1.unit = "m";
+	XString var2 = var1;
+	XString var3 = var1;
+	XString var4 = var1;
+
+	QList<XString> vars1, vars2;
+	vars1 << var1 << var2;
+	vars2 << var3 << var4;
+	item.variables << vars1 << vars2;
+
+	wzData.items.append(item);
+
+	wzrd = new ClassWizard(wzData);
+		
 	wzrd->show();
 #endif
 /*	wizard w(this);

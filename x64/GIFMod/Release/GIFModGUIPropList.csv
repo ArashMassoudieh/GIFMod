@@ -85,7 +85,7 @@
 1,Connector,Userdefined,*,!,Area expression,area_expression,m~^2;ft~^2,m~^2,expression,!,UnitBox,Geometry,Input,Yes,100083,,,
 1,Connector,Userdefined,*,!,Flow expression,flow_expression,!,!,expression,!,TextBox,Geometry,Input,Yes,100084,,,
 1,Entity,Build-up,Build-up,!,Name,Name,!,!,string,!,TextBox,Global,Input,No,100085,,,
-1,Entity,Constituent,Constituent,!,Name,Name,!,!,string,!,TextBox,Global,Input,No,100086,,,
+1,Entity,Constituent,*,!,Name,Name,!,!,string,!,TextBox,Global,Input,No,100086,,,
 1,Entity,External flux,External flux,!,Name,!,!,!,string,!,TextBox,Global,Input,No,100087,,,
 1,Entity,Observation,*,!,Name,!,!,!,string,!,TextBox,Global,Input,No,100088,,,
 1,Entity,Parameter,Parameter,!,Name,!,!,!,string,!,TextBox,Global,Input,No,100089,,,
@@ -190,7 +190,7 @@
 1,Entity,Evapotranspiration,FAO-56,!,Wilting point water content,wilting_point_water_content,!,!,float+Estimate,!,TextBox,Global,Input,No,100236,(0:1),E,Wilting point should be between zero and one
 1,Entity,Climate settings,Climate settings,!,Temperature,temperature,!,!,filename,!,Browser;time series,Global,Select,No,100240,,,
 1,Entity,Climate settings,Climate settings,!,Wind,wind,!,!,filename,!,Browser;time series,Global,Select,No,100241,,,
-1,Entity,Constituent,Constituent,!,Settling velocity,vs,m/day;cm/day;cm/s;mm/s;ft/day;in/day;in/s,m/day,float+Estimate,!,UnitBox,Material,Input,No,100250,>=0,E,settling velocity must be non-negative
+1,Entity,Constituent,*,!,Settling velocity,vs,m/day;cm/day;cm/s;mm/s;ft/day;in/day;in/s,m/day,float+Estimate,!,UnitBox,Material,Input,No,100250,>=0,E,settling velocity must be non-negative
 //1,Block,Catchment,Catchment,!,Maximum depth,depth,m;cm;ft;in,m,float+Estimate,0,UnitBox,Geometry,Input,Yes,100253,>0,E,Block depth must be greater than zero
 //1,Entity,Global settings,Global settings,!,Evaporation time series,evaporation,!,!,directory,.,Browser;time series,Global,Input,No,100258,,,
 //1,Entity,Evapotranspiration,*,!,Model,model,!,!,string,Aerodynamic; Time series; Transpiration based on moisture content; Transpiration based on matric potential,ComboBox,Global,Select,No,100244,,,
@@ -278,7 +278,7 @@
 1,Entity,Project settings,Project settings,!,Steady state hydraulics,steady_state_hydro,!,!,string,No;Yes,ComboBox,Global,Select,No,100317,,,
 1,Entity,Evapotranspiration,Priestley-Taylor,,Coefficient,coefficient,!,!,string,!,TextBox,Global,Input,No,100233,!=0;>0,W;E,Coefficient is zero;Coefficient must be non-negative
 1,Entity,Project settings,Project settings,!,Description,!,!,!,string,!,Memo,Global,Input,No,100318,,,
-1,Entity,Constituent,Constituent,!,Exchange rate,rate,!,!,dialog,...;Solid aqueous exchange parameters,PushButton,Global,Input,No,100318,,,
+1,Entity,Constituent,*,!,Exchange rate,rate,!,!,dialog,...;Solid aqueous exchange parameters,PushButton,Global,Input,No,100318,,,
 1,Entity,Evapotranspiration,Priestley-Taylor,,Psychrometric constant,psychrometric_constant,Pa/~degreeC,Pa/~degreeC,string,66.8,UnitBox,Global,Select,No,100319,>0,E,Psychrometric constant must be non-negative
 //1,Block,Pond,Pond,!,Length,d,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100319,,,
 1,Entity,Evapotranspiration,Penman,,Wind coefficient,coefficient,!,!,string,!,TextBox,Global,Select,No,100320,!=0;>=0,W;E,Coefficient is zero;Coefficient must be non-negative
@@ -294,13 +294,13 @@
 1,Entity,Build-up,Build-up,!,Satuation,saturation,!,!,string,!,TextBox,Global,Input,No,100140,!=0; >=0,W;E,Saturation is zero; Saturation must be non-negative
 1,Entity,Build-up,Build-up,!,Sorbed/attached,sorb,!,!,string,Yes; No,ComboBox,Global,Select,No,100149,,,
 1,Entity,Climate settings,Climate settings,!,Precipitation time series,precipitation,!,!,filename;precipitation,!,Browser;precipitation;time series,Global,Select,No,100132,,,
-1,Entity,Constituent,Constituent,!,Diffusion coefficient,diffusion,m~^2/day; m~^2/s; cm~^2/s; cm~^2/day ,m~^2/day,float+Estimate,!,UnitBox,Global,Input,No,100107,>=0,E,Diffusion coefficient must be non-negative
-1,Entity,Constituent,Constituent,!,Exchange rate factor,exchange_rate_factor,!,!,expression,1,TextBox,Global,Input,No,100112,>=0,E,Exchange rate factor must be non-negative
-1,Entity,Constituent,Constituent,!,Partitioning coefficient,kd,!,!,dialog,...;Solid aqueous exchange parameters,PushButton,Global,Input,No,100128,,,
-1,Entity,Constituent,*,!,Settling model,settling_model,!,!,float+Estimate,Constant velocity; Double Exponential,ComboBox,Material,Select,No,100358,,,
-1,Entity,Constituent,*,!,Hindered zone settling parameter,r_hin,!,!,float+Estimate,!,TextBox,Material,Input,No,100359,>=0,E,Hindered zone settling parameter must be non-negative
-1,Entity,Constituent,*,!,Flocculant zone settling parameter,r_floc,!,!,float+Estimate,!,TextBox,Material,Input,No,100359,>=0,E,Flocculant zone settling parameter must be non-negative
-1,Entity,Constituent,*,!,Minimum concentration for double exponential settling,x_min,!,!,float+Estimate,!,TextBox,Material,Input,No,100359,>=0,E,Minimum concentration for double exponential settling must be non-negative
+1,Entity,Constituent,*,!,Diffusion coefficient,diffusion,m~^2/day; m~^2/s; cm~^2/s; cm~^2/day ,m~^2/day,float+Estimate,!,UnitBox,Global,Input,No,100107,>=0,E,Diffusion coefficient must be non-negative
+1,Entity,Constituent,*,!,Exchange rate factor,exchange_rate_factor,!,!,expression,1,TextBox,Global,Input,No,100112,>=0,E,Exchange rate factor must be non-negative
+1,Entity,Constituent,*,!,Partitioning coefficient,kd,!,!,dialog,...;Solid aqueous exchange parameters,PushButton,Global,Input,No,100128,,,
+1,Entity,Constituent,*,!,SubType,settling_model,!,!,float+Estimate,Constant velocity; Double Exponential,ComboBox,Material,Select,No,100358,,,
+1,Entity,Constituent,Double Exponential,!,Hindered zone settling parameter,r_hin,!,!,float+Estimate,!,TextBox,Material,Input,No,100359,>=0,E,Hindered zone settling parameter must be non-negative
+1,Entity,Constituent,Double Exponential,!,Flocculant zone settling parameter,r_floc,!,!,float+Estimate,!,TextBox,Material,Input,No,100359,>=0,E,Flocculant zone settling parameter must be non-negative
+1,Entity,Constituent,Double Exponential,!,Minimum concentration for double exponential settling,x_min,!,!,float+Estimate,!,TextBox,Material,Input,No,100359,>=0,E,Minimum concentration for double exponential settling must be non-negative
 1,Entity,External flux,External flux,!,Constituent,constituent,!,!,string,populate at runtime; constituent,ComboBox,Global,Select,No,100103,,,
 1,Entity,External flux,External flux,!,Depth exponent,depth_exponent,!,!,float+Estimate,!,TextBox,Global,Input,No,100106,,,
 1,Entity,External flux,External flux,!,Model,!,!,!,string,Soil; Free surface; Constant rate; Constant influx,ComboBox,Global,Select,No,100123,,,

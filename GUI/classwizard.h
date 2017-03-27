@@ -16,7 +16,9 @@ class QRadioButton;
 
 struct wizardDataItem
 {
-	QString name, desc, type, watermark="";
+	QString name, desc, watermark="";
+	// Introduction, Property, Conclusion, OutputFiles
+	QString type;
 	QStringList groups;
 	QList<QStringList> labels;
 	QList<QList<XString>> variables;
@@ -33,7 +35,7 @@ class ClassWizard : public QWizard
     Q_OBJECT
 
 public:
-    ClassWizard(QWidget *parent = 0);
+    ClassWizard(wizardData &items, QWidget *parent = 0);
 
     void accept() Q_DECL_OVERRIDE;
 	wizardData data;

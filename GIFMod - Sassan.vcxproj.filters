@@ -207,6 +207,12 @@
     <ClCompile Include="GeneratedFiles\files\moc_classwizard.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\files\moc_UnitTextBox2.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\files\moc_UnitTextBox3.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GUI\Binary.h" />
@@ -265,7 +271,6 @@
     <ClInclude Include="GUI\Tracer.h" />
     <ClInclude Include="GUI\treeitem.h" />
     <ClInclude Include="GUI\UnitTextBox.h" />
-    <ClInclude Include="GUI\UnitTextBox2.h" />
     <ClInclude Include="GUI\variant.h" />
     <ClInclude Include="GUI\Vector.h" />
     <ClInclude Include="GUI\Well.h" />
@@ -407,6 +412,10 @@
       <Filter>Generated Files</Filter>
     </CustomBuild>
     <CustomBuild Include="GUI\classwizard.h">
+      <Filter>Generated Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GUI\UnitTextBox2.h" />
+    <CustomBuild Include="GUI\UnitTextBox3.h">
       <Filter>Generated Files</Filter>
     </CustomBuild>
   </ItemGroup>
