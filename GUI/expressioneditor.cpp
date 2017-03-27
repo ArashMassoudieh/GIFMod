@@ -1,3 +1,4 @@
+#ifdef GIFMOD
 #include "expressioneditor.h"
 #include <QCompleter>
 #include <QKeyEvent>
@@ -6,8 +7,8 @@
 #include <QScrollBar>
 #include <QMessageBox>
 #include "statusviewer.h"
-#include "reactiontablemodel.h"
 
+#include "reactiontablemodel.h"
 
 int lastIndexOfNonVariable(const QString& str)
 {
@@ -43,7 +44,7 @@ ExpressionEditor::~ExpressionEditor() {delete d;}
 
 void ExpressionEditor::setupCompleter()
 {
-    if (d->Comp) {
+	if (d->Comp) {
         d->Comp->deleteLater();
         d->Comp = 0;
     }
@@ -103,7 +104,7 @@ QString ExpressionEditor::cursorWord(const QString &sentence) const
 
 void ExpressionEditor::keyPressEvent(QKeyEvent *e)
 {         
-    QLineEdit::keyPressEvent(e);
+	QLineEdit::keyPressEvent(e);
     QCompleter* c = d->Comp;
 	if (!c) {
 		return;
@@ -115,7 +116,8 @@ void ExpressionEditor::keyPressEvent(QKeyEvent *e)
     }
 
     QChar ck (e->key());
-    QStringList operators = d->Model->operators();
+
+	QStringList operators = d->Model->operators();
 
     QList<int> escapeKeys; escapeKeys << Qt::Key_Backspace << Qt::Key_Delete << Qt::Key_Enter << Qt::Key_Return
                                       <<Qt::Key_Left << Qt::Key_Right << Qt::Key_Up << Qt::Key_Down
@@ -140,9 +142,9 @@ void ExpressionEditor::keyPressEvent(QKeyEvent *e)
     c->complete();
 }
 
-
 void ExpressionEditor::onCompletorActivated(const QString &arg)
 {
     int ind = lastIndexOfNonVariable(text().left(cursorPosition()));
     setText(text().replace(ind + 1, cursorPosition() - ind - 1, arg));
 }
+#endif

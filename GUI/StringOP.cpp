@@ -4,8 +4,9 @@
 #include <fstream>
 #include "math.h"
 #include <algorithm>
+#ifdef GIFMOD
 #include "RxnNetwork.h"
-
+#endif
 
 using namespace std;
 
@@ -320,6 +321,7 @@ CStringOP::CStringOP(string S)
 
 CStringOP::CStringOP(string S, CRxnNetwork *R)
 {
+#ifdef GIFMOD
 	/*
 	functions 1: exp
 	2: H
@@ -607,7 +609,7 @@ CStringOP::CStringOP(string S, CRxnNetwork *R)
 
 	nterms = terms_count;
 	nopts = op_count;
-
+#endif
 }
 
 int opertr(char a)

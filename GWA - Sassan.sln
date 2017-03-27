@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GWA", "GWA - Sassan.vcxproj", "{C9E11F71-A776-409F-BEA9-B30830C230B3}"
 EndProject
+Project("{840C416C-B8F3-42BC-B0DD-F6BB14C9F8CB}") = "GWA Setup", "Setup Project\GWA Setup.aiproj", "{124D1842-3166-4059-BF1E-8D9109E07E74}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -27,6 +29,18 @@ Global
 		{C9E11F71-A776-409F-BEA9-B30830C230B3}.x64_Release|x64.Build.0 = Release|x64
 		{C9E11F71-A776-409F-BEA9-B30830C230B3}.x64_Release|x86.ActiveCfg = Release|Win32
 		{C9E11F71-A776-409F-BEA9-B30830C230B3}.x64_Release|x86.Build.0 = Release|Win32
+		{124D1842-3166-4059-BF1E-8D9109E07E74}.Debug|x64.ActiveCfg = All
+		{124D1842-3166-4059-BF1E-8D9109E07E74}.Debug|x64.Build.0 = All
+		{124D1842-3166-4059-BF1E-8D9109E07E74}.Debug|x86.ActiveCfg = All
+		{124D1842-3166-4059-BF1E-8D9109E07E74}.Debug|x86.Build.0 = All
+		{124D1842-3166-4059-BF1E-8D9109E07E74}.Release|x64.ActiveCfg = All
+		{124D1842-3166-4059-BF1E-8D9109E07E74}.Release|x64.Build.0 = All
+		{124D1842-3166-4059-BF1E-8D9109E07E74}.Release|x86.ActiveCfg = All
+		{124D1842-3166-4059-BF1E-8D9109E07E74}.Release|x86.Build.0 = All
+		{124D1842-3166-4059-BF1E-8D9109E07E74}.x64_Release|x64.ActiveCfg = All
+		{124D1842-3166-4059-BF1E-8D9109E07E74}.x64_Release|x64.Build.0 = All
+		{124D1842-3166-4059-BF1E-8D9109E07E74}.x64_Release|x86.ActiveCfg = All
+		{124D1842-3166-4059-BF1E-8D9109E07E74}.x64_Release|x86.Build.0 = All
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

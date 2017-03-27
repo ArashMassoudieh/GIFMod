@@ -185,7 +185,7 @@ CGWA::CGWA(GraphWidget* gw, runtimeWindow *progress)
 CGA::CGA(CMediumSet *model, runtimeWindow* rtw)
 #endif
 #ifdef GWA
-CGA::CGA(CGWA *model, runtimeWindow* rtw)
+CGA::CGA(CGWASet *model, runtimeWindow* rtw)
 #endif
 {
 	int ii;
@@ -218,7 +218,7 @@ CGA::CGA(CGWA *model, runtimeWindow* rtw)
 	pathname = model->FI.outputpathname;
 #endif
 #ifdef GWA
-	pathname = model->pathname;
+	pathname = model->operator()().pathname;
 #endif
 	readfromgafile = false;
 	calc_distributions = false;
@@ -232,11 +232,19 @@ CGA::CGA(CGWA *model, runtimeWindow* rtw)
 	numberOfThreads = 15;
 	QList<Entity*> GAMCMC;
 	Entity *e;
+#ifdef GIFMOD
 	e = model->gw->entityByName("Genetic algorithm");
 	if (e != nullptr)	
 		GAMCMC.append(e);
 	e = model->gw->entityByName("Markov chain Monte Carlo");
-	if (e != nullptr)	
+#endif
+#ifdef GWA
+	e = model->Medium[0].gw->entityByName("Genetic algorithm");
+	if (e != nullptr)
+		GAMCMC.append(e);
+	e = model->Medium[0].gw->entityByName("Markov chain Monte Carlo");
+#endif
+	if (e != nullptr)
 		GAMCMC.append(e);
 	QStringList intVars;
 	intVars << "maxpop" << "ngen" << "burnout" << "nchains" << "nmcmcsamples" << "stucklimit" << "sensbasedpurt" << "justreadmcmc" << "nrealizations" << "calculate_sensitivity" << "writeinterval" << "noinipurt" << "global_sensitivity" <<
@@ -287,13 +295,23 @@ CGA::CGA(CGWA *model, runtimeWindow* rtw)
 				if (code.toStdString() == "purtfac") purt_fac = e->val(code).toFloat();
 				if (code.toStdString() == "purt_fac") purt_fac = e->val(code).toFloat();
 				if (code.toStdString() == "dp_sensitivity") dp_sens = e->val(code).toFloat();
-
+#ifdef GIFMOD
 				if (code.toStdString() == "outputfile") 
 					outputfilename = fullFilename(e->val(code), model->gw->modelPathname()).toStdString();
 				if (code.toStdString() == "mcmcoutputfile") 
 					mcmcoutputfile = fullFilename(e->val(code), model->gw->modelPathname()).toStdString();
-				if (code.toStdString() == "readfromgafile") 
-					getfromfilename = fullFilename( e->val("readfromgafile"), model->gw->modelPathname()).toStdString();
+				if (code.toStdString() == "readfromgafile")
+					getfromfilename = fullFilename(e->val("readfromgafile"), model->gw->modelPathname()).toStdString();
+
+#endif
+#ifdef GWA
+				if (code.toStdString() == "outputfile")
+					outputfilename = fullFilename(e->val(code), model->Medium[0].gw->modelPathname()).toStdString();
+				if (code.toStdString() == "mcmcoutputfile")
+					mcmcoutputfile = fullFilename(e->val(code), model->Medium[0].gw->modelPathname()).toStdString();
+				if (code.toStdString() == "readfromgafile")
+					getfromfilename = fullFilename(e->val("readfromgafile"), model->Medium[0].gw->modelPathname()).toStdString();
+#endif
 				//if (code.toStdString() == "forward_montecarlo_filename") forward_inflow_ARIMA_params = pathname + e->val(code).toStdString();
 				if (code.toStdString() == "initial_population") initialpopfilemame = e->val(code).toStdString();
 
@@ -364,7 +382,7 @@ int CGA::optimize(runtimeWindow* rtw)
 	FileOut1 = fopen((Sys.FI.outputpathname + "detail_GA.txt").c_str(), "w");
 #endif
 #ifdef GWA
-	FileOut1 = fopen((Sys.pathname + "detail_GA.txt").c_str(), "w");
+	FileOut1 = fopen((Sys.pathname() + "detail_GA.txt").c_str(), "w");
 #endif
 
 	fclose(FileOut1);
@@ -474,7 +492,7 @@ int CGA::optimize(runtimeWindow* rtw)
 	//Form1.Refresh();
 	assignfitnesses(rtw);
 #ifdef GWA
-	Sys_out[0].Do_project();
+	Sys_out.Medium[0].Do_project();
 #endif
 	FileOut = fopen(RunFileName.c_str(), "a");
 	fprintf(FileOut, "Final Enhancements\n");
@@ -668,7 +686,7 @@ void CGA::assignfitnesses(runtimeWindow* rtw)
 		FileOut = fopen((Sys.FI.outputpathname + "detail_GA.txt").c_str(), "a");
 #endif
 #ifdef GWA
-		FileOut = fopen((Sys.pathname + "detail_GA.txt").c_str(), "a");
+		FileOut = fopen((Sys.pathname() + "detail_GA.txt").c_str(), "a");
 #endif
 		std::fprintf(FileOut, "%i, ", k);
 		for (int l = 0; l < Ind[0].nParams; l++)
@@ -685,8 +703,13 @@ void CGA::assignfitnesses(runtimeWindow* rtw)
 		clock_t t0 = clock();
 //		for (int ts = 0; ts<1; ts++)
 //		{
-			Ind[k].actual_fitness -= Sys1[k].calc_log_likelihood();
-			epochs[k] += Sys1[k].epoch_count();
+#ifdef GIFMOD
+		Ind[k].actual_fitness -= Sys1[k].calc_log_likelihood();
+#endif
+#ifdef GWA
+		Ind[k].actual_fitness -= Sys1[k]().calc_log_likelihood();
+#endif
+		epochs[k] += Sys1[k].epoch_count();
 //		}
 		time_[k] = ((float)(clock() - t0)) / CLOCKS_PER_SEC;
 #ifdef GIFMOD
@@ -1462,7 +1485,7 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 		fixed_old_tracer = false;
 
 		QList<Entity*> list;
-		list.append(gw->entitiesByType("Global Settings"));
+		list.append(gw->entitiesByType("Project settings"));
 		list.append(gw->entitiesByType("Solver"));
 		list.append(gw->entitiesByType("Markov Chain Monte Carlo"));
 		for each (Entity *e in list)
@@ -1721,6 +1744,7 @@ void CMediumSet::g_get_constituents()
 		//S.diffusion = e->val("diffusion").toFloat(); 
 		for each (QString code in e->codes())
 		{
+			qDebug() << code;
 			if (!e->val(code).isEmpty()) S.set_val(code.toStdString(), e->val(code).toFloat());
 		}
 
@@ -2446,34 +2470,34 @@ std::string convertstringtoStringOP(const QString& s, GraphWidget *gWidget)
 }
 
 #ifdef GWA	
-void MainWindow::forwardRun(CGWA *model, runtimeWindow *runtimewindow)
+void MainWindow::forwardRun(CGWASet *model, runtimeWindow *runtimewindow)
 {
-	CGWA *system = model;
+	CGWASet *system = model;
 //	if (system->inverse == false)
 	{
 //		system->doModel();
-		system->getmodeled();
-		system->modeled.writetofile(system->outpathname + "modeled.txt");
-		if (system->project == true) {
+		system->operator()().getmodeled();
+		system->operator()().modeled.writetofile(system->operator()().outpathname + "modeled.txt");
+		if (system->operator()().project == true) {
 			//system->Do_project();
-			system->projected.writetofile(system->outpathname + "projected.txt");
-			mainGraphWidget->results->projected = system->projected;
+			system->operator()().projected.writetofile(system->operator()().outpathname + "projected.txt");
+			mainGraphWidget->results->projected = system->operator()().projected;
 		}
-		model->ANS_obs = model->modeled;
-		mainGraphWidget->results->ANS_obs = model->ANS_obs;
+		model->operator()().ANS_obs = model->operator()().modeled;
+		mainGraphWidget->results->ANS_obs = model->operator()().ANS_obs;
 	}
 }
 
-void MainWindow::inverseRun(CGWA *model, runtimeWindow* progress)
+void MainWindow::inverseRun(CGWASet *model, runtimeWindow* progress)
 {
-	CGWA system = *model;
-	if (system.inverse == true)
+	CGWASet system = *model;
+	if (system().inverse == true)
 	{
 		clock_t t0, t1;
 		t0 = clock();
 
 		ofstream runtime_file;
-		runtime_file.open(system.outpathname + "Runing_times.txt");
+		runtime_file.open(system().outpathname + "Runing_times.txt");
 		CGA GA(&system, progress); //initialize GA
 		mainGraphWidget->results = new Results;
 		//**************************************** Genetic ****************************************
@@ -2496,18 +2520,18 @@ void MainWindow::inverseRun(CGWA *model, runtimeWindow* progress)
 			else
 			{
 				CVector out(1);
-				model->gw->log(QString("Loading GA data from: %1").arg(QString::fromStdString(GA.getfromfilename)));
-				model->gw->logW->writetotempfile();
+				model->operator()().gw->log(QString("Loading GA data from: %1").arg(QString::fromStdString(GA.getfromfilename)));
+				model->operator()().gw->logW->writetotempfile();
 				out[0] = GA.getfromoutput(GA.getfromfilename);
 				//				out[0] = GA.getfromoutput(system.outpathname + GA.getfromfilename);
-				out.writetofile(system.outpathname + "likelihood.txt");
+				out.writetofile(system().outpathname + "likelihood.txt");
 			}
 
 			//			GA.Sys_out.modeled.writetofile(system.outpathname + GA.Sys.detoutfilename);
-			GA.Sys_out.Medium[0].modeled.writetofile(system.outpathname + "detout.txt");
+			GA.Sys_out.Medium[0].modeled.writetofile(system().outpathname + "detout.txt");
 			if (GA.Sys_out.Medium[0].project == true)
 			{
-				GA.Sys_out.Medium[0].projected.writetofile(system.outpathname + "projected.txt");
+				GA.Sys_out.Medium[0].projected.writetofile(system().outpathname + "projected.txt");
 			}
 
 
@@ -2545,8 +2569,8 @@ void MainWindow::inverseRun(CGWA *model, runtimeWindow* progress)
 				MCMC.initialize(GA.final_params);
 			else
 			{
-				model->gw->log(QString("Loading MCMC data from: %1").arg(QString::fromStdString(MCMC.outputfilename)));
-				model->gw->logW->writetotempfile();
+				model->operator()().gw->log(QString("Loading MCMC data from: %1").arg(QString::fromStdString(MCMC.outputfilename)));
+				model->operator()().gw->logW->writetotempfile();
 				mcmcstart = MCMC.readfromfile(MCMC.outputfilename);
 				//			mcmcstart = MCMC.readfromfile(system.outpathname + MCMC.outputfilename);
 			}
@@ -2556,7 +2580,7 @@ void MainWindow::inverseRun(CGWA *model, runtimeWindow* progress)
 				//CMatrix S_mat = MCMC.sensitivity_mat(GA.dp_sens, GA.final_params);
 				//S_mat.writetofile(system.outpathname + "sensitivity_mat.txt");
 				CMatrix S_mat_lumped = MCMC.sensitivity_mat_lumped(GA.dp_sens, GA.final_params);
-				S_mat_lumped.writetofile(system.pathname+"sensitivity_mat_lumped.txt");
+				S_mat_lumped.writetofile(system().pathname+"sensitivity_mat_lumped.txt");
 				mainGraphWidget->results->localSensitivityMatrix = S_mat_lumped;
 
 			}
@@ -2604,8 +2628,8 @@ void MainWindow::inverseRun(CGWA *model, runtimeWindow* progress)
 			qDebug() << "30";
 			if (!haveMCMCOut)
 			{
-				model->gw->log(QString("Loading MCMC data from: %1").arg(QString::fromStdString(MCMC.outputfilename)));
-				model->gw->logW->writetotempfile();
+				model->operator()().gw->log(QString("Loading MCMC data from: %1").arg(QString::fromStdString(MCMC.outputfilename)));
+				model->operator()().gw->logW->writetotempfile();
 				MCMCOut = CBTCSet(MCMC.outputfilename, false);
 				MCMCOut.names = MCMC.paramname;
 			}
@@ -2626,7 +2650,7 @@ void MainWindow::inverseRun(CGWA *model, runtimeWindow* progress)
 				qDebug() << 33.1;
 				posterior_distribution.names = MCMC.paramname;
 				qDebug() << 33.2;
-				posterior_distribution.writetofile(system.outpathname + "posterior_distribution.txt");
+				posterior_distribution.writetofile(system().outpathname + "posterior_distribution.txt");
 				qDebug() << "34";
 
 				mainGraphWidget->results->posteriors = posterior_distribution;
@@ -2634,7 +2658,7 @@ void MainWindow::inverseRun(CGWA *model, runtimeWindow* progress)
 
 				CBTCSet prior_distribution = MCMC.prior_distribution(GA.no_bins * 10);
 				prior_distribution.names = MCMC.paramname;
-				prior_distribution.writetofile(system.outpathname + "prior_distribution.txt");
+				prior_distribution.writetofile(system().outpathname + "prior_distribution.txt");
 				qDebug() << "36";
 
 				mainGraphWidget->results->priors = prior_distribution;
@@ -2666,7 +2690,7 @@ void MainWindow::inverseRun(CGWA *model, runtimeWindow* progress)
 				vector<double> p97dot5 = sorted.percentile(0.975, 0);
 				qDebug() << 42.5;
 				FILE *filepercentile;
-				filepercentile = fopen((system.outpathname + "percentiles.txt").c_str(), "w");
+				filepercentile = fopen((system().outpathname + "percentiles.txt").c_str(), "w");
 				qDebug() << 43;
 				for (int i = 0; i < MCMCOut.names.size(); i++)
 					fprintf(filepercentile, "%s, ", MCMCOut.names[i].c_str());
@@ -2708,7 +2732,7 @@ void MainWindow::inverseRun(CGWA *model, runtimeWindow* progress)
 				qDebug() << 49;
 				double out1 = GA.assignfitnesses(mean);
 
-				GA.Sys_out.modeled.writetofile(system.outpathname + "BTC_mean.txt");
+				GA.Sys_out.Medium[0].modeled.writetofile(system().outpathname + "BTC_mean.txt");
 
 			}
 
@@ -2718,7 +2742,7 @@ void MainWindow::inverseRun(CGWA *model, runtimeWindow* progress)
 			{
 				qDebug() << 49.5;
 				CMatrix correlation_mat = MCMCOut.correlation(MCMC.n_burnout, MCMC.MCMCParam.size());
-				correlation_mat.writetofile(system.outpathname + "correlation_mat.txt");
+				correlation_mat.writetofile(system().outpathname + "correlation_mat.txt");
 				mainGraphWidget->results->correlationMatrix = correlation_mat;
 			}
 
@@ -2740,19 +2764,19 @@ void MainWindow::inverseRun(CGWA *model, runtimeWindow* progress)
 				vector<CBTCSet> Age_dist_cum;
 				vector<CBTCSet> Age_dist_cum_prcntle;
 
-				int n_BTCout_obs = system.measured_quan.size();
+				int n_BTCout_obs = system().measured_quan.size();
 
 				modeled_samples.resize(n_BTCout_obs);
 				modeled_prcntl.resize(n_BTCout_obs);
-				Age_dist.resize(system.Well.size());
-				Age_dist_prcntle.resize(system.Well.size());
-				Age_dist_cum.resize(system.Well.size());
-				Age_dist_cum_prcntle.resize(system.Well.size());
-				projected_samples.resize(system.Well.size()*system.Tracer.size());
-				projected_prcntle.resize(system.Well.size()*system.Tracer.size());
+				Age_dist.resize(system().Well.size());
+				Age_dist_prcntle.resize(system().Well.size());
+				Age_dist_cum.resize(system().Well.size());
+				Age_dist_cum_prcntle.resize(system().Well.size());
+				projected_samples.resize(system().Well.size()*system().Tracer.size());
+				projected_prcntle.resize(system().Well.size()*system().Tracer.size());
 
 
-				for (int i = 0; i < system.Well.size(); i++)
+				for (int i = 0; i < system().Well.size(); i++)
 				{
 					Age_dist[i] = CBTCSet(GA.nrealizations);
 					Age_dist_cum[i] = CBTCSet(GA.nrealizations);
@@ -2764,7 +2788,7 @@ void MainWindow::inverseRun(CGWA *model, runtimeWindow* progress)
 					modeled_samples[i] = CBTCSet(GA.nrealizations);
 				}
 
-				for (int i = 0; i < system.Well.size()*system.Tracer.size(); i++)
+				for (int i = 0; i < system().Well.size()*system().Tracer.size(); i++)
 				{
 					projected_samples[i] = CBTCSet(GA.nrealizations);
 					projected_prcntle[i] = CBTCSet(GA.nrealizations);
@@ -2776,13 +2800,13 @@ void MainWindow::inverseRun(CGWA *model, runtimeWindow* progress)
 				vector<CMatrix> global_sens_mat;
 				vector<CMatrix> global_sens_lumped;
 				global_sens_lumped.resize(GA.nrealizations);
-				CBTCSet R2_t(system.Tracer.size());
+				CBTCSet R2_t(system().Tracer.size());
 				CBTC R2_overall;
-				CBTCSet R2_t_ln(system.Tracer.size());
+				CBTCSet R2_t_ln(system().Tracer.size());
 				CBTC R2_overall_ln;
 				CBTCSet all_realizations(2);
-				CBTCSet all_realizations_t(system.Tracer.size());
-				CBTCSet all_realizations_m(system.Tracer.size());
+				CBTCSet all_realizations_t(system().Tracer.size());
+				CBTCSet all_realizations_m(system().Tracer.size());
 
 				omp_set_num_threads(MCMC.numberOfThreads);
 				int bucket = MCMC.numberOfThreads * 2;
@@ -2807,12 +2831,12 @@ void MainWindow::inverseRun(CGWA *model, runtimeWindow* progress)
 
 					for (int thread = 0; thread < endfor; thread++)
 					{
-						sys[thread] = GA.Sys;
+						sys[thread] = GA.Sys();
 						param[thread + samp] = MCMCOut.getrandom(MCMC.n_burnout);
 						paramsList.append(samp + thread, param[thread + samp]);
 						sys[thread].setparams(param[thread + samp], GA.nParam);
-						tracers[thread + samp] = CBTCSet(system.Tracer.size());
-						tracers_m[thread + samp] = CBTCSet(system.Tracer.size());
+						tracers[thread + samp] = CBTCSet(system().Tracer.size());
+						tracers_m[thread + samp] = CBTCSet(system().Tracer.size());
 					}
 
 
@@ -2866,15 +2890,15 @@ void MainWindow::inverseRun(CGWA *model, runtimeWindow* progress)
 						R2_overall.append(samp + thread, R2_c(overall.BTC[0], overall.BTC[1])); //R2
 						R2_overall_ln.append(samp + thread, R2_c(overall.BTC[0].Log(1e-12), overall.BTC[1].Log(1e-12))); //R2
 					}
-					if (system.project == true)
-						for (int i = 0; i < system.Well.size(); i++)
-							for (int j = 0; j < system.Tracer.size(); j++)
+					if (system().project == true)
+						for (int i = 0; i < system().Well.size(); i++)
+							for (int j = 0; j < system().Tracer.size(); j++)
 							{
-								projected_samples[j + i*system.Tracer.size()].BTC[samp + thread] = sys[thread].projected.BTC[j + i*system.Tracer.size()];
-								projected_samples[j + i*system.Tracer.size()].setname(samp + thread, sys[thread].Well[i].name + "_" + sys[thread].Tracer[j].name + "_" + numbertostring(samp + thread));
+								projected_samples[j + i*system().Tracer.size()].BTC[samp + thread] = sys[thread].projected.BTC[j + i*system().Tracer.size()];
+								projected_samples[j + i*system().Tracer.size()].setname(samp + thread, sys[thread].Well[i].name + "_" + sys[thread].Tracer[j].name + "_" + numbertostring(samp + thread));
 							}
 
-					for (int i = 0; i < system.Well.size(); i++)
+					for (int i = 0; i < system().Well.size(); i++)
 					{
 						Age_dist[i].BTC[samp + thread] = sys[thread].Well[i].young_age_distribution*(1 - sys[thread].Well[i].fraction_old);
 						Age_dist[i].setname(samp + thread, sys[thread].Well[i].name + "_" + numbertostring(samp + thread));
@@ -2903,37 +2927,37 @@ void MainWindow::inverseRun(CGWA *model, runtimeWindow* progress)
 
 				for (int ii = 0; ii < all_realizations_t.BTC.size(); ii++)
 				{
-					R2_all_realization.names.push_back(system.Tracer[ii].name);
+					R2_all_realization.names.push_back(system().Tracer[ii].name);
 					R2_all_realization.BTC[2 * ii + 2].append(R2_c(all_realizations_t.BTC[ii], all_realizations_m.BTC[ii]));
-					R2_all_realization.names.push_back(system.Tracer[ii].name + "(R2_ln)");
+					R2_all_realization.names.push_back(system().Tracer[ii].name + "(R2_ln)");
 					R2_all_realization.BTC[2 * ii + 3].append(R2_c(all_realizations_t.BTC[ii].Log(1e-12), all_realizations_m.BTC[ii].Log(1e-12)));
 				}
 				qDebug() << 206;
-				for (int ij = 0; ij < system.Tracer.size(); ij++)
+				for (int ij = 0; ij < system().Tracer.size(); ij++)
 				{
-					R2_t.names.push_back(system.Tracer[ij].name);
-					R2_t_ln.names.push_back(system.Tracer[ij].name);
+					R2_t.names.push_back(system().Tracer[ij].name);
+					R2_t_ln.names.push_back(system().Tracer[ij].name);
 				}
 				qDebug() << 207;
-				R2_t.writetofile(system.outpathname + "R2_tracers.txt");
-				R2_t_ln.writetofile(system.outpathname + "R2_tracers_ln.txt");
-				R2_overall.writefile(system.outpathname + "R2_overall.txt");
-				R2_overall_ln.writefile(system.outpathname + "R2_overall_ln.txt");
-				R2_all_realization.writetofile(system.outpathname + "R2_all_realization.txt");
+				R2_t.writetofile(system().outpathname + "R2_tracers.txt");
+				R2_t_ln.writetofile(system().outpathname + "R2_tracers_ln.txt");
+				R2_overall.writefile(system().outpathname + "R2_overall.txt");
+				R2_overall_ln.writefile(system().outpathname + "R2_overall_ln.txt");
+				R2_all_realization.writetofile(system().outpathname + "R2_all_realization.txt");
 
 				qDebug() << 208;
-				for (int i = 0; i < system.Well.size(); i++)
+				for (int i = 0; i < system().Well.size(); i++)
 				{
-					Age_dist[i].writetofile(system.outpathname + "Age_dist_" + GA.Sys_out.Well[i].name + ".txt");
-					Age_dist_cum[i].writetofile(system.outpathname + "Age_dist_cum" + GA.Sys_out.Well[i].name + ".txt");
+					Age_dist[i].writetofile(system().outpathname + "Age_dist_" + GA.Sys_out.Medium[0].Well[i].name + ".txt");
+					Age_dist_cum[i].writetofile(system().outpathname + "Age_dist_cum" + GA.Sys_out.Medium[0].Well[i].name + ".txt");
 				}
 				qDebug() << 209;
 				for (int i = 0; i < n_BTCout_obs; i++)
-					modeled_samples[i].writetofile(system.outpathname + "modeled_" + GA.Sys_out.measured_quan[i].name + ".txt");
+					modeled_samples[i].writetofile(system().outpathname + "modeled_" + GA.Sys_out.Medium[0].measured_quan[i].name + ".txt");
 				qDebug() << 210;
-				for (int i = 0; i < system.Well.size(); i++)
-					for (int j = 0; j < system.Tracer.size(); j++)
-						projected_samples[j + i*system.Tracer.size()].writetofile(system.outpathname + "Projected_" + system.Well[i].name + "_" + system.Tracer[j].name + ".txt");
+				for (int i = 0; i < system().Well.size(); i++)
+					for (int j = 0; j < system().Tracer.size(); j++)
+						projected_samples[j + i*system().Tracer.size()].writetofile(system().outpathname + "Projected_" + system().Well[i].name + "_" + system().Tracer[j].name + ".txt");
 
 				//if (GA.noise_realization_writeout)
 				//	for (int i=0; i<n_BTCout_obs; i++)
@@ -2951,13 +2975,13 @@ void MainWindow::inverseRun(CGWA *model, runtimeWindow* progress)
 						modeled_prcntl_all.BTC[0].append(modeled_prcntl[i].BTC[0].t[0], modeled_prcntl[i].BTC[0].C[0]);
 						modeled_prcntl_all.BTC[1].append(modeled_prcntl[i].BTC[1].t[0], modeled_prcntl[i].BTC[1].C[0]);
 						modeled_prcntl_all.BTC[2].append(modeled_prcntl[i].BTC[2].t[0], modeled_prcntl[i].BTC[2].C[0]);
-						modeled_prcntl[i].writetofile(system.outpathname + GA.Sys_out.measured_quan[i].name + "_prcntl.txt");
+						modeled_prcntl[i].writetofile(system().outpathname + GA.Sys_out.Medium[0].measured_quan[i].name + "_prcntl.txt");
 					}
-					for (int i = 0; i < GA.Sys_out.Well.size(); i++)
-						for (int j = 0; j < GA.Sys_out.Tracer.size(); j++)
+					for (int i = 0; i < GA.Sys_out.Medium[0].Well.size(); i++)
+						for (int j = 0; j < GA.Sys_out.Medium[0].Tracer.size(); j++)
 						{
-							projected_prcntle[j + i*GA.Sys_out.Tracer.size()] = projected_samples[j + i*GA.Sys_out.Tracer.size()].getpercentiles(GA.calc_output_percentiles);
-							projected_prcntle[j + i*GA.Sys_out.Tracer.size()].writetofile(system.outpathname + "projected_prcntl" + GA.Sys_out.Tracer[j].name + "@" + GA.Sys_out.Well[i].name + "_" + ".txt");
+							projected_prcntle[j + i*GA.Sys_out.Medium[0].Tracer.size()] = projected_samples[j + i*GA.Sys_out.Medium[0].Tracer.size()].getpercentiles(GA.calc_output_percentiles);
+							projected_prcntle[j + i*GA.Sys_out.Medium[0].Tracer.size()].writetofile(system().outpathname + "projected_prcntl" + GA.Sys_out().Tracer[j].name + "@" + GA.Sys_out.Medium[0].Well[i].name + "_" + ".txt");
 
 							//BTCout_obs_prcntle_noise[j][i] = BTCout_obs_noise[j][i].getpercentiles(GA.calc_output_percentiles);
 							//BTCout_obs_prcntle_noise[j][i].writetofile(system.outpathname + "BTC_obs_prcntl_noise" + string(_itoa(i,buffer,10)) + "_" + string(_itoa(j,buffer,10)) + ".txt",system.writeinterval);
@@ -2967,12 +2991,12 @@ void MainWindow::inverseRun(CGWA *model, runtimeWindow* progress)
 					mainGraphWidget->results->projectedTracerConcentrations = projected_samples;
 					mainGraphWidget->results->projectedTracerConcentrationPercentiles = projected_prcntle;
 
-					for (int i = 0; i < GA.Sys_out.Well.size(); i++)
+					for (int i = 0; i < GA.Sys_out.Medium[0].Well.size(); i++)
 					{
 						Age_dist_prcntle[i] = Age_dist[i].getpercentiles(GA.calc_output_percentiles);
 						Age_dist_cum_prcntle[i] = Age_dist_cum[i].getpercentiles(GA.calc_output_percentiles);
-						Age_dist_prcntle[i].writetofile(system.outpathname + "Age_dist_prcntl_" + GA.Sys_out.Well[i].name + ".txt");
-						Age_dist_cum_prcntle[i].writetofile(system.outpathname + "Age_dist_cum_prcntl_" + GA.Sys_out.Well[i].name + ".txt");
+						Age_dist_prcntle[i].writetofile(system().outpathname + "Age_dist_prcntl_" + GA.Sys_out.Medium[0].Well[i].name + ".txt");
+						Age_dist_cum_prcntle[i].writetofile(system().outpathname + "Age_dist_cum_prcntl_" + GA.Sys_out.Medium[0].Well[i].name + ".txt");
 					}
 				}
 				qDebug() << "400";
@@ -2983,8 +3007,8 @@ void MainWindow::inverseRun(CGWA *model, runtimeWindow* progress)
 				mainGraphWidget->results->cumulativeYoungAgeDistributionRealizationPercentiles = Age_dist_cum_prcntle;
 
 
-				modeled_prcntl_all.writetofile(system.outpathname + "modeled_percentile_all.txt");
-				if (system.realizedparamfilename != "") paramsList.writetofile(system.outpathname + system.realizedparamfilename);
+				modeled_prcntl_all.writetofile(system().outpathname + "modeled_percentile_all.txt");
+				if (system().realizedparamfilename != "") paramsList.writetofile(system().outpathname + system().realizedparamfilename);
 
 
 				if (MCMC.global_sensitivity == true)
@@ -2993,7 +3017,7 @@ void MainWindow::inverseRun(CGWA *model, runtimeWindow* progress)
 					CMatrix global_sens_lumped_avg = Average(global_sens_lumped);
 
 					//global_sens_mat_avg.writetofile(system.outpathname + "global_sensitivity_mat_avg.txt");
-					global_sens_lumped_avg.writetofile(system.outpathname + "global_sensitivity_lumped_avg.txt");
+					global_sens_lumped_avg.writetofile(system().outpathname + "global_sensitivity_lumped_avg.txt");
 					mainGraphWidget->results->globalSensitivityMatrix = global_sens_lumped_avg;
 				}
 				qDebug() << "500";

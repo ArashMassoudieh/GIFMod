@@ -45,8 +45,8 @@ public:
 
 #endif
 #ifdef GWA
-	CGWA G;
-	CGWA G_out;
+	CGWASet G;
+	CGWASet G_out;
 
 
 

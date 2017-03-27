@@ -383,6 +383,8 @@ QCPGraph* plotWindow::addDotPlot(vector<double> &x, vector<double> &y, const QSt
 	graph->setPen(pen);
 	graph->setName(name);
 	graph->setLineStyle(format.lineStyle);
+	QCPScatterStyle style = format.scatterStyle;
+//	style.setSize(5);
 	graph->setScatterStyle(format.scatterStyle);
 	graph->setName(name);
 	int n = x.size();
@@ -393,7 +395,7 @@ QCPGraph* plotWindow::addDotPlot(vector<double> &x, vector<double> &y, const QSt
 		yy[i] = y[i];
 	}
 	graph->setData(xx, yy);
-	graph->setScatterStyle(QCPScatterStyle::ScatterShape::ssCrossCircle);
+//	graph->setScatterStyle(QCPScatterStyle::ScatterShape::ssCrossCircle);
 	//QCPScatterStyle style(	`QCPScatterShape::ssCircle, Qt::NoPen, Qt::blue, 5);
 
 	customPlot->xAxis->setTickLabelType(QCPAxis::ltNumber);

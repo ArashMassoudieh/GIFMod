@@ -1,8 +1,12 @@
 #pragma once
 
 #include "results.h"
+
 #include "MediumSet.h"
 
+#ifdef GWA
+#include "GWA.h"
+#endif
 
 CBTCSet Results::realization(const QString &observation) {
 	if (hasRealization(observation))

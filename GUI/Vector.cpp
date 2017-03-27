@@ -57,6 +57,14 @@ CVector::CVector(const vector<double> &v)
 	vec = v;
 }
 
+CVector::CVector(CVector_arma &v)
+{
+	num = v.num;
+	vec.resize(num);
+	for (int i = 0; i<num; i++)
+		vec[i] = v[i];
+}
+
 CVector::CVector(const vector<int> &v)
 {
 	num = v.size();

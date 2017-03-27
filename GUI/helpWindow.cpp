@@ -140,7 +140,7 @@ vector<string> helpWindow::search(int code)
 }
 QString helpWindow::search2Html(int code)
 {
-#ifdef GWA
+#ifdef GWAqqq
 	showingItemCode = code;
 	vector<string> r;
 	for (int i = 0; i < text.size(); i++)
@@ -160,7 +160,7 @@ QString helpWindow::search2Html(int code)
 	}
 	return r;
 #endif
-#ifdef GIFMOD
+//#ifdef GIFMOD
 	showingItemCode = code;
 	vector<string> r;
 	for (int i = 0; i < text.size(); i++)
@@ -186,7 +186,7 @@ QString helpWindow::search2Html(int code)
 		r.push_back("No contents found for this subject.");
 	}
 	return "";
-#endif
+//#endif
 
 }
 void helpWindow::on_back_clicked()
