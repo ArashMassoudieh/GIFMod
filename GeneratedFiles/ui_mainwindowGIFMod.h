@@ -99,6 +99,7 @@ public:
     QAction *actionColorCodeConnectorVaporExchangeEate;
     QAction *actionReset_colors;
     QAction *actionNew_from_template;
+    QAction *actionCommandLine;
     QWidget *centralWidget;
     QMenuBar *menuBar;
     QMenu *menu_File;
@@ -385,6 +386,11 @@ public:
         QIcon icon30;
         icon30.addFile(QStringLiteral("../Icons/wizard blue.png"), QSize(), QIcon::Normal, QIcon::Off);
         actionNew_from_template->setIcon(icon30);
+        actionCommandLine = new QAction(MainWindow);
+        actionCommandLine->setObjectName(QStringLiteral("actionCommandLine"));
+        QIcon icon31;
+        icon31.addFile(QStringLiteral("Icons/command-line-icon-18607-16x16.ico"), QSize(), QIcon::Normal, QIcon::Off);
+        actionCommandLine->setIcon(icon31);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         MainWindow->setCentralWidget(centralWidget);
@@ -534,6 +540,7 @@ public:
         toolBar_4->addAction(actionRun_Model);
         toolBar_4->addAction(actionRun_Inverse_Model);
         toolBar_4->addAction(actionlogWindow);
+        toolBar_4->addAction(actionCommandLine);
         toolBar_4->addAction(actionShowRuntimeWindow);
         toolBar_4->addSeparator();
         toolBar_4->addAction(actionExport_to_Script_Language);
@@ -640,6 +647,10 @@ public:
         actionColorCodeConnectorVaporExchangeEate->setText(QApplication::translate("MainWindow", "Vapor exchange rate", 0));
         actionReset_colors->setText(QApplication::translate("MainWindow", "Reset colors", 0));
         actionNew_from_template->setText(QApplication::translate("MainWindow", "New from &template...", 0));
+        actionCommandLine->setText(QApplication::translate("MainWindow", "commandLine", 0));
+#ifndef QT_NO_TOOLTIP
+        actionCommandLine->setToolTip(QApplication::translate("MainWindow", "Get text commands", 0));
+#endif // QT_NO_TOOLTIP
         menu_File->setTitle(QApplication::translate("MainWindow", "&File", 0));
         menuRecent->setTitle(QApplication::translate("MainWindow", "Recent", 0));
         menu_Help->setTitle(QApplication::translate("MainWindow", "&Help", 0));

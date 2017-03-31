@@ -36,3 +36,4 @@ double timetodayfraction(int hh = 0, int mm = 0, int ss = 0);
 QList<int> dayfractiontotime(double dayFraction = 0);
 
 QString float2datetime(const double d, QString format = "MM/dd/yyyy hh:mm:ss", bool ignorefirst50years = true);
+QStringList specialSplit(QString s);

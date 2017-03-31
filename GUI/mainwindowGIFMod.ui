@@ -264,6 +264,7 @@
    <addaction name="actionRun_Model"/>
    <addaction name="actionRun_Inverse_Model"/>
    <addaction name="actionlogWindow"/>
+   <addaction name="actionCommandLine"/>
    <addaction name="actionShowRuntimeWindow"/>
    <addaction name="separator"/>
    <addaction name="actionExport_to_Script_Language"/>
@@ -825,6 +826,18 @@
    </property>
    <property name="text">
     <string>New from &amp;template...</string>
+   </property>
+  </action>
+  <action name="actionCommandLine">
+   <property name="icon">
+    <iconset>
+     <normaloff>Icons/command-line-icon-18607-16x16.ico</normaloff>Icons/command-line-icon-18607-16x16.ico</iconset>
+   </property>
+   <property name="text">
+    <string>commandLine</string>
+   </property>
+   <property name="toolTip">
+    <string>Get text commands</string>
    </property>
   </action>
  </widget>

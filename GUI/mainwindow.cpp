@@ -1,5 +1,5 @@
 #ifndef GIFMOD_VERSION
-#define GIFMOD_VERSION "0.1.18"
+#define GIFMOD_VERSION "0.1.20"
 #endif
 #ifndef GWA_VERSION
 #define GWA_VERSION "0.0.1"
@@ -15,6 +15,7 @@
 #ifdef GIFMOD
 #include "ui_mainwindowGIFMod.h"
 #include "csvEditor.h"
+#include "commandWindow.h"
 #endif
 #ifdef GWA
 #include "ui_mainwindowGWA.h"
@@ -466,6 +467,17 @@ void MainWindow::on_actionNew_from_template_triggered()
 	*/
 #endif
 }
+void MainWindow::on_actionCommandLine_triggered()
+{
+//	QString cmd = QInputDialog::getText(this, tr("Get command"), "command [argument] ... [argument] [-setting] ... [-setting]");
+//	mainGraphWidget->runCommand(cmd);
+	static commandWindow* cmdWin;
+	if (!cmdWin) 
+		cmdWin = new commandWindow(mainGraphWidget);
+
+	cmdWin->show();
+
+}
 void MainWindow::on_action_Open_triggered()
 {
     //open
@@ -508,6 +520,8 @@ bool MainWindow::loadModel(QString modelfilename)
 		in >> dataMap;
 		file.close();
 
+		QString previousModelFilename = mainGraphWidget->modelFilename;
+		setModelFileName(modelfilename);
 
 
 		mainGraphWidget->trackingUndo = false;
@@ -530,10 +544,10 @@ bool MainWindow::loadModel(QString modelfilename)
 		}
 		else
 		{
-			log->append("Bad file, could not openned.");
+			log->append("Bad file, could not be openned.");
+			setModelFileName(previousModelFilename);
 			return false;
 		}
-		setModelFileName(modelfilename);
 		
 		
 	}
@@ -1942,6 +1956,29 @@ void MainWindow::paintEvent(QPaintEvent *e)
 {
 	//QPainter painter(mainGraphWidget);
 	//painter.drawLine(0, 0, 100, 100);
+}
+
+void MainWindow::add(QString entity)
+{
+	entity = entity.trimmed().toLower();
+
+	if (entity == "soil")
+		on_actionAdd_Soil_triggered();
+	if (entity == "pond")
+		on_actionAdd_Pond_triggered();
+	if (entity == "catchment")
+		on_actionAdd_Catchment_Area_triggered();
+	if (entity == "darcy")
+		on_actionAdd_Darcy_Block_triggered();
+	if (entity == "storage")
+		on_actionAdd_Stora_ge_triggered();
+/*	if (entity == "pond")
+		on_actionAdd_Pond_triggered();
+	if (entity == "soil")
+		on_actionAdd_Soil_triggered();
+	if (entity == "pond")
+		on_actionAdd_Pond_triggered();
+		*/
 }
 
 void MainWindow::on_actionAdd_Pond_triggered()

@@ -9,7 +9,7 @@
 class UnitTextBox3 :
 	public QWidget
 {	
-	Q_OBJECT
+//	Q_OBJECT
 public:
 	UnitTextBox3() {};
 	UnitTextBox3(const XString &X, QWidget * parent = 0) :QWidget(parent)
@@ -90,7 +90,7 @@ private:
 	QLineEdit *textBox;
 	QRect Rect;
 	QDoubleValidator *validator;
-public slots:
+/*public slots:
 signals:
 /*	
 	void	cursorPositionChanged(int old, int new1);

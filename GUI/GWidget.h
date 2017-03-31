@@ -190,6 +190,8 @@ public:
 	CMedium *model = 0;
 	vector<Results *> resultsSet;
 	bool wizard(QList<command>&commands);
+	QVariant runCommand(QString command);
+	QVariant runCommand(QString command, QList<XString> arguments);// = QList<XString>());
 #endif
 #ifdef GWA
 	CGWA *model = 0;

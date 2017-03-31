@@ -63,6 +63,7 @@ public:
 #ifdef GIFMOD
 	void forwardRun(CMediumSet *model, runtimeWindow *runtimewindow);
 	void inverseRun(CMediumSet *model, runtimeWindow* progress);
+
 #endif
 #ifdef GWA
 	void forwardRun(CGWASet *model, runtimeWindow *runtimewindow);
@@ -83,15 +84,19 @@ public:
 		readRecentFilesList();
 	}
 	void readRecentFilesList();
+	void add(QString entity);
 protected:
 	void paintEvent(QPaintEvent *e);
-
 public slots:
 
 	void Mouse_Pos(int, int, QString);
 
 	void on_dockWidget_dockLocationChanged(const Qt::DockWidgetArea &area);
-	
+	void zoomAll()
+	{
+		on_actionZoom_All_triggered();
+	}
+
 private slots:
 
 	void on_actionAdd_Pond_triggered();
@@ -231,7 +236,7 @@ private slots:
 	void menuWaterQuality_triggered();
 	void on_actionNew_from_template_triggered();
 
-
+	void on_actionCommandLine_triggered();
 
 
 

@@ -126,6 +126,7 @@ public:
 			return false;
 	}
 	QString middleText = "";
+	void changed();
 
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) Q_DECL_OVERRIDE;
@@ -143,7 +144,6 @@ private:
 
 	QPointF newPos;
 //	GraphWidget *graph;
-	void changed();
 //	QMap<QString, QString> warnings, errors;
 	bool bold = false;
 
