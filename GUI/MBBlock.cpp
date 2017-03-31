@@ -976,7 +976,7 @@ void CMBBlock::get_funcs(CStringOP &term)  //Works w/o reference(&)
 			XX.Expression.function=false;
 			XX.var_id = 0;
 			XX._min=1e-16;
-			XX._max=1.1;
+			XX._max=2;
 			funcs.push_back(XX);
 		}
 		else if (term.number==12)
