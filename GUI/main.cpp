@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
 	//	MainWindow mainGUIwindow(0, "Versatile Water Quality Modeling System", "GIFModers", "GIFMod", "GIFModGUI/PropList.csv", q+"  "+ modelfilename.replace("\\","/"));
 	MainWindow mainGUIwindow(0, "Ground Water Age Modeling System", "GWA", "GWA", "GWAGUIPropList.csv");
 	mainGUIwindow.show();
+	mainGUIwindow.afterInit();
 	QEventLoop loop;
 	return GUI.exec();
 }

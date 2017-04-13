@@ -402,9 +402,17 @@ void CGA::assignfitnesses()
 		Sys1[k] = Sys;
 
 		int l = 0;
+#ifdef GIFMOD
 		for (int i = 0; i < nParam; i++)
 			Sys1[k].set_param(params[i], inp[k][i]);
 		Sys1[k].finalize_set_param();
+#endif
+#ifdef GWA
+		for (int i = 0; i < nParam; i++)
+			Sys1[k].Medium[0].set_param(params[i], inp[k][i]);
+		Sys1[k].Medium[0].finalize_set_param();
+#endif
+
 	}
 		
 omp_set_num_threads(numberOfThreads);
@@ -418,7 +426,7 @@ omp_set_num_threads(numberOfThreads);
 			FileOut = fopen((Sys.FI.outputpathname+"detail_GA.txt").c_str(),"a");
 #endif
 #ifdef GWA
-			FileOut = fopen((Sys.pathname + "detail_GA.txt").c_str(), "a");
+			FileOut = fopen((Sys.Medium[0].pathname + "detail_GA.txt").c_str(), "a");
 #endif
 
 			fprintf(FileOut, "%i, ", k);
@@ -436,15 +444,21 @@ omp_set_num_threads(numberOfThreads);
 			clock_t t0 = clock();
 			for (int ts=0; ts<1; ts++)
 			{
-				Ind[k].actual_fitness -= Sys1[k].calc_log_likelihood(); 
+#ifdef GIFMOD
+				Ind[k].actual_fitness -= Sys1[k].calc_log_likelihood();
 				epochs[k] += Sys1[k].epoch_count();
-			}	
+#endif
+#ifdef GWA
+				Ind[k].actual_fitness -= Sys1[k].Medium[0].calc_log_likelihood();
+				epochs[k] += Sys1[k].epoch_count();
+#endif
+			}
 			time_[k] = ((float)(clock() - t0))/CLOCKS_PER_SEC;
 #ifdef GIFMOD
 			FileOut = fopen((Sys.FI.pathname+"detail_GA.txt").c_str(),"a");
 #endif
 #ifdef GWA
-			FileOut = fopen((Sys.pathname+"detail_GA.txt").c_str(),"a");
+			FileOut = fopen((Sys.Medium[0].pathname+"detail_GA.txt").c_str(),"a");
 #endif
 			fprintf(FileOut, "%i, fitness=%le, time=%e, epochs=%i\n", k, Ind[k].actual_fitness, time_[k], epochs[k]);
 			fclose(FileOut);
@@ -527,7 +541,7 @@ int CGA::optimize()
 	string RunFileName = Sys.FI.outputpathname + outputfilename;
 #endif
 #ifdef GWA
-	string RunFileName = Sys.pathname + outputfilename;
+	string RunFileName = Sys.Medium[0].pathname + outputfilename;
 #endif
 
 	FILE *FileOut;
@@ -539,7 +553,7 @@ int CGA::optimize()
 	FileOut1 = fopen((Sys.FI.outputpathname + "detail_GA.txt").c_str(), "w");
 #endif
 #ifdef GWA
-	FileOut1 = fopen((Sys.pathname + "detail_GA.txt").c_str(), "w");
+	FileOut1 = fopen((Sys.Medium[0].pathname + "detail_GA.txt").c_str(), "w");
 #endif
 	fclose(FileOut1);
 
@@ -674,37 +688,38 @@ double CGA::assignfitnesses(vector<double> inp)
 {
 
 	double likelihood = 0;
+#ifdef GIFMOD
 	CMediumSet Sys1;
-
+#endif
+#ifdef GWA
+	CGWASet Sys1;
+#endif
 
 	Sys1 = Sys;
 
 	int l = 0;
 	for (int i = 0; i < nParam; i++)
+#ifdef GIFMOD
 		Sys1.set_param(i, inp[i]);
 	Sys1.finalize_set_param();
 	likelihood -= Sys1.calc_log_likelihood();
-
+#endif
+#ifdef GWA
+	Sys1().set_param(i, inp[i]);
+	Sys1().finalize_set_param();
+	likelihood -= Sys1().calc_log_likelihood();
+#endif
 
 	Sys_out = Sys1;
 
 	return likelihood;
 
 }
+#ifdef GIFMOD
 vector<CMediumSet>& CGA::assignfitnesses_p(vector<double> inp)
-
 {
-
 	double likelihood = 0;
 	vector<CMediumSet> Sys1(1);
-
-
-
-
-
-
-
-
 	for (int ts = 0; ts<1; ts++)
 	{
 		Sys1[ts] = Sys;
@@ -714,40 +729,11 @@ vector<CMediumSet>& CGA::assignfitnesses_p(vector<double> inp)
 			Sys1[ts].set_param(params[i], inp[getparamno(i, ts)]);
 		Sys1[ts].finalize_set_param();
 		likelihood -= Sys1[ts].calc_log_likelihood();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	}
 	Sys1;
-
 	return Sys1;
-
 }
-int CGA::getparamno(int i, int ts)
-{
-	int l = 0;
-	for (int j = 0; j<i; j++)
-		if (apply_to_all[j]) l++; else l += 1;
-
-	if (apply_to_all[i])
-		return l;
-	else
-		return l + ts;
-
-}
+#endif 
 int CGA::get_act_paramno(int i)
 {
 	int l = -1;
@@ -761,34 +747,13 @@ int CGA::get_act_paramno(int i)
 		}
 	}
 }
-int CGA::get_time_series(int i)
-{
-	int l = 0;
-	for (int j = 0; j<nParam; j++)
-	{
-		if (apply_to_all[j]) l += 1; else l += 1;
-		if (l >= i)
-		{
-			if (apply_to_all[j]) l -= 1; else l--;
-			return i - l;
-		}
-	}
-}
+
 double CGA::getfromoutput(string filename)
-
 {
-
 	ifstream file(filename);
 	vector<string> s;
 	final_params.resize(totnParam);
 	while (file.eof() == false)
-
-
-
-
-
-
-
 	{
 		s = getline(file);
 		if (s.size()>0)
@@ -801,29 +766,16 @@ double CGA::getfromoutput(string filename)
 						Sys.writetolog("The number of parameters in GA output file does not match the number of unknown parameters");
 					else
 						final_params[i] = atof(s[1].c_str());
-
 				}
 		}
-
-
-
-
-
-
-
-
-
-
 	}
-
 	double ret = assignfitnesses(final_params);
-
 	return ret;
 }
 
 
 #ifdef GWA
-CGA::CGA(string filename, CGWA &Syst)
+CGA::CGA(string filename, CGWASet &Syst)
 
 {
 	int ii;
@@ -852,7 +804,7 @@ CGA::CGA(string filename, CGWA &Syst)
 	calculate_percentile = true;
 	mcmc_realization = true;
 	calculate_correlation = true;
-	pathname = Syst.pathname;
+	pathname = Syst().pathname;
 	readfromgafile = false;
 	calc_distributions = false;
 	noise_realization_writeout = false;
@@ -984,7 +936,8 @@ CGA::CGA(string filename, CGWA &Syst)
 
 
 }
-
+#endif
+/*
 void CGA::assignfitnesses()
 {
 	sumfitness = 0;
@@ -1021,10 +974,19 @@ void CGA::assignfitnesses()
 		for (int ts = 0; ts<1; ts++) 
 			{
 	
-				Sys1[k][ts] = Sys;
-
-				for (int i = 0; i<nParam; i++)
-					Sys1[k][ts].setparams(i, inp[k][getparamno(i, 0)]);
+#ifdef GIFMOD
+			Sys1[k][ts] = Sys;
+#endif
+#ifdef GWA
+			Sys1[k] = Sys;
+#endif
+			for (int i = 0; i<nParam; i++)
+#ifdef GIFMOD
+				Sys1[k][ts].setparams(i, inp[k][getparamno(i, 0)]);
+#endif
+#ifdef GWA
+				Sys1[k].Medium[0].setparams(i, inp[k][getparamno(i, 0)]);
+#endif
 
 			int l = 0;
 		}
@@ -1037,7 +999,13 @@ omp_set_num_threads(numberOfThreads);
 		//int ts,l;
 
 		FILE *FileOut;
+#ifdef GIFMOD
 		FileOut = fopen((Sys.pathname() + "detail_GA.txt").c_str(), "a");
+#endif
+#ifdef GWA
+		FileOut = fopen((Sys.Medium[0].pathname + "detail_GA.txt").c_str(), "a");
+#endif
+
 		std::fprintf(FileOut, "%i, ", k);
 		for (int l = 0; l<Ind[0].nParams; l++)
 			if (loged[get_act_paramno(l)] == 1)
@@ -1053,8 +1021,14 @@ omp_set_num_threads(numberOfThreads);
 		clock_t t0 = clock();
 		for (int ts = 0; ts<1; ts++)
 		{
+#ifdef GIFMOD
 			Ind[k].actual_fitness -= Sys1[k][ts].calc_log_likelihood();
 			epochs[k] += Sys1[k][ts].epoch_count;
+#endif
+#ifdef GWA
+			Ind[k].actual_fitness -= Sys1[k].Medium[0].calc_log_likelihood();
+			epochs[k] += Sys1[k].Medium[0].epoch_count;
+#endif
 		}
 		time_[k] = ((float)(clock() - t0)) / CLOCKS_PER_SEC;
 		FileOut = fopen((Sys.pathname() + "detail_GA.txt").c_str(), "a");
@@ -1093,7 +1067,12 @@ int CGA::optimize()
 
 	Sys1.resize(maxpop);
 //	for (int i = 0; i<maxpop; i++) Sys1[i].resize(1); ASK ARASH
+#ifdef GIFMOD
 	for (int i = 0; i<maxpop; i++) Sys1[i].resize(1);
+#endif
+#ifdef GWA
+	for (int i = 0; i<maxpop; i++) Sys1.resize(1);
+#endif
 
 	initialize();
 	double ininumenhancements = numenhancements;
@@ -1236,55 +1215,50 @@ int CGA::optimize()
 
 	return maxfitness();
 }
-
+*/
+/*
+#ifdef GWA
 double CGA::assignfitnesses(vector<double> inp)
 {
 
 	double likelihood = 0;
-	vector<CGWA> Sys1(1);
+	CGWASet Sys1;
 
-
-	for (int ts = 0; ts<1; ts++)
-	{
-		Sys1[ts] = Sys;
+	Sys1 = Sys;
 
 		int l = 0;
 		for (int i = 0; i<nParam; i++)
-			Sys1[ts].set_param(i, inp[getparamno(i, ts)]);
-		Sys1[ts].finalize_set_param();
-		likelihood -= Sys1[ts].calc_log_likelihood();
+			Sys1().set_param(i, inp[i]);
+		Sys1().finalize_set_param();
+		likelihood -= Sys1().calc_log_likelihood();
 
-	}
+	
 	Sys_out = Sys1;
 
 	return likelihood;
 
 }
 
-vector<CGWA>& CGA::assignfitnesses_p(vector<double> inp)
+vector<CGWASet>& CGA::assignfitnesses_p(vector<double> inp)
 {
-
 	double likelihood = 0;
-	vector<CGWA> Sys1(1);
+	CGWASet Sys1;
 
+	Sys1 = Sys;
 
-	for (int ts = 0; ts<1; ts++)
-	{
-		Sys1[ts] = Sys;
+	int l = 0;
+	for (int i = 0; i < nParam; i++)
+		Sys1().set_param(i, inp[i]);
+	Sys1().finalize_set_param();
+	likelihood -= Sys1().calc_log_likelihood();
 
-		int l = 0;
-		for (int i = 0; i<nParam; i++)
-			Sys1[ts].set_param(i, inp[getparamno(i, ts)]);
-		Sys1[ts].finalize_set_param();
-		likelihood -= Sys1[ts].calc_log_likelihood();
+	vector<CGWASet> r(1);
+	r[0] = Sys1;
 
-	}
-	Sys1;
-
-	return Sys1;
-
+	return r;
 }
-
+#endif
+*/
 int CGA::getparamno(int i, int ts)
 {
 	int l = 0;
@@ -1297,19 +1271,7 @@ int CGA::getparamno(int i, int ts)
 		return l + ts;
 
 }
-int CGA::get_act_paramno(int i)
-{
-	int l = -1;
-	for (int j = 0; j<nParam; j++)
-	{
-		if (apply_to_all[j]) l++; else l += 1;
-		if (l >= i)
-		{
-			if (apply_to_all[j]) l -= 1; else l--;
-			return j;
-		}
-	}
-}
+
 int CGA::get_time_series(int i)
 {
 	int l = 0;
@@ -1324,35 +1286,7 @@ int CGA::get_time_series(int i)
 	}
 }
 
-double CGA::getfromoutput(string filename)
-{
 
-	ifstream file(filename);
-	vector<string> s;
-	final_params.resize(totnParam);
-	while (file.eof() == false)
-	{
-		s = getline(file);
-		if (s.size()>0)
-		{
-			if (s[0] == "Final Enhancements")
-				for (int i = 0; i<totnParam; i++)
-				{
-					s = getline(file);
-//					if (s.size() == 0)
-//						Sys.writetolog("The number of parameters in GA output file does not match the number of unknown parameters");
-//					else
-						final_params[i] = atof(s[1].c_str());
-
-				}
-		}
-	}
-
-	double ret = assignfitnesses(final_params);
-
-	return ret;
-}
-#endif
 
 void CGA::shake()
 {
@@ -1546,7 +1480,7 @@ double CGA::evaluateforward()
 	out.writetofile(Sys.FI.outputpathname + "likelihood.txt");
 #endif
 #ifdef GWA
-	out.writetofile(Sys.pathname + "likelihood.txt");
+	out.writetofile(Sys.pathname() + "likelihood.txt");
 #endif
 	params = x_params;
 	nParam = x_nParam;
@@ -1567,7 +1501,7 @@ double CGA::evaluateforward_mixed(vector<double> v)
 	out.writetofile(Sys.FI.outputpathname + "likelihood.txt");
 #endif
 #ifdef GWA
-	out.writetofile(Sys.pathname + "likelihood.txt");
+	out.writetofile(Sys.pathname() + "likelihood.txt");
 #endif
 	params = x_params;
 	nParam = x_nParam;

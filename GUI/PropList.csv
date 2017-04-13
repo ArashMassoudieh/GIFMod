@@ -118,7 +118,7 @@
 1,Entity,Particle,*,!,diffusion coefficient,diffusion,!,!,float+Estimate,!,UnitBox,Material,Input,>=0,E,Diffusion coefficient must be non-negative
 1,Entity,Particle,*,!,dispersivity,dispersivity,m; cm; ft; in,m,float+Estimate,!,UnitBox,Material,Input,>=0,E,Dispersivity must be non-negative
 1,Entity,Observation,*,!,Error Distribution,error_structure,!,!,string,Normal;Log-Normal,ComboBox,Global,Select,,,
-1,Entity,Global Settings,*,!,Evaporation time series,evaporation,!,!,filename,!,Browser;time series,Global,Input,,,
+1,Entity,Project settings,*,!,Evaporation time series,evaporation,!,!,filename,!,Browser;time series,Global,Input,,,
 1,Entity,Constituent,*,!,Exchange rate factor,exchange_rate_factor,!,!,expression,!,TextBox,Global,Input,>=0,E,Exchange rate factor must be non-negative
 1,Entity,Solver,*,!,Failure criteria number of interations,nr_failure_criteria,!,!,integer,200,TextBox,Global,Input,>0,E,Failure criteria number of interations must be positive
 1,Entity,Solver,*,!,Forward/Inverse Simulation,forward,!,!,string,Forward;Inverse,ComboBox,Global,Select,,,
@@ -127,7 +127,7 @@
 1,Entity,Markov Chain Monte Carlo,*,!,Get MCMC results from file,getfromfilename            ,!,!,filename,!,TextBox,Global,Input,not empty,W,MCMC input file is not defined.
 1,Entity,Genetic Algorithm,*,!,initial GA population,initial_population         ,!,!,filename,!,TextBox,Global,Input,not empty,W,initial GA population input file is not defined.
 1,Entity,Genetic Algorithm,*,!,Initial purturbation,noinipurt                  ,!,!,string,Yes;No,ComboBox,Global,Select,,,
-1,Entity,Global Settings,*,!,Initial time step,dt,day;hr;min;s,day,float+Estimate,0.01,UnitBox,Global,Input,>0,E,Initial time step must be greater than zero
+1,Entity,Project settings,*,!,Initial time step,dt,day;hr;min;s,day,float+Estimate,0.01,UnitBox,Global,Input,>0,E,Initial time step must be greater than zero
 1,Entity,Particle,*,!,irreversible collection fraction,irrevcolfraction,!,!,float+Estimate,!,UnitBox,Material,Input,[0:1],E,Irreversible collection fraction must be between 0 and 1
 1,Entity,Solver,*,!,Jackobian matrix update interval,max_j_update_interval,!,!,integer,40,TextBox,Global,Input,>=0,E,Jackobian matrix update interval must be non-negative
 1,Entity,Observation,*,!,Location,id,!,!,string,populate at runtime;Block;Connector,ComboBox,Global,Select,,,
@@ -160,7 +160,7 @@
 1,Entity,Solver,*,!,Perform particle transport simulation,colloid_transport,!,!,string,Yes;No,ComboBox,Global,Select,,,
 1,Entity,Solver,*,!,Perform water quality simulation,water_quality,!,!,string,Yes;No,ComboBox,Global,Select,,,
 1,Entity,Genetic Algorithm,*,!,Population,maxpop                     ,!,!,integer,40,TextBox,Global,Input,>1,E,Population must be greater than equal to two and an even number
-1,Entity,Global Settings,*,!,Precipitation time series,precipitation,!,!,filename,.,Browser;precipitation,Global,Input,,,
+1,Entity,Project settings,*,!,Precipitation time series,precipitation,!,!,filename,.,Browser;precipitation,Global,Input,,,
 1,Entity,Solver,*,!,Prefered lower limit of NR iterations,nr_iteration_treshold_min,!,!,integer,20,TextBox,Global,Input,>0,E,Prefered lower limit of NR iterations must be positive
 1,Entity,Solver,*,!,Prefered upper limit of NR iterations,nr_iteration_treshold_max,!,!,integer,50,TextBox,Global,Input,>0,E,Prefered upper limit of NR iterations must be positive
 1,Entity,Parameter,*,!,Prior Distribution,log,!,!,string,Normal;Log-Normal,ComboBox,Global,Select,,,
@@ -193,7 +193,7 @@
 1,Entity,Solver,*,!,Uniform output export interval,uniformoutput,!,!,integer,Yes;No,ComboBox,Global,Select,,,
 1,Entity,Reaction parameter,*,!,Value,value,!,!,float+Estimate,0,TextBox,Global,Input,,,
 1,Entity,External flux,*,!,Velocity Exponent,velocity_exponent,!,!,float+Estimate,!,TextBox,Global,Input,,,
-1,Entity,Global Settings,*,!,Working Path,path,!,!,directory,.,DirBrowser,Global,Input,,,
+1,Entity,Project settings,*,!,Working Path,path,!,!,directory,.,DirBrowser,Global,Input,,,
 1,Entity,Solver,*,!,Write solution details,write_details,!,!,string,Default;Yes;No,ComboBox,Global,Select,,,
 1,Block,Catchment,Catchment,!,Manning's roughness coefficient,nmanning,s/~^3~radicm,day/~^3~radicm,float+Estimate,!,UnitBox,Material,Input,>0,W,Manning's roughness coefficient must be positive
 1,Block,Stream,Stream,!,Manning's roughness coefficient,nmanning,s/~^3~radicm,day/~^3~radicm,float+Estimate,!,UnitBox,Material,Input,>0,W,Manning's roughness coefficient must be positive
@@ -211,8 +211,8 @@
 1,Block,Catchment,*,!,Temperature,temperature,!,!,integer,Yes;No,ComboBox,Environment,Select,,,
 1,Block,Storage,*,!,Temperature,temperature,!,!,integer,No;Yes,ComboBox,Environment,Select,,,
 1,Block,Darcy,*,!,Temperature,temperature,!,!,integer,No;Yes,ComboBox,Environment,Select,,,
-1,Entity,Global Settings,*,!,Light,light,!,!,filename,.,Browser;time series,Global,Input,,,
-1,Entity,Global Settings,*,!,Temperature,temperature,!,!,filename,.,Browser;time series,Global,Input,,,
+1,Entity,Project settings,*,!,Light,light,!,!,filename,.,Browser;time series,Global,Input,,,
+1,Entity,Project settings,*,!,Temperature,temperature,!,!,filename,.,Browser;time series,Global,Input,,,
 1,Block,Soil,Soil,!,Storativitiy,storativitiy,1/m;1/cm;1/ft;1/in,1/m,float+Estimate,!,TextBox,Material,Input,>=0,E,Storativitiy moisure content must be non-negative
 1,Block,Darcy,Darcy,!,Storativitiy,storativitiy,1/m;1/cm;1/ft;1/in,1/m,float+Estimate,!,TextBox,Material,Input,>=0,E,Storativitiy moisure content must be non-negative
 1,Connector,Rating Curve,*,!,Coefficient,rating_curve_power,!,!,float+Estimate,!,TextBox,Material,Input,,,

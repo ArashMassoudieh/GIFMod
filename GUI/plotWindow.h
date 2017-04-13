@@ -51,17 +51,17 @@ public:
   QCPGraph* addScatterPlot(QString name, QVector<double> x, QVector<double> y, plotformat format = plotformat());
   QCPGraph* addScatterPlot(QCPGraph *g, plotformat format);
   QCPGraph* addDotPlot(vector<double> &x, vector<double> &y, const QString &name, plotformat format = plotformat());
-  QCPGraph* addScatterDotPlot(CBTCSet &ANS, int index, QString name = "", bool convertXtoTime = true, plotformat format = plotformat()) {
-	  return addScatterPlot(ANS, index, name, 1, 0, convertXtoTime, format);
+  QCPGraph* addScatterDotPlot(CBTCSet &ANS, int index, QString name = "", plotformat format = plotformat()) {
+	  return addScatterPlot(ANS, index, name, 1, 0, format);
   }
-  QCPGraph* addScatterPlot(CBTCSet &ANS, int index, QString name = "", double coefficient = 1, double offset = 0, bool convertXtoTime = true, plotformat format = plotformat()) {
+  QCPGraph* addScatterPlot(CBTCSet &ANS, int index, QString name = "", double coefficient = 1, double offset = 0, plotformat format = plotformat()) {
 	  if (name == "") name = QString::fromStdString(ANS.names[index]);
 //	  std::vector<double> vx, std::vector<double> vy) {
 	  QVector<double> x(ANS.BTC[index].n), y(ANS.BTC[index].n);
 	  int numberOfTimePoints = ANS.BTC[index].t.size();
-	  if (convertXtoTime && (ANS.BTC[index].t[numberOfTimePoints - 1] - ANS.BTC[index].t[0]) < 5)
-		  convertXtoTime = false;
-	  if (convertXtoTime)
+	  if (format.xAxisTimeFormat && (ANS.BTC[index].t[numberOfTimePoints - 1] - ANS.BTC[index].t[0]) < 5)
+		  format.xAxisTimeFormat = false;
+/*	  if (convertXtoTime)
 		  for (int i = 0; i < ANS.BTC[index].n; i++)
 		  {
 			  //qint64 currentDate = ANS.BTC[index].t[i];
@@ -73,13 +73,13 @@ public:
 
 			  y[i] = ANS.BTC[index].C[i] * coefficient + offset;
 		  }
-	  else 
+	  else*/ 
 		  for (int i = 0; i < ANS.BTC[index].n; i++)
 		  {
 			  x[i] = ANS.BTC[index].t[i];
 			  y[i] = ANS.BTC[index].C[i] * coefficient + offset;
 		  }
-	  format.xAxisTimeFormat = convertXtoTime;
+	  //format.xAxisTimeFormat = convertXtoTime;
 	  return addScatterPlot(name, x, y, format);
   };
   QCPGraph* plotWindow::addHistogramPlot(QString name, QVector<double> t, QVector<double> y, plotformat format = plotformat());
@@ -89,13 +89,13 @@ public:
   QCPGraph* plotWindow::addPercentilePlot(QString name, QMap<QString, double> data, plotformat format = plotformat());
   QCPGraph* addScatterPlot(CBTC data, QString name, double coefficient = 1, double offset = 0, bool convertXtoTime = true, plotformat format = plotformat()) {
 	  QVector<double> x(data.n), y(data.n);
-	  if (convertXtoTime)
-		  for (int i = 0; i < data.n; i++)
-		  {
-			  x[i] = data.t[i] * 86400 - 2209161600;
-			  y[i] = data.C[i] * coefficient + offset;
-		  }
-	  else
+//	  if (convertXtoTime)
+//		  for (int i = 0; i < data.n; i++)
+//		  {
+//			  x[i] = data.t[i] * 86400 - 2209161600;
+//			  y[i] = data.C[i] * coefficient + offset;
+//		  }
+//	  else
 		  for (int i = 0; i < data.n; i++)
 		  {
 			  x[i] = data.t[i];
@@ -105,12 +105,12 @@ public:
 	  format.xAxisTimeFormat = convertXtoTime;
 	  return addScatterPlot(name, x, y, format);
   };
-  QCPGraph* addScatterPlot(CBTC &ANS, QString name = "", bool convertXtoTime = true, plotformat format = plotformat()) {
+  QCPGraph* addScatterPlot(CBTC &ANS, QString name = "", plotformat format = plotformat()) {
 	  //if (name == "") name = QString::fromStdString(ANS.names[index]);
 	  QVector<double> x(ANS.n), y(ANS.n);
-	  int numberOfTimePoints = ANS.t.size();
-	  if (convertXtoTime && (ANS.t[numberOfTimePoints - 1] - ANS.t[0]) < 5)
-		  convertXtoTime = false;
+//	  int numberOfTimePoints = ANS.t.size();
+//	  if (format.xAxisTimeFormat && (ANS.t[numberOfTimePoints - 1] - ANS.t[0]) < 5)
+//		  format.xAxisTimeFormat = false;
 	  for (int i = 0; i < ANS.n; i++)
 	  {
 //		  if (convertXtoTime)
@@ -119,7 +119,6 @@ public:
 			  x[i] = ANS.t[i];
 		  y[i] = ANS.C[i];
 	  }
-	  format.xAxisTimeFormat = convertXtoTime;
 	  return addScatterPlot(name, x, y, format);
   };
   double xtoTime(const double &x) {
@@ -129,7 +128,7 @@ public:
 	  return (time + 2209161600) / 86400;
   };
 
-  vector<QCPGraph*> addScatterPlot(CBTCSet DataSet, bool convertTimes = true, plotformat format = plotformat()) {
+  vector<QCPGraph*> addScatterPlot(CBTCSet DataSet, plotformat format = plotformat()) {
 	  vector<QCPGraph*> r;
 	  format.legend = false;
 	  format.penWidth = 1;
@@ -168,7 +167,7 @@ public:
 			  format.penStyle = Qt::SolidLine;
 		  }
 		  DataSet[i].name = name.toStdString();
-		  r.push_back(addScatterPlot(DataSet[i], QString::fromStdString(DataSet[i].name), convertTimes, format));
+		  r.push_back(addScatterPlot(DataSet[i], QString::fromStdString(DataSet[i].name), format));
 	  }
 	  return r;
   }

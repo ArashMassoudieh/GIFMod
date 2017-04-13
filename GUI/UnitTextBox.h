@@ -9,6 +9,21 @@ class UnitTextBox :
 {	
 public:
 	UnitTextBox() {};
+	UnitTextBox(const XString &X, QWidget * parent = 0) :QWidget(parent)
+	{
+		textBox = new QLineEdit(this);
+		unitBox = new QComboBox(textBox);
+		validator = new QDoubleValidator(this);
+		textBox->setValidator(validator);
+//		Rect = option.rect;
+
+		setXString(X);
+		unitBox->show();
+		textBox->show();
+		this->show();
+
+	};
+
 	UnitTextBox(const QStyleOptionViewItem &option, QWidget * parent = 0) :QWidget(parent)
 	{
 		textBox = new QLineEdit(this);
@@ -49,6 +64,10 @@ public:
 	QString unit() const { return unitBox->currentText(); };
 	QStringList units() const { QStringList R; for (int i = 0; i < unitBox->count(); i++) R.append(unitBox->itemText(i)); return R; };
 	QStringList list() const { return QStringList() << text() << unit() << units() << defaultUnit; };
+	XString toXString() {
+		XString(list());
+	}
+
 	void setGeometry(const QRect &R) {Rect = R;};
 	QRect rect() const { return Rect; };
 	QString defaultUnit;

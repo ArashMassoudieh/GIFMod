@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 using namespace std;
-
+#ifdef GIFMOD
 struct range //properties of unknown parameters
 {
 	string name;
@@ -20,6 +20,7 @@ struct range //properties of unknown parameters
 	vector<string> experiment_id;
 	vector<int> location_type; //0: block, 1: connector; 2: both
 };
+#endif
 QString float2date(const double d, QString format = "MMM dd yyyy", bool ignorefirst50years = true);
 qint64 xldate2julian(const qint64 xldate);
 
@@ -35,3 +36,4 @@ double timetodayfraction(int hh = 0, int mm = 0, int ss = 0);
 QList<int> dayfractiontotime(double dayFraction = 0);
 
 QString float2datetime(const double d, QString format = "MM/dd/yyyy hh:mm:ss", bool ignorefirst50years = true);
+QStringList specialSplit(QString s);

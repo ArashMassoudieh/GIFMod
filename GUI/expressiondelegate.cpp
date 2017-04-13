@@ -1,6 +1,7 @@
 #include "expressiondelegate.h"
 #include "expressioneditor.h"
 #include "statusviewer.h"
+#ifdef GIFMOD
 #include "ReactionTableModel.h"
 
 ExpressionDelegate::ExpressionDelegate(ReactionTableModel* model, StatusViewer* statusbar, QObject * p)
@@ -9,7 +10,6 @@ ExpressionDelegate::ExpressionDelegate(ReactionTableModel* model, StatusViewer* 
     this->statusbar = statusbar;
     this->model = model;
 }
-
 
 QWidget *ExpressionDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &opt, const QModelIndex &mi) const
 {
@@ -21,7 +21,9 @@ QWidget *ExpressionDelegate::createEditor(QWidget *parent, const QStyleOptionVie
 void ExpressionDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
     ExpressionEditor *ee = static_cast<ExpressionEditor*>(editor);
-    ee->setText(model->data(index, Qt::EditRole).toString());
+#ifdef GIFMOD
+	ee->setText(model->data(index, Qt::EditRole).toString());
+#endif
 }
 
 
@@ -31,3 +33,4 @@ void ExpressionDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
     model->setData(index, ee->text(), Qt::EditRole);
 }
 
+#endif

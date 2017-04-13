@@ -1010,6 +1010,13 @@ CMatrix::CMatrix(CMatrix_arma &M)
 {
 	numrows = M.getnumrows();
 	numcols = M.getnumcols();
+	matr.resize(numrows);
+
+	for (int i = 0; i<numrows; ++i)
+	{
+		matr[i].vec.resize(numcols);
+		matr[i].num = numcols;
+	}
 	for (int i = 0; i < numrows; i++)
 		for (int j = 0; j < numcols; j++)
 			matr[i][j] = M(i, j);

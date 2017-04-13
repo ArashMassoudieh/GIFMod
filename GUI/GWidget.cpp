@@ -5,6 +5,8 @@
 #include <math.h>
 #include <QKeyEvent>
 #include <qdebug.h>
+//#include "utility_funcs.h"
+
 //#include <mainwindow.h>
 #include <vector>
 #include "ray.h"
@@ -36,9 +38,12 @@
 #include "ui_mainwindowGIFMod.h"
 #include "MediumSet.h"
 #include "BTCSet.h"
+#include "reactionwindow.h"
+#include "reactiontablemodel.h"
 #endif
 #ifdef GWA
 #include "gwa.h"
+#include "utility_funcs.h"
 #endif
 
 
@@ -144,9 +149,9 @@ GraphWidget::GraphWidget(QWidget *_parent, QString applicationShortName, QString
 #endif
 
 #ifdef GWA
-	new Entity("Global Settings", "Global Settings", this);
-	new Entity("Genetic Algorithm", "Genetic Algorithm", this);
-	new Entity("Markov Chain Monte Carlo", "Markov Chain Monte Carlo", this);
+	new Entity("Project settings", "Project settings", this);
+	new Entity("Genetic algorithm", "Genetic algorithm", this);
+	new Entity("Markov chain Monte Carlo", "Markov chain Monte Carlo", this);
 #endif
 	QList <QString> QL = ModelSpace.getList();
 	setMode();
@@ -798,6 +803,7 @@ void GraphWidget::updateNodeCoordinates()
 		}
 	}
 }
+#ifdef GIFMOD
 void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QString colorTheme, vector<double> predifinedMinMax, float time)
 {
 	if (!hasResults)
@@ -823,7 +829,7 @@ void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QStri
 				data.push_back(model->ANS[index]);
 			}
 			if (propertyName == "Head") {
-				data.push_back(model->ANS[model->Connector.size() + model->Blocks.size() + index]);
+				data.push_back(model->ANS[Edges().count() + Nodes().count() + index]);
 			}
 			if (propertyName == "Moisture content")
 			{
@@ -846,11 +852,11 @@ void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QStri
 				Node *n = node(nodeNames[i]);
 				double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
 				shift = -z0;
-				data.push_back(model->ANS[model->Connector.size() + model->Blocks.size() + index]);
+				data.push_back(model->ANS[Edges().count() + Nodes().count() + index]);
 			}
 			if (propertyName == "Evapotranspiration rate")
 			{
-				data.push_back(model->ANS[model->Connector.size() + 2 * model->Blocks.size() + index]);
+				data.push_back(model->ANS[Edges().count() + 2 * Nodes().count() + index]);
 			}
 			if (!remove)
 			{
@@ -874,6 +880,7 @@ void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QStri
 	colorScheme::colorandLegend(colors, time, "Blue-Red", false, 8);
 	applyColorstoNodes();
 }
+
 void GraphWidget::updateNodesColorCodes_WaterQuality(QStringList property, bool logged, QString colorTheme, vector<double> predifinedMinMax, float time)
 {
 	if (!hasResults)
@@ -1009,7 +1016,7 @@ void GraphWidget::applyColorstoEdges()
 	colorScheme::showColorandLegend(colors, title, this);
 	//	update();
 }
-
+#endif
 void GraphWidget::settableProp(QTableView*_tableProp)
 {
 	tableProp = _tableProp;
@@ -1300,7 +1307,7 @@ QStringList GraphWidget::EntityNames(const QString &type) const
 {
 	QStringList r;
 	for each (Entity *e in Entities)
-		if (e->objectType.ObjectType == type) 
+		if (e->objectType.ObjectType.toLower() == type.toLower()) 
 			r.append(e->Name());
 	return r;
 }
@@ -1372,30 +1379,29 @@ QList<QMap<QString, QVariant>> GraphWidget::compact() const// QDataStream &out, 
 	
 
 //	qDebug() << r["GUI"].toString() << ", " << r["Name"].toString() << " saved.";
+#ifdef GIFMOD
 	if (hasResults){
 		getTime();
-
 		for (int i = 0; i < modelSet->Medium.size(); i++)
 		{
 			QString expName = QString::fromStdString(modelSet->Medium[i].name);
-			r[QString("%1 ANS").arg(expName)] = QString::fromStdString(modelSet->Medium[i].detoutfilename_hydro);
+			r[QString("%1 ANS").arg(expName)] = relativePathFilename(QString::fromStdString(modelSet->Medium[i].detoutfilename_hydro), modelPathname());
 			qDebug() << QString("%1 ANS").arg(expName) << " " << getTime();
 
-			r[QString("%1 ANS_colloids").arg(expName)] = QString::fromStdString(modelSet->Medium[i].detoutfilename_prtcle);
+			r[QString("%1 ANS_colloids").arg(expName)] = relativePathFilename(QString::fromStdString(modelSet->Medium[i].detoutfilename_prtcle), modelPathname());
 			qDebug() << QString("%1 ANS_colloids").arg(expName) << " " << getTime();
 
-			r[QString("%1 ANS_constituents").arg(expName)] = QString::fromStdString(modelSet->Medium[i].detoutfilename_wq);
+			r[QString("%1 ANS_constituents").arg(expName)] = relativePathFilename(QString::fromStdString(modelSet->Medium[i].detoutfilename_wq), modelPathname());
 			qDebug() << QString("%1 ANS_constituents").arg(expName) << " " << getTime();
-
 			if (modelSet->SP.mass_balance_check)
 			{
-				r[QString("%1 ANS_MB").arg(expName)] = QString::fromStdString(modelSet->FI.outputpathname + "output_MB" + modelSet->Medium[i].name + ".txt");
+				r[QString("%1 ANS_MB").arg(expName)] = relativePathFilename(QString::fromStdString(modelSet->FI.outputpathname + "output_MB" + modelSet->Medium[i].name + ".txt"), modelPathname());
 				qDebug() << QString("%1 ANS_MB").arg(expName) << " " << getTime();
 			}
 		}
 
 
-		r["ANS_obs"] = QString::fromStdString(modelSet->FI.detoutfilename_obs); 
+		r["ANS_obs"] = relativePathFilename(QString::fromStdString(modelSet->FI.detoutfilename_obs), modelPathname());
 		qDebug() << "ANS_obs" << " " << getTime();
 
 //		r["ANS_obs_noise"] = "";
@@ -1422,8 +1428,10 @@ QList<QMap<QString, QVariant>> GraphWidget::compact() const// QDataStream &out, 
 		QMap<QString, QVariant> r;
 
 		r["GUI"] = "Connector Index";
+#ifdef GIFMOD
 		for (int i = 0; i < modelSet->Medium[0].Connector.size(); i++)
 			r[QString::fromStdString(modelSet->Medium[0].Connector[i].ID)] = i;
+#endif
 		qDebug() << "Connector Index" << " " << getTime();
 		list.append(r);
 		qDebug() << "append to list" << " " << getTime();
@@ -1443,6 +1451,7 @@ QList<QMap<QString, QVariant>> GraphWidget::compact() const// QDataStream &out, 
 //			list.append(r);
 //		qDebug() << "results + append to list" << " " << getTime();
 	}
+#endif
 
 
 	for each (Node *n in Nodes())
@@ -1557,35 +1566,74 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 		{
 			qDebug() << list[i].value("GUI").toString() << " Added.";
 			undo_counter = 0;// list[i].value("Undo Counter"].toInt();
+
 			ModelSpace.Model = list[i].value("Model Space").toString();
 			inflowFileNames = list[i].value("Inflow Filenames").toStringList();
 			hasResults = list[i].value("hasResults").toBool();
+#ifdef GIFMOD
 			modelSet = new CMediumSet;
-			//if (hasResults)
-			//				{
+#endif
+#ifdef GWA
+			modelSet = new CGWASet;
+#endif
+			//if (hasResults)			//				{
 			experimentsComboClear(false);
+			QString path = modelPathname();
 			for each (QString experiment in list[i].value("Experiments").toStringList())
 				if (!experimentsList().contains(experiment))
 				{
 					experiments->addItem(experiment);
 					if (experiment.toLower() != "all experiments")
 					{
+#ifdef GIFMOD
 						CMedium med;
 						med.name = experiment.toStdString();
+
+#endif
+#ifdef GWA
+						CGWA med;
+#endif
 						if (list[i].contains(QString("%1 ANS").arg(experiment)))
-							med.ANS = CBTCSet(list[i].take(QString("%1 ANS").arg(experiment)).toString().toStdString(), true);
+						{
+							med.ANS = CBTCSet(fullFilename(list[i].take(QString("%1 ANS").arg(experiment)).toString(), path).toStdString(), true);
+							if (!med.ANS.nvars)
+								hasResults = false;
+						}
+#ifdef GIFMOD
 						if (list[i].contains(QString("%1 ANS_colloids").arg(experiment)))
-							med.ANS_colloids = CBTCSet(list[i].take(QString("%1 ANS_colloids").arg(experiment)).toString().toStdString(), true);
+						{
+							med.ANS_colloids = CBTCSet(fullFilename(list[i].take(QString("%1 ANS_colloids").arg(experiment)).toString(), path).toStdString(), true);
+							if (!med.ANS_colloids.nvars)
+								hasResults = false;
+						}
 						if (list[i].contains(QString("%1 ANS_constituents").arg(experiment)))
-							med.ANS_constituents = CBTCSet(list[i].take(QString("%1 ANS_constituents").arg(experiment)).toString().toStdString(), true);
+						{
+							med.ANS_constituents = CBTCSet(fullFilename(list[i].take(QString("%1 ANS_constituents").arg(experiment)).toString(), path).toStdString(), true);
+							if (!med.ANS_constituents.nvars)
+								hasResults = false;
+						}
 						if (list[i].contains(QString("%1 ANS_MB").arg(experiment)))
-							med.ANS_MB = CBTCSet(list[i].take(QString("%1 ANS_MB").arg(experiment)).toString().toStdString(), true);
+						{
+							med.ANS_MB = CBTCSet(fullFilename(list[i].take(QString("%1 ANS_MB").arg(experiment)).toString(), path).toStdString(), true);
+							if (!med.ANS_MB.nvars)
+								hasResults = false;
+						}
 						med.parent = modelSet;
+#endif
 						modelSet->Medium.push_back(med);
 					}
 				}
 			if (list[i].contains("ANS_obs"))
-				modelSet->ANS_obs = CBTCSet(list[i].take("ANS_obs").toString().toStdString(), true);
+#ifdef GIFMOD
+			{
+				modelSet->ANS_obs = CBTCSet(fullFilename(list[i].take("ANS_obs").toString(), path).toStdString(), true);
+				if (!modelSet->ANS_obs.nvars)
+					hasResults = false;
+			}
+#endif
+#ifdef GWA
+			modelSet->Medium[0].ANS_obs = CBTCSet(list[i].take("ANS_obs").toString().toStdString(), true);
+#endif
 			QCoreApplication::processEvents();
 
 		}
@@ -1657,7 +1705,12 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 	}
 
 	QStringList missingList;
-	missingList << "Markov chain Monte Carlo" << "Solver settings" << "Project settings" << "Climate settings";
+	missingList << "Markov chain Monte Carlo" << "Project settings";
+
+#ifdef GIFMOD
+	missingList << "Solver settings" << "Climate settings";
+
+#endif
 	for each (QString missing  in missingList)
 	{
 		Entity *e = entityByName(missing);
@@ -1834,7 +1887,12 @@ GraphWidget* GraphWidget::unCompact12(QList<QMap<QString, QVariant>> &list, bool
 			ModelSpace.Model = list[i].value("Model Space").toString();
 			inflowFileNames = list[i].value("Inflow Filenames").toStringList();
 			hasResults = list[i].value("hasResults").toBool();
+#ifdef GIFMOD
 			modelSet = new CMediumSet;
+#endif
+#ifdef GWA
+			modelSet = new CGWASet;
+#endif
 			//if (hasResults)
 			//              {
 			experimentsComboClear(false);
@@ -1865,6 +1923,7 @@ GraphWidget* GraphWidget::unCompact12(QList<QMap<QString, QVariant>> &list, bool
 					list[i] = QMap<QString, QVariant>();
 					}
 					*/
+#ifdef GIFMOD
 					if (list[i].value("GUI").toString() == "Block Index")
 					{
 						//          r.remove ("GUI");
@@ -1885,7 +1944,7 @@ GraphWidget* GraphWidget::unCompact12(QList<QMap<QString, QVariant>> &list, bool
 						list[i] = QMap<QString, QVariant>();
 
 					}
-
+#endif
 					if (list[i].value("GUI").toString() == "Results")
 					{
 						qDebug() << list[i].value("GUI").toString() << " Added.";
@@ -2100,7 +2159,7 @@ QStringList GraphWidget::nodeNames(const QString &type) const
 {
 	QStringList r;
 	for each (Node *n in Nodes())
-		if (n->objectType.ObjectType == type) r.append(n->Name());
+		if (n->objectType.ObjectType.toLower() == type.toLower()) r.append(n->Name());
 	return r;
 }
 
@@ -2798,37 +2857,40 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 			}
 			
 		}
+		plotformat format;
+		format.xAxisTimeFormat = true;
+
 		if (selectedAction->text() == "Plot Storage")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
-			plot->addScatterPlot(model->ANS, model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Storage"));
+			plot->addScatterPlot(model->ANS, model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Storage"), 1, 0, format);
 			plot->show();
 		}
 		if (selectedAction->text() == "Plot Head")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
-			plot->addScatterPlot(model->ANS, model->Connector.size() + model->Blocks.size() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Head"));
+			plot->addScatterPlot(model->ANS, Edges().count() + Nodes().count() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Head"), 1, 0, format);
 			plot->show();
 		}
 		if (selectedAction->text() == "Moisture Content")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
 			double volume = n->val("a").convertToDefaultUnit().toDouble() * n->val("depth").convertToDefaultUnit().toDouble(); //model->Blocks[model->getblocksq(n->Name().toStdString())].V; //ask Arash
-			plot->addScatterPlot(model->ANS, model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Moisture Content"), 1.0 / volume);
+			plot->addScatterPlot(model->ANS, model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Moisture Content"), 1.0 / volume, 0, format);
 			plot->show();
 		}
 		if (selectedAction->text() == "Water Depth")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
 			double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
-			plot->addScatterPlot(model->ANS, model->Connector.size() + model->Blocks.size() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Water Depth"), 1, -z0);
+			plot->addScatterPlot(model->ANS, Edges().count() + Nodes().count() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Water Depth"), 1, -z0, format);
 			plot->show();
 		}
 		if (selectedAction->text() == "Evapotranspiration Rate")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
 			double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
-			plot->addScatterPlot(model->ANS, model->Connector.size() + 2 * model->Blocks.size() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Evapotranspiration Rate"), 1, 0);
+			plot->addScatterPlot(model->ANS, Edges().count() + 2 * Nodes().count() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Evapotranspiration Rate"), 1, 0, format);
 			plot->show();
 		}
 #endif
@@ -2837,7 +2899,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
 			QString file = n->getValue("Atmospheric Record").toQString();
 			CBTC record = CBTC(file.replace("./", modelPathname().append('/')).toStdString());
-			plot->addScatterPlot(record, n->Name(), false);
+			plot->addScatterPlot(record, n->Name(), plotformat());
 			plot->show();
 		}
 #ifdef GWA
@@ -2890,13 +2952,13 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 			if (menuKey[selectedAction][0] == "Constituent")
 			{
 				plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
-				plot->addScatterPlot(model->ANS_constituents, menuKey[selectedAction][1].toInt());
+				plot->addScatterPlot(model->ANS_constituents, menuKey[selectedAction][1].toInt(), "", 1, 0, format);
 				plot->show();
 			}
 			if (menuKey[selectedAction][0] == "Particle")
 			{
 				plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
-				plot->addScatterPlot(model->ANS_colloids, menuKey[selectedAction][1].toInt());
+				plot->addScatterPlot(model->ANS_colloids, menuKey[selectedAction][1].toInt(), "", 1, 0, format);
 				plot->show();
 			}
 			if (menuKey[selectedAction][0] == "Inflow")
@@ -2906,7 +2968,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 					if (selectedAction->text().toStdString() == inflow.names[i])
 					{
 						plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
-						plot->addScatterDotPlot(inflow, i);
+						plot->addScatterDotPlot(inflow, i, "", format);
 						plot->show();
 					}
 			}
@@ -2919,7 +2981,9 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 					if (model->projected.names[i] == name.toStdString())
 					{
 						plotWindow *plot = new plotWindow(this);
-						plot->addScatterDotPlot(model->projected, i, "", false);
+						plotformat format;
+						format.xAxisTimeFormat = false;
+						plot->addScatterDotPlot(model->projected, i, "", format);
 						plot->show();
 					}
 			}
@@ -3089,7 +3153,6 @@ QStringList GraphWidget::variableValuesHasError()
 			e->warnings.clear();
 			e->errors.clear();
 			QStringList list = e->variableNames();
-//#pragma omp parallel for
 			for (int i = 0; i < list.count(); i++)
 			{
 				QString variableName = list[i];
@@ -3122,7 +3185,6 @@ QStringList GraphWidget::variableValuesHasError()
 					}
 			}
 			list = e->variableNameConditions().keys();
-//#pragma omp parallel for
 			for (int i = 0; i < list.count(); i++)
 			{
 				QString variableName = list[i];
@@ -3166,7 +3228,6 @@ QStringList GraphWidget::variableValuesHasError()
 			e->warnings.clear();
 			e->errors.clear();
 			QStringList list = e->variableNames();
-//#pragma omp parallel for
 			for (int i = 0; i < list.count(); i++)
 			{
 				QString variableName = list[i];
@@ -3209,7 +3270,6 @@ QStringList GraphWidget::variableValuesHasError()
 				}
 #endif
 			list = e->variableNameConditions().keys();
-//#pragma omp parallel for
 			for (int i = 0; i < list.count(); i++)
 			{
 				QString variableName = list[i];
@@ -3250,6 +3310,8 @@ QStringList GraphWidget::variableValuesHasError()
 			e->errors.clear();
 			for each(QString variableName in e->variableNames())
 			{
+				if (variableName == "Read GA analysis from file")
+					int i = 0;
 				if (e->getProp(variableName, VariableTypeRole).toString().toLower() == "directory")
 					if (!e->getValue(variableName).isEmpty() && !QFile::exists(e->getValue(variableName)))
 					{
@@ -3289,14 +3351,23 @@ QStringList GraphWidget::variableValuesHasError()
 						QString condition = c.Condition[i];
 						for each(QString code in e->codes())
 							if (condition.contains(QString("{%1}").arg(code)))
-								condition = condition.replace(QString("{%1}").arg(code), e->val(code));
+								condition = condition.replace(QString("{%1}").arg(code), QString::number(e->val(code).toDouble()));
 						if (e->props.getProp(variableName, experimentName()).isEmpty())
 						{
 							if (condition.toLower().contains("not empty"))
 							{
-								numberofErrors++;
-								e->errors[variableName] = variableName + " should not be empty.";
-								log(QString("Error: %1, %2: %3, %4").arg(experiment).arg(e->getValue("Type")).arg(e->Name()).arg(variableName + " should not be empty."));
+								if (c.error[i].toLower() == "e")
+								{
+									numberofErrors++;
+									e->errors[variableName] = c.errorDesc[i];// variableName + " should not be empty.";
+									log(QString("Error: %1, %2: %3, %4").arg(experiment).arg(e->getValue("Type")).arg(e->Name()).arg(c.errorDesc[i]));// variableName + " should not be empty."));
+								}
+								if (c.error[i].toLower() == "w")
+								{
+									numberofWarnings++;
+									e->errors[variableName] = c.errorDesc[i];// variableName + " should not be empty.";
+									log(QString("Warning: %1, %2: %3, %4").arg(experiment).arg(e->getValue("Type")).arg(e->Name()).arg(c.errorDesc[i]));// variableName + " should not be empty."));
+								}
 							}
 						}
 						else
@@ -3355,6 +3426,15 @@ QStringList GraphWidget::variableValuesHasError()
 				if (!EntityNames("Constituent").contains(e->val("Constituent")))
 					e->errors["Constituent"] = QString("%1 was not found in the model").arg(e->val("Constituent"));
 					*/
+
+		// Check reaction Network
+		ReactionWindowPri d;
+		for (int i = 0; i < Processes.count(); i++)
+			if (!ReactionTableModel::validateNetworkRXNExp(Processes[i]->rate, this, d.Functions, d.Physical))
+			{
+				numberofErrors++;
+				log(QString("Error: Reaction network, Process: %1, has error").arg(Processes[i]->name));
+			}
 #endif
 	}
 	QStringList r;
@@ -3497,6 +3577,10 @@ int GraphWidget::experimentID()
 }
 QString GraphWidget::experimentName()
 {
+#ifdef GWA
+	return "experiment1";
+#endif
+
 	QString a = experiments->currentText();
 	return experiments->currentText();
 }
@@ -3505,6 +3589,248 @@ QString GraphWidget::experimentName()
 bool GraphWidget::wizard(QList<command> &commands)
 {
 	return true;
+}
+QVariant GraphWidget::runCommand(QString command)
+{
+	command.replace("=", " = ");
+//	QStringList list = command.split(' ');
+	QStringList list = specialSplit(command);
+	if (list.count() == 0)
+		return QVariant();
+	QString cmd = list[0];
+	QList<XString> args;
+	for (int i = 1; i < list.count(); i++)
+	{
+		XString arg;
+		if (list[i].contains('[') && list[i].contains(']'))
+			arg = XString::fromQStringUnit(list[i]);
+		else
+			arg = list[i];
+		args.append(arg);
+	}
+	return runCommand(cmd, args);
+}
+QVariant GraphWidget::runCommand(QString command, QList<XString> arguments)
+{
+	//settings
+	bool writeOutput = true, writeDetails = false, orderedOutput = false;
+	QString type = "*";
+	QString experiment = "All experiments";
+
+
+	QString cmd = command.toLower().trimmed();
+	QList<XString> args;
+	QStringList settings;
+	QString output;
+	for (int i = 0; i < arguments.count(); i++)
+	{
+		XString arg = arguments[i];
+		QString setting = arg.toQString().toLower().trimmed();
+
+		if (setting.contains('/')) //interprete setting
+		{
+			setting = setting.remove('/');
+			if (setting == "blind" || setting == "b")
+				writeOutput = false;
+			if (setting == "detail" || setting == "d")
+				writeDetails = true;
+			if (setting == "sort" || setting == "s" ||
+				setting == "order" || setting == "o")
+				orderedOutput = true;
+			if (setting.contains("t:") || setting.contains("type:"))
+				type = setting.right(setting.size() - setting.indexOf(":") - 1).trimmed().toLower();
+			if (setting.contains("e:") || setting.contains("exp:") || setting.contains("experiment:"))
+				experiment = setting.right(setting.size() - setting.indexOf(":") - 1).trimmed().toLower();
+
+		}
+		else //consider argument
+			args.append(arg);
+	}
+	if (cmd == "help")
+		output.append("Command line syntax is: command [-setting]\nor command [argument] [argument] [-setting]");
+
+	if (cmd == "clear")
+		clear();
+
+	if (cmd == "zoom" || cmd == "z")
+	{
+		if (args.count())
+		{
+			if (args[0] == "e" || args[0] == "extent" || args[0] == "a" || args[0] == "all")
+				mainWindow->zoomAll();
+		}
+	}
+
+	if (cmd == "list")
+	{
+		QStringList result;
+		if (!args.count())
+			args.append("nodes");
+		if (args[0] == "nodes")
+		{
+			result = nodeNames();
+		}
+		if (args[0] == "ponds")
+		{
+			result = nodeNames("pond");
+		}
+		if (args[0] == "catchments")
+		{
+			result = nodeNames("catchment");
+		}
+		if (args[0] == "soils")
+		{
+			result = nodeNames("soil");
+		}
+
+		if (orderedOutput)
+			result.sort();
+		output = result.join('\n');
+	}
+
+	if (cmd == "set")
+	{
+		if (!args.contains("=") || args.indexOf("=") < 2)
+			output = "Syntax error.";
+		else
+		{
+			QString name = args[0];
+			int equalIndex = args.indexOf("=");
+			QString propName = args[equalIndex - 1];
+			XString value = args[equalIndex + 1];
+			int found = 0;
+			Node *n = 0; Edge* ed = 0; Entity *en = 0;
+			if (type == "*" || type == "node" || type == "block")
+				if (nodeNames().contains(name))
+				{
+					found++;
+					n = node(name);
+				}
+			if (type == "*" || type == "edge" || type == "connector")
+				if (edgeNames().contains(name))
+				{
+					found++;
+					ed = edge(name);
+				}
+			QStringList typesList;
+			if (type == "*")
+				typesList << "Constituent" << "Particle";// << ""
+			else
+				typesList << type;
+			for (int i = 0; i < typesList.count(); i++)
+				if (EntityNames(typesList[i]).contains(name))
+				{
+					found++;
+					en = entity(name, typesList[i]);
+				}
+
+			if (!found)
+				output = QString("%1 not found in the model.").arg(name);
+			else if (found > 1)
+				output = QString("More than one %1 found in the model, please specify the type of the object you want to set value.").arg(name);
+			else
+			{
+				if (n) {
+					QStringList unitsList = n->getProp(propName, UnitsListRole).toStringList();
+					QString defaultUnit = n->getProp(propName, defaultUnitRole).toString();
+					QString unit = "";
+					for (int i = 0; i < unitsList.count(); i++)
+						if (XString::coefficient(XString::reformBack(value.unit)) == XString::coefficient(XString::reformBack(unitsList[i])))
+							unit = unitsList[i];
+					value.unit = (unit == "") ? defaultUnit : unit;
+					value.setUnitsList(unitsList);
+					value.defaultUnit = defaultUnit;
+					n->props.setProp(propName, value, experiment); n->changed();// update();
+				}
+				if (ed)	{
+					QStringList unitsList = ed->getProp(propName, UnitsListRole).toStringList();
+					QString defaultUnit = ed->getProp(propName, defaultUnitRole).toString();
+					QString unit = "";
+					for (int i = 0; i < unitsList.count(); i++)
+					{
+						if (XString::reformBack(value.unit) == XString::reformBack(unitsList[i])
+							|| XString::coefficient(value.unit) == XString::coefficient(unitsList[i]))
+						{
+							unit = unitsList[i];
+							exit;
+						}
+					}
+					value.unit = (unit == "") ? defaultUnit : unit;
+					value.setUnitsList(unitsList);
+					value.defaultUnit = defaultUnit;
+					ed->props.setProp(propName, value, experiment); ed->changed(); // update();
+				}
+				if (en)	{
+					QStringList unitsList = ed->getProp(propName, UnitsListRole).toStringList();
+					QString defaultUnit = ed->getProp(propName, defaultUnitRole).toString();
+					QString unit = "";
+					for (int i = 0; i < unitsList.count(); i++)
+					{
+						if (XString::reformBack(value.unit) == XString::reformBack(unitsList[i])
+							|| XString::coefficient(value.unit) == XString::coefficient(unitsList[i]))
+						{
+							unit = unitsList[i];
+							exit;
+						}
+					}
+					value.unit = (unit == "") ? defaultUnit : unit;
+					value.setUnitsList(unitsList);
+					value.defaultUnit = defaultUnit;
+					en->props.setProp(propName, value, experiment);	en->changed();// update();
+				}
+				mainWindow->tableProp->repaint();
+			}
+		}
+	}
+
+	
+	if (cmd == "add")
+	{
+		if (args.count() < 1)
+			output = "Syntax error.";
+		else
+		{
+			QString e = args[0].trimmed().toLower();
+			QStringList addfromMainWindow;
+			addfromMainWindow << "soil" << "pond" << "catchment" << "darcy" << "storage";
+			if (addfromMainWindow.contains(e))
+				mainWindow->add(e);
+
+			QStringList entityTypes, exactType;
+			entityTypes << "constituent" << "particle";
+			exactType << "Constituent" << "Particle";
+			if (entityTypes.contains(e))
+				new Entity(exactType[entityTypes.indexOf(e)]);
+			
+			if (args.count() >= 3)
+			{
+				if (e == "connector")
+				{
+					Node *n1 = node(args[1]);
+					Node *n2 = node(args[2]);
+					if (!n1 || !n2)
+					{
+						if (!n1)
+							output.append(QString("%1 is not accessible").arg(args[1]));
+						if (!n2)
+							output.append(QString("%1 is not accessible").arg(args[2]));
+					}
+					else
+						new Edge(n1, n2, this);
+				}
+			}
+		}
+	}
+
+	
+	//	if (cmd=="addpondnode")
+
+	if (writeOutput)
+		//		logW->append(output);
+		return output;
+
+
+	return QVariant();
 }
 #endif
 

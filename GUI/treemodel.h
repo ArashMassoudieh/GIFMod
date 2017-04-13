@@ -2,7 +2,7 @@
 #include <QModelIndex>
 #include <QVariant>
 #include <QAbstractItemModel>
-#include "node.h";
+#include "node.h"
 #include "qdebug.h"
 #include "treeitem.h"
 
@@ -61,7 +61,7 @@ public:
 #endif
 #ifdef GWA
 	TreeItem *rootItem, *settings, *blocks, *connectors, *evapotranspiration, *waterQuality, *constituent, *buildUp, *extrenalFlux, *particle,
-		*globalSettings, *solver, *reactions, *reaction, *reactionNetwork, *reactionParameter, *GA, *MCMC, *inverseModeling, *parameter,
+		*projectSettings, *solver, *reactions, *reaction, *reactionNetwork, *reactionParameter, *GA, *MCMC, *inverseModeling, *parameter,
 		*observed, *wells, *tracers;
 #endif
 

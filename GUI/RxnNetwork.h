@@ -1,4 +1,5 @@
 #pragma once
+#ifdef GIFMOD
 #include <vector>
 #include "Reaction.h"
 #include <string>
@@ -76,3 +77,4 @@ public:
 
 
 
+#endif

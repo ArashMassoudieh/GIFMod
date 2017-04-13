@@ -7,6 +7,7 @@
 
 QVariant PropModel<Node>::data(const QModelIndex & index, int role) const
 {
+	qDebug() << "Role" << role;
 	if (!items.count()) // ordinary structure (only one object selected)
 	{
 		if (index.row() >= rows()) return QVariant();
@@ -32,9 +33,10 @@ QVariant PropModel<Node>::data(const QModelIndex & index, int role) const
 			return QVariant();
 		int row = index.row();
 		int col = index.column();
-		//qDebug() << QString("data for (%1, %2) role %3").arg(row).arg(col).arg(role);
+		qDebug() << QString("data for (%1, %2) role %3").arg(row).arg(col).arg(role);
 		QString VariableName = parent->getmList(parent->ObjectType()).VariableNames()[row];
-		//qDebug() << QString("Variable Name %1").arg(VariableName); // .arg(col).arg(role).arg(VariableName);
+
+		qDebug() << QString("Variable Name %1").arg(VariableName); // .arg(col).arg(role).arg(VariableName);
 
 		if (role == VariableNameRole) return VariableName;
 		if (col == 0) {
@@ -270,7 +272,7 @@ QVariant PropModel<Entity>::data(const QModelIndex & index, int role) const
 	//qDebug() << QString("data for (%1, %2) role %3").arg(row).arg(col).arg(role);
 	QString VariableName = parent->getmList(parent->ObjectType()).VariableNames()[row];
 	//qDebug() << QString("data for (%1, %2) role %3: %4").arg(row).arg(col).arg(role).arg(VariableName);
-	if (VariableName == "Value" && role == 6)
+	if (VariableName.contains("mum"))// && role == 6)
 		int i = 0;
 	if (role == VariableNameRole) return VariableName;
 	if (col == 0) {
@@ -280,6 +282,8 @@ QVariant PropModel<Entity>::data(const QModelIndex & index, int role) const
 				return "Model";
 			if (parent->parent->applicationShortName == "GIFMod" && VariableName == "SubType" && parent->objectType.ObjectType == "Observation")
 				return "Block/connector";
+			if (parent->parent->applicationShortName == "GIFMod" && VariableName == "SubType" && parent->objectType.ObjectType == "Constituent")
+				return "Settling model";
 			return VariableName;
 		}
 		if (role == Qt::ToolTipRole)

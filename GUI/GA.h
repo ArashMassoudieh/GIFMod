@@ -101,9 +101,10 @@ public:
 	CMediumSet Sys;
 #endif	
 #ifdef GWA
-	vector<CGWA> Sys1;
-	vector<CGWA> Sys_out;
-	CGWA Sys;
+	vector<CGWASet> Sys1;
+//	vector<CGWA> Sys_out;
+	CGWASet Sys_out;
+	CGWASet Sys;
 #endif	
 	CDistribution fitdist;
 
@@ -120,9 +121,9 @@ public:
 	CGA(CMediumSet *model, runtimeWindow* progress);
 #endif
 #ifdef GWA
-	CGA::CGA(string filename, CGWA &Sys);
-	vector<CGWA>& CGA::assignfitnesses_p(vector<double> inp);
-	CGA(CGWA *model, runtimeWindow* progress);
+	CGA::CGA(string filename, CGWASet &Sys);
+	vector<CGWASet>& CGA::assignfitnesses_p(vector<double> inp);
+	CGA(CGWASet *model, runtimeWindow* progress);
 #endif
 
 	virtual ~CGA();

@@ -8,7 +8,9 @@
 #include "qstring.h"
 #include "plotWindow.h"
 class CMedium;
+class CGWA;
 class GraphWidget;
+
 namespace Ui {
 class runtimeWindow;
 }
@@ -66,7 +68,13 @@ public:
   void setupPlayground(QCustomPlot *customPlot);
   GraphWidget* parent;
   bool stopTriggered = false;
+#ifdef GIFMOD
   CMedium* experiment = 0; //Medium
+#endif
+#ifdef GWA
+  CGWA* experiment = 0; //Medium
+#endif
+
   Ui::runtimeWindow *ui;
 private slots:
 	

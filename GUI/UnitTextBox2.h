@@ -9,7 +9,8 @@
 
 class UnitTextBox2 :
 	public QWidget
-{	
+{
+	Q_OBJECT
 public:
 	UnitTextBox2() {
 	};

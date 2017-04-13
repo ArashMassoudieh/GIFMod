@@ -145,3 +145,21 @@ QString float2datetime(const double d, QString format, bool ignorefirst50years)
 	//			return r.toString("MMM dd yyyy HH:mm");// QDateTime(getValue(propName));
 	return dateTime.toString(format); // "MMM dd yyyy");// QDateTime(getValue(propName));
 }
+QStringList specialSplit(QString s)
+{
+	QStringList r;
+	if (s.indexOf("\"") == -1)
+		r = s.split(" ");
+	else
+	{
+		QString leftofq = s.section("\"", 0, 0);
+		QString between = s.section("\"", 1, 1);
+		QString rightofq = s.section("\"", 2, -1);
+
+		r.append(specialSplit(leftofq));
+		r.append(between);
+		r.append(specialSplit(rightofq));
+	}
+	r.removeAll("");
+	return r;
+}

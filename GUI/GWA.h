@@ -11,8 +11,9 @@
 #include "math.h"
 #include "enums.h"
 
-#include "MBBlock.h"
-#include "gwidget.h"
+//#include "MBBlock.h"
+
+class GraphWidget;
 class runtimeWindow;
 
 using namespace std;
@@ -70,6 +71,7 @@ public:
 	vector<double> params_vals;
 	string pathname;
 	string outpathname;
+	string log_file_name = "log.txt";
 	vector<measured_chrc> measured_quan;
 //	double CGWA::getlogp();
 	void CGWA::getmodeled();
@@ -105,7 +107,7 @@ public:
 	CBTCSet ANS;
 	CBTCSet ANS_obs;
 	CBTCSet ANS_obs_noise;
-	vector<CMBBlock> Blocks;
+//	vector<CMBBlock> Blocks;
 	int writeinterval = 1;
 	double Timemin, Timemax;
 	bool solved() { return !this->failed; } //needs a function
@@ -150,6 +152,60 @@ public:
 	}
 	GraphWidget* gw;
 	bool stop_triggered = false;
+};
+
+class CGWASet
+{
+public:
+	CGWASet() {};
+	~CGWASet() {};
+	CGWASet(const CGWASet &M)
+	{
+		Medium = M.Medium;
+		parameters = M.parameters;
+		blockIndex = M.blockIndex;
+		connectorIndex = M.connectorIndex;
+	};
+	CGWASet& CGWASet::operator=(const CGWASet &M)
+	{
+		Medium = M.Medium;
+		parameters = M.parameters;
+		blockIndex = M.blockIndex;
+		connectorIndex = M.connectorIndex;
+		return *this;
+	}
+	string pathname() const
+	{
+		return Medium[0].pathname;
+	}
+	void writetolog(string S)
+	{
+		fstream file(Medium[0].outpathname + Medium[0].log_file_name);
+		file << S << endl;
+		file.close();
+	}
+	QMap<string, int> blockIndex;
+	QMap<string, int> connectorIndex;
+	vector<CGWA> Medium;
+	vector<range> parameters;
+
+//	double CGWASet::calc_log_likelihood() //calculate sum log likelihood for time series data ts
+//	{
+//ASK Arash
+//		return 0;
+//	}
+	CGWA& operator()()
+	{
+		return Medium[0];
+	}
+	int CGWASet::epoch_count()
+	{
+		int out = 0;
+		for (int i = 0; i < Medium.size(); i++) out += Medium[i].epoch_count;
+
+		return out;
+	}
+
 };
 
 #endif

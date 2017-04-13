@@ -71,6 +71,8 @@ public:
 	bool avoidCrossObjects = true;// false;
 	QString experimentName() const;
 	void copyProps(QString sourceExperiment, QString destExperiment);
+	void changed();
+
 protected:
     QRectF boundingRect() const Q_DECL_OVERRIDE;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) Q_DECL_OVERRIDE;
@@ -81,7 +83,6 @@ private:
     Node *source, *dest;
 	int sourceID, destID;
 //	PropList<Edge> props;
-	void changed();
 	bool intersects(double x, double y);
 };
 /*

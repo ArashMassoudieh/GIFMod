@@ -1,11 +1,21 @@
 #ifndef GIFMOD_VERSION
-#define GIFMOD_VERSION "0.1.8"
+#define GIFMOD_VERSION "0.1.20"
 #endif
+#ifndef GWA_VERSION
+#define GWA_VERSION "0.0.1"
+#endif
+
+#ifdef DEBUG
+#define WIZARD
+#endif // DEBUG
+
+
 #define RECENT "recentFiles.txt"
 #include "mainwindow.h"
 #ifdef GIFMOD
 #include "ui_mainwindowGIFMod.h"
 #include "csvEditor.h"
+#include "commandWindow.h"
 #endif
 #ifdef GWA
 #include "ui_mainwindowGWA.h"
@@ -37,7 +47,11 @@
 #ifdef GIFMOD
 #include "Medium.h"
 #include "MediumSet.h"
+#endif
+
+#ifdef WIZARD
 #include "wizard.h"
+#include "classWizard.h"
 #endif
 
 #include "plotWindow.h"
@@ -226,9 +240,17 @@ MainWindow::MainWindow(QWidget *parent, QString applicationName, QString shortNa
 	//		loadModel(modelfilename);
 	qDebug() << 5;
 	ui->setupUi(this);
+#ifdef GIFMOD
 	mainGraphWidget->experiments = new QComboBox(ui->experimentsToolbar);
+#endif
+#ifdef GWA
+	mainGraphWidget->experiments = new QComboBox();
+#endif
+
 	mainGraphWidget->experiments->addItem("All experiments");
 	mainGraphWidget->experiments->addItem("experiment1");
+
+#ifdef GIFMOD
 	//	mainGraphWidget->experiments->addItem("experiment2");
 	connect(mainGraphWidget->experiments, SIGNAL(currentIndexChanged(const QString&)), mainGraphWidget, SLOT(experimentSelect(const QString&)));
 	if (ui->experimentsToolbar->height() < mainGraphWidget->experiments->height())
@@ -244,11 +266,15 @@ MainWindow::MainWindow(QWidget *parent, QString applicationName, QString shortNa
 
 	mainGraphWidget->experiments->setGeometry(rect);
 	mainGraphWidget->experiments->show();
+#endif
 	//	ui->experimantsToolbar->insertWidget()
 	mainGraphWidget->add_to_undo_list();
 	mainGraphWidget->trackingUndo = true;
+
+#ifdef GIFMOD
 	connect(ui->menuWaterQuality->menuAction(), SIGNAL(hovered()), this, SLOT(menuWaterQuality_hovered()));
 	connect(ui->menuWaterQuality, SIGNAL(triggered()), this, SLOT(menuWaterQuality_triggered()));
+#endif
 
 
 	//removeIt
@@ -354,7 +380,7 @@ void MainWindow::on_action_New_triggered()
 
 #endif
 #ifdef GWA
-	new Entity("Global settings", "Global settings", mainGraphWidget);
+	new Entity("Project settings", "Project settings", mainGraphWidget);
 #endif
 	new Entity("Genetic algorithm", "Genetic algorithm", mainGraphWidget);
 	new Entity("Markov chain Monte Carlo", "Markov chain Monte Carlo", mainGraphWidget);
@@ -373,7 +399,50 @@ void MainWindow::on_action_New_triggered()
 
 void MainWindow::on_actionNew_from_template_triggered()
 {
-	wizard w(this);
+#ifdef GIFMOD
+
+#ifdef WIZARD
+	ClassWizard* wzrd;
+
+	wizardData wzData;
+	wizardDataItem item;
+
+	item.name = "First WIZARD";
+	item.desc = "Introduction page\nThis is the introduction part, all detail describtions can appear here.";
+	item.type = "introduction";
+
+	wzData.items.append(item);
+	
+	item.name = "First WIZARD page 2";
+	item.desc = "Properties page\nIn this page variable defined for the model.";
+	item.type = "property";
+
+	item.groups << "Group1" << "Group2";
+	QStringList labels1, labels2;
+	labels1 << "G1.L1" << "G1.L2";
+	labels2 << "G2.L1" << "G2.L2";
+
+	item.labels << labels1 << labels2;
+	
+	XString var1;
+	var1.unitsList << "m" << "ft" << "in";
+	var1.unit = "m";
+	XString var2 = var1;
+	XString var3 = var1;
+	XString var4 = var1;
+
+	QList<XString> vars1, vars2;
+	vars1 << var1 << var2;
+	vars2 << var3 << var4;
+	item.variables << vars1 << vars2;
+
+	wzData.items.append(item);
+
+	wzrd = new ClassWizard(wzData);
+		
+	wzrd->show();
+#endif
+/*	wizard w(this);
 
 //	QDialog w;
 //	w.
@@ -395,9 +464,20 @@ void MainWindow::on_actionNew_from_template_triggered()
 
 	fd.exec();
 
+	*/
+#endif
+}
+void MainWindow::on_actionCommandLine_triggered()
+{
+//	QString cmd = QInputDialog::getText(this, tr("Get command"), "command [argument] ... [argument] [-setting] ... [-setting]");
+//	mainGraphWidget->runCommand(cmd);
+	static commandWindow* cmdWin;
+	if (!cmdWin) 
+		cmdWin = new commandWindow(mainGraphWidget);
+
+	cmdWin->show();
 
 }
-
 void MainWindow::on_action_Open_triggered()
 {
     //open
@@ -440,6 +520,8 @@ bool MainWindow::loadModel(QString modelfilename)
 		in >> dataMap;
 		file.close();
 
+		QString previousModelFilename = mainGraphWidget->modelFilename;
+		setModelFileName(modelfilename);
 
 
 		mainGraphWidget->trackingUndo = false;
@@ -462,10 +544,10 @@ bool MainWindow::loadModel(QString modelfilename)
 		}
 		else
 		{
-			log->append("Bad file, could not openned.");
+			log->append("Bad file, could not be openned.");
+			setModelFileName(previousModelFilename);
 			return false;
 		}
-		setModelFileName(modelfilename);
 		
 		
 	}
@@ -730,9 +812,10 @@ void MainWindow::on_projectExplorer_clicked(const QModelIndex &index)
 
 void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos)
 {
+	QMenu *menu = new QMenu;
 	if (projectExplorer->indexAt(pos).data(Role::TreeItemType) == TreeItem::Type::Branch)
 	{
-		QMenu *menu = new QMenu;
+		//QMenu *menu = new QMenu;
 		TreeModel *model = projModel;
 		TreeItem *item = model->itemFromIndex(projectExplorer->indexAt(pos));
 		QString type = projModel->singularform(projectExplorer->indexAt(pos).data().toString());
@@ -758,13 +841,89 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 			if (mainGraphWidget->results->localSensitivityMatrix.getnumrows() || mainGraphWidget->results->globalSensitivityMatrix.getnumrows() || mainGraphWidget->results->correlationMatrix.getnumrows())
 				menu->addSeparator();
 		}
+#ifdef GIFMOD
+/*		if (type == "Observation" && mainGraphWidget->results)
+		{
+			if (mainGraphWidget->modelSet != nullptr)
+			{
+				vector<CBTC> graphData;
+				QMap<string, int> tracerIndex;
+				QStringList tracerNames;
+				for (int i = 0; i < mainGraphWidget->model->measured_quan.size(); i++)
+				{
+					int tracerId = mainGraphWidget->model->measured_quan[i].quan;
+					string tracerName = mainGraphWidget->model->Tracer[tracerId].name;
+					tracerNames << QString::fromStdString(tracerName);
+					if (!tracerIndex.keys().contains(tracerName))
+					{
+						graphData.push_back(CBTC());
+						tracerIndex[tracerName] = graphData.size() - 1;
+					}
+					for (int j = 0; j < mainGraphWidget->model->measured_quan[i].observed_data.t.size(); j++)
+					{
+						double obs, mod;
+						obs = mainGraphWidget->model->measured_quan[i].observed_data.C[j];
+						mod = mainGraphWidget->model->ANS_obs.BTC[i].C[j];
+						graphData[tracerIndex[tracerName]].append(obs, mod);
+					}
+				}
+				tracerNames.removeDuplicates();
+				vector<QString> names;
+				names.resize(graphData.size());
+				for (int i = 0; i < names.size(); i++)
+					names[tracerIndex[tracerNames[i].toStdString()]] = tracerNames[i];
+				plotAgreementPlotDataforGroups(graphData, names);
+				menu->addAction(QString("Plot Modeles vs Observations"), this, SLOT(plotAgreementPlotDataforGroups()));
+				menu->addSeparator();
+			}
+		}
+		*/
+#endif
+
+#ifdef GWA
+		if (type == "Observation" && mainGraphWidget->results)
+		{
+			if (mainGraphWidget->modelSet != nullptr)
+			{
+				vector<CBTC> graphData;
+				QMap<string, int> tracerIndex;
+				QStringList tracerNames;
+				for (int i = 0; i < mainGraphWidget->model->measured_quan.size(); i++)
+				{
+					int tracerId = mainGraphWidget->model->measured_quan[i].quan;
+					string tracerName = mainGraphWidget->model->Tracer[tracerId].name;
+					tracerNames << QString::fromStdString(tracerName);
+					if (!tracerIndex.keys().contains(tracerName))
+					{
+						graphData.push_back(CBTC());
+						tracerIndex[tracerName] = graphData.size() - 1;
+					}
+					for (int j = 0; j < mainGraphWidget->model->measured_quan[i].observed_data.t.size(); j++)
+					{
+						double obs, mod;
+						obs = mainGraphWidget->model->measured_quan[i].observed_data.C[j];
+						mod = mainGraphWidget->model->ANS_obs.BTC[i].C[j];
+						graphData[tracerIndex[tracerName]].append(obs, mod);
+					}
+				}
+				tracerNames.removeDuplicates();
+				vector<QString> names;
+				names.resize(graphData.size());
+				for (int i = 0; i < names.size(); i++)
+					names[tracerIndex[tracerNames[i].toStdString()]] = tracerNames[i];
+				plotAgreementPlotDataforGroups(graphData, names);
+				menu->addAction(QString("Plot Modeles vs Observations"), this, SLOT(plotAgreementPlotDataforGroups()));
+				menu->addSeparator();
+			}
+		}
+#endif
 
 		menu->addAction(QString("Add %1").arg(type) , this, SLOT(addProjectExplorerTreeItem()));
 //		menu->exec(projectExplorer->mapToGlobal(pos));
 	}
 	if (projectExplorer->indexAt(pos).data(Role::TreeItemType) == TreeItem::Type::NodeItem)
 	{
-		QMenu *menu = new QMenu;
+		//QMenu *menu = new QMenu;
 		TreeModel *model = projModel;
 		TreeItem *item = model->itemFromIndex(projectExplorer->indexAt(pos));
 		QString name = projectExplorer->indexAt(pos).data().toString();
@@ -775,7 +934,7 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 	}
 	if (projectExplorer->indexAt(pos).data(Role::TreeItemType) == TreeItem::Type::EdgeItem)
 	{
-		QMenu *menu = new QMenu;
+		//QMenu *menu = new QMenu;
 		TreeModel *model = projModel;
 		TreeItem *item = model->itemFromIndex(projectExplorer->indexAt(pos));
 		QString name = projectExplorer->indexAt(pos).data().toString();
@@ -786,7 +945,7 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 	}
 	if (projectExplorer->indexAt(pos).data(Role::TreeItemType) == TreeItem::Type::Item)
 	{
-		QMenu *menu = new QMenu;
+		//QMenu *menu = new QMenu;
 		TreeModel *model = projModel;
 		TreeItem *item = model->itemFromIndex(projectExplorer->indexAt(pos));
 		if (item->Name() == "Markov chain Monte Carlo")
@@ -803,7 +962,7 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 	}
 	if (projectExplorer->indexAt(pos).data(Role::TreeItemType) == TreeItem::Type::EntityItem)
 	{
-		QMenu *menu = new QMenu;
+		//QMenu *menu = new QMenu;
 		TreeModel *model = projModel;
 		TreeItem *item = model->itemFromIndex(projectExplorer->indexAt(pos));
 		QString name = projectExplorer->indexAt(pos).data().toString();
@@ -999,10 +1158,11 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 	}
 	if (projectExplorer->indexAt(pos).data(Role::TreeItemType) == TreeItem::Type::ReactionNetworkItem)
 	{
-		QMenu *menu = new QMenu;
+		//QMenu *menu = new QMenu;
 		menu->addAction(QString("Open reaction network window"), this, SLOT(openRXNWindow()));
 		menu->exec(projectExplorer->mapToGlobal(pos));
 	}
+	menu->exec(projectExplorer->mapToGlobal(pos));
 }
 void MainWindow::on_actionmenuRecent_triggered()//QString fileName)
 {
@@ -1104,10 +1264,11 @@ void MainWindow::tablePropShowContextMenu(const QPoint&pos)
 		}
 		QAction *action = menu->exec(tableProp->mapToGlobal(pos));
 		bool precipitation = (i1.data(TypeRole).toString().toLower().contains("precipitation")) ? true : false;
+#ifdef GIFMOD
 		if (action)
 			if (action->text() == "Edit time series")
 				csvEditor *editor = new csvEditor(this, precipitation, fullfile, fullfile, tableProp, tableProp->indexAt(pos));
-
+#endif
 	}
 }
 void MainWindow::showHelp(int code, QString variableName)
@@ -1182,7 +1343,9 @@ void MainWindow::plotTimeSeries(QAction* action, CBTC data, QString name, bool c
 			if (action == graphs[i].action)
 			{
 				plotWindow *plot = new plotWindow(mainGraphWidget);
-				plot->addScatterPlot(graphs[i].data, graphs[i].name, graphs[i].convertXtoTime, plotformat());
+				plotformat format;
+				format.xAxisTimeFormat = graphs[i].convertXtoTime;
+				plot->addScatterPlot(graphs[i].data, graphs[i].name, format);
 				plot->show();
 				return;
 			}
@@ -1402,9 +1565,13 @@ void MainWindow::plotObservationData(CBTC data, QString name)
 #ifdef GWA
 		convertTime = false;
 #endif
-		plot->addScatterPlot(_data, _name + "(Observation)", convertTime);
+		plotformat format;
+		format.xAxisTimeFormat = convertTime;
+		plot->addScatterPlot(_data, _name + "(Observation)", format);
+		//plot->addScatterPlot(_data, _name + "(Observation)", convertTime);
 		plot->show();
 	}
+	return;
 }
 
 void MainWindow::plotControllerData(CBTC data, QString name)
@@ -1445,15 +1612,16 @@ void MainWindow::plotModeledData(CBTC modeled, CBTC observed, QString _name)
 		format.lineStyle = QCPGraph::LineStyle::lsNone;
 		format.color = Qt::blue;
 		format.scatterStyle = QCPScatterStyle::ssPlusCircle;
-		bool convertTime = true;
+		format.xAxisTimeFormat = true;
 #ifdef GWA
-		convertTime = false;
+		format.xAxisTimeFormat = false;
 #endif
-		plot->addScatterPlot(obs, name + "(Observed)", convertTime, format);
+		plot->addScatterPlot(obs, name + "(Observed)", format);
 		
 		format2.penStyle = Qt::SolidLine;
 		format2.scatterStyle = QCPScatterStyle::ssNone;
-		plot->addScatterPlot(model, name, convertTime, format2);
+		format2.xAxisTimeFormat = true;
+		plot->addScatterPlot(model, name, format2);
 		plot->show();
 	}
 }
@@ -1476,15 +1644,16 @@ void MainWindow::plotModeledDataDot(CBTC modeled, CBTC observed, QString _name)
 		format.lineStyle = QCPGraph::LineStyle::lsNone;
 		format.color = Qt::blue;
 		format.scatterStyle = QCPScatterStyle::ssPlusCircle;
-		bool convertTime = true;
+		format.xAxisTimeFormat = true;
 #ifdef GWA
-		convertTime = false;
+		format.xAxisTimeFormat = false;
 #endif
-		plot->addScatterPlot(obs, name + "(Observation)", convertTime, format);
+		plot->addScatterPlot(obs, name + "(Observation)", format);
 	
 		format2.penStyle = Qt::SolidLine;
 		format2.scatterStyle = QCPScatterStyle::ssPlusCircle;
-		plot->addScatterPlot(model, name + "(Modeled)", convertTime, format2);
+		format2.xAxisTimeFormat = true;
+		plot->addScatterPlot(model, name + "(Modeled)", format2);
 		plot->show();
 	}
 }
@@ -1512,16 +1681,69 @@ void MainWindow::plotAgreementPlotData(CBTC observation, CBTC modeled, QString n
 			format.color = Qt::blue;
 			format.xAxisLabel = "Observation";
 			format.yAxisLabel = "Modeled";
+			format.xAxisTimeFormat = true;
 
 			plot->addDotPlot(_obs.C, _mod.C, "Agreement Plot", format);
 			CBTC regLine(reg["a"], reg["b"], _obs.C);
 			format2.scatterStyle = QCPScatterStyle::ssNone;
-			plot->addScatterPlot(regLine, "Agreement regression", false, format2);
+			format2.xAxisTimeFormat = false;
+			plot->addScatterPlot(regLine, "Agreement regression", format2);
 			plot->show();
 		}
 	}
 }
+void MainWindow::plotAgreementPlotDataforGroups(vector<CBTC> obs_modData, vector<QString> names)
+{
+	static vector<CBTC> _obs_modData;
+	static vector<QString> _names;
+	if (obs_modData.size())
+	{
+		_obs_modData = obs_modData;
+		_names = names;
+		return;
+	}
+	else
+	{
+		QList<QCPScatterStyle::ScatterShape> shapes;
+		shapes << QCPScatterStyle::ssCross << QCPScatterStyle::ssPlus << QCPScatterStyle::ssCircle << QCPScatterStyle::ssDisc << QCPScatterStyle::ssSquare
+			<< QCPScatterStyle::ssDiamond << QCPScatterStyle::ssStar << QCPScatterStyle::ssTriangle << QCPScatterStyle::ssTriangleInverted
+			<< QCPScatterStyle::ssCrossSquare << QCPScatterStyle::ssPlusSquare << QCPScatterStyle::ssCrossCircle << QCPScatterStyle::ssPlusCircle
+			<< QCPScatterStyle::ssPeace;
+		QList<Qt::GlobalColor> colors;
+		colors << Qt::blue << Qt::red << Qt::magenta << Qt::cyan << Qt::darkYellow << Qt::gray << Qt::darkCyan << Qt::darkRed << Qt::darkBlue;
 
+		int shapeCounter = -1, colorCounter = 0;
+		plotWindow *plot = new plotWindow(mainGraphWidget);
+		//map<string, double> reg = regression(_obs.C, _mod.C);
+		//if (reg["error"] == 0)
+		//{
+			plotformat format, format2;
+			format.lineStyle = QCPGraph::LineStyle::lsNone;
+			
+			format.xAxisLabel = "Observation";
+			format.yAxisLabel = "Modeled";
+			format.xAxisTimeFormat = true;
+			format.yAxisType = QCPAxis::stLogarithmic;
+			format.penStyle = Qt::SolidLine;
+			for (int i = 0; i < _names.size(); i++)
+			{
+				if (++shapeCounter == shapes.size())
+				{
+					shapeCounter = 0;
+					colorCounter++;
+				}
+				format.scatterStyle = shapes[shapeCounter];
+				format.color = colors[colorCounter];
+				plot->addDotPlot(_obs_modData[i].t, _obs_modData[i].C, _names[i], format);
+			}
+//			CBTC regLine(reg["a"], reg["b"], _obs.C);
+//			format2.scatterStyle = QCPScatterStyle::ssNone;
+//			format2.xAxisTimeFormat = false;
+//			plot->addScatterPlot(regLine, "Agreement regression", format2);
+			plot->show();
+		//}
+	}
+}
 void MainWindow::plotRealization(CBTCSet data, QString name)
 {
 	qDebug() << "called";
@@ -1540,14 +1762,14 @@ void MainWindow::plotRealization(CBTCSet data, QString name)
 		plotformat format;
 		format.legend = false;
 		format.penWidth = 1;
-		bool convertTime = true;
+		format.xAxisTimeFormat = true;
 #ifdef GWA
-		convertTime = false;
+		format.xAxisTimeFormat = false;
 #endif
 		for (int i = 0; i < _data.nvars; i++)
 		{
 			qDebug() << QString::fromStdString(_data[i].name);
-			plot->addScatterPlot(_data[i], QString::fromStdString(_data[i].name), convertTime, format);
+			plot->addScatterPlot(_data[i], QString::fromStdString(_data[i].name), format);
 		}
 		plot->show();
 	}
@@ -1601,10 +1823,10 @@ void MainWindow::plotRealizationPercentile(CBTCSet data, QString name)
 			plotformat format;
 			format.penWidth = 1;
 			format.color = Qt::GlobalColor(i);
-			
+			format.xAxisTimeFormat = convertTime;
 			if (i == _data.nvars - 1)
 				format.fillGraph = g1;
-			g2 = plot->addScatterPlot(_data[i], QString::fromStdString(_data[i].name), convertTime, format);
+			g2 = plot->addScatterPlot(_data[i], QString::fromStdString(_data[i].name), format);
 			if (i == 1)
 				g1 = g2;
 		}
@@ -1639,9 +1861,18 @@ void MainWindow::plotNoiseRealizationPercentile(CBTCSet data, QString name)
 }
 void MainWindow::showLocalSensitivityMatrix()
 {
+#ifdef GIFMOD
 	vector<string> rowHeaders, colHeaders;
 	for (int i = 0; i < mainGraphWidget->modelSet->measured_quan.size(); i++)
 		colHeaders.push_back(mainGraphWidget->modelSet->measured_quan[i].name);
+#endif
+#ifdef GWA
+	vector<string> rowHeaders, colHeaders;
+	for (int i = 0; i < mainGraphWidget->modelSet->Medium[0].measured_quan.size(); i++)
+		colHeaders.push_back(mainGraphWidget->modelSet->Medium[0].measured_quan[i].name);
+#endif
+
+
 	for (int i = 0; i < mainGraphWidget->modelSet->parameters.size(); i++)
 		rowHeaders.push_back(mainGraphWidget->modelSet->parameters[i].name);
 	
@@ -1656,8 +1887,18 @@ void MainWindow::showLocalSensitivityMatrix()
 void MainWindow::showGlobalSensitivityMatrix()
 {
 	vector<string> rowHeaders, colHeaders;
+
+#ifdef GIFMOD
+
 	for (int i = 0; i < mainGraphWidget->modelSet->measured_quan.size(); i++)
 		colHeaders.push_back(mainGraphWidget->modelSet->measured_quan[i].name);
+#endif
+#ifdef GWA
+
+	for (int i = 0; i < mainGraphWidget->modelSet->Medium[0].measured_quan.size(); i++)
+		colHeaders.push_back(mainGraphWidget->modelSet->Medium[0].measured_quan[i].name);
+#endif
+
 	for (int i = 0; i < mainGraphWidget->modelSet->parameters.size(); i++)
 		rowHeaders.push_back(mainGraphWidget->modelSet->parameters[i].name);
 
@@ -1715,6 +1956,29 @@ void MainWindow::paintEvent(QPaintEvent *e)
 {
 	//QPainter painter(mainGraphWidget);
 	//painter.drawLine(0, 0, 100, 100);
+}
+
+void MainWindow::add(QString entity)
+{
+	entity = entity.trimmed().toLower();
+
+	if (entity == "soil")
+		on_actionAdd_Soil_triggered();
+	if (entity == "pond")
+		on_actionAdd_Pond_triggered();
+	if (entity == "catchment")
+		on_actionAdd_Catchment_Area_triggered();
+	if (entity == "darcy")
+		on_actionAdd_Darcy_Block_triggered();
+	if (entity == "storage")
+		on_actionAdd_Stora_ge_triggered();
+/*	if (entity == "pond")
+		on_actionAdd_Pond_triggered();
+	if (entity == "soil")
+		on_actionAdd_Soil_triggered();
+	if (entity == "pond")
+		on_actionAdd_Pond_triggered();
+		*/
 }
 
 void MainWindow::on_actionAdd_Pond_triggered()
@@ -1971,6 +2235,7 @@ void MainWindow::addExperiment(QString sourceExperiment)
 
 void MainWindow::on_actionremoveCurrentExperiment_triggered()
 {
+#ifdef GIFMOD
 	if (mainGraphWidget->experimentName() == "All experiments")
 	{
 		QMessageBox::information(this, tr("Remove experiment"),
@@ -1991,6 +2256,7 @@ void MainWindow::on_actionremoveCurrentExperiment_triggered()
 	mainGraphWidget->experiments->removeItem(mainGraphWidget->experimentID());
 	mainGraphWidget->experimentSelect(mainGraphWidget->experimentName());
 	emit mainGraphWidget->changed();
+#endif
 }
 
 void MainWindow::openRXNWindow()
@@ -2091,13 +2357,18 @@ void MainWindow::on_actionRun_Model_triggered()
 	statusBar()->showMessage("Assembling model configuration.");
 	QCoreApplication::processEvents();
 	runtimeWindow *rtw = new runtimeWindow(mainGraphWidget);
-	mainGraphWidget->deleteSolution();
-	mainGraphWidget->model = new CGWA(mainGraphWidget, rtw);
+	mainGraphWidget->deleteSolutionResults();
+
+	mainGraphWidget->modelSet = new CGWASet;
+	mainGraphWidget->modelSet->Medium.push_back(CGWA(mainGraphWidget, rtw));
+	mainGraphWidget->model = &mainGraphWidget->modelSet->operator()();
+	mainGraphWidget->modelSet->parameters = mainGraphWidget->model->parameters;
+
 	mainGraphWidget->results = new Results;
 	//rtw->show();
 	mainGraphWidget->log("Running Simulation.");
 	statusBar()->showMessage("Running Simulation.");
-	forwardRun(mainGraphWidget->model, rtw);
+	forwardRun(mainGraphWidget->modelSet, rtw);
 	//delete progress;
 	setCursor(Qt::ArrowCursor);
 	mainGraphWidget->log("Simulation ended.");
@@ -2221,13 +2492,17 @@ void MainWindow::on_actionRun_Inverse_Model_triggered()
 	mainGraphWidget->logW->writetotempfile();
 	QCoreApplication::processEvents();
 	runtimeWindow *rtw = new runtimeWindow(mainGraphWidget, "inverse");
-	mainGraphWidget->deleteSolution();
-	mainGraphWidget->model = new CGWA(mainGraphWidget, rtw);
+	mainGraphWidget->deleteSolutionResults();
+	mainGraphWidget->modelSet = new CGWASet;
+	mainGraphWidget->modelSet->Medium.push_back(CGWA(mainGraphWidget, rtw));
+	mainGraphWidget->model = &mainGraphWidget->modelSet->operator()();
+	mainGraphWidget->modelSet->parameters = mainGraphWidget->model->parameters;
+
 	rtw->show();
 	mainGraphWidget->log("Running Simulation.");
 	statusBar()->showMessage("Running Simulation.");
 	mainGraphWidget->logW->writetotempfile();
-	inverseRun(mainGraphWidget->model, rtw);
+	inverseRun(mainGraphWidget->modelSet, rtw);
 	//delete progress;
 	setCursor(Qt::ArrowCursor);
 	mainGraphWidget->log("Simulation ended.");
@@ -2311,12 +2586,16 @@ void MainWindow::on_actionRecent_triggered()
 
 void MainWindow::on_actionReset_colors_triggered()
 {
-	mainGraphWidget->colorSchemeLegend_closed();
-}
+#ifdef GIFMOD
 
+
+	mainGraphWidget->colorSchemeLegend_closed();
+#endif // GIFMOD
+}
 
 void MainWindow::menuWaterQuality_hovered()
 {
+#ifdef GIFMOD
 	static double t = 0;
 	if (time(0) - t >= 4)
 	{
@@ -2402,6 +2681,7 @@ void MainWindow::menuWaterQuality_hovered()
 			}
 		}
 	}
+#endif
 }
 void MainWindow::updateAction(QAction *a, QString particleConstituent, QString p, QString c, QString phase)
 {
@@ -2420,13 +2700,16 @@ void MainWindow::waterQualityPostProcessing_clicked()
 {
 	QAction* a = static_cast<QAction*> (QObject::sender());
 	QStringList list = a->data().toStringList();
+#ifdef GIFMOD
 	mainGraphWidget->updateNodesColorCodes_WaterQuality(list, false, "Blue-Red");
+#endif
 }
 void MainWindow::menuWaterQuality_triggered()
 {
+#ifdef GIFMOD
 	int i = 0;
+#endif
 }
-
 void MainWindow::on_actionContact_Us_triggered()
 {
 	int i = 0;
@@ -2462,7 +2745,7 @@ void MainWindow::on_actionAbout_triggered()
 	ver = QString("Version %1").arg(GIFMOD_VERSION);
 #endif
 #ifdef GWA
-	ver = "Version 0.0.5";
+	ver = QString("Version %1").arg(GWA_VERSION);
 #endif
 	QMessageBox::information(this, "About " + applicationName,
 		ver);
@@ -2472,45 +2755,62 @@ void MainWindow::on_actioncolorCodedResults_triggered()
 }
 void MainWindow::on_actioncolorCodeStorage_triggered()
 {
+#ifdef GIFMOD
 	mainGraphWidget->updateNodesColorCodes("Storage", false, "Blue-Red");
-
+#endif
 }
 void MainWindow::on_actioncolorCodeHead_triggered()
 {
+#ifdef GIFMOD
 	mainGraphWidget->updateNodesColorCodes("Head", false, "Blue-Red");
+#endif
 
 }
 void MainWindow::on_actioncolorCodeMoistureContent_triggered()
 {
+#ifdef GIFMOD
 	mainGraphWidget->updateNodesColorCodes("Moisture content", false, "Blue-Red");
+#endif
 
 }
 void MainWindow::on_actioncolorCodeWaterDepth_triggered()
 {
+#ifdef GIFMOD
 	mainGraphWidget->updateNodesColorCodes("Water depth", false, "Blue-Red");
+#endif
 
 }
 void MainWindow::on_actioncolorCodeEvaporationRate_triggered()
 {
+#ifdef GIFMOD
 	mainGraphWidget->updateNodesColorCodes("Evaporation rate", false, "Blue-Red");
+#endif
 
 }
 void MainWindow::on_actionColorCodeConnectorFlow_triggered()
 {
+#ifdef GIFMOD
 	mainGraphWidget->updateEdgesColorCodes("Flow", false, "Blue-Red");
+#endif
 }
 void MainWindow::on_actionColorCodeConnectorVelocity_triggered()
 {
+#ifdef GIFMOD
 	mainGraphWidget->updateEdgesColorCodes("Velocity", false, "Blue-Red");
+#endif
 }
 void MainWindow::on_actionColorCodeConnectorArea_triggered()
 {
+#ifdef GIFMOD
 	mainGraphWidget->updateEdgesColorCodes("Area", false, "Blue-Red");
+#endif
 
 }
 void MainWindow::on_actionColorCodeConnectorVaporExchangeEate_triggered()
 {
+#ifdef GIFMOD
 	mainGraphWidget->updateEdgesColorCodes("Vapor exchange rate", false, "Blue-Red");
+#endif
 }
 void MainWindow::gwidgetChanged()
 {

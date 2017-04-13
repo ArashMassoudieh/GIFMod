@@ -1,4 +1,5 @@
 #pragma once
+#ifdef GIFMOD
 #include <vector>
 #include "Crxtterm.h"
 #include "StringOP.h"
@@ -33,3 +34,4 @@ public:
 
 };
 
+#endif

@@ -70,8 +70,8 @@
      </property>
     </widget>
     <addaction name="action_New"/>
-    <addaction name="actionNew_from_template"/>
     <addaction name="action_Open"/>
+    <addaction name="actionNew_from_template"/>
     <addaction name="action_Save"/>
     <addaction name="actionSave_As"/>
     <addaction name="separator"/>
@@ -203,6 +203,7 @@
    </attribute>
    <addaction name="action_New"/>
    <addaction name="action_Open"/>
+   <addaction name="actionNew_from_template"/>
    <addaction name="action_Save"/>
    <addaction name="separator"/>
    <addaction name="action_Undo"/>
@@ -263,6 +264,7 @@
    <addaction name="actionRun_Model"/>
    <addaction name="actionRun_Inverse_Model"/>
    <addaction name="actionlogWindow"/>
+   <addaction name="actionCommandLine"/>
    <addaction name="actionShowRuntimeWindow"/>
    <addaction name="separator"/>
    <addaction name="actionExport_to_Script_Language"/>
@@ -824,6 +826,18 @@
    </property>
    <property name="text">
     <string>New from &amp;template...</string>
+   </property>
+  </action>
+  <action name="actionCommandLine">
+   <property name="icon">
+    <iconset>
+     <normaloff>Icons/command-line-icon-18607-16x16.ico</normaloff>Icons/command-line-icon-18607-16x16.ico</iconset>
+   </property>
+   <property name="text">
+    <string>commandLine</string>
+   </property>
+   <property name="toolTip">
+    <string>Get text commands</string>
    </property>
   </action>
  </widget>

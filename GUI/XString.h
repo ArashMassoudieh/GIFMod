@@ -170,6 +170,26 @@ public:
 		return r;
 	}
 
+	// value[unit] 100[m^2]
+	static XString fromQStringUnit(const QString &c) {
+		//qDebug() << c.indexOf('[') << c.indexOf(']') << c.lastIndexOf('[') << c.lastIndexOf(']');
+		QString valueTxt = c.left(c.indexOf('['));
+		double value = valueTxt.toDouble();
+
+		if (c.indexOf('[')==-1 || c.indexOf(']')==-1 || c.indexOf('[') >= c.indexOf(']') ||
+			c.indexOf('[') != c.lastIndexOf('[') || c.indexOf(']') != c.lastIndexOf(']'))
+			return XString();
+
+		QString unit = c.mid(c.indexOf('[')+1, c.indexOf(']') - c.indexOf('[')-1);
+		if (!validUnit(unit))
+			unit = "";
+		//if (unit != "" && !unit.startsWith("~"))
+		//	unit = QString("~%1").arg(unit);
+		unit = reform(unit);
+		return XString(valueTxt, unit, QStringList() << unit, unit);
+	}
+
+
 	XString convertTo(const QString _unit) const{
 		if (unit == _unit) return XString(QString::number(toDouble()), _unit, unitsList, defaultUnit);
 		double a = conversionCoefficient(unit, _unit);
@@ -183,15 +203,15 @@ public:
 		float a = coefficient(unit_from.reformBack());
 		float b = coefficient(unit_to.reformBack());
 		return coefficient(unit_from.reformBack()) / coefficient(unit_to.reformBack()); };
-	double coefficient(const QString expression) const	{
+	static double coefficient(const QString expression) 	{
 		QString leftOperand = expression, rightOperand, Operator;
-		QStringList Operators = QStringList() << "." << "/" << "~^" << "~radic" << "~^3radic" << "^";
+		QStringList Operators = QStringList() << "." << "/" << "~^" << "~radic" << "~^3radic" << "^" << "~radical" << "~^3radical";
 		if (containsOperator(leftOperand, rightOperand, Operator, Operators)){
 			if (Operator == "^" || Operator == "~^") return qPow(coefficient(leftOperand), coefficient(rightOperand));
 			if (Operator == ".") return (coefficient(leftOperand) * coefficient(rightOperand));
 			if (Operator == "/") return (coefficient(leftOperand) / coefficient(rightOperand));
-			if (Operator == "~radic") return (coefficient(leftOperand) * sqrt(coefficient(rightOperand)));
-			if (Operator == "~^3radic") return (coefficient(leftOperand) * qPow(coefficient(rightOperand), 1.0 / 3.0));
+			if (Operator == "~radic" || Operator == "~radical") return (coefficient(leftOperand) * sqrt(coefficient(rightOperand)));
+			if (Operator == "~^3radic" || Operator == "~^3radical") return (coefficient(leftOperand) * qPow(coefficient(rightOperand), 1.0 / 3.0));
 		}
 		else{
 			if (leftOperand.toDouble()) return leftOperand.toDouble();
@@ -211,6 +231,11 @@ public:
 			return CL[UL.indexOf(leftOperand)];
 		};
 	};
+	static bool validUnit(const QString unit)  {
+		if (coefficient(unit) != 0)
+			return true;
+		return false;
+	}
 
 	//set Unit not convert
 	XString setUnit(const QString unit) {
@@ -219,7 +244,7 @@ public:
 	}
 
 
-	bool containsOperator(QString &leftOperand, QString &rightOperand, QString &Operator, QStringList &Operators) const	{
+	static bool containsOperator(QString &leftOperand, QString &rightOperand, QString &Operator, QStringList &Operators) 	{
 		int pos = leftOperand.size();
 		for (int i = 0; i < Operators.size(); i++)
 			if (leftOperand.contains(Operators[i]))
@@ -229,7 +254,7 @@ public:
 		leftOperand = (pos) ? leftOperand.left(pos) : "1";
 		return true;
 	};
-	QString XString::reform(const QString &X) const
+static	QString XString::reform(const QString &X) 
 	{
 		if (!X.contains("~")) return X;
 		ushort alpha = 945;	ushort beta = 946;	ushort gamma = 947;	ushort delta = 948;	ushort epsilon = 949;	ushort zeta = 950;	ushort eta = 951;	ushort theta = 952;	ushort iota = 953;	ushort kappa = 954;	ushort lambda = 955;
@@ -244,6 +269,22 @@ public:
 		R.replace("~psi", QString::fromUtf16(&psi, 1));	R.replace("~omega", QString::fromUtf16(&omega, 1));	R.replace("~thetasym", QString::fromUtf16(&thetasym, 1));	R.replace("~upsih", QString::fromUtf16(&upsih, 1));
 		R.replace("~piv", QString::fromUtf16(&piv, 1));	R.replace("~^2", QString::fromUtf16(&sup2, 1));	R.replace("~^3", QString::fromUtf16(&sup3, 1));	R.replace("~1/4", QString::fromUtf16(&frac14, 1));
 		R.replace("~1/2", QString::fromUtf16(&frac12, 1));	R.replace("~3/4", QString::fromUtf16(&frac34, 1));	R.replace("~radic", QString::fromUtf16(&radic, 1));	R.replace("~degree", QString::fromUtf16(&degree, 1));	return R;
+		/*	https://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references	*/
+	}
+static	QString XString::reformBack(QString R) 
+	{
+		ushort alpha = 945;	ushort beta = 946;	ushort gamma = 947;	ushort delta = 948;	ushort epsilon = 949;	ushort zeta = 950;	ushort eta = 951;	ushort theta = 952;	ushort iota = 953;	ushort kappa = 954;	ushort lambda = 955;
+		ushort mu = 956;	ushort nu = 957;	ushort xi = 958;	ushort omicron = 959;	ushort pi = 960;	ushort rho = 961;	ushort sigmaf = 962;	ushort sigma = 963;	ushort tau = 964;	ushort upsilon = 965;	ushort phi = 966;
+		ushort chi = 967;	ushort psi = 968;	ushort omega = 969;	ushort thetasym = 977;	ushort upsih = 978;	ushort piv = 982;	ushort sup2 = 178;	ushort sup3 = 179;	ushort frac14 = 188;	ushort frac12 = 189;	ushort frac34 = 190;
+		ushort radic = 8730;	ushort degree = 176;	R.replace(QString::fromUtf16(&alpha, 1), "~alpha");	R.replace(QString::fromUtf16(&beta, 1), "~beta");	R.replace(QString::fromUtf16(&gamma, 1), "~gamma");
+		R.replace(QString::fromUtf16(&delta, 1), "~delta");	R.replace(QString::fromUtf16(&epsilon, 1), "~epsilon");	R.replace(QString::fromUtf16(&zeta, 1), "~zeta");	R.replace(QString::fromUtf16(&eta, 1), "~eta");
+		R.replace(QString::fromUtf16(&theta, 1), "~theta");	R.replace(QString::fromUtf16(&iota, 1), "~iota");	R.replace(QString::fromUtf16(&kappa, 1), "~kappa");	R.replace(QString::fromUtf16(&lambda, 1), "~lambda");
+		R.replace(QString::fromUtf16(&mu, 1), "~mu");	R.replace(QString::fromUtf16(&nu, 1), "~nu");	R.replace(QString::fromUtf16(&xi, 1), "~xi");	R.replace(QString::fromUtf16(&omicron, 1), "~omicron");
+		R.replace(QString::fromUtf16(&pi, 1), "~pi");	R.replace(QString::fromUtf16(&rho, 1), "~rho");	R.replace(QString::fromUtf16(&sigmaf, 1), "~sigmaf");	R.replace(QString::fromUtf16(&sigma, 1), "~sigma");
+		R.replace(QString::fromUtf16(&tau, 1), "~tau");	R.replace(QString::fromUtf16(&upsilon, 1), "~upsilon");	R.replace(QString::fromUtf16(&phi, 1), "~phi");	R.replace(QString::fromUtf16(&chi, 1), "~chi");
+		R.replace(QString::fromUtf16(&psi, 1), "~psi");	R.replace(QString::fromUtf16(&omega, 1), "~omega");	R.replace(QString::fromUtf16(&thetasym, 1), "~thetasym");	R.replace(QString::fromUtf16(&upsih, 1), "~upsih");
+		R.replace(QString::fromUtf16(&piv, 1), "~piv");	R.replace(QString::fromUtf16(&sup2, 1), "~^2");	R.replace(QString::fromUtf16(&sup3, 1), "~^3");	R.replace(QString::fromUtf16(&frac14, 1), "~1/4");
+		R.replace(QString::fromUtf16(&frac12, 1), "~1/2");	R.replace(QString::fromUtf16(&frac34, 1), "~3/4");	R.replace(QString::fromUtf16(&radic, 1), "~radic");	R.replace(QString::fromUtf16(&degree, 1), "~degree");	return R;
 		/*	https://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references	*/
 	}
 	QString XString::reformBack() const
@@ -262,6 +303,7 @@ public:
 		R.replace(QString::fromUtf16(&frac12, 1), "~1/2");	R.replace(QString::fromUtf16(&frac34, 1), "~3/4");	R.replace(QString::fromUtf16(&radic, 1), "~radic");	R.replace(QString::fromUtf16(&degree, 1), "~degree");	return R;
 		/*	https://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references	*/
 	}
+
 	QList<XString> XString::split(QChar sep, SplitBehavior behavior = KeepEmptyParts, Qt::CaseSensitivity cs = Qt::CaseSensitive) const{
 		QList<XString> R;
 		QStringList QL = (*this).QString::split(sep, behavior, cs);

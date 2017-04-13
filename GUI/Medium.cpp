@@ -1,3 +1,6 @@
+//#ifndef DEBUG_MATRIX 
+//	#define DEBUG_MATRIX
+//#endif
 #ifdef GIFMOD
 
 #include "stdafx.h"
@@ -2070,13 +2073,23 @@ void CMedium::solve_fts_m2(double dt)
 			}
 			if (fail_counter > 30)
 			{
+				//runtimewindow->parent->logW->append("failed, trying to write details.");
 				if (write_details())
 				{
+					//runtimewindow->parent->logW->append("failed, trying to write to solution_details.");
 					FILEBTC = fopen((outputpathname() + "Solution_details.txt").c_str(), "a");
-					write_state(pathname() + "state.txt");
+					//runtimewindow->parent->logW->append("failed, trying to write state.txt.");
+					write_state(outputpathname() + "state.txt");
 					fprintf(FILEBTC, "failed count > 30");
 					fclose(FILEBTC);
 				}
+				// Sassan					
+					failed = true;
+					fail_reason = "failed count > 30";
+					for (int i = 0; i < controllers().size(); i++)
+						ANS_control.BTC[i] = controllers()[i].output;
+					updateProgress();
+
 				return;
 			}
 			// Sassan					
@@ -2889,7 +2902,6 @@ void CMedium::onestepsolve_const(double dtt)
 				fail_reason = "Matrix not invertible in wq";
 				failed_const = true;
 				return;
-
 			}
 			J_update_Q=false;
 			dtt_J_q = dtt;
@@ -3914,7 +3926,7 @@ int CMedium::get_member_no(int solid_id, int phase_no)
 double CMedium::get_capacity(int block_no, int phase_no, int particle_no)
 {
 	if (particle_no==-2) 
-		return Blocks[block_no].S;
+		return Blocks[block_no].S+1e-3;
 	else if (particle_no==-1) 
 		return Blocks[block_no].V*Blocks[block_no].bulk_density;
 	else
@@ -3924,7 +3936,7 @@ double CMedium::get_capacity(int block_no, int phase_no, int particle_no)
 double CMedium::get_capacity_star(int block_no, int phase_no, int particle_no)
 {
 	if (particle_no==-2) 
-		return Blocks[block_no].S_star;
+		return Blocks[block_no].S_star+1e-3;
 	else if (particle_no==-1) 
 		return Blocks[block_no].V*Blocks[block_no].bulk_density;
 	else
@@ -4737,9 +4749,6 @@ int CMedium::lookup_objective_functions(string S)
 }
 
 
-
-#endif
-
 void CMedium::onestepsolve_flow_ar(double dt)
 {
 	int indicator = 1;
@@ -5079,10 +5088,10 @@ void CMedium::onestepsolve_const_ar(double dtt)
 			CMatrix_arma D = M1.non_posdef_elems_m();
 			epoch_count++;
 			if (M_Q_arma.getnumcols()>0) pos_def_ratio_const = M1.diag_ratio().abs_max(); else pos_def_ratio_const = 1e-12;
-			if (pos_def_ratio_const > 1)
-				Preconditioner_Q_arma = M1.Preconditioner();
-			else
-				Preconditioner_Q_arma = Identity_ar(F.num);
+			//if (pos_def_ratio_const > 1)
+			//	Preconditioner_Q_arma = M1.Preconditioner();
+			//else
+			//Preconditioner_Q_arma = Identity_ar(F.num);
 			if (fabs(det(M1))<1e-30)
 			{
 				set_CG_star(X_old);
@@ -5092,7 +5101,7 @@ void CMedium::onestepsolve_const_ar(double dtt)
 
 			}
 
-			InvJ_Q_arma = inv(Preconditioner_Q_arma*M1);
+			InvJ_Q_arma = inv(M1);
 			if (InvJ_Q_arma.getnumcols() == 0)
 			{
 				//set_CG_star(X_old);
@@ -5105,11 +5114,21 @@ void CMedium::onestepsolve_const_ar(double dtt)
 
 		
 		if (InvJ_Q_arma.getnumcols() != 0)
-			dx = dtt / dtt_J_q*(InvJ_Q_arma*Preconditioner_Q_arma*normalize_diag(F, M_Q_arma));
-		else if (M_Q_arma.getnumcols() > 0)
 		{
+			dx = dtt / dtt_J_q*(InvJ_Q_arma*normalize_diag(F, M_Q_arma));
+		}
+		else if (M_Q_arma.getnumcols() > 0 || (dx==dx)!=true)
+		{
+#ifdef DEBUG_MATRIX
+			CVector FF = F;
+			CMatrix M_Q = M_Q_arma;
+			FF.writetofile("F.txt");
+			M_Q.writetofile("m.txt");
+			CMatrix Precond_Q = Preconditioner_Q_arma;
+			Precond_Q.writetofile("Precond.txt");
+#endif
 			dx = dtt/dtt_J_q*solve_ar(M_Q_arma, F);
-			if (dx.num==0)
+			if ((dx.num==0) || (dx==dx)!=true)
 			{   set_CG_star(X_old);
 				fail_reason = "Matrix not invertible in wq";
 				failed_const = true; 
@@ -5460,3 +5479,4 @@ void CMedium::set_G_star(CVector_arma & X)
 				Blocks[i].G_star[p][l] = X[get_member_no(i, p, l)];
 }
 
+#endif

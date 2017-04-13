@@ -19,6 +19,7 @@ class CMedium;
 class CMediumSet;
 class logWindow;
 class CGWA;
+class CGWASet;
 
 namespace Ui {
 class MainWindow;
@@ -62,10 +63,11 @@ public:
 #ifdef GIFMOD
 	void forwardRun(CMediumSet *model, runtimeWindow *runtimewindow);
 	void inverseRun(CMediumSet *model, runtimeWindow* progress);
+
 #endif
 #ifdef GWA
-	void forwardRun(CGWA *model, runtimeWindow *runtimewindow);
-	void inverseRun(CGWA *model, runtimeWindow* progress);
+	void forwardRun(CGWASet *model, runtimeWindow *runtimewindow);
+	void inverseRun(CGWASet *model, runtimeWindow* progress);
 #endif
 
 	//void forwardRun(CMedium *model) { forwardRun(model, new runtimeWindow); };
@@ -82,15 +84,19 @@ public:
 		readRecentFilesList();
 	}
 	void readRecentFilesList();
+	void add(QString entity);
 protected:
 	void paintEvent(QPaintEvent *e);
-
 public slots:
 
 	void Mouse_Pos(int, int, QString);
 
 	void on_dockWidget_dockLocationChanged(const Qt::DockWidgetArea &area);
-	
+	void zoomAll()
+	{
+		on_actionZoom_All_triggered();
+	}
+
 private slots:
 
 	void on_actionAdd_Pond_triggered();
@@ -118,7 +124,6 @@ private slots:
 
 	void MainWindow::updateToolbarToggles(Operation_Modes OMode = Operation_Modes::NormalMode);
 	void on_action_New_triggered();
-	void on_actionNew_from_template_triggered();
 
 	void on_action_Open_triggered();
 
@@ -175,6 +180,7 @@ private slots:
 	void plotModeledData(CBTC modeled = CBTC(), CBTC observed = CBTC(), QString name = "");
 	void plotModeledDataDot(CBTC modeled = CBTC(), CBTC observed = CBTC(), QString name = "");
 	void plotAgreementPlotData(CBTC observation = CBTC(), CBTC modeled = CBTC(), QString name = "");
+	void plotAgreementPlotDataforGroups(vector<CBTC> obs_modData = vector<CBTC>(), vector<QString> names = vector<QString>());
 	void plotPercentileData(percentileData data = percentileData(), QString name = "");
 	void plotAllPercentileData(vector<percentileData> data = vector<percentileData>(), QString name = "");
 	void plotPriorHistogram(CBTC histogram = CBTC(), QString name = "");
@@ -224,10 +230,20 @@ private slots:
 	void on_actionShowRuntimeWindow_triggered();
 	void on_actionRecent_triggered();
 	void on_actionReset_colors_triggered();
+
+//#ifdef GIFMOD
 	void menuWaterQuality_hovered();
+	void menuWaterQuality_triggered();
+	void on_actionNew_from_template_triggered();
+
+	void on_actionCommandLine_triggered();
+
+
+
+//#endif
+
 	void updateAction(QAction *a, QString particleConstituent, QString p, QString c="", QString phase="get from action");
 	void waterQualityPostProcessing_clicked();
-	void menuWaterQuality_triggered();
 	void on_actionContact_Us_triggered();
 	void on_actionContact_Us_hovered(); 
 	void removeFromRecentList(QAction*);

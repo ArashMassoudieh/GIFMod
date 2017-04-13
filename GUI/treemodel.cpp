@@ -61,7 +61,7 @@ TreeModel::TreeModel(GraphWidget *parent) : QAbstractItemModel(parent)
 		{
 			rootItem = new TreeItem("Root", parent, TreeItem::Type::Root);// , 0);
 			settings = new TreeItem("Settings", parent, TreeItem::Type::SettingsBranch);//, rootItem);
-			globalSettings = new TreeItem("Global Settings", parent, TreeItem::Type::Item);//, settings);
+			projectSettings = new TreeItem("Project settings", parent, TreeItem::Type::Item);//, settings);
 		//	solver = new TreeItem("Solver", parent, TreeItem::Type::Item);//, settings);
 			wells = new TreeItem("Wells", parent, TreeItem::Type::WellsBranch);//, rootItem);
 			tracers = new TreeItem("Tracers", parent, TreeItem::Type::TracersBranch);//, rootItem);
@@ -74,15 +74,15 @@ TreeModel::TreeModel(GraphWidget *parent) : QAbstractItemModel(parent)
 			reactionParameter = new TreeItem("Reaction parameters", parent, TreeItem::Type::Branch, reactions);
 			//				reaction = new TreeItem("Reaction", parent, TreeItem::Type::Branch, reactions);
 			reactionNetwork = new TreeItem("Reaction Network", parent, TreeItem::Type::ReactionNetworkItem, reactions);
-			*/			inverseModeling = new TreeItem("Inverse Modeling", parent, TreeItem::Type::InverseModelingBranch);//, rootItem);
-			GA = new TreeItem("Genetic Algorithm", parent, TreeItem::Type::Item);//, inverseModeling);
-			MCMC = new TreeItem("Markov Chain Monte Carlo", parent, TreeItem::Type::Item);//, inverseModeling);
+			*/			inverseModeling = new TreeItem("Inverse modeling", parent, TreeItem::Type::InverseModelingBranch);//, rootItem);
+			GA = new TreeItem("Genetic algorithm", parent, TreeItem::Type::Item);//, inverseModeling);
+			MCMC = new TreeItem("Markov chain Monte Carlo", parent, TreeItem::Type::Item);//, inverseModeling);
 			parameter = new TreeItem("Parameters", parent, TreeItem::Type::Branch);//, inverseModeling);
 			observed = new TreeItem("Observations", parent, TreeItem::Type::Branch);//, inverseModeling);
 
 			QList<TreeItem*> rootNodes, settingsNodes, inverseModelingNodes;
 			rootNodes << settings << wells << tracers << inverseModeling;
-			settingsNodes << globalSettings;// << solver;
+			settingsNodes << projectSettings;// << solver;
 			inverseModelingNodes << GA << MCMC << parameter << observed;
 			rootItem->addChild(rootNodes);
 			settings->addChild(settingsNodes);
@@ -187,12 +187,14 @@ TreeModel::~TreeModel()
 void TreeModel::addChildFromMenu(const QString name, QModelIndex *parentIndex)
 {
 	TreeItem *parent = 0;
+#ifdef GIFMOD
 	if (name == "Controller")
 		parent = this->controller;
 	if (name == "Sensor")
 		parent = this->sensor;
 	if (name == "Objective function")
 		parent = this->objectiveFunction;
+#endif
 	if (name == "Constituent")
 		parent = this->constituent;
 	if (name == "Particle")
@@ -498,12 +500,15 @@ void TreeModel::add(Edge *edge)
 TreeItem * TreeModel::entityParentItemfromType(QString type) const
 {
 	TreeItem *parent = 0;
+#ifdef Gifmod
 	if (type == "Sensor")
 		parent = this->sensor;
 	if (type == "Objective function")
 		parent = this->objectiveFunction;
 	if (type == "Controller")
 		parent = this->controller;
+#endif
+
 	if (type == "Constituent")
 		parent = this->constituent;
 	if (type == "Particle")

@@ -1,3 +1,4 @@
+#ifdef GIFMOD
 #include "Reaction.h"
 
 
@@ -69,3 +70,4 @@ void CReaction::getRxn(FILE *file)
 
 
 }
+#endif

@@ -100,7 +100,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PreprocessorDefinitions>UNICODE;WIN32;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;ARMA_USE_LAPACK;ARMA_USE_BLAS;%(PreprocessorDefinitions);QT_PRINTSUPPORT_LIB;GIFMOD</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\armadillo-header;.\Model;.\Utility;$(QTDIR)\include;.\GeneratedFiles\GIFMOD\$(ConfigurationName);.\GeneratedFiles\GWA\$(ConfigurationName);.\icons;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtWidgets;.\GUI;%(AdditionalIncludeDirectories);$(QTDIR)\include\QtPrintSupport;.\GeneratedFiles\GIFMOD</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\generatedFiles\files;.\armadillo-header;.\Model;.\Utility;$(QTDIR)\include;.\GeneratedFiles\GIFMOD\$(ConfigurationName);.\GeneratedFiles\GWA\$(ConfigurationName);.\icons;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtWidgets;.\GUI;%(AdditionalIncludeDirectories);$(QTDIR)\include\QtPrintSupport;.\GeneratedFiles\GIFMOD</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -181,61 +181,33 @@ copy *.txt $(OutDir)
     <Image Include="Icons\log_icon.png" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_csvEditor.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_CustomPlotZoom.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_helpWindow.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_wizard.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ConstituentDelegate.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ConstituentWindow.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_csvEditor.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_CustomPlotZoom.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_delegate.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ExchangeParametersWindow.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_expEditor.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_expressioneditor.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_freezetablewidget.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_gridWindow.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_GWidget.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_helpWindow.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_logwindow.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_mainwindow.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_observedcombobox.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ObservedConstituentWindow.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ParticleDelegate.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ParticleWindow.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_plotWindow.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_qcustomplot.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_reactiontablemodel.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_reactiontablewidget.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_reactionwindow.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_runtimeWindow.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_statusviewer.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_treemodel.cpp" />
-    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_wizard.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_ConstituentDelegate.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_ConstituentWindow.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_csvEditor.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_CustomPlotZoom.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_delegate.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_ExchangeParametersWindow.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_expEditor.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_expressioneditor.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_freezetablewidget.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_gridWindow.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_GWidget.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_helpWindow.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_logwindow.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_mainwindow.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_observedcombobox.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_ObservedConstituentWindow.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_ParticleDelegate.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_ParticleWindow.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_plotWindow.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_qcustomplot.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_reactiontablemodel.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_reactiontablewidget.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_reactionwindow.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_runtimeWindow.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_statusviewer.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_treemodel.cpp" />
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_wizard.cpp" />
     <ClCompile Include="GUI\Binary.cpp" />
     <ClCompile Include="GUI\BTC.cpp" />
     <ClCompile Include="GUI\BTCSet.cpp" />
@@ -349,6 +321,20 @@ copy *.txt $(OutDir)
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_reactionwindow.h" />
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_runtimeWindow.h" />
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_wizard.h" />
+    <ClInclude Include="GeneratedFiles\ui_ConstituentWindow.h" />
+    <ClInclude Include="GeneratedFiles\ui_csvEditor.h" />
+    <ClInclude Include="GeneratedFiles\ui_ExchangeParametersWindow.h" />
+    <ClInclude Include="GeneratedFiles\ui_gridWindow.h" />
+    <ClInclude Include="GeneratedFiles\ui_helpWindow.h" />
+    <ClInclude Include="GeneratedFiles\ui_logwindow.h" />
+    <ClInclude Include="GeneratedFiles\ui_mainwindowGIFMod.h" />
+    <ClInclude Include="GeneratedFiles\ui_ObservedConstituentWindow.h" />
+    <ClInclude Include="GeneratedFiles\ui_ParticleWindow.h" />
+    <ClInclude Include="GeneratedFiles\ui_plotwindow.h" />
+    <ClInclude Include="GeneratedFiles\ui_reactionwindow.h" />
+    <ClInclude Include="GeneratedFiles\ui_runtimeWindow.h" />
+    <ClInclude Include="GeneratedFiles\ui_Widget.h" />
+    <ClInclude Include="GeneratedFiles\ui_wizard.h" />
     <ClInclude Include="GUI\Binary.h" />
     <ClInclude Include="GUI\BTC.h" />
     <ClInclude Include="GUI\BTCSet.h" />
