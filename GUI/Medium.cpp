@@ -1868,7 +1868,7 @@ void CMedium::solve_fts_m2(double dt)
 
 	if (write_details())
 	{
-		FILEBTC = fopen((outputpathname() + "Solution_details.txt").c_str(), "a");
+		FILEBTC = fopen((outputpathname() + "Solution_details_" + parent->ID + ".txt").c_str(), "a");
 		fprintf(FILEBTC, "Experiment %s: ", name);
 		fclose(FILEBTC);
 	}
@@ -1894,6 +1894,8 @@ void CMedium::solve_fts_m2(double dt)
 	bool redo = false;
 	int redo_counter = 0;
 	avg_redo_dtt = dtt;
+
+	clock_t time_start = clock();
 
 	while (t - dtt < Timemax)
 	{
@@ -1932,7 +1934,7 @@ void CMedium::solve_fts_m2(double dt)
 				{
 					if (write_details())
 					{
-						FILEBTC = fopen((outputpathname() + "Solution_Details.txt").c_str(), "a");
+						FILEBTC = fopen((outputpathname() + "Solution_details_" + parent->ID + ".txt").c_str(), "a");
 						fprintf(FILEBTC, "restore point: %i, %e\n", Res.size(), Res_temp.dt_res);
 						fclose(FILEBTC);
 					}
@@ -2018,7 +2020,7 @@ void CMedium::solve_fts_m2(double dt)
 
 					if (write_details())
 					{
-						FILEBTC = fopen((outputpathname() + "Solution_details.txt").c_str(), "a");  fprintf(FILEBTC, "redo\n"); fclose(FILEBTC);
+						FILEBTC = fopen((outputpathname() + "Solution_details_" + parent->ID + ".txt").c_str(), "a");  fprintf(FILEBTC, "redo\n"); fclose(FILEBTC);
 					}
 				}
 				else
@@ -2062,7 +2064,7 @@ void CMedium::solve_fts_m2(double dt)
 					iii = Res[max(int(Res.size()) - redo_counter, 0)].iii;
 					if (write_details())
 					{
-						FILEBTC = fopen((outputpathname() + "Solution_details.txt").c_str(), "a");  fprintf(FILEBTC, "redo\n"); fclose(FILEBTC);
+						FILEBTC = fopen((outputpathname() + "Solution_details_" + parent->ID + ".txt").c_str(), "a");  fprintf(FILEBTC, "redo\n"); fclose(FILEBTC);
 					}
 				}
 				else redo_counter = 0;
@@ -2077,7 +2079,7 @@ void CMedium::solve_fts_m2(double dt)
 				if (write_details())
 				{
 					//runtimewindow->parent->logW->append("failed, trying to write to solution_details.");
-					FILEBTC = fopen((outputpathname() + "Solution_details.txt").c_str(), "a");
+					FILEBTC = fopen((outputpathname() + "Solution_details_"+parent->ID+".txt").c_str(), "a");
 					//runtimewindow->parent->logW->append("failed, trying to write state.txt.");
 					write_state(outputpathname() + "state.txt");
 					fprintf(FILEBTC, "failed count > 30");
@@ -2100,6 +2102,35 @@ void CMedium::solve_fts_m2(double dt)
 				for (int i = 0; i < controllers().size(); i++)
 					ANS_control.BTC[i] = controllers()[i].output;
 
+				if (write_details())
+				{
+					//runtimewindow->parent->logW->append("failed, trying to write to solution_details.");
+					FILEBTC = fopen((outputpathname() + "Solution_details_" + parent->ID + ".txt").c_str(), "a");
+					//runtimewindow->parent->logW->append("failed, trying to write state.txt.");
+					fprintf(FILEBTC, "Simulation ended by the user");
+					fclose(FILEBTC);
+				}
+
+				return;
+			}
+			double runtime = ((float)(clock() - time_start)) / CLOCKS_PER_SEC;
+			if (runtime > maximum_run_time())
+			{
+				failed = true;
+				fail_reason = "Simulation time exceeded the maximum simulation time";
+				for (int i = 0; i < controllers().size(); i++)
+					ANS_control.BTC[i] = controllers()[i].output;
+				
+				if (write_details())
+				{
+					//runtimewindow->parent->logW->append("failed, trying to write to solution_details.");
+					FILEBTC = fopen((outputpathname() + "Solution_details_" + parent->ID + ".txt").c_str(), "a");
+					//runtimewindow->parent->logW->append("failed, trying to write state.txt.");
+					fprintf(FILEBTC, "Simulation time exceeded the maximum simulation time");
+					fclose(FILEBTC);
+				}
+
+				updateProgress();
 				return;
 			}
 
@@ -2107,7 +2138,7 @@ void CMedium::solve_fts_m2(double dt)
 			{
 				if (write_details())
 				{
-					FILEBTC = fopen((outputpathname() + "Solution_details.txt").c_str(), "a");
+					FILEBTC = fopen((outputpathname() + "Solution_details_" + parent->ID +".txt").c_str(), "a");
 					write_state(outputpathname() + "state.txt");
 					fprintf(FILEBTC, "dt too small, epoch = %i, average_dt = %e < %e", epoch_count, (t - Timemin) / double(iii), avg_dt_limit()*dt0);
 					fclose(FILEBTC);
@@ -4032,7 +4063,7 @@ CVector CMedium::get_rxn_chng_rate()
 void CMedium::writedetails()
 {
 	FILE *FILEBTC;
-	FILEBTC = fopen((outputpathname() + "Solution_details.txt").c_str(), "a");
+	FILEBTC = fopen((outputpathname() + "Solution_details_" + parent->ID + ".txt").c_str(), "a");
 	fprintf(FILEBTC, "dt:, %lf, %le, %le(%i), %le, counters:, %i, %i, %i, J_updates:, %i, %i, %i, update_counts: %i, %i, %i, multis: %le, %le, pos_defs: %le, %le, wiggle: %le, %le, %le, %i, %s\n", t, dtt, base_dtt, where_base_dtt_changed, avg_redo_dtt, counter_flow, counter_colloid, counter_const, J_update, J_update_C, J_update_Q, J_h_update_count, J_c_update_count, J_q_update_count, pos_def_mult, pos_def_mult_Q, pos_def_ratio, pos_def_ratio_const, max_wiggle, wiggle_dt_mult, dt_fail, max_wiggle_id, fail_reason.c_str());
 	fclose(FILEBTC);
 }
@@ -4667,6 +4698,11 @@ string& CMedium::log_file_name()
 bool& CMedium::pos_def_limit()
 {
 	return parent->SP.pos_def_limit;
+}
+
+double & CMedium::maximum_run_time()
+{
+	return parent->SP.maximum_run_time;
 }
 
 bool& CMedium::check_oscillation()

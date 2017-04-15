@@ -341,6 +341,7 @@ public:
 	CMatrix_arma Preconditioner_C_arma;
 	CMatrix_arma Preconditioner_S_arma;
 	bool& pos_def_limit();
+	double& maximum_run_time();
 	bool& CMedium::check_oscillation();
 	bool& negative_concentration_allowed();
 	

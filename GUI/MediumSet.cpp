@@ -89,6 +89,7 @@ CMediumSet::CMediumSet(const CMediumSet &M)
 		ANS_control.push_back(&Medium[i].ANS_control);
 	}
 	Control = M.Control;
+	ID = M.ID;
 
 }
 
@@ -125,6 +126,7 @@ CMediumSet& CMediumSet::operator=(const CMediumSet &M)
 	}
 	ANS_obs = M.ANS_obs;
 	Control = M.Control;
+	ID = M.ID;
 	return *this;
 }
 
@@ -310,7 +312,7 @@ void CMediumSet::solve()
 	failed = false;
 	if (FI.write_details)
 	{
-		FILE *FILEBTC = fopen((FI.outputpathname + "Solution_details.txt").c_str(), "w");
+		FILE *FILEBTC = fopen((FI.outputpathname + "Solution_details_" + ID + ".txt").c_str(), "w");
 		fclose(FILEBTC);
 	}
 	failed = false;

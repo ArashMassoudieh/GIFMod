@@ -400,6 +400,7 @@ void CGA::assignfitnesses()
 		Ind[k].actual_fitness = 0;
 
 		Sys1[k] = Sys;
+		Sys1[k].ID = numbertostring(k);
 
 		int l = 0;
 #ifdef GIFMOD
@@ -535,6 +536,20 @@ double CGA::avgfitness()
 }
 
 
+void CGA::write_to_detailed_GA(string s)
+{
+	FILE *FileOut;
+#ifdef GIFMOD
+	FileOut = fopen((Sys.FI.pathname + "detail_GA.txt").c_str(), "a");
+#endif
+#ifdef GWA
+	FileOut = fopen((Sys.Medium[0].pathname + "detail_GA.txt").c_str(), "a");
+#endif
+	fprintf(FileOut, "%s\n", s);
+	fclose(FileOut);
+
+}
+
 int CGA::optimize()
 {
 #ifdef GIFMOD
@@ -571,9 +586,14 @@ int CGA::optimize()
 
 	for (int i=0; i<nGen; i++)
 	{
+		
 		//Form1.label1->Text=gcnew System::String(("Generation: "+numbertostring(i)).c_str());
 		//Form1.Update();
+		
+		write_to_detailed_GA("Assigning fitnesses ...");
 		assignfitnesses();
+		
+		write_to_detailed_GA("Assigning fitnesses done!");
 		FileOut = fopen(RunFileName.c_str(),"a");
 		printf("Generation: %i\n", i);
 		fprintf(FileOut, "Generation: %i\n", i);
@@ -585,8 +605,8 @@ int CGA::optimize()
 
 		for (int j1=0; j1<maxpop; j1++)
 		{
+			write_to_detailed_GA("Generation: " + numbertostring(i));
 			fprintf(FileOut, "%i, ", j1);
-
 
 			for (int k=0; k<Ind[0].nParams; k++)
 				if (loged[get_act_paramno(k)] == 1)
@@ -647,14 +667,25 @@ int CGA::optimize()
 
 
 		fillfitdist();
+		
+		write_to_detailed_GA("Cross-over ...");
+
 		if (RCGA == true)
 			crossoverRC();
 		else
 			crossover();
 
+		write_to_detailed_GA("Cross-over done! ");
+
+		write_to_detailed_GA("Mutation ...");
 
 		mutate(pmute);
+		write_to_detailed_GA("Mutation done!");
+		write_to_detailed_GA("Shake...!");
 		shake();
+		write_to_detailed_GA("Shake done!");
+
+
 	}
 	//Form1.label1->Text=L"finalizing GA ";
 	//Form1.Refresh();
@@ -690,13 +721,14 @@ double CGA::assignfitnesses(vector<double> inp)
 	double likelihood = 0;
 #ifdef GIFMOD
 	CMediumSet Sys1;
+	
 #endif
 #ifdef GWA
 	CGWASet Sys1;
 #endif
 
 	Sys1 = Sys;
-
+	Sys1.ID = "final";
 	int l = 0;
 	for (int i = 0; i < nParam; i++)
 #ifdef GIFMOD
