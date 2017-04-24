@@ -3,9 +3,10 @@ GeneratedFiles/GIFMOD/Release/*.*
 GeneratedFiles/GIFMOD/*.*
 GIFMod - Sassan.VC.db
 GIFMod - Arash.VC.db
-GIFMod - Sassan.VC.VC.opendb
-*.VC.db
+gifmod - arash.vc.db
 *.vc.db
+*.VC.dc
+GIFMod - Sassan.VC.VC.opendb
 *.tlog
 moc_*.cpp
 <<<<<<< HEAD
@@ -113,7 +114,6 @@ ipch/
 *.sdf
 *.cachefile
 *.VC.db
-*.vc.db
 *.VC.VC.opendb
 
 # Visual Studio profiler
