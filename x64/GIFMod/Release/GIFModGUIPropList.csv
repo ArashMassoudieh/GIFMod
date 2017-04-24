@@ -318,6 +318,7 @@
 1,Entity,Reaction,Reaction,!,Rate,rate,!,!,string,!,reaction,Global,Input,No,100137,,,
 1,Entity,Solver settings,Solver settings,!,Failure criteria number of interations,nr_failure_criteria,!,!,integer,200,TextBox,Global,Input,No,100113,>0,E,Failure criteria number of interations must be positive
 1,Entity,Solver settings,Solver settings,!,Maximum number of matrix inversions allowed,epoch_limit,!,!,integer,20000,TextBox,Global,Input,No,100350,>0,E,Maximum Matrix inversions allowed must be positive
+1,Entity,Solver settings,Solver settings,!,Maximum simulation time,maximum_run_time,!,!,float,864000,TextBox,Global,Input,No,100504,>0,E,Maximum simulation time must be positive
 1,Entity,Solver settings,Solver settings,!,Initial time step size,dt,day;hr;min;s,day,float+Estimate,0.01,UnitBox,Global,Input,No,100115,>0,E,Initial time step must be greater than zero
 1,Entity,Solver settings,Solver settings,!,Jackobian update interval,max_j_update_interval,!,!,integer,40,TextBox,Global,Input,No,100117,>=0,E,Jackobian matrix update interval must be non-negative
 1,Entity,Solver settings,Solver settings,!,Newton-Raphson acceptance tolerance,tol,!,!,float+Estimate,0.001,TextBox,Global,Input,No,100125,>0,E,Newton-Raphson acceptance tolerance must be positive

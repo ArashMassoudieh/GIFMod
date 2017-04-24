@@ -199,7 +199,8 @@ double CMCMC::posterior(vector<double> par)
 	{
 #ifdef GIFMOD
 		CMediumSet G1 = G;
-		G1.FI.write_details = false;
+		G1.ID = "final";
+		//G1.FI.write_details = false;
 #endif
 #ifdef GWA
 		CGWASet G1 = G;
@@ -923,8 +924,9 @@ void CMCMC::getrealizations(CBTCSet &MCMCout)
 			qDebug() << "Realization Sample No. : " << realizationNumber;
 			vector<double> param = realized_paramsList.getrow(realizationNumber);
 			Sys1[j][0] = G;
+			Sys1[j][0] = numbertostring(j);
 #ifdef GIFMOD
-			Sys1[j][0].FI.write_details = false;
+			//Sys1[j][0].FI.write_details = false;
 #endif
 #ifdef GWA
 			Sys1[j][0].Medium[0].project = false;

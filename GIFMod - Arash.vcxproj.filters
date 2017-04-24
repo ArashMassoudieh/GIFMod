@@ -97,9 +97,6 @@
     <ClCompile Include="GUI\TableWidgetDateItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GUI\wizard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_ConstituentDelegate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -182,6 +179,96 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GUI\commandWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ConstituentDelegate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ConstituentWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_csvEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_CustomPlotZoom.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_delegate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ExchangeParametersWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_expEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_expressioneditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_freezetablewidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_gridWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_GWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_helpWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_logwindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_mainwindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_observedcombobox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ObservedConstituentWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ParticleDelegate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_ParticleWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_plotWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_qcustomplot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_reactiontablemodel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_reactiontablewidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_reactionwindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_runtimeWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_statusviewer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_treemodel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Release\moc_wizard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_commandLineEdit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_commandWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_UnitTextBox2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -346,16 +433,25 @@
     <ClInclude Include="GeneratedFiles\ui_wizard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GUI\commandWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_commandWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GUI\commandLineEdit.h">
+    <ClInclude Include="GeneratedFiles\ui_mainwindowGWA.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GeneratedFiles\ui_mainwindowGWA.h">
+    <ClInclude Include="GUI\commandWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\UnitTextBox3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\folders.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\utility_funcs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\commandLineEdit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -404,12 +500,6 @@
     <CustomBuild Include="GUI\csvEditor.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="GUI\wizard.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="GUI\wizard.ui">
-      <Filter>Form Files</Filter>
-    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Icons\log_icon.png" />
@@ -417,6 +507,9 @@
   <ItemGroup>
     <None Include="GUI\PropList.csv" />
     <None Include="GUI\commandWindow.ui">
+      <Filter>Form Files</Filter>
+    </None>
+    <None Include="GUI\Widget.ui">
       <Filter>Form Files</Filter>
     </None>
   </ItemGroup>

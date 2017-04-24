@@ -650,8 +650,9 @@ void CGA::assignfitnesses(runtimeWindow* rtw)
 		Ind[k].actual_fitness = 0;
 
 		Sys1[k] = Sys;
+		Sys1[k].ID = numbertostring(k);
 #ifdef GIFMOD
-		Sys1[k].FI.write_details = false;
+		//Sys1[k].FI.write_details = false;
 		int l = 0;
 		for (int i = 0; i < nParam; i++) Sys1[k].set_param(i, inp[k][i]);
 		Sys1[k].finalize_set_param();
@@ -1212,6 +1213,8 @@ void CMediumSet::g_get_environmental_params()
 				SP.steady_state_hydro = e->val(key).toBool();
 			if (key == "check_oscillation" && !e->val(key).isEmpty())
 				SP.check_oscillation = e->val(key).toBool();
+			if (key == "maximum_run_time" && !e->val(key).isEmpty())
+				SP.maximum_run_time = e->val(key).toFloat();
 
 		}
 
@@ -2124,7 +2127,7 @@ void CMediumSet::solve(runtimeWindow *rtw)
 	failed = false;
 	if (FI.write_details)
 	{
-		FILE *FILEBTC = fopen((FI.outputpathname + "Solution_details.txt").c_str(), "w");
+		FILE *FILEBTC = fopen((FI.outputpathname + "Solution_details_" + ID + ".txt").c_str(), "w");
 		fclose(FILEBTC);
 	}
 	failed = false;

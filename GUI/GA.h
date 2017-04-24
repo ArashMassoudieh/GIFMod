@@ -138,7 +138,8 @@ public:
 	double CGA::variancefitness();	
 	double CGA::stdfitness();
 	double CGA::avg_actual_fitness();	
-	int CGA::optimize();	
+	void write_to_detailed_GA(string s);
+	int CGA::optimize();
 	void CGA::setnumpop(int n);	
 	double CGA::avg_inv_actual_fitness();
 	int CGA::optimize(int nGens, char DefOutPutFileName[]);

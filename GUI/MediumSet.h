@@ -36,6 +36,7 @@ struct  Solver_parameters
 	bool negative_concentration_allowed;
 	bool steady_state_hydro = false;
 	bool check_oscillation=true;
+	double maximum_run_time=30*86400; 
 };
 
 struct  file_info
@@ -146,7 +147,7 @@ public:
 	bool failed;
 	void CMediumSet::finalize_set_param();
 	int CMediumSet::epoch_count();
-
+	string ID; 
 //GUI
 	GraphWidget *gw = 0;
 	void g_get_controllers();
