@@ -8,7 +8,6 @@ gifmod - arash.vc.db
 *.arash.vc.db
 *.vc.db
 *.VC.db
-*.VC.opendb
 GIFMod - Sassan.VC.VC.opendb
 *.tlog
 moc_*.cpp
