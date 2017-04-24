@@ -379,10 +379,6 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\files\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DARMA_USE_LAPACK -DARMA_USE_BLAS "-D\"$(INHERIT)\"" -DQT_PRINTSUPPORT_LIB -DGIFMOD  "-I.\armadillo-header" "-I$(QTDIR)\include" "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I$(SolutionDir)\GeneratedFiles\$(ProjectName)\." "-I.\GeneratedFiles\files" "-I.\GeneratedFiles"</Command>
     </CustomBuild>
     <ClInclude Include="GUI\colorScheme.h" />
-<<<<<<< HEAD
-    <CustomBuild Include="GUI\commandLineEdit.h" />
-    <ClInclude Include="GUI\commandWindow.h" />
-=======
     <CustomBuild Include="GUI\commandWindow.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing commandWindow.h...</Message>
@@ -401,7 +397,6 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\files\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\files\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DARMA_USE_LAPACK -DARMA_USE_BLAS "-D\"$(INHERIT)\"" -DQT_PRINTSUPPORT_LIB -DGIFMOD "-I.\armadillo-header" "-I$(QTDIR)\include" "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I$(SolutionDir)\GeneratedFiles\$(ProjectName)\." "-I.\GeneratedFiles\files" "-I.\GeneratedFiles"</Command>
     </CustomBuild>
->>>>>>> origin/master
     <ClInclude Include="GUI\Connection.h" />
     <ClInclude Include="GUI\Constituent.h" />
     <ClInclude Include="GUI\ConstituentTableModel.h" />
