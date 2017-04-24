@@ -181,6 +181,9 @@
     <ClCompile Include="GeneratedFiles\GIFMOD\Debug\moc_wizard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GUI\commandWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GUI\Binary.h" />
@@ -343,6 +346,18 @@
     <ClInclude Include="GeneratedFiles\ui_wizard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GUI\commandWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_commandWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\commandLineEdit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_mainwindowGWA.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="GUI\expEditor.h" />
@@ -401,6 +416,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="GUI\PropList.csv" />
+    <None Include="GUI\commandWindow.ui">
+      <Filter>Form Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">

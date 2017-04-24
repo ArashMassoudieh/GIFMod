@@ -100,7 +100,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PreprocessorDefinitions>UNICODE;WIN32;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;ARMA_USE_LAPACK;ARMA_USE_BLAS;%(PreprocessorDefinitions);QT_PRINTSUPPORT_LIB;GIFMOD</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\generatedFiles\files;.\armadillo-header;.\Model;.\Utility;$(QTDIR)\include;.\GeneratedFiles\GIFMOD\$(ConfigurationName);.\GeneratedFiles\GWA\$(ConfigurationName);.\icons;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtWidgets;.\GUI;%(AdditionalIncludeDirectories);$(QTDIR)\include\QtPrintSupport;.\GeneratedFiles\GIFMOD</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\generatedFiles\files;.\armadillo-header;.\Model;.\Utility;$(QTDIR)\include;.\GeneratedFiles\GIFMOD\$(ConfigurationName);.\GeneratedFiles\GWA\$(ConfigurationName);.\icons;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtWidgets;.\GUI;%(AdditionalIncludeDirectories);$(QTDIR)\include\QtPrintSupport;.\GeneratedFiles\GIFMOD;.\generatedFiles\</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -151,7 +151,7 @@ copy *.txt $(OutDir)
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PreprocessorDefinitions>UNICODE;WIN32;WIN64;QT_DLL;QT_CORE_LIB;QT_GUI_LIB;QT_WIDGETS_LIB;ARMA_USE_LAPACK;ARMA_USE_BLAS;%(PreprocessorDefinitions);QT_PRINTSUPPORT_LIB;GIFMOD</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\armadillo-header;.\Model;.\Utility;$(QTDIR)\include;.\GeneratedFiles\GIFMOD\$(ConfigurationName);.\GeneratedFiles\GWA\$(ConfigurationName);.\icons;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtWidgets;.\GUI;%(AdditionalIncludeDirectories);$(QTDIR)\include\QtPrintSupport;.\GeneratedFiles\GIFMOD</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\armadillo-header;.\Model;.\Utility;$(QTDIR)\include;.\GeneratedFiles\GIFMOD\$(ConfigurationName);.\GeneratedFiles\GWA\$(ConfigurationName);.\icons;$(QTDIR)\include\QtCore;$(QTDIR)\include\QtGui;$(QTDIR)\include\QtWidgets;.\GUI;%(AdditionalIncludeDirectories);$(QTDIR)\include\QtPrintSupport;.\GeneratedFiles\GIFMOD;.\GeneratedFiles\;.\GeneratedFiles\files</AdditionalIncludeDirectories>
       <DebugInformationFormat />
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
@@ -213,6 +213,7 @@ copy *.txt $(OutDir)
     <ClCompile Include="GUI\BTCSet.cpp" />
     <ClCompile Include="GUI\Buildup.cpp" />
     <ClCompile Include="GUI\colorScheme.cpp" />
+    <ClCompile Include="GUI\commandWindow.cpp" />
     <ClCompile Include="GUI\Connection.cpp" />
     <ClCompile Include="GUI\Constituent.cpp" />
     <ClCompile Include="GUI\ConstituentDelegate.cpp" />
@@ -321,6 +322,7 @@ copy *.txt $(OutDir)
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_reactionwindow.h" />
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_runtimeWindow.h" />
     <ClInclude Include="GeneratedFiles\GIFMOD\ui_wizard.h" />
+    <ClInclude Include="GeneratedFiles\ui_commandWindow.h" />
     <ClInclude Include="GeneratedFiles\ui_ConstituentWindow.h" />
     <ClInclude Include="GeneratedFiles\ui_csvEditor.h" />
     <ClInclude Include="GeneratedFiles\ui_ExchangeParametersWindow.h" />
@@ -328,6 +330,7 @@ copy *.txt $(OutDir)
     <ClInclude Include="GeneratedFiles\ui_helpWindow.h" />
     <ClInclude Include="GeneratedFiles\ui_logwindow.h" />
     <ClInclude Include="GeneratedFiles\ui_mainwindowGIFMod.h" />
+    <ClInclude Include="GeneratedFiles\ui_mainwindowGWA.h" />
     <ClInclude Include="GeneratedFiles\ui_ObservedConstituentWindow.h" />
     <ClInclude Include="GeneratedFiles\ui_ParticleWindow.h" />
     <ClInclude Include="GeneratedFiles\ui_plotwindow.h" />
@@ -340,6 +343,8 @@ copy *.txt $(OutDir)
     <ClInclude Include="GUI\BTCSet.h" />
     <ClInclude Include="GUI\Buildup.h" />
     <ClInclude Include="GUI\colorScheme.h" />
+    <ClInclude Include="GUI\commandLineEdit.h" />
+    <ClInclude Include="GUI\commandWindow.h" />
     <ClInclude Include="GUI\Connection.h" />
     <ClInclude Include="GUI\Constituent.h" />
     <ClInclude Include="GUI\ConstituentTableModel.h" />
@@ -1086,6 +1091,7 @@ copy *.txt $(OutDir)
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\GIFMOD\ui_%(Filename).h;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\GIFMOD\ui_%(Filename).h" "%(FullPath)"</Command>
     </CustomBuild>
+    <None Include="GUI\commandWindow.ui" />
     <None Include="GUI\PropList.csv" />
     <CustomBuild Include="GUI\reactionwindow.ui">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
