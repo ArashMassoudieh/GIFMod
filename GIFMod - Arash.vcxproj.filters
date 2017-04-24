@@ -451,9 +451,6 @@
     <ClInclude Include="GUI\utility_funcs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="GUI\commandLineEdit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="GUI\expEditor.h" />
@@ -499,6 +496,9 @@
     </CustomBuild>
     <CustomBuild Include="GUI\csvEditor.ui">
       <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GUI\commandLineEdit.h">
+      <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
