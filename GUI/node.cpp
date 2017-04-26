@@ -54,6 +54,7 @@ Node::Node(GraphWidget *gwidget, QString _type, QString _name, int _ID, int x, i
 	objectType.SubType = (*parent->mList).filter(filter).SubTypes()[0];
 //	props = new PropList<Node>(this);
 	props.parent = this;
+	
 	parent->MainGraphicsScene->addItem(this);
 	setName (newNodeName( (_name == "No Name") ? ObjectType().SubType : _name, parent->Nodes()));
 	if (_type == "Tracer")

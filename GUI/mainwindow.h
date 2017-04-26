@@ -112,7 +112,7 @@ private slots:
 	void on_actionAdd_St_ream_triggered();
 
 	void on_actionAdd_plant_triggered();
-
+	
 	//    void on_actionAdd_Interface_triggered();
 
 	void on_actionAdd_Connector_triggered(bool checked);
