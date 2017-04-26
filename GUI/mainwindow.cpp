@@ -1972,6 +1972,8 @@ void MainWindow::add(QString entity)
 		on_actionAdd_Darcy_Block_triggered();
 	if (entity == "storage")
 		on_actionAdd_Stora_ge_triggered();
+	if (entity == "plant")
+		on_actionAdd_plant_triggered();
 /*	if (entity == "pond")
 		on_actionAdd_Pond_triggered();
 	if (entity == "soil")
@@ -2028,6 +2030,14 @@ void MainWindow::on_actionAdd_St_ream_triggered()
 	static int Stream_Blocks = 1;
 
 	new Node(mainGraphWidget, "Stream", QString("Stream (%1)").arg(Stream_Blocks++), -1, newBlockX(), newBlockY());
+
+}
+
+void MainWindow::on_actionAdd_plant_triggered()
+{
+	static int Plant_Blocks = 1;
+
+	new Node(mainGraphWidget, "Plant", QString("Plant (%1)").arg(Plant_Blocks++), -1, newBlockX(), newBlockY());
 
 }
 
