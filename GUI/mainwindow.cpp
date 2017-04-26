@@ -274,6 +274,7 @@ MainWindow::MainWindow(QWidget *parent, QString applicationName, QString shortNa
 #ifdef GIFMOD
 	connect(ui->menuWaterQuality->menuAction(), SIGNAL(hovered()), this, SLOT(menuWaterQuality_hovered()));
 	connect(ui->menuWaterQuality, SIGNAL(triggered()), this, SLOT(menuWaterQuality_triggered()));
+	connect(ui->actionAdd_Plant, SIGNAL(triggered()), this, SLOT(on_actionAdd_plant_triggered()));
 #endif
 
 
