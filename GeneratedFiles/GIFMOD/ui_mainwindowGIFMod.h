@@ -100,6 +100,7 @@ public:
     QAction *actionReset_colors;
     QAction *actionNew_from_template;
     QAction *actionCommandLine;
+    QAction *actionAdd_Plant;
     QWidget *centralWidget;
     QMenuBar *menuBar;
     QMenu *menu_File;
@@ -391,6 +392,11 @@ public:
         QIcon icon31;
         icon31.addFile(QStringLiteral("Icons/command-line-icon-18607-16x16.ico"), QSize(), QIcon::Normal, QIcon::Off);
         actionCommandLine->setIcon(icon31);
+        actionAdd_Plant = new QAction(MainWindow);
+        actionAdd_Plant->setObjectName(QStringLiteral("actionAdd_Plant"));
+        QIcon icon32;
+        icon32.addFile(QStringLiteral("Icons/plant.png"), QSize(), QIcon::Normal, QIcon::Off);
+        actionAdd_Plant->setIcon(icon32);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         MainWindow->setCentralWidget(centralWidget);
@@ -497,6 +503,7 @@ public:
         menuAdd_Block->addAction(actionAdd_Darcy_Block);
         menuAdd_Block->addAction(actionAdd_Stora_ge);
         menuAdd_Block->addAction(actionAdd_St_ream);
+        menuAdd_Block->addAction(actionAdd_Plant);
         menuPreferences->addAction(actionProjectSettings);
         menuPreferences->addAction(actionClimateSettings);
         menuPreferences->addAction(actionSolverSettings);
@@ -532,6 +539,7 @@ public:
         toolBar->addAction(actionAdd_Stora_ge);
         toolBar->addSeparator();
         toolBar->addAction(actionAdd_Catchment_Area);
+        toolBar->addAction(actionAdd_Plant);
         toolBar->addAction(actionAdd_St_ream);
         toolBar->addSeparator();
         toolBar_2->addAction(actionZoom_In);
@@ -651,6 +659,7 @@ public:
 #ifndef QT_NO_TOOLTIP
         actionCommandLine->setToolTip(QApplication::translate("MainWindow", "Get text commands", 0));
 #endif // QT_NO_TOOLTIP
+        actionAdd_Plant->setText(QApplication::translate("MainWindow", "Add plant", 0));
         menu_File->setTitle(QApplication::translate("MainWindow", "&File", 0));
         menuRecent->setTitle(QApplication::translate("MainWindow", "Recent", 0));
         menu_Help->setTitle(QApplication::translate("MainWindow", "&Help", 0));
@@ -663,10 +672,11 @@ public:
         menuBlocks->setTitle(QApplication::translate("MainWindow", "Blocks", 0));
         menuConnectors->setTitle(QApplication::translate("MainWindow", "Connectors", 0));
         menuWaterQuality->setTitle(QApplication::translate("MainWindow", "Water quality", 0));
-        toolBar->setWindowTitle(QApplication::translate("MainWindow", "toolBar", 0));
-        toolBar_2->setWindowTitle(QApplication::translate("MainWindow", "toolBar_2", 0));
-        toolBar_4->setWindowTitle(QApplication::translate("MainWindow", "toolBar_4", 0));
-        experimentsToolbar->setWindowTitle(QApplication::translate("MainWindow", "experimentsToolbar", 0));
+        mainToolBar->setWindowTitle(QApplication::translate("MainWindow", "File", 0));
+        toolBar->setWindowTitle(QApplication::translate("MainWindow", "Blocks", 0));
+        toolBar_2->setWindowTitle(QApplication::translate("MainWindow", "View", 0));
+        toolBar_4->setWindowTitle(QApplication::translate("MainWindow", "Run", 0));
+        experimentsToolbar->setWindowTitle(QApplication::translate("MainWindow", "experiments", 0));
         toolBar_3->setWindowTitle(QApplication::translate("MainWindow", "toolBar_3", 0));
     } // retranslateUi
 
