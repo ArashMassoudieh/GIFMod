@@ -302,3 +302,7 @@ __pycache__/
 # tools/
 *.db
 gifmod - arash.vc.db
+*.tlog
+x64/GIFMod/Debug/GIFMod.tlog/link.write.1.tlog
+*.tlog
+*.tlog
