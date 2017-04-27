@@ -50,9 +50,8 @@
 1,Block,Soil,Sand,!,Residual moisture content (~thetar),theta_r,!,!,float+Estimate,0.045,TextBox,Material,Input,Yes,100047,[0:{theta_s}),E,Residual moisure content must be between zero and ~thetas
 1,Block,Darcy,Darcy,!,Saturated hydraulic conductivity (ks),ks,m/day;cm/day;cm/s;mm/s;ft/day;in/day;in/s,m/day,float+Estimate,1,UnitBox,Material,Input,Yes,100048,!=0; >=0,W;E,Hydraulic conductivity is zero; Hydraulic conductivity must me non-negative
 1,Block,Storage,Storage,!,Saturated hydraulic conductivity (ks),ks,m/day;cm/day;cm/s;mm/s;ft/day;in/day;in/s,m/day,float+Estimate,1,UnitBox,Material,Input,Yes,100333,!=0; >=0,W;E,Hydraulic conductivity is zero; Hydraulic conductivity must me non-negative
-//1,Block,Pond,Pond,!,Saturated moisture content (~thetas),theta_s,!,!,float+Estimate,1,TextBox,Material,Input,Yes,100051,(0:1],E,Saturation moisure content must be between zero and one
-1,Block,Stream,Stream,!,Saturated moisture content (~thetas),theta_s,!,!,float+Estimate,1,TextBox,Material,Input,Yes,100051,(0:1],E,Saturation moisure content must be between zero and one
-1,Block,Darcy,Darcy,!,Saturated moisture content (~thetas),Theta_s,!,!,float+Estimate,!,TextBox,Material,Input,Yes,100328,(0:1],E,Saturation moisure content must be between zero and one
+//1,Block,Stream,Stream,!,Saturated moisture content (~thetas),theta_s,!,!,float+Estimate,1,TextBox,Material,Input,Yes,100051,(0:1],E,Saturation moisure content must be between zero and one
+1,Block,Darcy,Darcy,!,Saturated moisture content (~thetas),theta_s,!,!,float+Estimate,!,TextBox,Material,Input,Yes,100328,(0:1],E,Saturation moisure content must be between zero and one
 1,Block,Storage,Storage,!,Saturated moisture content (~thetas),theta_s,!,!,float+Estimate,0.4,TextBox,Material,Input,Yes,100334,(0:1],E,Saturation moisure content must be between zero and one
 1,Block,*,*,!,Vapor diffusion coefficient,vapor_diffusion,m~^2/day; m~^2/s; cm~^2/s; cm~^2/day ,m~^2/day,float+Estimate,0,UnitBox,Material,Input,Yes,100059,>=0,E,Vapor Diffusion Coefficient must be non-negative
 1,Connector,Default,non-Porous,!,Flow exponent,exponent,!,!,float+Estimate,!,TextBox,Geometry,Input,Yes,100061,,,
@@ -423,3 +422,4 @@
 1,Block,Plant,Plant,!,Van-Genuchten ~alpha parameter,vg_alpha,1/m;1/cm;1/ft;1/in,1/m,float+Estimate,14.5,UnitBox,Material,Input,Yes,100056,>0,E,Van Genuchten ~alpha parameter must be positive
 1,Block,Plant,*,!,Van-Genuchten ~lambda parameter,lambda,!,!,float+Estimate,0.5,TextBox,Material,Input,Yes,100057,>=0,E,Van Genuchten ~lambda parameter must be non-negative
 1,Block,Plant,Plant,!,Van-Genuchten n parameter,vg_n,!,!,float+Estimate,2.68,TextBox,Material,Input,Yes,100058,>0,E,Van Genuchten n parameter must be positive
+1,Block,Plant,Plant,!,Saturated moisture content (~thetas),theta_s,!,!,float+Estimate,!,TextBox,Material,Input,Yes,100328,(0:1],E,Saturation moisure content must be between zero and one

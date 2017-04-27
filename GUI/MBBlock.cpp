@@ -246,6 +246,8 @@ double CMBBlock::get_val(int i, vector<int> ii)
 	if (i == physical_params::latent_heat_of_evaporation)
 		return 2.501e6 - 2370*(*current_temperature);
 
+	if (i == physical_params::LAI)
+		return plant_prop.LAI;
 
 	if (i>=50 && i<100) return fs_params[i-50];
 	if (i>=100 && i<1000) return G[ii[0]][i];
@@ -299,6 +301,7 @@ double CMBBlock::get_val(string SS)
 		if (tolower(trim(s[0]))=="v") return V;
 		if (tolower(trim(s[0]))=="s") return S;
 		if (tolower(trim(s[0]))=="z0") return z0;
+		if (tolower(trim(s[0])) == "lai") return plant_prop.LAI;
 		if (tolower(trim(s[0]))=="se") 
 		{	if (indicator!=0)
 			return (Heavyside(S/V)*S/V - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);
