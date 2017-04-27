@@ -15,13 +15,22 @@
 
 using namespace std;
 
-enum Block_types { Soil, Pond, Storage, Catchment, Manhole, Darcy, Stream, NativeSoil };
+enum Block_types { Soil, Pond, Storage, Catchment, Manhole, Darcy, Stream, Plant };
 class CGWA;
 class CMedium;
+
+struct plant_props // plant properties
+{
+	double LAI; // Leaf area index
+	vector<string> limiting_nutrients; // the list of limiting nutrients
+	vector<double> half_saturation_constants; //half saturation factors corresponding to each limiting nutrient
+
+};
+
 class CMBBlock
 {
 public:
-	CMBBlock(void);
+	CMBBlock(void);// default constructor
 	~CMBBlock(void);
 	CMBBlock(const CMBBlock& BB);// copy constructor
 	int n_constts; 	int n_phases; //number of chemical species, number of phases;
@@ -157,6 +166,7 @@ public:
 	double *current_wind;
 	double light_reduction_factor;
 	bool perform_rxn = true;
+	plant_props plant_prop; //plant properties including LAI and growth parameters. 
 #ifdef GIFMOD
 	CMedium *parent; 
 #endif

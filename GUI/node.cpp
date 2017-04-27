@@ -461,6 +461,10 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 		{
 			Color1 = Qt::darkCyan; Color2 = Qt::darkGray;
 		}
+		if (ObjectType().ObjectType == "Plant")
+		{
+			Color1 = Qt::darkGreen; Color2 = Qt::green;
+		}
 	}
 	if (ObjectType().ObjectType == "Well")
 	{
@@ -506,10 +510,21 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 			radialGrad.setColorAt(0, QColor(Qt::darkCyan).light(120));
 			radialGrad.setColorAt(1, QColor(Qt::darkGray).light(120));
 		}
+		if (ObjectType().ObjectType == "Plant")
+		{
+			radialGrad.setColorAt(0, QColor(Qt::darkGreen).light(300));
+			radialGrad.setColorAt(1, QColor(Qt::green).light(120));
+			QPixmap pixmap("icons/plant.png");
+			QRectF rect = QRectF(boundingRect().left() + 0.05*boundingRect().width(), boundingRect().top()+0.05*boundingRect().width(), boundingRect().width()*0.9, boundingRect().height()*0.9);
+			QRectF source(0.0, 0.0, 450, 612);
+			painter->drawPixmap(rect, pixmap, source);
+		}
+
 		if (ObjectType().ObjectType == "Well")
 		{
 			radialGrad.setColorAt(0, QColor(Qt::yellow).light(120));
 			radialGrad.setColorAt(1, QColor(Qt::darkYellow).light(120));
+			
 		}
 		if (errorDetected())
 		{

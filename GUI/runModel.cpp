@@ -1323,6 +1323,7 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 		if (n->objectType.ObjectType == "Manhole") { B.indicator = Block_types::Manhole; } //4
 		if (n->objectType.ObjectType == "Darcy") { B.indicator = Block_types::Darcy; } //5
 		if (n->objectType.ObjectType == "Stream") { B.indicator = Block_types::Stream; } //6
+		if (n->objectType.ObjectType == "Plant") { B.indicator = Block_types::Plant; } //6
 		B.set_val("a", n->val("a").toFloat());
 		B.set_val("v", n->val("v").toFloat());
 
