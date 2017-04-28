@@ -427,3 +427,10 @@
 1,Entity,Evapotranspiration,Penman (plant),,Half evaporation LAI (kLAI),psychrometric_constant,!,!,string,1.5,UnitBox,Global,Select,No,100319,>0,E,Half evaporation LAI must be positive
 1,Entity,Evapotranspiration,Priestley-Taylor (plant),,Half evaporation LAI (kLAI),psychrometric_constant,!,!,string,1.5,UnitBox,Global,Select,No,100319,>0,E,Half evaporation LAI must be positive
 1,Entity,Evapotranspiration,Aerodynamic (plant),,Half evaporation LAI (kLAI),psychrometric_constant,!,!,string,1.5,UnitBox,Global,Select,No,100319,>0,E,Half evaporation LAI must be positive
+1,Block,Plant,*,!,Maximum leaf area index,lai_max,!,!,float+Estimate,8,TextBox,Material,Input,Yes,100314,>0,E,Maximum leaf area index (LAI_max) must be a positive number
+1,Block,Plant,*,!,Plant growth rate coefficient,plant_growth_rate_coefficient,m^3/J,m^3/J,float+Estimate,0,TextBox,Material,Input,Yes,100314,>0,E,Plant growth rate coefficient
+1,Block,Plant,*,!,Base temperature,temperature_base,~degreeC,~DegreeC,float+Estimate,10,TextBox,Material,Input,Yes,100314,,,
+1,Block,Plant,*,!,Temperature spread coefficient,temperature_spread_factor,~degreeC,~DegreeC,float+Estimate,4,TextBox,Material,Input,Yes,100314,>0,E,Temperature spread coefficient must be positive
+1,Block,Plant,*,!,Plant maximum biomass decay coefficient,plant_biomass_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.01,TextBox,Material,Input,Yes,100314,>0,E,Plant maximum decay coefficient must be positive
+1,Block,Plant,*,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100314,>0,E,Plant maximum leaf decay coefficient must be positive
+1,Block,Plant,*,!,Optimal temperature,temperature_spread_factor,~degreeC,~DegreeC,float+Estimate,30,TextBox,Material,Input,Yes,100314,>0,,
