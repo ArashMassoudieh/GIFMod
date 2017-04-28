@@ -136,7 +136,10 @@ CStringOP::CStringOP(string S)
 				nn = sqs_;
 			if (S.substr(i + 1, 3) == "mo1")
 				nn = mo1_;
-
+			if (S.substr(i + 1, 3) == "sig")
+				nn = sig_;
+			if (S.substr(i + 1, 3) == "toy")
+				nn = toy_;
 
 			for (int j=i+4; j<S.size(); j++)
 			{
@@ -423,7 +426,8 @@ CStringOP::CStringOP(string S, CRxnNetwork *R)
 				nn = mo1_;
 			if (S.substr(i + 1, 3) == "toy")
 				nn = toy_;
-
+			if (S.substr(i + 1, 3) == "sig")
+				nn = sig_;
 
 			for (int j = i + 4; j<S.size(); j++)
 			{

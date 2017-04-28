@@ -16,7 +16,7 @@ CMBBlock::CMBBlock(void)
 	setzero=0;
 	outflow_corr_factor = 1;
 	q = 0;
-	fs_params.resize(30);
+	fs_params.resize(40);
 	fs_params[storativity] = 0.01;
 	fs_params[theta_s] = 1;
 
@@ -638,6 +638,10 @@ double CMBBlock::calc(CStringOP &term, vector<int> ii)  //Works w/o reference(&)
 				return out/fabs(out)*sqrt(fabs(out));
 			else
 				return 0;
+		if (term.number == sig_)
+		{
+			return exp(out) / (1 + exp(out));
+		}
 	}
 
 	else
@@ -802,6 +806,10 @@ double CMBBlock::calc_star(CStringOP &term, vector<int> ii)
 				return out/fabs(out)*sqrt(fabs(out));
 			else
 				return 0;
+		if (term.number == sig_)
+		{
+			return exp(out) / (1 + exp(out));
+		}
 	}
 
 	else
@@ -881,6 +889,14 @@ void CMBBlock::set_val(const string &SS, double val)
 		if ((tolower(trim(s[0]))=="sc") || (tolower(trim(s[0]))=="storativity")) fs_params[storativity] = val;
 		if (tolower(trim(s[0]))=="storage_epsilon") fs_params[storage_epsilon] = val;
 		if (tolower(trim(s[0]))=="storage_n") fs_params[storage_n] = val;
+		if (tolower(trim(s[0])) == "lai_max") fs_params[LAI_max] = val;
+		if (tolower(trim(s[0])) == "plant_growth_rate_coefficient") fs_params[plant_growth_rate_coefficient] = val;
+		if (tolower(trim(s[0])) == "temperature_base") fs_params[temperature_base] = val;
+		if (tolower(trim(s[0])) == "temperature_spread_factor") fs_params[temperature_spread_factor] = val;
+		if (tolower(trim(s[0])) == "plant_biomass_decay_factor") fs_params[plant_biomass_decay_factor] = val;
+		if (tolower(trim(s[0])) == "plant_leaf_decay_factor") fs_params[plant_leaf_decay_factor] = val;
+		if (tolower(trim(s[0])) == "optimal_temperature") fs_params[optimal_temperature] = val;
+
 		
 		if (tolower(trim(s[0]))=="outflow_corr_factor") outflow_corr_factor = val;
 		if (tolower(trim(s[0]))=="fixed_status") fixed = val;
@@ -892,6 +908,7 @@ void CMBBlock::set_val(const string &SS, double val)
 		if (tolower(trim(s[0]))=="se*") S_star = V*(val*(fs_params[theta_s]-fs_params[theta_r]) + fs_params[theta_r]);
 		if (tolower(trim(s[0]))=="theta*") S_star = V*val;
 		if (tolower(trim(s[0])) == "light_reduction_factor") light_reduction_factor = val;
+		
 	}
 	else if (s.size()==2)
 	{
