@@ -167,6 +167,11 @@ public:
 	QMap<string, int> blockIndex;
 	QMap<string, int> connectorIndex;
 	_control Control;
+	double elapsed_time(); // gets the total elapsed computational time from the start of the simulation of the mediumset. 
+	double progress_percentage(); // shows the overall progress percentage of the simulation
+
+
+	
 	
 
 
