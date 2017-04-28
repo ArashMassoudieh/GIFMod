@@ -2167,7 +2167,6 @@ void CMediumSet::solve(runtimeWindow *rtw)
 
 
 
-
 /*
 bool CMedium::solve(runtimeWindow *rtw)
 {

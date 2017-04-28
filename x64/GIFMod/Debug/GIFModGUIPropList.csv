@@ -50,8 +50,9 @@
 1,Block,Soil,Sand,!,Residual moisture content (~thetar),theta_r,!,!,float+Estimate,0.045,TextBox,Material,Input,Yes,100047,[0:{theta_s}),E,Residual moisure content must be between zero and ~thetas
 1,Block,Darcy,Darcy,!,Saturated hydraulic conductivity (ks),ks,m/day;cm/day;cm/s;mm/s;ft/day;in/day;in/s,m/day,float+Estimate,1,UnitBox,Material,Input,Yes,100048,!=0; >=0,W;E,Hydraulic conductivity is zero; Hydraulic conductivity must me non-negative
 1,Block,Storage,Storage,!,Saturated hydraulic conductivity (ks),ks,m/day;cm/day;cm/s;mm/s;ft/day;in/day;in/s,m/day,float+Estimate,1,UnitBox,Material,Input,Yes,100333,!=0; >=0,W;E,Hydraulic conductivity is zero; Hydraulic conductivity must me non-negative
-//1,Block,Stream,Stream,!,Saturated moisture content (~thetas),theta_s,!,!,float+Estimate,1,TextBox,Material,Input,Yes,100051,(0:1],E,Saturation moisure content must be between zero and one
-1,Block,Darcy,Darcy,!,Saturated moisture content (~thetas),theta_s,!,!,float+Estimate,!,TextBox,Material,Input,Yes,100328,(0:1],E,Saturation moisure content must be between zero and one
+//1,Block,Pond,Pond,!,Saturated moisture content (~thetas),theta_s,!,!,float+Estimate,1,TextBox,Material,Input,Yes,100051,(0:1],E,Saturation moisure content must be between zero and one
+1,Block,Stream,Stream,!,Saturated moisture content (~thetas),theta_s,!,!,float+Estimate,1,TextBox,Material,Input,Yes,100051,(0:1],E,Saturation moisure content must be between zero and one
+1,Block,Darcy,Darcy,!,Saturated moisture content (~thetas),Theta_s,!,!,float+Estimate,!,TextBox,Material,Input,Yes,100328,(0:1],E,Saturation moisure content must be between zero and one
 1,Block,Storage,Storage,!,Saturated moisture content (~thetas),theta_s,!,!,float+Estimate,0.4,TextBox,Material,Input,Yes,100334,(0:1],E,Saturation moisure content must be between zero and one
 1,Block,*,*,!,Vapor diffusion coefficient,vapor_diffusion,m~^2/day; m~^2/s; cm~^2/s; cm~^2/day ,m~^2/day,float+Estimate,0,UnitBox,Material,Input,Yes,100059,>=0,E,Vapor Diffusion Coefficient must be non-negative
 1,Connector,Default,non-Porous,!,Flow exponent,exponent,!,!,float+Estimate,!,TextBox,Geometry,Input,Yes,100061,,,
@@ -406,13 +407,19 @@
 1,Entity,Evapotranspiration,FAO-56,,Psychrometric constant,psychrometric_constant,Pa/~degreeC,Pa/~degreeC,string,66.8,UnitBox,Global,Select,No,100319,>0,E,Psychrometric constant must be non-negative
 1,Entity,Evapotranspiration,FAO-56,,Solar-radiation coefficient,coefficient_light,!,!,string,!,TextBox,Global,Select,No,100321,!=0;>=0,W;E,Coefficient is zero;Coefficient must be non-negative
 1,Entity,Constituent,*,!,Mobile,mobile,!,!,string,Yes;No,ComboBox,Material,Select,No,100503,,,
-1,Block,Plant,Plant,!,Bottom elevation,z0,m;cm;ft;in,m,float+Estimate,0,UnitBox,Material,Input,Yes,100013,,,
-1,Block,Plant,Plant,!,Flow expression,flow_expression,!,!,float+Estimate,!,UnitBox,Material,Input,Yes,100024,,,
-1,Block,Plant,Plant,!,moisture content (~theta),theta,!,!,float+Estimate,0.2,TextBox,Material,Input,Yes,100027,>=0;<1,E;W,Moiture content must be non-negative; moisture content is greater than 1
-1,Block,Plant,Plant,!,Initial biomass,v,m^3;cm^3;ft^3;in^3,m,float,0.01,UnitBox,Geometry,Input,Yes,100034,>0,E,Block depth must be greater than zero
-1,Block,Plant,Plant,!,Root resitivity ,ks,1/m/day;1/cm/day;1/cm/s;1/mm/s;1/ft/day;1/in/day;1/in/s,m/day,float+Estimate,7.128,UnitBox,Material,Input,Yes,100048,!=0; >=0,W;E,Hydraulic conductivity is zero; Hydraulic conductivity must me non-negative
-1,Block,Plant,Plant,!,Maximum moisture content (~thetas),theta_s,!,!,float+Estimate,0.6,TextBox,Material,Input,Yes,100051,(0:1],E,Maximum moisure content must be between zero and one
-1,Block,Plant,Plant,!,Solar-radiation,light,!,!,integer,Yes;No,ComboBox,Environment,Select,Yes,100165,,,
-1,Block,Plant,Plant,!,Matric suction coefficient (~alpha),vg_alpha,1/m;1/cm;1/ft;1/in,1/m,float+Estimate,14.5,UnitBox,Material,Input,Yes,100056,>0,E,Matric suction coefficient ~alpha must be positive
-1,Block,Plant,Plant,!,Matric suction exponent (n),vg_n,!,!,float+Estimate,2,TextBox,Material,Input,Yes,100314,>0,E,Matric suction exponent must be positive
-1,Block,Plant,*,!,Initial leaf area index,lai,!,!,float+Estimate,0.01,TextBox,Material,Input,Yes,100314,>0,E,Initial leaf area index must be greater than zero
+1,Block,Plant,*,!,Bottom area,a,m~^2;cm~^2;ft~^2,m~^2,float+Estimate,0,UnitBox,Geometry,Input,Yes,100006,>0,E,Area must be greater than zero
+1,Block,Plant,*,!,Bottom elevation,z0,m;cm;ft;in,m,float+Estimate,0,UnitBox,Material,Input,Yes,100013,,,
+1,Block,Plant,*,!,Bulk density,bd,kg/m~^3;g/cm~^3;lb/ft~^3,kg/m~^3,float+Estimate,1500,UnitBox,Material,Input,Yes,100019,>=0,W,A non-negative bulk density should be provided if a sorbing constituent is present
+1,Block,Plant,Userdefined,!,Flow expression,flow_expression,!,!,float+Estimate,!,UnitBox,Material,Input,Yes,100024,,,
+1,Block,Plant,*,!,moisture content (~theta),theta,!,!,float+Estimate,0.2,TextBox,Material,Input,Yes,100027,>=0;<1,E;W,Moiture content must be non-negative; moisture content is greater than 1
+//1,Block,Plant,Userdefined,!,Length,d,m;cm;ft;in,m,float+Estimate,0,UnitBox,Geometry,Input,Yes,100032,,,
+1,Block,Plant,*,!,Depth,depth,m;cm;ft;in,m,float,0,UnitBox,Geometry,Input,Yes,100034,>0,E,Block depth must be greater than zero
+1,Block,Plant,*,!,Precipitation,precipitation,!,!,integer,No;Yes,ComboBox,Environment,Select,Yes,100041,,,
+1,Block,Plant,Plant,!,Residual moisture content (~thetar),theta_r,!,!,float+Estimate,0.045,TextBox,Material,Input,Yes,100047,[0:{theta_s}),E,Residual moisure content must be between zero and ~thetas
+1,Block,Plant,Plant,!,Saturated hydraulic conductivity (ks),ks,m/day;cm/day;cm/s;mm/s;ft/day;in/day;in/s,m/day,float+Estimate,7.128,UnitBox,Material,Input,Yes,100048,!=0; >=0,W;E,Hydraulic conductivity is zero; Hydraulic conductivity must me non-negative
+1,Block,Plant,Plant,!,Saturated moisture content (~thetas),theta_s,!,!,float+Estimate,0.43,TextBox,Material,Input,Yes,100051,(0:1],E,Saturation moisure content must be between zero and one
+1,Block,Plant,*,!,Solar-radiation,light,!,!,integer,No;Yes,ComboBox,Environment,Select,Yes,100165,,,
+1,Block,Plant,*,!,Specific storage,storativity,1/m;1/cm;1/ft;1/in,1/m,float+Estimate,0.01,UnitBox,Material,Input,Yes,100179,>=0,E,Specific storage moisure content must be non-negative
+1,Block,Plant,Plant,!,Van-Genuchten ~alpha parameter,vg_alpha,1/m;1/cm;1/ft;1/in,1/m,float+Estimate,14.5,UnitBox,Material,Input,Yes,100056,>0,E,Van Genuchten ~alpha parameter must be positive
+1,Block,Plant,*,!,Van-Genuchten ~lambda parameter,lambda,!,!,float+Estimate,0.5,TextBox,Material,Input,Yes,100057,>=0,E,Van Genuchten ~lambda parameter must be non-negative
+1,Block,Plant,Plant,!,Van-Genuchten n parameter,vg_n,!,!,float+Estimate,2.68,TextBox,Material,Input,Yes,100058,>0,E,Van Genuchten n parameter must be positive

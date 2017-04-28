@@ -167,11 +167,6 @@ public:
 	QMap<string, int> blockIndex;
 	QMap<string, int> connectorIndex;
 	_control Control;
-	double elapsed_time();
-	double progress_percentage(); // shows the overall progress percentage of the simulation
-
-
-	
 	
 
 
