@@ -962,4 +962,29 @@ int CMediumSet::epoch_count()
 	return out; 
 }
 
+double CMediumSet::elapsed_time()
+{
+	double sum = 0;
+	for (int i = 0; Medium.size(); i++)
+		sum += Medium[i].elapsed_time;
+
+	return sum; 
+}
+
+double CMediumSet::progress_percentage()
+{
+	double sum_time_spent = 0;
+	double sum_simulation_time = 0;
+	for (int i = 0; i < Medium.size(); i++)
+		sum_time_spent += Medium[i].t - Medium[i].Timemin;
+
+	for (int i = 0; i < Medium.size(); i++)
+		sum_simulation_time += Medium[i].Timemax - Medium[i].Timemin;
+
+	return sum_time_spent / sum_simulation_time;
+
+}
+
+
+
 #endif

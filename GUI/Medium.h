@@ -415,6 +415,8 @@ public:
 	// Control
 	double CMedium::calc_obj_function(double time_interval);
 
+	double elapsed_time = 0; // this variable stores the time computational time passed from the start of the simulation
+
 };
 
 #endif

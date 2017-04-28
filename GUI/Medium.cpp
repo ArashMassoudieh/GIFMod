@@ -2113,8 +2113,8 @@ void CMedium::solve_fts_m2(double dt)
 
 				return;
 			}
-			double runtime = ((float)(clock() - time_start)) / CLOCKS_PER_SEC;
-			if (runtime > maximum_run_time())
+			elapsed_time = ((float)(clock() - time_start)) / CLOCKS_PER_SEC;
+			if (elapsed_time > maximum_run_time())
 			{
 				failed = true;
 				fail_reason = "Simulation time exceeded the maximum simulation time";
