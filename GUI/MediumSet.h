@@ -37,6 +37,7 @@ struct  Solver_parameters
 	bool steady_state_hydro = false;
 	bool check_oscillation=true;
 	double maximum_run_time=30*86400; 
+	double minimum_acceptable_negative_conc = 1e-13; //this parameter determines the absolute value of a negative concentration to be accepted. If a negative concentration with absolute value smaller than this criteria is calculated the program will replace it with a zero concentration. 
 };
 
 struct  file_info

@@ -193,6 +193,7 @@ public:
 	string& detoutfilename_obs(); ////file name where the deterministic outputs corresponding to the observed data is saved
 	int& writeinterval(); //the interval at which the output are save in output files (default = 1)
 	string& realizeparamfilename(); //output file name for Monte-Carlo realizations
+	double& minimum_acceptable_negative_conc(); //returns the minimum acceptable negative concentration criteria 
 	double t; // time
 	int counter_flow, counter_colloid, counter_const; // counter for number of iteration
 	void CMedium::Blocksmassbalance();  
