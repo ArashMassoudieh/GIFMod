@@ -28,7 +28,7 @@
 1,Block,Pond,Pond,!,Depression storage,depression,m;cm;ft;in,m,float+Estimate,0,UnitBox,Material,Input,Yes,100021,>=0,E,depression depth must be non-negative
 1,Block,*,*,!,External flux,externalflux,!,!,string,populate at runtime;blank+external flux,MultiComboBox,Global,Select,Yes,100023,,,
 1,Block,Soil,Userdefined,!,Flow expression,flow_expression,!,!,float+Estimate,!,UnitBox,Material,Input,Yes,100024,,,
-1,Block,*,*,!,Head-storage relationship,h_s_expression,!,!,expression,!,TextBox,Global,Input,Yes,100025,,,
+1,Block,*,*,!,Head-storage relationship,h_s_expression,!,!,string,!,expressionEditor,Global,Input,Yes,100025,,,
 1,Block,*,*,!,Inflow time series,inflow,!,!,filename,populate at runtime; blank+Inflow,Browser;time series,Environment,Select,Yes,100026,inflow format,E,Inflow file format is invalid.
 1,Block,Soil,*,!,moisture content (~theta),theta,!,!,float+Estimate,0.2,TextBox,Material,Input,Yes,100027,>=0;<1,E;W,Moiture content must be non-negative; moisture content is greater than 1
 1,Block,Darcy,Darcy,!,Initial moisture content (~theta),Theta,!,!,float+Estimate,!,TextBox,Material,Input,Yes,100325,>=0;={theta_s},E;W,Moiture content must be non-negative;moisture content is different than saturated moisture content for a Darcy block.
