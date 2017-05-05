@@ -28,7 +28,7 @@
 1,Block,Pond,Pond,!,Depression storage,depression,m;cm;ft;in,m,float+Estimate,0,UnitBox,Material,Input,Yes,100021,>=0,E,depression depth must be non-negative
 1,Block,*,*,!,External flux,externalflux,!,!,string,populate at runtime;blank+external flux,MultiComboBox,Global,Select,Yes,100023,,,
 1,Block,Soil,Userdefined,!,Flow expression,flow_expression,!,!,float+Estimate,!,UnitBox,Material,Input,Yes,100024,,,
-1,Block,*,*,!,Head-storage relationship,h_s_expression,!,!,expression,!,TextBox,Global,Input,Yes,100025,,,
+1,Block,*,*,!,Head-storage relationship,h_s_expression,!,!,expression,!,expressionEditor,Global,Input,Yes,100025,,,
 1,Block,*,*,!,Inflow time series,inflow,!,!,filename,populate at runtime; blank+Inflow,Browser;time series,Environment,Select,Yes,100026,inflow format,E,Inflow file format is invalid.
 1,Block,Soil,*,!,moisture content (~theta),theta,!,!,float+Estimate,0.2,TextBox,Material,Input,Yes,100027,>=0;<1,E;W,Moiture content must be non-negative; moisture content is greater than 1
 1,Block,Darcy,Darcy,!,Initial moisture content (~theta),Theta,!,!,float+Estimate,!,TextBox,Material,Input,Yes,100325,>=0;={theta_s},E;W,Moiture content must be non-negative;moisture content is different than saturated moisture content for a Darcy block.
@@ -61,7 +61,7 @@
 1,Connector,Default,Porous,!,Saturated hydraulic conductivity (ks),ks,m/day; cm/day;cm/s;mm/s;ft/day;in/day;in/s,m/day,float+Estimate,!,UnitBox,Material,Input,Yes,100066,>=0;!=0,E;W,Hydraulic conductivity must me non-negative;Saturated hydraulic conductivity will be assigned based on the connected blocks
 1,Connector,*,*,!,Interface/cross sectional area,a,m~^2;ft~^2,m~^2,float+Estimate,!,UnitBox,Geometry,Input,Yes,100067,!=0;>=0,W;E,"The interface area is not specified, the area will be calculated based on the connected blocks;Area must be greater than zero"
 1,Connector,Pipe,*,!,Diameter,diameter,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100069,>0,E,Pipe diameter must be greater than zero
-1,Connector,*,*,!,Dispersion expression,dispersion_expression,!,!,expression,!,TextBox,Material,Input,Yes,100070,>=0,E,
+1,Connector,*,*,!,Dispersion expression,dispersion_expression,!,!,expression,!,expressionEditor,Material,Input,Yes,100070,>=0,E,
 1,Connector,*,*,!,Dispersivity (~alpha),alpha,m;cm;ft;in,m,float+Estimate,!,UnitBox,Material,Input,Yes,100071,>=0,E,Dispersivity must be non-negative
 1,Connector,Pipe,*,!,Start elevation,z1,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100072,,,
 1,Connector,Pipe,*,!,End elevation,z2,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100073,,,
@@ -81,8 +81,8 @@
 1,Connector,Darcy,*,!,Saturated hydraulic conductivity (ks),ks,m/day;cm/day;cm/s;mm/s;ft/day;in/day;in/s,m/day,float+Estimate,!,UnitBox,Material,Input,Yes,100327,>=0,E,Hydraulic conductivity must me non-negative
 1,Connector,*,*,!,Settling,settling,!,!,string,No;Yes,ComboBox,Geometry,Select,Yes,100081,,,
 1,Connector,Normal Flow,*,!,Width,width,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100082,!=0; >=0,W;E,Width is assigned to be zero; Width must be non-negative
-1,Connector,Userdefined,*,!,Area expression,area_expression,m~^2;ft~^2,m~^2,expression,!,UnitBox,Geometry,Input,Yes,100083,,,
-1,Connector,Userdefined,*,!,Flow expression,flow_expression,!,!,expression,!,TextBox,Geometry,Input,Yes,100084,,,
+1,Connector,Userdefined,*,!,Area expression,area_expression,m~^2;ft~^2,m~^2,expression,!,expressionEditor,Geometry,Input,Yes,100083,,,
+1,Connector,Userdefined,*,!,Flow expression,flow_expression,!,!,expression,!,expressionEditor,Geometry,Input,Yes,100084,,,
 1,Entity,Build-up,Build-up,!,Name,Name,!,!,string,!,TextBox,Global,Input,No,100085,,,
 1,Entity,Constituent,*,!,Name,Name,!,!,string,!,TextBox,Global,Input,No,100086,,,
 1,Entity,External flux,External flux,!,Name,!,!,!,string,!,TextBox,Global,Input,No,100087,,,
@@ -100,7 +100,7 @@
 1,Entity,Reaction parameter,Reaction parameter,!,Temperature correction factor (Arrhenius constant),temperature_correction,!,!,float+Estimate,1,TextBox,Global,Input,No,100152,>=0,E,Temperature correction factor must be non-negative
 1,Entity,Solver settings,Solver settings,!,Time step change coefficient in case of non-convergance,dt_change_failure,!,!,float+Estimate,0.5,TextBox,Global,Input,No,100153,(0:1),E,time step change coefficient in case of non-convergance must be greater than zero
 1,Entity,Solver settings,Solver settings,!,Time step change rate coefficient,dt_change_rate,!,!,float+Estimate,0.95,TextBox,Global,Input,No,100154,(0:1),E,time step change coefficient in case of non-convergance must be greater than zero
-1,Entity,External flux,External flux,!,Transfer rate expression,expression,!,!,expression,!,TextBox,Global,Input,No,100155,,,
+1,Entity,External flux,External flux,!,Transfer rate expression,expression,!,!,expression,!,expressionEditor,Global,Input,No,100155,,,
 1,Entity,Solver settings,Solver settings,!,Uniform output interval,uniformoutput,!,!,integer,Yes;No,ComboBox,Global,Select,No,100156,,,
 1,Entity,Reaction parameter,Reaction parameter,!,Value,value,!,!,float+Estimate,0,TextBox,Global,Input,No,100157,,,
 1,Entity,External flux,External flux,!,Velocity exponent,velocity_exponent,!,!,float+Estimate,!,TextBox,Global,Input,No,100158,,,
@@ -167,7 +167,7 @@
 1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Realized parameters Output File,realizedparam,!,!,string,!,Browser,Global,Input,No,100221,,,
 1,Entity,Evapotranspiration,*,!,Name,!,!,!,string,!,TextBox,Global,Input,No,100222,,,
 1,Entity,Evapotranspiration,*,Default  Values Template,SubType,!,!,!,string,populate at runtime; SubType,ComboBox,Geometry,Select,No,100224,,,
-1,Entity,Evapotranspiration,*,!,Rate expression,expression,!,!,expression,!,TextBox,Global,Select,No,100225,,,
+1,Entity,Evapotranspiration,*,!,Rate expression,expression,!,!,expression,!,expressionEditor,Global,Select,No,100225,,,
 1,Entity,Evapotranspiration,Time Series,!,Time series,time_series,!,!,filename,!,Browser;time series,Global,Select,No,100226,,,
 1,Entity,Evapotranspiration,FAO-56,!,FAO-56 crop coefficient time series,fao_56_kc_coefficient,!,!,filename,!,Browser;time series,Global,Select,No,100502,"!=""""",,
 1,Entity,Evapotranspiration,Time Series,!,Uptake constituents,uptake_constituents,!,!,string,No;Yes,ComboBox,Global,Select,No,100227,,,
@@ -294,7 +294,7 @@
 1,Entity,Build-up,Build-up,!,Sorbed/attached,sorb,!,!,string,Yes; No,ComboBox,Global,Select,No,100149,,,
 1,Entity,Climate settings,Climate settings,!,Precipitation time series,precipitation,!,!,filename;precipitation,!,Browser;precipitation;time series,Global,Select,No,100132,,,
 1,Entity,Constituent,*,!,Diffusion coefficient,diffusion,m~^2/day; m~^2/s; cm~^2/s; cm~^2/day ,m~^2/day,float+Estimate,!,UnitBox,Global,Input,No,100107,>=0,E,Diffusion coefficient must be non-negative
-1,Entity,Constituent,*,!,Exchange rate factor,exchange_rate_factor,!,!,expression,1,TextBox,Global,Input,No,100112,>=0,E,Exchange rate factor must be non-negative
+1,Entity,Constituent,*,!,Exchange rate factor,exchange_rate_factor,!,!,expression,1,expressionEditor,Global,Input,No,100112,>=0,E,Exchange rate factor must be non-negative
 1,Entity,Constituent,*,!,Partitioning coefficient,kd,!,!,dialog,...;Solid aqueous exchange parameters,PushButton,Global,Input,No,100128,,,
 1,Entity,Constituent,*,!,SubType,settling_model,!,!,float+Estimate,Constant velocity; Double Exponential,ComboBox,Material,Select,No,100358,,,
 1,Entity,Constituent,Double Exponential,!,Hindered zone settling parameter,r_hin,!,!,float+Estimate,!,TextBox,Material,Input,No,100359,>=0,E,Hindered zone settling parameter must be non-negative

@@ -1215,7 +1215,8 @@ void CMediumSet::g_get_environmental_params()
 				SP.check_oscillation = e->val(key).toBool();
 			if (key == "maximum_run_time" && !e->val(key).isEmpty())
 				SP.maximum_run_time = e->val(key).toFloat();
-
+			if (key == "minimum_acceptable_negative_conc" && !e->val(key).isEmpty()) 
+				SP.minimum_acceptable_negative_conc = e->val(key).toFloat();
 		}
 
 	/*		if (tolower(lid_config.keyword[i]) == "detout_obs_filename")

@@ -48,4 +48,6 @@ private:
 	QString wrongSymbol;
 };
 
+QString Export(const QString& s);
+
 #endif // EXPRESSIONTABLEMODEL_H

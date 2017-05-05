@@ -417,4 +417,6 @@ public:
 
 };
 
+QString Export(const QString& s);
+
 #endif
