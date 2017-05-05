@@ -2978,16 +2978,16 @@ void CMedium::onestepsolve_const(double dtt)
 	}
 	if (negative_concentration_allowed() == false)
 	{
-		if (X.min() < -1e-13)
+		if (X.min() < -fabs(minimum_acceptable_negative_conc()))
 		{
 			vector<int> neg_vals_cons;
 			vector<int> neg_vals_block;
 			vector<double> neg_vals;
-			for (int i = 0; i < X.getsize(); i++) if (X[i] < -1e-13) {
-				neg_vals_block.push_back(get_member_no_inv(i)[0]); neg_vals_cons.push_back(get_member_no_inv(i)[3]);  neg_vals.push_back(X[i]);
-
-
-			}
+			for (int i = 0; i < X.getsize(); i++)
+				if (X[i] < -fabs(minimum_acceptable_negative_conc())) {
+					neg_vals_block.push_back(get_member_no_inv(i)[0]); neg_vals_cons.push_back(get_member_no_inv(i)[3]);  neg_vals.push_back(X[i]);
+				}
+				else if (X[i] < 0) X[i] = 0;
 			
 			fail_reason = "Negative value in constituent "; 
 			for (int i = 0; i < neg_vals_block.size(); i++) fail_reason = fail_reason + RXN().cons[neg_vals_cons[i]].name; +", ";
@@ -4567,6 +4567,11 @@ string& CMedium::realizeparamfilename()
 	return parent->FI.realizeparamfilename;
 }
 
+double& CMedium::minimum_acceptable_negative_conc()
+{
+	return parent->SP.minimum_acceptable_negative_conc;
+}
+
 int& CMedium::nr_iteration_treshold_max()
 {
 	return parent->SP.nr_iteration_treshold_max;
@@ -5211,16 +5216,16 @@ void CMedium::onestepsolve_const_ar(double dtt)
 	}
 	if (negative_concentration_allowed() == false)
 	{
-		if (X.min() < -1e-13)
+		if (X.min() < -fabs(minimum_acceptable_negative_conc()))
 		{
 			vector<int> neg_vals_cons;
 			vector<int> neg_vals_block;
 			vector<double> neg_vals;
-			for (int i = 0; i < X.getsize(); i++) if (X[i] < -1e-13) {
+			for (int i = 0; i < X.getsize(); i++) 
+				if (X[i] < -fabs(minimum_acceptable_negative_conc())) {
 				neg_vals_block.push_back(get_member_no_inv(i)[0]); neg_vals_cons.push_back(get_member_no_inv(i)[3]);  neg_vals.push_back(X[i]);
-
-
-			}
+				}
+				else if (X[i] < 0) X[i] = 0;
 
 			fail_reason = "Negative value in constituent ";
 			for (int i = 0; i < neg_vals_block.size(); i++) fail_reason = fail_reason + RXN().cons[neg_vals_cons[i]].name; +", ";

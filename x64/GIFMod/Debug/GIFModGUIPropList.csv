@@ -318,9 +318,9 @@
 1,Entity,Solver settings,Solver settings,!,Failure criteria number of interations,nr_failure_criteria,!,!,integer,200,TextBox,Global,Input,No,100113,>0,E,Failure criteria number of interations must be positive
 1,Entity,Solver settings,Solver settings,!,Maximum number of matrix inversions allowed,epoch_limit,!,!,integer,20000,TextBox,Global,Input,No,100350,>0,E,Maximum Matrix inversions allowed must be positive
 1,Entity,Solver settings,Solver settings,!,Maximum simulation time,maximum_run_time,!,!,float,864000,TextBox,Global,Input,No,100504,>0,E,Maximum simulation time must be positive
-1,Entity,Solver settings,Solver settings,!,Initial time step size,dt,day;hr;min;s,day,float+Estimate,0.01,UnitBox,Global,Input,No,100115,>0,E,Initial time step must be greater than zero
+1,Entity,Solver settings,Solver settings,!,Initial time step size,dt,day;hr;min;s,day,float,0.01,UnitBox,Global,Input,No,100115,>0,E,Initial time step must be greater than zero
 1,Entity,Solver settings,Solver settings,!,Jackobian update interval,max_j_update_interval,!,!,integer,40,TextBox,Global,Input,No,100117,>=0,E,Jackobian matrix update interval must be non-negative
-1,Entity,Solver settings,Solver settings,!,Newton-Raphson acceptance tolerance,tol,!,!,float+Estimate,0.001,TextBox,Global,Input,No,100125,>0,E,Newton-Raphson acceptance tolerance must be positive
+1,Entity,Solver settings,Solver settings,!,Newton-Raphson acceptance tolerance,tol,!,!,float,0.001,TextBox,Global,Input,No,100125,>0,E,Newton-Raphson acceptance tolerance must be positive
 1,Entity,Project settings,Project settings,!,Simulation end time,time_max,!,!,datetime+getnumber,1,DateTime,Global,Input,Yes,100145,>{time_min},E,Simulation End time must be greater than simulation start time
 1,Entity,Project settings,Project settings,!,Perform mass balance check,mass_balance_check,!,!,string,Yes;No,ComboBox,Global,Select,No,100129,,,
 1,Entity,Project settings,Project settings,!,Perform particle transport simulation,colloid_transport,!,!,string,Yes;No,ComboBox,Global,Select,No,100130,,,
@@ -330,8 +330,8 @@
 1,Entity,Solver settings,Solver settings,!,Restore interval,restore_interval,!,!,integer,20,TextBox,Global,Input,No,100139,,,
 1,Entity,Project settings,Project settings,!,Solution method,solution_method,!,!,string,Quasi implicit Newton-Raphson,ComboBox,Global,Select,No,100147,,,
 1,Entity,Project settings,Project settings,!,Sorption,sorption,!,!,string,Yes;No,ComboBox,Global,Select,No,100360,,,
-1,Entity,Solver settings,Solver settings,!,Solution oscillation tolerance,wiggle_tolerance,!,!,float+Estimate,0.01,TextBox,Global,Input,No,100148,>0;>=0.01,E;W,Solution Oscillation tolerance must be positive;Solution Oscillation tolerance less than 0.01 lead to more computational cost
-1,Entity,Solver settings,Solver settings,!,Time weighting factor,w,!,!,float+Estimate,0,TextBox,Global,Input,No,100104,[0:1],E,Crank-Nicholson time weighting must be between 0 and 1
+1,Entity,Solver settings,Solver settings,!,Solution oscillation tolerance,wiggle_tolerance,!,!,float,0.01,TextBox,Global,Input,No,100148,>0;>=0.01,E;W,Solution Oscillation tolerance must be positive;Solution Oscillation tolerance less than 0.01 lead to more computational cost
+1,Entity,Solver settings,Solver settings,!,Time weighting factor,w,!,!,float,0,TextBox,Global,Input,No,100104,[0:1],E,Crank-Nicholson time weighting must be between 0 and 1
 1,Entity,Particle,Single phase,!,Diffusion coefficient,diffusion,m~^2/day; m~^2/s; cm~^2/s; cm~^2/day ,m~^2/day,float+Estimate,!,UnitBox,Material,Input,No,100108,>=0,E,Diffusion coefficient must be non-negative
 1,Entity,Particle,Single phase,!,Dispersivity,dispersivity,m; cm; ft; in,m,float+Estimate,!,UnitBox,Material,Input,No,100109,>=0,E,Dispersivity must be non-negative
 1,Entity,Particle,Single phase,!,Medium bulk density,bulkdensity,kg/m~^3;g/cm~^3;lb/ft~^3,kg/m~^3,float+Estimate,!,UnitBox,Material,Input,No,100120,>=0,W,A non-negative bulk density should be provided if a sorbing constituent is present
@@ -434,3 +434,4 @@
 1,Block,Plant,*,!,Plant maximum biomass decay coefficient,plant_biomass_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.01,TextBox,Material,Input,Yes,100314,>0,E,Plant maximum decay coefficient must be positive
 1,Block,Plant,*,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100314,>0,E,Plant maximum leaf decay coefficient must be positive
 1,Block,Plant,*,!,Optimal temperature,temperature_spread_factor,~degreeC,~DegreeC,float+Estimate,30,TextBox,Material,Input,Yes,100314,>0,,
+1,Entity,Solver settings,Solver settings,!,Minimum acceptable negative concentration,minimum_acceptable_negative_conc,!,!,float,1.00E-13,TextBox,Global,Input,No,100153,,,

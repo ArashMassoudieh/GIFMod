@@ -402,6 +402,7 @@ void CMediumSet::f_get_environmental_params(CLIDconfig &lid_config)
 		
 		if (tolower(lid_config.keyword[i]) == "pos_def_limit") SP.pos_def_limit = atoi(lid_config.value[i].c_str());
 		if (tolower(lid_config.keyword[i]) == "negative_concentration_allowed") SP.negative_concentration_allowed = atoi(lid_config.value[i].c_str());
+		if (tolower(lid_config.keyword[i]) == "minimum_acceptable_negative_conc") SP.minimum_acceptable_negative_conc = atof(lid_config.value[i].c_str());
 		if (tolower(lid_config.keyword[i]) == "steady_state_hydro") SP.steady_state_hydro = atoi(lid_config.value[i].c_str());
 		if (tolower(lid_config.keyword[i]) == "check_oscillation") SP.check_oscillation = atoi(lid_config.value[i].c_str());
 		
