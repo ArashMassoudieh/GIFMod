@@ -8,6 +8,7 @@
 #include "ga.h"
 #include "mcmc.h"
 #include "results.h"
+#include "reactiontablemodel.h"
 
 
 #ifdef GIFMOD
@@ -1354,7 +1355,16 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 					B.envexchange_id.push_back(flux.trimmed().toStdString());
 			if (code == "precipitation")
 				B.precipitation_swch = n->val(code).toBool();
-			if (code == "h_s_expression" && !n->val(code).isEmpty()) B.H_S_expression = n->val(code).toStdString();
+			if (code == "h_s_expression" && !n->val(code).isEmpty()) {
+				
+				ReactionTableModelPri rxntblmod;
+				rxntblmod.Constituents = gw->EntityNames("Constituent");
+				rxntblmod.Parameters = gw->EntityNames("Reaction parameter");
+				rxntblmod.Physicals = gw->PhysicalCharacteristicsList;
+				rxntblmod.Functions = gw->functionList;
+				B.H_S_expression = rxntblmod.Export(n->val(code)).toStdString();
+			}
+		
 			if (code == "evapotranspiration")
 				B.evaporation_id.push_back(n->val(code).toStdString());
 			if (code == "light")

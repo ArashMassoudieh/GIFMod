@@ -134,6 +134,10 @@ QWidget *Delegate::createEditor(QWidget *parent,
 	if (delegateType.contains("expressionEditor"))
 	{
 		QStringList words = index.data(allowableWordsRole).toStringList();
+		words << this->parent->EntityNames("Constituent");
+		words << this->parent->EntityNames("Reaction parameter");
+		words << this->parent->PhysicalCharacteristicsList;
+		words << this->parent->functionList;
 #ifdef GIFMOD
 		expEditor* editor = new expEditor(words, 0, parent);
 		return editor;
