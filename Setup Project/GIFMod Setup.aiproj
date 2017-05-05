@@ -20,7 +20,7 @@
     <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'x64_Release' ">
-    <OutputPath>C:\Users\user\Dropbox\GUI\Setup</OutputPath>
+    <OutputPath>E:\GitHub\Setup</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="GIFMod Setup.aip">

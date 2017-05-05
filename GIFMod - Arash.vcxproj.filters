@@ -426,6 +426,7 @@
     <None Include="GUI\Icons\Save File Icon Stock Photography - Image_ 517502_files\like.html" />
     <None Include="GUI\Icons\Save File Icon Stock Photography - Image_ 517502_files\postmessageRelay.html" />
     <None Include="GUI\Icons\Save File Icon Stock Photography - Image_ 517502_files\saved_resource.html" />
+    <None Include="Setup Project\GIFMod Setup.aip" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
