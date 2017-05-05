@@ -252,7 +252,7 @@ void Delegate::setEditorData(QWidget *editor,
 	{
 #ifdef GIFMOD
 		expEditor* expressionEditor = static_cast<expEditor*>(editor);
-
+		
 		expressionEditor->setText(index.model()->data(index, Qt::EditRole).toString());
 #endif
 		return;
