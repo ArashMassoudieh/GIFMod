@@ -149,6 +149,7 @@ public:
 	void CMedium::onestepsolve_flow(double dt);
 	void CMedium::onestepsolve_colloid(double dt);
 	void CMedium::onestepsolve_const(double dtt);
+	void do_plant_growth(double dtt);
 	void CMedium::solve_fts_m2(double dt);
 
 //Sassan

@@ -10,8 +10,8 @@ using namespace std;
 
 enum physical_params
 {
-	ks = 0, theta_s = 1, theta_r = 2, vg_alpha = 3, vg_n = 4, vg_m = 5, lambda = 6, storativity = 7, depression_storage = 12, storage_epsilon = 15, storage_n = 16, light = 18, temperature = 19, wind = 20, humidity = 21, vapor_pressure = 22, latent_heat_of_evaporation = 23, LAI = 24, K_LAI = 25, LAI_max = 26, 
-	plant_growth_rate_coefficient = 27, temperature_base = 28, temperature_spread_factor = 29, plant_biomass_decay_factor = 30, plant_leaf_decay_factor=31, optimal_temperature = 32
+	ks = 0, theta_s = 1, theta_r = 2, vg_alpha = 3, vg_n = 4, vg_m = 5, lambda = 6, storativity = 7, depression_storage = 12, storage_epsilon = 15, storage_n = 16, light = 18, temperature = 19, wind = 20, humidity = 21, vapor_pressure = 22, latent_heat_of_evaporation = 23, LAI = 24, K_LAI = 25, LAI_max = 26,
+	plant_growth_rate_coefficient = 27, temperature_base = 28, temperature_spread_factor = 29, plant_biomass_decay_factor = 30, plant_leaf_decay_factor = 31, optimal_temperature = 32, pan_evaporation_rate = 33 
 };
 
 enum functions

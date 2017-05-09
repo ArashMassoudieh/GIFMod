@@ -1325,7 +1325,7 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 		if (n->objectType.ObjectType == "Manhole") { B.indicator = Block_types::Manhole; } //4
 		if (n->objectType.ObjectType == "Darcy") { B.indicator = Block_types::Darcy; } //5
 		if (n->objectType.ObjectType == "Stream") { B.indicator = Block_types::Stream; } //6
-		if (n->objectType.ObjectType == "Plant") { B.indicator = Block_types::Plant; } //6
+		if (n->objectType.ObjectType == "Plant") { B.indicator = Block_types::Plant; } //7
 		B.set_val("a", n->val("a").toFloat());
 		B.set_val("v", n->val("v").toFloat());
 
@@ -1348,7 +1348,8 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 			if (!n->val(code).isEmpty() && n->val(code) != ".") B.set_val(code.toStdString(), n->val(code).toFloat());
 			if (code == "inflow" && !n->val(code).isEmpty() && n->val(code) != ".")
 				B.inflow_filename.push_back(fullFilename(n->val(code), gw->modelPathname()).toStdString());
-			if (code == "id") B.ID = n->val(code).toStdString();
+			if (code == "id") 
+				B.ID = n->val(code).toStdString();
 			if (code == "buildup" && !n->val(code).isEmpty()) B.buildup_id.push_back(n->val(code).toStdString());
 			if (code == "externalflux" && !n->val(code).isEmpty())
 				for each (QString flux in n->val(code).toQString().split(';'))
@@ -2055,6 +2056,7 @@ void CMedium::g_set_default_connector_expressions()
 	{
 		if (Connector[ii].flow_expression.terms.size() == 0)
 		{
+
 			if (Blocks[getblocksq(Connector[ii].Block1ID)].z0 >= Blocks[getblocksq(Connector[ii].Block2ID)].z0)
 			{
 				if (vaporTransport()[Blocks[getblocksq(Connector[ii].Block1ID)].indicator][Blocks[getblocksq(Connector[ii].Block2ID)].indicator] == true)

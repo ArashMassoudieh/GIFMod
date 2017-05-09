@@ -1775,6 +1775,16 @@ void CMedium::initialize()
 }
 
 
+void CMedium::do_plant_growth(double dtt)
+{
+	for (int i = 0; i < Blocks.size(); i++)
+		if (Blocks[i].indicator == Plant)
+		{
+			Blocks[i].V_star = Blocks[i].V + 0.5*(Blocks[i].calc(Blocks[i].plant_prop.plant_growth_rate_expression) + Blocks[i].calc_star(Blocks[i].plant_prop.plant_growth_rate_expression))*dtt;
+			Blocks[i].plant_prop.LAI += 0.5*(Blocks[i].calc(Blocks[i].plant_prop.plant_growth_rate_expression)+ Blocks[i].calc_star(Blocks[i].plant_prop.plant_growth_rate_expression))*dtt;
+		}
+}
+
 void CMedium::solve_fts_m2(double dt)
 {
 
@@ -2004,7 +2014,7 @@ void CMedium::solve_fts_m2(double dt)
 					pos_def_mult = 10000;
 					pos_def_mult_Q = 10000;
 				}
-
+				do_plant_growth(dtt);
 				if ((max_wiggle > 0.1) && (!redo) && check_oscillation() && dtt > 0.01*dt0)
 				{
 					fail_reason = "Oscillation at: " + Blocks[max_wiggle_id].ID;
@@ -2558,6 +2568,11 @@ void CMedium::finalize_set_param()
 
 	for (int i = 0; i < controllers().size(); i++)
 		controllers()[i].Sensor = &sensors()[lookup_sensors(controllers()[i].sensor_id)];
+
+	//setting the formulas for LAI and biomass growth for plant blocks
+	for (int i = 0; i < Blocks.size(); i++)
+		if (Blocks[i].indicator == Plant)
+			Blocks[i].set_up_plant_growth_expressions();
 }
 
 void CMedium::set_default_params()
@@ -2632,7 +2647,8 @@ int CMedium::getblocksq(string id)
 	if (!Blocks.size())
 		return parent->blockIndex[id];
 	for (int i=0; i<Blocks.size(); i++)
-		if (Blocks[i].ID == id) return i;
+		if (Blocks[i].ID == id) 
+			return i;
 
 	return -1;
 }

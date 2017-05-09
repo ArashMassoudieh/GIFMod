@@ -67,7 +67,6 @@
     <ClCompile Include="GUI\reactionwindow.cpp" />
     <ClCompile Include="GUI\RestoreInfo.cpp" />
     <ClCompile Include="GUI\results.cpp" />
-    <ClCompile Include="GUI\runModel.cpp" />
     <ClCompile Include="GUI\runtimeWindow.cpp" />
     <ClCompile Include="GUI\RxnNetwork.cpp" />
     <ClCompile Include="GUI\scriptExport.cpp" />
@@ -210,6 +209,9 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\files\moc_ConstituentWindowPlant.cpp">
       <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\runModel.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

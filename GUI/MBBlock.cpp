@@ -251,6 +251,9 @@ double CMBBlock::get_val(int i, vector<int> ii)
 	if (i == physical_params::LAI)
 		return plant_prop.LAI;
 
+	if (i == physical_params::pan_evaporation_rate)
+		return get_evaporation(parent->t);
+
 	if (i>=50 && i<100) return fs_params[i-50];
 	if (i>=100 && i<1000) return G[ii[0]][i];
 	if (i>=1000 && i<2000) return CG[ii[0]][i];
@@ -470,6 +473,9 @@ double CMBBlock::get_val_star(int i, vector<int> ii)
 
 	if (i == physical_params::LAI)
 		return plant_prop.LAI;
+
+	if (i == physical_params::pan_evaporation_rate)
+		return get_evaporation(parent->t);
 
 	if (i>=50 && i<100) return fs_params[i-50];
 	if (i>=100 && i<1000) return G_star[ii[0]][i];
@@ -901,6 +907,7 @@ void CMBBlock::set_val(const string &SS, double val)
 		if ((tolower(trim(s[0]))=="sc") || (tolower(trim(s[0]))=="storativity")) fs_params[storativity] = val;
 		if (tolower(trim(s[0]))=="storage_epsilon") fs_params[storage_epsilon] = val;
 		if (tolower(trim(s[0]))=="storage_n") fs_params[storage_n] = val;
+		if (tolower(trim(s[0])) == "lai") plant_prop.LAI = val;
 		if (tolower(trim(s[0])) == "lai_max") fs_params[LAI_max] = val;
 		if (tolower(trim(s[0])) == "plant_growth_rate_coefficient") fs_params[plant_growth_rate_coefficient] = val;
 		if (tolower(trim(s[0])) == "temperature_base") fs_params[temperature_base] = val;
@@ -1405,6 +1412,25 @@ int CMBBlock::lookup_env_exchange(string S)
 			out = i;
 
 	return out;
+}
+
+void CMBBlock::set_up_plant_growth_expressions()
+{
+	string s = "f[77]*f[18]*(1-_exp(-0.65*f[24]))";
+	string l_constituent;
+	for (int i = 0; i < plant_prop.limiting_nutrients.size(); i++)
+	{
+		l_constituent = "cg[" + numbertostring(parent->RXN().look_up_constituent_no(plant_prop.limiting_nutrients[i])) + "]";
+		l_constituent += l_constituent + "/(" + l_constituent+ "+hsc[+"+ numbertostring(i) + ")";
+	}
+	string temperature_stress = "_exp(-2*((f[19]-f[82])^2)/((f[82]-f[78])^2))";
+	s = "(" + s + l_constituent + "*f[9]*"+temperature_stress+") - (f[80]*f[3]*_sig((f[78]-f[19])/f[79]))";
+	plant_prop.plant_growth_rate_expression = CStringOP(s);
+
+	s = "(f[76]*(1-_exp(5.0*(f[24]-f[76]))" + l_constituent + "*f[9]*" + temperature_stress + ")";
+	s = s + "-(f[81]*f[3]*_sig((f[78]-f[19])/f[79]))"; 
+	plant_prop.LAI_growth_rate_expression = s; 
+
 }
 
 double CMBBlock::calc(CStringOP &C)

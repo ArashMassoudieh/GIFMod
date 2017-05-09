@@ -31,6 +31,9 @@ struct plant_props // plant properties
 				return i;
 		return -1;
 	}
+	CStringOP plant_growth_rate_expression;
+	CStringOP LAI_growth_rate_expression; 
+
 };
 
 class CMBBlock
@@ -60,8 +63,6 @@ public:
 	vector<vector<double>> CG_star; // Sorbed Phases
 	vector<vector<double>> G_stored_mass; //Solid phases G[i][j] i: solid_type_counter, j: phase identifier
 	vector<vector<double>> CG_stored_mass; // Sorbed Phases
-	
-
 	vector<double> fs_params; //hydraulics_parameters;
 	vector<double> rxn_params; //Reaction_parameters
 	vector<vector<double>> phi; //Capacities
@@ -173,6 +174,7 @@ public:
 	double light_reduction_factor;
 	bool perform_rxn = true;
 	plant_props plant_prop; //plant properties including LAI and growth parameters. 
+	void set_up_plant_growth_expressions(); //The plant growth expressions are built. 
 #ifdef GIFMOD
 	CMedium *parent; 
 #endif
