@@ -97,6 +97,8 @@ CMBBlock::CMBBlock(const CMBBlock& BB)// copy constructor
 	initial_g_counter_p = BB.initial_g_counter_p; initial_g_counter_l = BB.initial_g_counter_l; initial_g = BB.initial_g;
 	initial_cg_counter_p = BB.initial_cg_counter_p; initial_cg_counter_c = BB.initial_cg_counter_c; initial_cg_counter_l = BB.initial_cg_counter_l; initial_cg = BB.initial_cg;
 	precipitation_swch = BB.precipitation_swch;
+	hsc_c = BB.hsc_c;
+	hsc_val = BB.hsc_val;
 	light_swch = BB.light_swch;
 	buildup = BB.buildup;
 	buildup_id = BB.buildup_id;
@@ -164,6 +166,8 @@ CMBBlock& CMBBlock::operator=(const CMBBlock &BB)
 	bulk_density = BB.bulk_density;
 	initial_g_counter_p = BB.initial_g_counter_p; initial_g_counter_l = BB.initial_g_counter_l; initial_g = BB.initial_g;
 	initial_cg_counter_p = BB.initial_cg_counter_p; initial_cg_counter_c = BB.initial_cg_counter_c; initial_cg_counter_l = BB.initial_cg_counter_l; initial_cg = BB.initial_cg;
+	hsc_c = BB.hsc_c;
+	hsc_val = BB.hsc_val;
 	precipitation_swch = BB.precipitation_swch;
 	light_swch = BB.light_swch;
 	buildup = BB.buildup;
@@ -916,6 +920,7 @@ void CMBBlock::set_val(const string &SS, double val)
 		if (tolower(trim(s[0])) == "p") rxn_params[atoi(s[1].c_str())] = val;
 		if (tolower(trim(s[0])) == "g") { initial_g_counter_p.push_back(s[1]); initial_g_counter_l.push_back("mobile"); initial_g.push_back(val); }
 		if (tolower(trim(s[0])) == "cg") { initial_cg_counter_p.push_back(""); initial_cg_counter_l.push_back(""); initial_cg_counter_c.push_back(s[1]);  initial_cg.push_back(val); }
+		if (tolower(trim(s[0])) == "hsc") { hsc_c.push_back(s[1]);  hsc_val.push_back(val); }
 	}
 	else if (s.size()==3)
 	{
