@@ -129,6 +129,7 @@ public:
 	void CMBBlock::evaluate_capacity_star();
 	vector<string> initial_g_counter_p; vector<string> initial_g_counter_l; vector<double> initial_g;
 	vector<string> initial_cg_counter_p; vector<string> initial_cg_counter_l; vector<string> initial_cg_counter_c;  vector<double> initial_cg;
+	vector<string> hsc_c; vector<double> hsc_val;
 	int CMBBlock::get_tot_num_phases();
 	CRxnNetwork *RXN;
 	double CMBBlock::get_exchange_rate(int particule_type, int phase, int constituent);
