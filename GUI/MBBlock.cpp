@@ -97,8 +97,7 @@ CMBBlock::CMBBlock(const CMBBlock& BB)// copy constructor
 	initial_g_counter_p = BB.initial_g_counter_p; initial_g_counter_l = BB.initial_g_counter_l; initial_g = BB.initial_g;
 	initial_cg_counter_p = BB.initial_cg_counter_p; initial_cg_counter_c = BB.initial_cg_counter_c; initial_cg_counter_l = BB.initial_cg_counter_l; initial_cg = BB.initial_cg;
 	precipitation_swch = BB.precipitation_swch;
-	hsc_c = BB.hsc_c;
-	hsc_val = BB.hsc_val;
+	plant_prop = BB.plant_prop;
 	light_swch = BB.light_swch;
 	buildup = BB.buildup;
 	buildup_id = BB.buildup_id;
@@ -166,8 +165,7 @@ CMBBlock& CMBBlock::operator=(const CMBBlock &BB)
 	bulk_density = BB.bulk_density;
 	initial_g_counter_p = BB.initial_g_counter_p; initial_g_counter_l = BB.initial_g_counter_l; initial_g = BB.initial_g;
 	initial_cg_counter_p = BB.initial_cg_counter_p; initial_cg_counter_c = BB.initial_cg_counter_c; initial_cg_counter_l = BB.initial_cg_counter_l; initial_cg = BB.initial_cg;
-	hsc_c = BB.hsc_c;
-	hsc_val = BB.hsc_val;
+	plant_prop = BB.plant_prop;
 	precipitation_swch = BB.precipitation_swch;
 	light_swch = BB.light_swch;
 	buildup = BB.buildup;
@@ -268,6 +266,9 @@ double CMBBlock::get_val(int i, vector<int> ii)
 	if (i>=3000 && i<4000) return Solid_phase[ii[0]]->get_val(i);
 	if (i>=4000 && i<5000) return envexchange[ii[1]]->parameters[i-4000];
 	if (i >= 5000 && i<6000) return RXN->cons[ii[0]].get_val(i);
+	if (i >= 6000 && i<6500) return evaporation_m[ii[0]]->parameters[i - 6000];
+	if (i == 6501 && i<7000) return evaporation_m[ii[0]]->single_crop_coefficient.interpol(dayOfYear(parent->t));
+	if (i >= 7000 && i < 8000) return plant_prop.half_saturation_constants[i - 6000]; 
 	if (i >= 10000 && i<20000) return G[(i-10000)/1000][(i-10000)%1000];
 	if (i >= 100000 && i<200000) return CG[(i-100000)/10000][(i-100000)%10000];
 
@@ -369,6 +370,12 @@ double CMBBlock::get_val(string SS)
 			int k = RXN->look_up_constituent_no(s[1]);
 			if (k != -1) return CG[k][0];
 		}
+		if (tolower(trim(s[0])) == "hsc")
+		{
+			int k = plant_prop.look_up_limiting_nutrient(s[1]);
+			if (k != -1) return plant_prop.half_saturation_constants[k];
+		}
+
 		if (tolower(trim(s[0])) == "p") return rxn_params[atoi(s[1].c_str())];
 	}
 	else if (s.size()==3)
@@ -480,7 +487,8 @@ double CMBBlock::get_val_star(int i, vector<int> ii)
 	if (i>=4000 && i<5000) return envexchange[ii[1]]->parameters[i-4000];
 	if (i >= 5000 && i<6000) return RXN->cons[ii[0]].get_val(i);
 	if (i >= 6000 && i<6500) return evaporation_m[ii[0]]->parameters[i - 6000];
-	if (i == 6501) return evaporation_m[ii[0]]->single_crop_coefficient.interpol(dayOfYear(parent->t));
+	if (i == 6501 && i<7000) return evaporation_m[ii[0]]->single_crop_coefficient.interpol(dayOfYear(parent->t));
+	if (i >= 7000 && 8000) return plant_prop.half_saturation_constants[i - 7000];
 	if (i >= 10000 && i<20000) return G[(i - 10000) / 1000][(i - 10000) % 1000];
 	if (i >= 100000 && i<200000) return CG[(i - 100000) / 10000][(i - 100000) % 10000];
 }
@@ -920,7 +928,7 @@ void CMBBlock::set_val(const string &SS, double val)
 		if (tolower(trim(s[0])) == "p") rxn_params[atoi(s[1].c_str())] = val;
 		if (tolower(trim(s[0])) == "g") { initial_g_counter_p.push_back(s[1]); initial_g_counter_l.push_back("mobile"); initial_g.push_back(val); }
 		if (tolower(trim(s[0])) == "cg") { initial_cg_counter_p.push_back(""); initial_cg_counter_l.push_back(""); initial_cg_counter_c.push_back(s[1]);  initial_cg.push_back(val); }
-		if (tolower(trim(s[0])) == "hsc") { hsc_c.push_back(s[1]);  hsc_val.push_back(val); }
+		if (tolower(trim(s[0])) == "hsc") { plant_prop.limiting_nutrients.push_back(s[1]);  plant_prop.half_saturation_constants.push_back(val); }
 	}
 	else if (s.size()==3)
 	{

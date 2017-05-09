@@ -2486,16 +2486,9 @@ void CMedium::finalize_set_param()
 				if (k!=-1) Blocks[ii].CG[k][Blocks[ii].get_member_no(p,l)] = Blocks[ii].initial_cg[jj];
 			}
 
-			for (int jj = 0; jj < Blocks[ii].hsc_c.size(); jj++)
-			{
-				int k = RXN().look_up_constituent_no(Blocks[ii].initial_cg_counter_c[jj]);
-				if (k != -1)
-				{
-					Blocks[ii].plant_prop.half_saturation_constants.push_back(Blocks[ii].hsc_val[jj]);
-					Blocks[ii].plant_prop.limiting_nutrients.push_back(Blocks[ii].hsc_c[jj]);
-				}
-			}
+			
 		}
+		
 		Blocks[ii].RXN = &RXN();
 		Blocks[ii].light = &light;
 		Blocks[ii].temperature = &temperature;
