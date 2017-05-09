@@ -24,7 +24,13 @@ struct plant_props // plant properties
 	double LAI; // Leaf area index
 	vector<string> limiting_nutrients; // the list of limiting nutrients
 	vector<double> half_saturation_constants; //half saturation factors corresponding to each limiting nutrient
-
+	int look_up_limiting_nutrient(string s)
+	{
+		for (int i = 0; i < limiting_nutrients.size(); i++)
+			if (s == limiting_nutrients[i])
+				return i;
+		return -1;
+	}
 };
 
 class CMBBlock
@@ -129,7 +135,6 @@ public:
 	void CMBBlock::evaluate_capacity_star();
 	vector<string> initial_g_counter_p; vector<string> initial_g_counter_l; vector<double> initial_g;
 	vector<string> initial_cg_counter_p; vector<string> initial_cg_counter_l; vector<string> initial_cg_counter_c;  vector<double> initial_cg;
-	vector<string> hsc_c; vector<double> hsc_val;
 	int CMBBlock::get_tot_num_phases();
 	CRxnNetwork *RXN;
 	double CMBBlock::get_exchange_rate(int particule_type, int phase, int constituent);
