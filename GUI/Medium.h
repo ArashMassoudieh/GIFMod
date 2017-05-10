@@ -120,6 +120,10 @@ public:
 	CVector CMedium::Jacobian_Q(const CVector &V, int i, double dt);  
 	CVector CMedium::Jacobian_Q(const CVector &V, const CVector &F0, int i, double dt);
 
+	CVector getLAI();
+
+	CVector getV();
+
 	//use arma
 	CVector_arma CMedium::getres_S(CVector_arma &X, double dt);
 	CVector_arma CMedium::getres_C(CVector_arma &X, double dt);

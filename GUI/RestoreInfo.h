@@ -5,6 +5,8 @@
 class CRestoreInfo
 {
 public:
+	CVector LAI_res;
+	CVector V_res;
 	CVector X_res;
 	CVector corr_fac_res;
 	vector<int> fix_stats_res;

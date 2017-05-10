@@ -1501,6 +1501,24 @@ CVector CMedium::Jacobian_Q(const CVector &V, const CVector &F0, int i, double d
 }
 
 
+CVector CMedium::getLAI()
+{
+	//CVector X(Blocks.size()-2);
+	CVector X(Blocks.size());
+	for (int i = 0; i<Blocks.size(); i++)
+		X[i] = Blocks[i].plant_prop.LAI;
+	return X;
+}
+
+CVector CMedium::getV()
+{
+	//CVector X(Blocks.size()-2);
+	CVector X(Blocks.size());
+	for (int i = 0; i<Blocks.size(); i++)
+		X[i] = Blocks[i].V;
+	return X;
+}
+
 
 
 CVector CMedium::getS()
@@ -1781,7 +1799,7 @@ void CMedium::do_plant_growth(double dtt)
 		if (Blocks[i].indicator == Plant)
 		{
 			Blocks[i].V_star = Blocks[i].V + 0.5*(Blocks[i].calc(Blocks[i].plant_prop.plant_growth_rate_expression) + Blocks[i].calc_star(Blocks[i].plant_prop.plant_growth_rate_expression))*dtt;
-			Blocks[i].plant_prop.LAI += 0.5*(Blocks[i].calc(Blocks[i].plant_prop.plant_growth_rate_expression)+ Blocks[i].calc_star(Blocks[i].plant_prop.plant_growth_rate_expression))*dtt;
+			Blocks[i].plant_prop.LAI += 0.5*(Blocks[i].calc(Blocks[i].plant_prop.LAI_growth_rate_expression)+ Blocks[i].calc_star(Blocks[i].plant_prop.LAI_growth_rate_expression))*dtt;
 		}
 }
 
@@ -1799,7 +1817,7 @@ void CMedium::solve_fts_m2(double dt)
 	Solution_dt.clear();
 	Solution_dt = CBTCSet(3);
 	dt_fail = 10000;
-	ANS = CBTCSet(3 * Blocks.size() + 3 * Connector.size());
+	ANS = CBTCSet(5 * Blocks.size() + 3 * Connector.size());
 	ANS_colloids = CBTCSet(Blocks.size()*Blocks[0].n_phases);
 	ANS_constituents = CBTCSet(Blocks.size()*(Blocks[0].n_phases + n_default_phases)*RXN().cons.size());
 	ANS_control = CBTCSet(controllers().size());
@@ -1825,8 +1843,9 @@ void CMedium::solve_fts_m2(double dt)
 	for (int i = 0; i < Blocks.size(); i++) ANS.pushBackName("H_" + Blocks[i].ID);
 	for (int i = 0; i < Blocks.size(); i++) ANS.pushBackName("E_" + Blocks[i].ID);
 	for (int i = 0; i < Connector.size(); i++) ANS.pushBackName("A_" + Connector[i].ID);
-
 	for (int i = 0; i < Connector.size(); i++) ANS.pushBackName("Qv_" + Connector[i].ID);
+	for (int i = 0; i < Blocks.size(); i++) ANS.pushBackName("V_" + Blocks[i].ID);
+	for (int i = 0; i < Blocks.size(); i++) ANS.pushBackName("LAI_" + Blocks[i].ID);
 
 	for (int j = 0; j < Blocks[0].Solid_phase.size(); j++)
 		for (int k = 0; k < Blocks[0].Solid_phase[j]->n_phases; k++)
@@ -2250,6 +2269,13 @@ void CMedium::solve_fts_m2(double dt)
 
 			for (int i = 0; i < Connector.size(); i++)
 				ANS.BTC[i + 3 * Blocks.size() + 2 * Connector.size()].append(t, Connector[i].Q_v);
+
+			for (int i = 0; i < Blocks.size(); i++)
+				ANS.BTC[i + 3 * Blocks.size() + 3* Connector.size()].append(t, Blocks[i].V);
+
+			for (int i = 0; i < Blocks.size(); i++)
+				ANS.BTC[i + 4 * Blocks.size() + 3 * Connector.size()].append(t, Blocks[i].plant_prop.LAI);
+
 
 			for (int i = 0; i < measured_quan().size(); i++)
 				if (measured_quan()[i].experiment == name)
@@ -4194,6 +4220,8 @@ void CMedium::writetolog(string S)
 CRestoreInfo CMedium::getrestoreinfo()
 {
 	CRestoreInfo R;
+	R.LAI_res = getLAI();
+	R.V_res = getV();
 	R.X_res = getS();
 	R.corr_fac_res = get_flow_factors();
 	R.fix_stats_res = get_fixed_connect_status();
@@ -4211,6 +4239,8 @@ void CMedium::doredo(CRestoreInfo &R)
 	set_flow_factors(R.corr_fac_res);
 	set_fixed_connect_status(R.fix_stats_res);
 	set_var("s", R.X_res.vec);
+	set_var("V", R.V_res.vec);
+	set_var("LAI", R.LAI_res.vec);
 	avg_redo_dtt = (avg_redo_dtt*redo_count + dtt) / (redo_count + 1);
 	redo_count++;
 	t = R.t_res;

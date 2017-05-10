@@ -142,7 +142,7 @@ void CMediumSet::set_formulas()
 	formulas.formulasH[Catchment] = "f[5]+(f[4]/f[2])";
 	formulas.formulasH[Stream] = "f[5]+(f[4]/f[2])";
 	formulas.formulasH[Manhole] = "f[5]+(f[4]/f[2])";
-	formulas.formulasH[Plant] = "f[5]-((1/f[53])*(f[9]^(-f[54])))";
+	formulas.formulasH[Plant] = "f[5]-((1/f[53])*((_min(_max(f[9]:0.00001):1)^(-f[54]))-1))";
 
 	formulas.formulas.resize(10);
 	formulas.formulasQ.resize(10);

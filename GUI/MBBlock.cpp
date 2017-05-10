@@ -909,6 +909,7 @@ void CMBBlock::set_val(const string &SS, double val)
 		if (tolower(trim(s[0]))=="storage_n") fs_params[storage_n] = val;
 		if (tolower(trim(s[0])) == "lai") plant_prop.LAI = val;
 		if (tolower(trim(s[0])) == "lai_max") fs_params[LAI_max] = val;
+		if (tolower(trim(s[0])) == "k_lai") fs_params[K_LAI] = val;
 		if (tolower(trim(s[0])) == "plant_growth_rate_coefficient") fs_params[plant_growth_rate_coefficient] = val;
 		if (tolower(trim(s[0])) == "temperature_base") fs_params[temperature_base] = val;
 		if (tolower(trim(s[0])) == "temperature_spread_factor") fs_params[temperature_spread_factor] = val;
@@ -1416,7 +1417,7 @@ int CMBBlock::lookup_env_exchange(string S)
 
 void CMBBlock::set_up_plant_growth_expressions()
 {
-	string s = "f[77]*f[18]*(1-_exp(-0.65*f[24]))";
+	string s = "f[77]*f[2]*f[18]*_max(1-_exp(-0.65*f[24]):0)";
 	string l_constituent;
 	for (int i = 0; i < plant_prop.limiting_nutrients.size(); i++)
 	{
@@ -1424,10 +1425,10 @@ void CMBBlock::set_up_plant_growth_expressions()
 		l_constituent += l_constituent + "/(" + l_constituent+ "+hsc[+"+ numbertostring(i) + ")";
 	}
 	string temperature_stress = "_exp(-2*((f[19]-f[82])^2)/((f[82]-f[78])^2))";
-	s = "(" + s + l_constituent + "*f[9]*"+temperature_stress+") - (f[80]*f[3]*_sig((f[78]-f[19])/f[79]))";
+	s = "(" + s + l_constituent + "*f[9]*" + temperature_stress +" ) - (f[80]*f[3]*_sig((f[78]-f[19])/f[79]))";
 	plant_prop.plant_growth_rate_expression = CStringOP(s);
 
-	s = "(f[76]*(1-_exp(5.0*(f[24]-f[76]))" + l_constituent + "*f[9]*" + temperature_stress + ")";
+	s = "(f[75]*f[76]*_pos(f[19]-f[78])*_max(1-_exp(5.0*(f[24]-f[76])):0)" + l_constituent + "*f[9]*" + temperature_stress + ")";
 	s = s + "-(f[81]*f[3]*_sig((f[78]-f[19])/f[79]))"; 
 	plant_prop.LAI_growth_rate_expression = s; 
 
