@@ -500,7 +500,7 @@ void TreeModel::add(Edge *edge)
 TreeItem * TreeModel::entityParentItemfromType(QString type) const
 {
 	TreeItem *parent = 0;
-#ifdef Gifmod
+#ifdef GIFMOD
 	if (type == "Sensor")
 		parent = this->sensor;
 	if (type == "Objective function")

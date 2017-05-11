@@ -120,6 +120,10 @@ public:
 	CVector CMedium::Jacobian_Q(const CVector &V, int i, double dt);  
 	CVector CMedium::Jacobian_Q(const CVector &V, const CVector &F0, int i, double dt);
 
+	CVector getLAI();
+
+	CVector getV();
+
 	//use arma
 	CVector_arma CMedium::getres_S(CVector_arma &X, double dt);
 	CVector_arma CMedium::getres_C(CVector_arma &X, double dt);
@@ -149,6 +153,7 @@ public:
 	void CMedium::onestepsolve_flow(double dt);
 	void CMedium::onestepsolve_colloid(double dt);
 	void CMedium::onestepsolve_const(double dtt);
+	void do_plant_growth(double dtt);
 	void CMedium::solve_fts_m2(double dt);
 
 //Sassan
@@ -193,6 +198,7 @@ public:
 	string& detoutfilename_obs(); ////file name where the deterministic outputs corresponding to the observed data is saved
 	int& writeinterval(); //the interval at which the output are save in output files (default = 1)
 	string& realizeparamfilename(); //output file name for Monte-Carlo realizations
+	double& minimum_acceptable_negative_conc(); //returns the minimum acceptable negative concentration criteria 
 	double t; // time
 	int counter_flow, counter_colloid, counter_const; // counter for number of iteration
 	void CMedium::Blocksmassbalance();  

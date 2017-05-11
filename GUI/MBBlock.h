@@ -24,6 +24,15 @@ struct plant_props // plant properties
 	double LAI; // Leaf area index
 	vector<string> limiting_nutrients; // the list of limiting nutrients
 	vector<double> half_saturation_constants; //half saturation factors corresponding to each limiting nutrient
+	int look_up_limiting_nutrient(string s)
+	{
+		for (int i = 0; i < limiting_nutrients.size(); i++)
+			if (s == limiting_nutrients[i])
+				return i;
+		return -1;
+	}
+	CStringOP plant_growth_rate_expression;
+	CStringOP LAI_growth_rate_expression; 
 
 };
 
@@ -54,8 +63,6 @@ public:
 	vector<vector<double>> CG_star; // Sorbed Phases
 	vector<vector<double>> G_stored_mass; //Solid phases G[i][j] i: solid_type_counter, j: phase identifier
 	vector<vector<double>> CG_stored_mass; // Sorbed Phases
-	
-
 	vector<double> fs_params; //hydraulics_parameters;
 	vector<double> rxn_params; //Reaction_parameters
 	vector<vector<double>> phi; //Capacities
@@ -167,6 +174,7 @@ public:
 	double light_reduction_factor;
 	bool perform_rxn = true;
 	plant_props plant_prop; //plant properties including LAI and growth parameters. 
+	void set_up_plant_growth_expressions(); //The plant growth expressions are built. 
 #ifdef GIFMOD
 	CMedium *parent; 
 #endif

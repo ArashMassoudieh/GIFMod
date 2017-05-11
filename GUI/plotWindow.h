@@ -54,6 +54,35 @@ public:
   QCPGraph* addScatterDotPlot(CBTCSet &ANS, int index, QString name = "", plotformat format = plotformat()) {
 	  return addScatterPlot(ANS, index, name, 1, 0, format);
   }
+  QCPGraph* addScatterPlot(CBTCSet &ANS, int index, int index_denum, QString name = "", plotformat format = plotformat()) {
+	  if (name == "") name = QString::fromStdString(ANS.names[index]);
+	  //	  std::vector<double> vx, std::vector<double> vy) {
+	  QVector<double> x(ANS.BTC[index].n), y(ANS.BTC[index].n);
+	  int numberOfTimePoints = ANS.BTC[index].t.size();
+	  if (format.xAxisTimeFormat && (ANS.BTC[index].t[numberOfTimePoints - 1] - ANS.BTC[index].t[0]) < 5)
+		  format.xAxisTimeFormat = false;
+	  /*	  if (convertXtoTime)
+	  for (int i = 0; i < ANS.BTC[index].n; i++)
+	  {
+	  //qint64 currentDate = ANS.BTC[index].t[i];
+	  //currentDate += QDate(1900, 1, 1).toJulianDay();
+	  //QDate date = QDate::fromJulianDay(currentDate);
+	  //x[i] = date.toJulianDay();
+
+	  x[i] = ANS.BTC[index].t[i] * 86400 - 2209161600;
+
+	  y[i] = ANS.BTC[index].C[i] * coefficient + offset;
+	  }
+	  else*/
+	  for (int i = 0; i < ANS.BTC[index].n; i++)
+	  {
+		  x[i] = ANS.BTC[index].t[i];
+		  y[i] = ANS.BTC[index].C[i]/ANS.BTC[index_denum].C[i];
+	  }
+	  //format.xAxisTimeFormat = convertXtoTime;
+	  return addScatterPlot(name, x, y, format);
+  };
+  
   QCPGraph* addScatterPlot(CBTCSet &ANS, int index, QString name = "", double coefficient = 1, double offset = 0, plotformat format = plotformat()) {
 	  if (name == "") name = QString::fromStdString(ANS.names[index]);
 //	  std::vector<double> vx, std::vector<double> vy) {

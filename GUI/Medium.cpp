@@ -21,6 +21,9 @@ CMedium::CMedium(void)
 
 CMedium::~CMedium(void)
 {
+	parent = 0;
+	gw = 0;
+	runtimewindow = 0;
 }
 
 CMedium::CMedium(const CMedium &M)
@@ -1501,6 +1504,24 @@ CVector CMedium::Jacobian_Q(const CVector &V, const CVector &F0, int i, double d
 }
 
 
+CVector CMedium::getLAI()
+{
+	//CVector X(Blocks.size()-2);
+	CVector X(Blocks.size());
+	for (int i = 0; i<Blocks.size(); i++)
+		X[i] = Blocks[i].plant_prop.LAI;
+	return X;
+}
+
+CVector CMedium::getV()
+{
+	//CVector X(Blocks.size()-2);
+	CVector X(Blocks.size());
+	for (int i = 0; i<Blocks.size(); i++)
+		X[i] = Blocks[i].V;
+	return X;
+}
+
 
 
 CVector CMedium::getS()
@@ -1775,6 +1796,16 @@ void CMedium::initialize()
 }
 
 
+void CMedium::do_plant_growth(double dtt)
+{
+	for (int i = 0; i < Blocks.size(); i++)
+		if (Blocks[i].indicator == Plant)
+		{
+			Blocks[i].V_star = Blocks[i].V + 0.5*(Blocks[i].calc(Blocks[i].plant_prop.plant_growth_rate_expression) + Blocks[i].calc_star(Blocks[i].plant_prop.plant_growth_rate_expression))*dtt;
+			Blocks[i].plant_prop.LAI += 0.5*(Blocks[i].calc(Blocks[i].plant_prop.LAI_growth_rate_expression)+ Blocks[i].calc_star(Blocks[i].plant_prop.LAI_growth_rate_expression))*dtt;
+		}
+}
+
 void CMedium::solve_fts_m2(double dt)
 {
 
@@ -1789,7 +1820,7 @@ void CMedium::solve_fts_m2(double dt)
 	Solution_dt.clear();
 	Solution_dt = CBTCSet(3);
 	dt_fail = 10000;
-	ANS = CBTCSet(3 * Blocks.size() + 3 * Connector.size());
+	ANS = CBTCSet(5 * Blocks.size() + 3 * Connector.size());
 	ANS_colloids = CBTCSet(Blocks.size()*Blocks[0].n_phases);
 	ANS_constituents = CBTCSet(Blocks.size()*(Blocks[0].n_phases + n_default_phases)*RXN().cons.size());
 	ANS_control = CBTCSet(controllers().size());
@@ -1815,8 +1846,9 @@ void CMedium::solve_fts_m2(double dt)
 	for (int i = 0; i < Blocks.size(); i++) ANS.pushBackName("H_" + Blocks[i].ID);
 	for (int i = 0; i < Blocks.size(); i++) ANS.pushBackName("E_" + Blocks[i].ID);
 	for (int i = 0; i < Connector.size(); i++) ANS.pushBackName("A_" + Connector[i].ID);
-
 	for (int i = 0; i < Connector.size(); i++) ANS.pushBackName("Qv_" + Connector[i].ID);
+	for (int i = 0; i < Blocks.size(); i++) ANS.pushBackName("V_" + Blocks[i].ID);
+	for (int i = 0; i < Blocks.size(); i++) ANS.pushBackName("LAI_" + Blocks[i].ID);
 
 	for (int j = 0; j < Blocks[0].Solid_phase.size(); j++)
 		for (int k = 0; k < Blocks[0].Solid_phase[j]->n_phases; k++)
@@ -1910,6 +1942,7 @@ void CMedium::solve_fts_m2(double dt)
 			{
 				Res_temp = getrestoreinfo(); Res_temp.iii = iii;
 			}
+			do_plant_growth(dtt);
 			if (!steady_state_hydro())
 				if (use_arma)
 					onestepsolve_flow_ar(dtt);
@@ -2004,7 +2037,7 @@ void CMedium::solve_fts_m2(double dt)
 					pos_def_mult = 10000;
 					pos_def_mult_Q = 10000;
 				}
-
+				
 				if ((max_wiggle > 0.1) && (!redo) && check_oscillation() && dtt > 0.01*dt0)
 				{
 					fail_reason = "Oscillation at: " + Blocks[max_wiggle_id].ID;
@@ -2240,6 +2273,13 @@ void CMedium::solve_fts_m2(double dt)
 
 			for (int i = 0; i < Connector.size(); i++)
 				ANS.BTC[i + 3 * Blocks.size() + 2 * Connector.size()].append(t, Connector[i].Q_v);
+
+			for (int i = 0; i < Blocks.size(); i++)
+				ANS.BTC[i + 3 * Blocks.size() + 3* Connector.size()].append(t, Blocks[i].V);
+
+			for (int i = 0; i < Blocks.size(); i++)
+				ANS.BTC[i + 4 * Blocks.size() + 3 * Connector.size()].append(t, Blocks[i].plant_prop.LAI);
+
 
 			for (int i = 0; i < measured_quan().size(); i++)
 				if (measured_quan()[i].experiment == name)
@@ -2485,7 +2525,10 @@ void CMedium::finalize_set_param()
 				int k = RXN().look_up_constituent_no(Blocks[ii].initial_cg_counter_c[jj]);
 				if (k!=-1) Blocks[ii].CG[k][Blocks[ii].get_member_no(p,l)] = Blocks[ii].initial_cg[jj];
 			}
+
+			
 		}
+		
 		Blocks[ii].RXN = &RXN();
 		Blocks[ii].light = &light;
 		Blocks[ii].temperature = &temperature;
@@ -2555,6 +2598,11 @@ void CMedium::finalize_set_param()
 
 	for (int i = 0; i < controllers().size(); i++)
 		controllers()[i].Sensor = &sensors()[lookup_sensors(controllers()[i].sensor_id)];
+
+	//setting the formulas for LAI and biomass growth for plant blocks
+	for (int i = 0; i < Blocks.size(); i++)
+		if (Blocks[i].indicator == Plant)
+			Blocks[i].set_up_plant_growth_expressions();
 }
 
 void CMedium::set_default_params()
@@ -2629,7 +2677,8 @@ int CMedium::getblocksq(string id)
 	if (!Blocks.size())
 		return parent->blockIndex[id];
 	for (int i=0; i<Blocks.size(); i++)
-		if (Blocks[i].ID == id) return i;
+		if (Blocks[i].ID == id) 
+			return i;
 
 	return -1;
 }
@@ -2978,16 +3027,16 @@ void CMedium::onestepsolve_const(double dtt)
 	}
 	if (negative_concentration_allowed() == false)
 	{
-		if (X.min() < -1e-13)
+		if (X.min() < -fabs(minimum_acceptable_negative_conc()))
 		{
 			vector<int> neg_vals_cons;
 			vector<int> neg_vals_block;
 			vector<double> neg_vals;
-			for (int i = 0; i < X.getsize(); i++) if (X[i] < -1e-13) {
-				neg_vals_block.push_back(get_member_no_inv(i)[0]); neg_vals_cons.push_back(get_member_no_inv(i)[3]);  neg_vals.push_back(X[i]);
-
-
-			}
+			for (int i = 0; i < X.getsize(); i++)
+				if (X[i] < -fabs(minimum_acceptable_negative_conc())) {
+					neg_vals_block.push_back(get_member_no_inv(i)[0]); neg_vals_cons.push_back(get_member_no_inv(i)[3]);  neg_vals.push_back(X[i]);
+				}
+				else if (X[i] < 0) X[i] = 0;
 			
 			fail_reason = "Negative value in constituent "; 
 			for (int i = 0; i < neg_vals_block.size(); i++) fail_reason = fail_reason + RXN().cons[neg_vals_cons[i]].name; +", ";
@@ -3661,7 +3710,7 @@ CVector_arma CMedium::getres_Q(CVector_arma &X, double dtt)
 							F[get_member_no(getblocksq(Connector[i].Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connector[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block1ID)].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
 
 						}
-						if (Q_adv<0)
+						else
 						{
 							F[get_member_no(getblocksq(Connector[i].Block1ID), p, l, k)] += (w()*Q_adv*Blocks[getblocksq(Connector[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block2ID)].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
 							F[get_member_no(getblocksq(Connector[i].Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connector[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block2ID)].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
@@ -4175,6 +4224,8 @@ void CMedium::writetolog(string S)
 CRestoreInfo CMedium::getrestoreinfo()
 {
 	CRestoreInfo R;
+	R.LAI_res = getLAI();
+	R.V_res = getV();
 	R.X_res = getS();
 	R.corr_fac_res = get_flow_factors();
 	R.fix_stats_res = get_fixed_connect_status();
@@ -4192,6 +4243,8 @@ void CMedium::doredo(CRestoreInfo &R)
 	set_flow_factors(R.corr_fac_res);
 	set_fixed_connect_status(R.fix_stats_res);
 	set_var("s", R.X_res.vec);
+	set_var("V", R.V_res.vec);
+	set_var("LAI", R.LAI_res.vec);
 	avg_redo_dtt = (avg_redo_dtt*redo_count + dtt) / (redo_count + 1);
 	redo_count++;
 	t = R.t_res;
@@ -4565,6 +4618,11 @@ int& CMedium::writeinterval()
 string& CMedium::realizeparamfilename()
 {
 	return parent->FI.realizeparamfilename;
+}
+
+double& CMedium::minimum_acceptable_negative_conc()
+{
+	return parent->SP.minimum_acceptable_negative_conc;
 }
 
 int& CMedium::nr_iteration_treshold_max()
@@ -5211,16 +5269,16 @@ void CMedium::onestepsolve_const_ar(double dtt)
 	}
 	if (negative_concentration_allowed() == false)
 	{
-		if (X.min() < -1e-13)
+		if (X.min() < -fabs(minimum_acceptable_negative_conc()))
 		{
 			vector<int> neg_vals_cons;
 			vector<int> neg_vals_block;
 			vector<double> neg_vals;
-			for (int i = 0; i < X.getsize(); i++) if (X[i] < -1e-13) {
+			for (int i = 0; i < X.getsize(); i++) 
+				if (X[i] < -fabs(minimum_acceptable_negative_conc())) {
 				neg_vals_block.push_back(get_member_no_inv(i)[0]); neg_vals_cons.push_back(get_member_no_inv(i)[3]);  neg_vals.push_back(X[i]);
-
-
-			}
+				}
+				else if (X[i] < 0) X[i] = 0;
 
 			fail_reason = "Negative value in constituent ";
 			for (int i = 0; i < neg_vals_block.size(); i++) fail_reason = fail_reason + RXN().cons[neg_vals_cons[i]].name; +", ";
