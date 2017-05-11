@@ -15,13 +15,10 @@
     <Name>GIFMod Setup</Name>
     <RootNamespace>AI Setup Project</RootNamespace>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'All' ">
-    <DebugSymbols>false</DebugSymbols>
-    <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
-  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'x64_Release' ">
     <OutputPath>E:\GitHub\Setup</OutputPath>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'x64_Release' " />
   <ItemGroup>
     <Compile Include="GIFMod Setup.aip">
       <SubType>Code</SubType>
