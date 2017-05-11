@@ -194,7 +194,6 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
     <ClCompile Include="GeneratedFiles\files\moc_commandWindow.cpp" />
     <ClCompile Include="GeneratedFiles\files\moc_ConstituentDelegate.cpp" />
     <ClCompile Include="GeneratedFiles\files\moc_ConstituentWindow.cpp" />
-    <ClCompile Include="GeneratedFiles\files\moc_ConstituentWindowPlant.cpp" />
     <ClCompile Include="GeneratedFiles\files\moc_csvEditor.cpp" />
     <ClCompile Include="GeneratedFiles\files\moc_CustomPlotZoom.cpp" />
     <ClCompile Include="GeneratedFiles\files\moc_delegate.cpp" />
@@ -232,9 +231,7 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
     <ClCompile Include="GUI\Constituent.cpp" />
     <ClCompile Include="GUI\ConstituentDelegate.cpp" />
     <ClCompile Include="GUI\ConstituentTableModel.cpp" />
-    <ClCompile Include="GUI\ConstituentTableModelPlant.cpp" />
     <ClCompile Include="GUI\ConstituentWindow.cpp" />
-    <ClCompile Include="GUI\ConstituentWindowPlant.cpp" />
     <ClCompile Include="GUI\Controller.cpp" />
     <ClCompile Include="GUI\Copula.cpp" />
     <ClCompile Include="GUI\Copula_GWA.cpp" />
@@ -327,7 +324,6 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_commandWindow.h" />
     <ClInclude Include="GeneratedFiles\ui_ConstituentWindow.h" />
-    <ClInclude Include="GeneratedFiles\ui_ConstituentWindowPlant.h" />
     <ClInclude Include="GeneratedFiles\ui_csvEditor.h" />
     <ClInclude Include="GeneratedFiles\ui_ExchangeParametersWindow.h" />
     <ClInclude Include="GeneratedFiles\ui_gridWindow.h" />
@@ -404,25 +400,6 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
     <ClInclude Include="GUI\Connection.h" />
     <ClInclude Include="GUI\Constituent.h" />
     <ClInclude Include="GUI\ConstituentTableModel.h" />
-    <ClInclude Include="GUI\ConstituentTableModelPlant.h" />
-    <CustomBuild Include="GUI\ConstituentWindowPlant.h">
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing ConstituentWindowPlant.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\files\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\files\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB "-D\"$(INHERIT)\"" -DARMA_USE_LAPACK -DARMA_USE_BLAS -DQT_PRINTSUPPORT_LIB "-I.\armadillo-header" "-I.\Utility" "-I$(QTDIR)\include" "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I\$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I.\GeneratedFiles\files" "-I.\GeneratedFiles"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Moc%27ing ConstituentWindowPlant.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\files\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\files\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DARMA_USE_LAPACK -DARMA_USE_BLAS "-D\"$(INHERIT)\"" -DQT_PRINTSUPPORT_LIB -DGIFMOD -DDEBUG "-I.\armadillo-header" "-I$(QTDIR)\include" "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I\$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I$(SolutionDir)\GeneratedFiles\$(ProjectName)\." "-I.\GeneratedFiles\files" "-I.\GeneratedFiles"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing ConstituentWindowPlant.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\files\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\files\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB "-D\"$(INHERIT)\"" -DARMA_USE_LAPACK -DARMA_USE_BLAS -DQT_PRINTSUPPORT_LIB "-I.\armadillo-header" "-I.\GIFMODModel" "-I.\Utility" "-I$(QTDIR)\include" "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I\$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I.\GeneratedFiles\files" "-I.\GeneratedFiles"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Moc%27ing ConstituentWindowPlant.h...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\files\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\files\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DARMA_USE_LAPACK -DARMA_USE_BLAS "-D\"$(INHERIT)\"" -DQT_PRINTSUPPORT_LIB -DGIFMOD "-I.\armadillo-header" "-I$(QTDIR)\include" "-I.\icons" "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I.\GUI" "-I\$(INHERIT)\." "-I$(QTDIR)\include\QtPrintSupport" "-I$(SolutionDir)\GeneratedFiles\$(ProjectName)\." "-I.\GeneratedFiles\files" "-I.\GeneratedFiles"</Command>
-    </CustomBuild>
     <ClInclude Include="GUI\Controller.h" />
     <ClInclude Include="GUI\Copula.h" />
     <ClInclude Include="GUI\Crxtterm.h" />
@@ -1230,24 +1207,6 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
     </CustomBuild>
-    <CustomBuild Include="GUI\ConstituentWindowPlant.ui">
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
-    </CustomBuild>
     <None Include="GUI\Icons\Save File Icon Stock Photography - Image_ 517502.html" />
     <None Include="GUI\Icons\Save File Icon Stock Photography - Image_ 517502_files\BhKMRj1sUPu(1).html" />
     <None Include="GUI\Icons\Save File Icon Stock Photography - Image_ 517502_files\BhKMRj1sUPu.html" />
@@ -1329,9 +1288,10 @@ rem del $(SolutionDir)$(Platform)\$(ProjectName)\$(Configuration)\GIFMod.tlog\*.
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
     </CustomBuild>
-    <None Include="Setup Project\GIFMod Setup.aip">
+    <CustomBuild Include="Setup Project\GIFMod Setup.aip">
       <SubType>Designer</SubType>
-    </None>
+      <FileType>Document</FileType>
+    </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
