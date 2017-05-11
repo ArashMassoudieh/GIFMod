@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GIFMod", "GIFMod - Arash.vcxproj", "{C9E11F71-A776-409F-BEA9-B30830C230B3}"
-EndProject
-Project("{840C416C-B8F3-42BC-B0DD-F6BB14C9F8CB}") = "Gifmod_setup_am", "Gifmod_setup_am\Gifmod_setup_am.aiproj", "{5605CBF4-A3DA-44A2-8B6D-5CD8D1C2D69D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,8 +11,6 @@ Global
 		Debug|x86 = Debug|x86
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-		x64_Release|x64 = x64_Release|x64
-		x64_Release|x86 = x64_Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{C9E11F71-A776-409F-BEA9-B30830C230B3}.Debug|x64.ActiveCfg = Debug|x64
@@ -25,22 +21,6 @@ Global
 		{C9E11F71-A776-409F-BEA9-B30830C230B3}.Release|x64.Build.0 = Release|x64
 		{C9E11F71-A776-409F-BEA9-B30830C230B3}.Release|x86.ActiveCfg = Release|Win32
 		{C9E11F71-A776-409F-BEA9-B30830C230B3}.Release|x86.Build.0 = Release|Win32
-		{C9E11F71-A776-409F-BEA9-B30830C230B3}.x64_Release|x64.ActiveCfg = Release|x64
-		{C9E11F71-A776-409F-BEA9-B30830C230B3}.x64_Release|x64.Build.0 = Release|x64
-		{C9E11F71-A776-409F-BEA9-B30830C230B3}.x64_Release|x86.ActiveCfg = Release|Win32
-		{C9E11F71-A776-409F-BEA9-B30830C230B3}.x64_Release|x86.Build.0 = Release|Win32
-		{5605CBF4-A3DA-44A2-8B6D-5CD8D1C2D69D}.Debug|x64.ActiveCfg = x64_Release
-		{5605CBF4-A3DA-44A2-8B6D-5CD8D1C2D69D}.Debug|x64.Build.0 = x64_Release
-		{5605CBF4-A3DA-44A2-8B6D-5CD8D1C2D69D}.Debug|x86.ActiveCfg = x64_Release
-		{5605CBF4-A3DA-44A2-8B6D-5CD8D1C2D69D}.Debug|x86.Build.0 = x64_Release
-		{5605CBF4-A3DA-44A2-8B6D-5CD8D1C2D69D}.Release|x64.ActiveCfg = x64_Release
-		{5605CBF4-A3DA-44A2-8B6D-5CD8D1C2D69D}.Release|x64.Build.0 = x64_Release
-		{5605CBF4-A3DA-44A2-8B6D-5CD8D1C2D69D}.Release|x86.ActiveCfg = x64_Release
-		{5605CBF4-A3DA-44A2-8B6D-5CD8D1C2D69D}.Release|x86.Build.0 = x64_Release
-		{5605CBF4-A3DA-44A2-8B6D-5CD8D1C2D69D}.x64_Release|x64.ActiveCfg = x64_Release
-		{5605CBF4-A3DA-44A2-8B6D-5CD8D1C2D69D}.x64_Release|x64.Build.0 = x64_Release
-		{5605CBF4-A3DA-44A2-8B6D-5CD8D1C2D69D}.x64_Release|x86.ActiveCfg = x64_Release
-		{5605CBF4-A3DA-44A2-8B6D-5CD8D1C2D69D}.x64_Release|x86.Build.0 = x64_Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -67,7 +67,6 @@
     <ClCompile Include="GUI\reactionwindow.cpp" />
     <ClCompile Include="GUI\RestoreInfo.cpp" />
     <ClCompile Include="GUI\results.cpp" />
-    <ClCompile Include="GUI\runModel.cpp" />
     <ClCompile Include="GUI\runtimeWindow.cpp" />
     <ClCompile Include="GUI\RxnNetwork.cpp" />
     <ClCompile Include="GUI\scriptExport.cpp" />
@@ -200,6 +199,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GUI\wizard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\ConstituentTableModelPlant.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\ConstituentWindowPlant.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\files\moc_ConstituentWindowPlant.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\runModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -339,6 +350,12 @@
     <ClInclude Include="GUI\texfonts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GUI\ConstituentTableModelPlant.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_ConstituentWindowPlant.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="GUI\expEditor.h" />
@@ -410,6 +427,12 @@
       <Filter>Form Files</Filter>
     </CustomBuild>
     <CustomBuild Include="GUI\Widget.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GUI\ConstituentWindowPlant.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GUI\ConstituentWindowPlant.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
   </ItemGroup>

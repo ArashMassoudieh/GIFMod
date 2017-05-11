@@ -559,9 +559,9 @@ double CConnection::get_val(int i, int ii)
 
 	if (i==9)
 	{
-		if (Block1->indicator==Soil) 
+		if (Block1->indicator==Soil || Block1->indicator == Plant)
 		{
-			if (Block2->indicator==Soil)
+			if (Block2->indicator==Soil || Block2->indicator == Plant)
 			{
 				vector<int> jj;
 				jj.push_back(ii);
@@ -576,7 +576,7 @@ double CConnection::get_val(int i, int ii)
 		}
 		else
 		{
-			if (Block2->indicator==Soil) 
+			if (Block2->indicator==Soil || Block2->indicator == Plant)
 			{
 				vector<int> jj;
 				jj.push_back(ii);
