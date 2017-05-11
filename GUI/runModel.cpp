@@ -1377,6 +1377,8 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 			B.set_val(text.split('=').first().toStdString(), text.split('=').last().toFloat());
 		for each (QString text in n->cg().split(';'))
 			B.set_val(text.split('=').first().toStdString(), text.split('=').last().toFloat());
+		for each (QString text in n->planthsc().split(';'))
+			B.set_val(text.split('=').first().toStdString(), text.split('=').last().toFloat());
 
 		QStringList bulkDensity1Blocks = QStringList() << "Pond" << "Stream" << "Catchment";
 		if (bulkDensity1Blocks.contains(n->objectType.ObjectType))

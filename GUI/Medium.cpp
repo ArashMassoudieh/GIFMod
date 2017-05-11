@@ -1939,6 +1939,7 @@ void CMedium::solve_fts_m2(double dt)
 			{
 				Res_temp = getrestoreinfo(); Res_temp.iii = iii;
 			}
+			do_plant_growth(dtt);
 			if (!steady_state_hydro())
 				if (use_arma)
 					onestepsolve_flow_ar(dtt);
@@ -2033,7 +2034,7 @@ void CMedium::solve_fts_m2(double dt)
 					pos_def_mult = 10000;
 					pos_def_mult_Q = 10000;
 				}
-				do_plant_growth(dtt);
+				
 				if ((max_wiggle > 0.1) && (!redo) && check_oscillation() && dtt > 0.01*dt0)
 				{
 					fail_reason = "Oscillation at: " + Blocks[max_wiggle_id].ID;
@@ -3706,7 +3707,7 @@ CVector_arma CMedium::getres_Q(CVector_arma &X, double dtt)
 							F[get_member_no(getblocksq(Connector[i].Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connector[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block1ID)].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
 
 						}
-						if (Q_adv<0)
+						else
 						{
 							F[get_member_no(getblocksq(Connector[i].Block1ID), p, l, k)] += (w()*Q_adv*Blocks[getblocksq(Connector[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block2ID)].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
 							F[get_member_no(getblocksq(Connector[i].Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connector[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block2ID)].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;

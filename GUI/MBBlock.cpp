@@ -271,7 +271,8 @@ double CMBBlock::get_val(int i, vector<int> ii)
 	if (i >= 5000 && i<6000) return RXN->cons[ii[0]].get_val(i);
 	if (i >= 6000 && i<6500) return evaporation_m[ii[0]]->parameters[i - 6000];
 	if (i == 6501 && i<7000) return evaporation_m[ii[0]]->single_crop_coefficient.interpol(dayOfYear(parent->t));
-	if (i >= 7000 && i < 8000) return plant_prop.half_saturation_constants[i - 6000]; 
+	if (i >= 7000 && i < 8000) return 
+		plant_prop.half_saturation_constants[i - 7000]; 
 	if (i >= 10000 && i<20000) return G[(i-10000)/1000][(i-10000)%1000];
 	if (i >= 100000 && i<200000) return CG[(i-100000)/10000][(i-100000)%10000];
 
@@ -421,18 +422,18 @@ double CMBBlock::get_val_star(int i, vector<int> ii)
 {
 	if (i==1) return H_star;
 	if (i==2) return A_star;
-	if (i==3) return V;
+	if (i==3) return V_star;
 	if (i==4) return S_star;
 	if (i==5) return z0;
-	if (i==6) return V/A_star;
+	if (i==6) return V_star/A_star;
 	if (i==7) return 0;
 	if (i==8) return q; 
 	if (i==9)
 	{
 		if ((indicator != Soil) && (indicator != Darcy))
-			return (Heavyside(S_star/V)*S_star/V - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);
+			return (Heavyside(S_star/V_star)*S_star/V_star - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);
 		else
-			return (S_star/V - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);   //allow s to be above 1
+			return (S_star/V_star - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);   //allow s to be above 1
 		}
 	//if (i==12) return DS;
 	if (i==13) return vapor_diffusion;
@@ -495,8 +496,8 @@ double CMBBlock::get_val_star(int i, vector<int> ii)
 	if (i >= 6000 && i<6500) return evaporation_m[ii[0]]->parameters[i - 6000];
 	if (i == 6501 && i<7000) return evaporation_m[ii[0]]->single_crop_coefficient.interpol(dayOfYear(parent->t));
 	if (i >= 7000 && 8000) return plant_prop.half_saturation_constants[i - 7000];
-	if (i >= 10000 && i<20000) return G[(i - 10000) / 1000][(i - 10000) % 1000];
-	if (i >= 100000 && i<200000) return CG[(i - 100000) / 10000][(i - 100000) % 10000];
+	if (i >= 10000 && i<20000) return G_star[(i - 10000) / 1000][(i - 10000) % 1000];
+	if (i >= 100000 && i<200000) return CG_star[(i - 100000) / 10000][(i - 100000) % 10000];
 }
 
 double CMBBlock::calc(CStringOP &term, vector<int> ii)  //Works w/o reference(&)
@@ -1421,14 +1422,14 @@ void CMBBlock::set_up_plant_growth_expressions()
 	string l_constituent;
 	for (int i = 0; i < plant_prop.limiting_nutrients.size(); i++)
 	{
-		l_constituent = "cg[" + numbertostring(parent->RXN().look_up_constituent_no(plant_prop.limiting_nutrients[i])) + "]";
-		l_constituent += l_constituent + "/(" + l_constituent+ "+hsc[+"+ numbertostring(i) + ")";
+		string CG = "cg[" + numbertostring(parent->RXN().look_up_constituent_no(plant_prop.limiting_nutrients[i])) + "]";
+		l_constituent += "*(" + CG + "/(" + CG + "+f["+ numbertostring(7000+i) + "]))";
 	}
 	string temperature_stress = "_exp(-2*((f[19]-f[82])^2)/((f[82]-f[78])^2))";
 	s = "(" + s + l_constituent + "*f[9]*" + temperature_stress +" ) - (f[80]*f[3]*_sig((f[78]-f[19])/f[79]))";
 	plant_prop.plant_growth_rate_expression = CStringOP(s);
 
-	s = "(f[75]*f[76]*_pos(f[19]-f[78])*_max(1-_exp(5.0*(f[24]-f[76])):0)" + l_constituent + "*f[9]*" + temperature_stress + ")";
+	s = "(f[75]*f[76]*_pos(f[19]-f[78])*_max((1-_exp(5.0*(f[24]-f[76]))):0)" + l_constituent + "*f[9]*" + temperature_stress + ")";
 	s = s + "-(f[81]*f[3]*_sig((f[78]-f[19])/f[79]))"; 
 	plant_prop.LAI_growth_rate_expression = s; 
 
