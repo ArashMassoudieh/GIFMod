@@ -16,6 +16,8 @@ CMediumSet::~CMediumSet()
 	ANS_control.clear();
 	ANS_obs.clear();
 	ANS_hyd.clear();
+	gw = NULL;
+
 }
 
 CMediumSet::CMediumSet(string filename)

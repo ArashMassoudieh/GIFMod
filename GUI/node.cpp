@@ -20,6 +20,7 @@ Node::Node(GraphWidget *gwidget, QString _type, QString _name, int _ID, int x, i
 	model = new PropModel<Node>(this);
 	particleInitialConditions = new QMap < QString, QList<ParticleInitialConditionItem> >;
 	constituentInitialConditions = new QMap < QString, QList<ConstituentInitialConditionItem> >;
+	NutrientHalfSaturationConstants = new QMap < QString, QList<NutrientHalfSaturationConstantItem> >;
 
 	setFlag(ItemIsMovable);
 	setFlag(ItemIsSelectable);
@@ -316,6 +317,8 @@ XString Node::getValue(const QString& propName) const
 		return QString ("%1 ...").arg(g());
 	if (propName.contains("Constituent initial")) 
 		return QString("%1 ...").arg(cg());
+	if (propName.contains("Limiting Nutrient"))
+		return QString("%1 ...").arg(planthsc());
 #ifdef GIFMOD
 	if (experimentName() == "All experiments" && !getProp(propName, differentValuesRole).toBool())
 		return props.getProp(propName, parent->experimentsList()[0]);
@@ -698,6 +701,7 @@ Node::Node(const Node &E)
 	objectType = E.objectType;
 	particleInitialConditions = new QMap<QString, QList<ParticleInitialConditionItem>>(*E.particleInitialConditions);
 	constituentInitialConditions = new QMap<QString, QList<ConstituentInitialConditionItem>>(*E.constituentInitialConditions);
+	NutrientHalfSaturationConstants = new QMap<QString, QList<NutrientHalfSaturationConstantItem>>(*E.NutrientHalfSaturationConstants);
 
 	model = new PropModel<Node>(this);
 }
@@ -727,6 +731,7 @@ Node Node::operator=(const Node &E)
 	objectType = E.objectType;
 	particleInitialConditions = E.particleInitialConditions;
 	constituentInitialConditions = E.constituentInitialConditions;
+	NutrientHalfSaturationConstants = E.NutrientHalfSaturationConstants;
 
 	model = new PropModel<Node>(this);
 /*	setPos(E.pos());
@@ -794,6 +799,22 @@ QString Node::cg(QString experimentName) const
 	}
 	return cg;
 }
+
+QString Node::planthsc(QString experimentName) const
+{
+	QString cg;
+	if (experimentName == "")
+		experimentName = parent->experimentName();
+	for each (NutrientHalfSaturationConstantItem i in NutrientHalfSaturationConstant(experimentName)) {
+		if (cg != "") cg.append("; ");
+		cg.append("hsc[");
+		cg.append(i.Constituent);
+		cg.append("]=");
+		cg.append(i.Value);
+	}
+	return cg;
+}
+
 QList<ParticleInitialConditionItem> &Node::particleInitialCondition(QString experimentName) const
 {
 	//qDebug() << "particleInitialCondition const";
@@ -855,6 +876,7 @@ QList<ConstituentInitialConditionItem> &Node::constituentInitialCondition(QStrin
 	//qDebug() << "constituentInitialCondition const exit";
 	return constituentInitialConditions->operator[](experimentName);
 }
+
 QList<ConstituentInitialConditionItem> &Node::constituentInitialCondition(QString experimentName)
 {
 	//qDebug() << "constituentInitialCondition";
@@ -875,6 +897,50 @@ QList<ConstituentInitialConditionItem> &Node::constituentInitialCondition(QStrin
 	//qDebug() << "constituentInitialCondition exit";
 	return constituentInitialConditions->operator[](experimentName);
 }
+
+QList<NutrientHalfSaturationConstantItem> &Node::NutrientHalfSaturationConstant(QString experimentName)
+{
+	//qDebug() << "constituentInitialCondition";
+	if (experimentName == "")
+		experimentName = parent->experimentName();
+	if (experimentName != "All experiments")
+		return NutrientHalfSaturationConstants->operator[](experimentName);
+	if (parent->experiments->count() == 2)
+		return NutrientHalfSaturationConstants->operator[](parent->firstExperimentName());
+	vector<QVariant> gValues;
+	for (int i = 0; i < parent->experimentsList().count(); i++)
+		gValues.push_back(planthsc(parent->experimentsList()[i]));
+	multiValues<> gMultiValues(gValues);
+	if (gMultiValues.sameValues())
+		NutrientHalfSaturationConstants->operator[](experimentName) = NutrientHalfSaturationConstants->operator[](parent->firstExperimentName());
+	else
+		NutrientHalfSaturationConstants->operator[](experimentName) = QList<NutrientHalfSaturationConstantItem>();
+	//qDebug() << "constituentInitialCondition exit";
+	return NutrientHalfSaturationConstants->operator[](experimentName);
+}
+
+QList<NutrientHalfSaturationConstantItem> &Node::NutrientHalfSaturationConstant(QString experimentName) const
+{
+	//qDebug() << "constituentInitialCondition const";
+	if (experimentName == "")
+		experimentName = parent->experimentName();
+	if (experimentName != "All experiments")
+		return NutrientHalfSaturationConstants->operator[](experimentName);
+	if (parent->experiments->count() == 2)
+		return NutrientHalfSaturationConstants->operator[](parent->firstExperimentName());
+	vector<QVariant> gValues;
+	for (int i = 0; i < parent->experimentsList().count(); i++)
+		gValues.push_back(planthsc(parent->experimentsList()[i]));
+	multiValues<> gMultiValues(gValues);
+	if (gMultiValues.sameValues())
+		NutrientHalfSaturationConstants->operator[](experimentName) = NutrientHalfSaturationConstants->operator[](parent->firstExperimentName());
+	else
+		NutrientHalfSaturationConstants->operator[](experimentName) = QList<NutrientHalfSaturationConstantItem>();
+	//qDebug() << "constituentInitialCondition const exit";
+	return NutrientHalfSaturationConstants->operator[](experimentName);
+}
+
+
 
 QStringList Node::codes() const
 {
@@ -936,6 +1002,11 @@ QMap<QString, QVariant> Node::compact() const
 		for each (ConstituentInitialConditionItem i in constituentInitialCondition(experiment))
 			CICList.append(QString("%1;%2;%3;%4;%5").arg(experiment).arg(i.Constituent).arg(i.Particle).arg(i.Model).arg(i.Value));
 
+	QStringList HSCList;
+	for each (QString experiment in parent->experimentsList())
+		for each (NutrientHalfSaturationConstantItem i in NutrientHalfSaturationConstant(experiment))
+			HSCList.append(QString("%1;%2;%3").arg(experiment).arg(i.Constituent).arg(i.Value));
+
 	r["GUI"] = GUI;
 	r["Name"] = name;
 	r["Type"] = objectType.ObjectType;
@@ -950,6 +1021,7 @@ QMap<QString, QVariant> Node::compact() const
 		r[key] = props.list[key].compact();*/
 	r["Particle Initial Conditions"] = PICList;
 	r["Constituent Initial Conditions"] = CICList;
+	r["Nutrient Half Saturation Constants"] = HSCList;
 	return r;
 }
 Node* Node::unCompact(QMap<QString, QVariant> n, GraphWidget *gwidget, bool oldVersion)
@@ -997,6 +1069,19 @@ Node* Node::unCompact(QMap<QString, QVariant> n, GraphWidget *gwidget, bool oldV
 		node->constituentInitialCondition(i.split(";")[0]).append(item);
 	}
 	n.remove("Constituent Initial Conditions");
+
+	QStringList HSCList;
+	HSCList = n["Nutrient Half Saturation Constants"].toStringList();
+	for each (QString i in HSCList)
+	{
+		if (i.split(";").size() == 2)
+			i.push_front("All experiments;");
+		NutrientHalfSaturationConstantItem item;
+		item.Constituent = i.split(";")[1];
+		item.Value = i.split(";")[2];
+		node->NutrientHalfSaturationConstant(i.split(";")[0]).append(item);
+	}
+	n.remove("Nutrient Half Saturation Constants");
 
 	node->props.list = PropList<Node>::unCompact(n.value("Properties").toString());
 	if (!node->props.list.size() && oldVersion)
@@ -1132,4 +1217,6 @@ void Node::copyProps(QString sourceExperiment, QString destExperiment)
 		particleInitialConditions->insert(destExperiment, particleInitialConditions->operator[](sourceExperiment));
 	if (constituentInitialConditions->keys().contains(sourceExperiment))
 		constituentInitialConditions->insert(destExperiment, constituentInitialConditions->operator[](sourceExperiment));
+	if (NutrientHalfSaturationConstants->keys().contains(sourceExperiment))
+		NutrientHalfSaturationConstants->insert(destExperiment, NutrientHalfSaturationConstants->operator[](sourceExperiment));
 }

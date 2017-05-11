@@ -128,13 +128,13 @@
     <ClCompile Include="GUI\wizard.cpp" />
     <ClCompile Include="GUI\Sensor.cpp" />
     <ClCompile Include="GUI\TableWidgetDateItem.cpp" />
-    <ClCompile Include="GUI\ConstituentTableModelPlant.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GeneratedFiles\files\moc_ConstituentWindowPlant.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GUI\ConstituentWindowPlant.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\files\moc_ConstituentWindowPlant.cpp">
+    <ClCompile Include="GUI\ConstituentTableModelPlant.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -177,7 +177,6 @@
     <ClInclude Include="GUI\Evaporation.h" />
     <ClInclude Include="GUI\ExchangeParametersTableModel.h" />
     <ClInclude Include="GUI\Matrix_arma.h" />
-    <ClInclude Include="GUI\node.h" />
     <ClInclude Include="GUI\ObjectiveFunction.h" />
     <ClInclude Include="GUI\texfonts.h" />
     <ClInclude Include="GUI\Vector_arma.h" />
@@ -226,10 +225,13 @@
     <ClInclude Include="GUI\Vector.h" />
     <ClInclude Include="GUI\Well.h" />
     <ClInclude Include="GUI\XString.h" />
-    <ClInclude Include="GUI\ConstituentTableModelPlant.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="GUI\node.h">
+      <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_ConstituentWindowPlant.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\ConstituentTableModelPlant.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -283,7 +285,7 @@
     <CustomBuild Include="GUI\Widget.ui" />
     <CustomBuild Include="Setup Project\GIFMod Setup.aip" />
     <CustomBuild Include="GUI\ConstituentWindowPlant.h">
-      <Filter>Header Files</Filter>
+      <Filter>Generated Files</Filter>
     </CustomBuild>
     <CustomBuild Include="GUI\ConstituentWindowPlant.ui">
       <Filter>Form Files</Filter>
@@ -304,16 +306,6 @@
     <None Include="GUI\PropList.csv" />
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;cxx;c;def</Extensions>
-      <ParseFiles>true</ParseFiles>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h</Extensions>
-      <ParseFiles>true</ParseFiles>
-    </Filter>
     <Filter Include="Generated Files">
       <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
       <Extensions>moc;h;cpp</Extensions>

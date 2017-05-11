@@ -21,6 +21,9 @@ CMedium::CMedium(void)
 
 CMedium::~CMedium(void)
 {
+	parent = 0;
+	gw = 0;
+	runtimewindow = 0;
 }
 
 CMedium::CMedium(const CMedium &M)
