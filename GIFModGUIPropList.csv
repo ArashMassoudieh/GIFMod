@@ -11,6 +11,7 @@
 1,Block,Darcy,Darcy,!,Bottom area,a,m~^2;cm~^2;ft~^2,m~^2,float+Estimate,0,UnitBox,Geometry,Input,Yes,100006,>0,E,Area must be greater than zero
 1,Block,Stream,Stream,!,Bottom area,a,m~^2;cm~^2;ft~^2,m~^2,float+Estimate,1,UnitBox,Geometry,Input,Yes,100006,>0,E,Area must be greater than zero
 1,Block,Storage,Storage,!,Bottom area,a,m~^2;cm~^2;ft~^2,m~^2,float+Estimate,0,UnitBox,Geometry,Input,Yes,100006,>0,E,Area must be greater than zero
+1,Block,Plant,Plant,!,Bottom area,a,m~^2;cm~^2;ft~^2,m~^2,float+Estimate,0,UnitBox,Geometry,Input,Yes,100006,>0,E,Area must be greater than zero
 1,Block,Catchment,Catchment,!,Bottom elevation,z0,m;cm;ft;in,m,float+Estimate,0,UnitBox,Material,Input,Yes,100013,,,
 1,Block,Pond,Pond,!,Bottom elevation,z0,m;cm;ft;in,m,float+Estimate,0,UnitBox,Geometry,Input,Yes,100013,,,
 1,Block,Soil,*,!,Bottom elevation,z0,m;cm;ft;in,m,float+Estimate,0,UnitBox,Material,Input,Yes,100013,,,
@@ -28,7 +29,7 @@
 1,Block,Pond,Pond,!,Depression storage,depression,m;cm;ft;in,m,float+Estimate,0,UnitBox,Material,Input,Yes,100021,>=0,E,depression depth must be non-negative
 1,Block,*,*,!,External flux,externalflux,!,!,string,populate at runtime;blank+external flux,MultiComboBox,Global,Select,Yes,100023,,,
 1,Block,Soil,Userdefined,!,Flow expression,flow_expression,!,!,float+Estimate,!,UnitBox,Material,Input,Yes,100024,,,
-1,Block,*,*,!,Head-storage relationship,h_s_expression,!,!,expression,!,expressionEditor,Global,Input,Yes,100025,,,
+1,Block,*,*,!,Head-storage relationship,h_s_expression,!,!,string,!,expressionEditor,Global,Input,Yes,100025,,,
 1,Block,*,*,!,Inflow time series,inflow,!,!,filename,populate at runtime; blank+Inflow,Browser;time series,Environment,Select,Yes,100026,inflow format,E,Inflow file format is invalid.
 1,Block,Soil,*,!,moisture content (~theta),theta,!,!,float+Estimate,0.2,TextBox,Material,Input,Yes,100027,>=0;<1,E;W,Moiture content must be non-negative; moisture content is greater than 1
 1,Block,Darcy,Darcy,!,Initial moisture content (~theta),Theta,!,!,float+Estimate,!,TextBox,Material,Input,Yes,100325,>=0;={theta_s},E;W,Moiture content must be non-negative;moisture content is different than saturated moisture content for a Darcy block.
@@ -61,7 +62,7 @@
 1,Connector,Default,Porous,!,Saturated hydraulic conductivity (ks),ks,m/day; cm/day;cm/s;mm/s;ft/day;in/day;in/s,m/day,float+Estimate,!,UnitBox,Material,Input,Yes,100066,>=0;!=0,E;W,Hydraulic conductivity must me non-negative;Saturated hydraulic conductivity will be assigned based on the connected blocks
 1,Connector,*,*,!,Interface/cross sectional area,a,m~^2;ft~^2,m~^2,float+Estimate,!,UnitBox,Geometry,Input,Yes,100067,!=0;>=0,W;E,"The interface area is not specified, the area will be calculated based on the connected blocks;Area must be greater than zero"
 1,Connector,Pipe,*,!,Diameter,diameter,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100069,>0,E,Pipe diameter must be greater than zero
-1,Connector,*,*,!,Dispersion expression,dispersion_expression,!,!,expression,!,expressionEditor,Material,Input,Yes,100070,>=0,E,
+1,Connector,*,*,!,Dispersion expression,dispersion_expression,!,!,expression,!,TextBox,Material,Input,Yes,100070,>=0,E,
 1,Connector,*,*,!,Dispersivity (~alpha),alpha,m;cm;ft;in,m,float+Estimate,!,UnitBox,Material,Input,Yes,100071,>=0,E,Dispersivity must be non-negative
 1,Connector,Pipe,*,!,Start elevation,z1,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100072,,,
 1,Connector,Pipe,*,!,End elevation,z2,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100073,,,
@@ -81,8 +82,8 @@
 1,Connector,Darcy,*,!,Saturated hydraulic conductivity (ks),ks,m/day;cm/day;cm/s;mm/s;ft/day;in/day;in/s,m/day,float+Estimate,!,UnitBox,Material,Input,Yes,100327,>=0,E,Hydraulic conductivity must me non-negative
 1,Connector,*,*,!,Settling,settling,!,!,string,No;Yes,ComboBox,Geometry,Select,Yes,100081,,,
 1,Connector,Normal Flow,*,!,Width,width,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100082,!=0; >=0,W;E,Width is assigned to be zero; Width must be non-negative
-1,Connector,Userdefined,*,!,Area expression,area_expression,m~^2;ft~^2,m~^2,expression,!,expressionEditor,Geometry,Input,Yes,100083,,,
-1,Connector,Userdefined,*,!,Flow expression,flow_expression,!,!,expression,!,expressionEditor,Geometry,Input,Yes,100084,,,
+1,Connector,Userdefined,*,!,Area expression,area_expression,m~^2;ft~^2,m~^2,expression,!,UnitBox,Geometry,Input,Yes,100083,,,
+1,Connector,Userdefined,*,!,Flow expression,flow_expression,!,!,expression,!,TextBox,Geometry,Input,Yes,100084,,,
 1,Entity,Build-up,Build-up,!,Name,Name,!,!,string,!,TextBox,Global,Input,No,100085,,,
 1,Entity,Constituent,*,!,Name,Name,!,!,string,!,TextBox,Global,Input,No,100086,,,
 1,Entity,External flux,External flux,!,Name,!,!,!,string,!,TextBox,Global,Input,No,100087,,,
@@ -100,7 +101,7 @@
 1,Entity,Reaction parameter,Reaction parameter,!,Temperature correction factor (Arrhenius constant),temperature_correction,!,!,float+Estimate,1,TextBox,Global,Input,No,100152,>=0,E,Temperature correction factor must be non-negative
 1,Entity,Solver settings,Solver settings,!,Time step change coefficient in case of non-convergance,dt_change_failure,!,!,float+Estimate,0.5,TextBox,Global,Input,No,100153,(0:1),E,time step change coefficient in case of non-convergance must be greater than zero
 1,Entity,Solver settings,Solver settings,!,Time step change rate coefficient,dt_change_rate,!,!,float+Estimate,0.95,TextBox,Global,Input,No,100154,(0:1),E,time step change coefficient in case of non-convergance must be greater than zero
-1,Entity,External flux,External flux,!,Transfer rate expression,expression,!,!,expression,!,expressionEditor,Global,Input,No,100155,,,
+1,Entity,External flux,External flux,!,Transfer rate expression,expression,!,!,expression,!,TextBox,Global,Input,No,100155,,,
 1,Entity,Solver settings,Solver settings,!,Uniform output interval,uniformoutput,!,!,integer,Yes;No,ComboBox,Global,Select,No,100156,,,
 1,Entity,Reaction parameter,Reaction parameter,!,Value,value,!,!,float+Estimate,0,TextBox,Global,Input,No,100157,,,
 1,Entity,External flux,External flux,!,Velocity exponent,velocity_exponent,!,!,float+Estimate,!,TextBox,Global,Input,No,100158,,,
@@ -167,7 +168,7 @@
 1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Realized parameters Output File,realizedparam,!,!,string,!,Browser,Global,Input,No,100221,,,
 1,Entity,Evapotranspiration,*,!,Name,!,!,!,string,!,TextBox,Global,Input,No,100222,,,
 1,Entity,Evapotranspiration,*,Default  Values Template,SubType,!,!,!,string,populate at runtime; SubType,ComboBox,Geometry,Select,No,100224,,,
-1,Entity,Evapotranspiration,*,!,Rate expression,expression,!,!,expression,!,expressionEditor,Global,Select,No,100225,,,
+1,Entity,Evapotranspiration,*,!,Rate expression,expression,!,!,expression,!,TextBox,Global,Select,No,100225,,,
 1,Entity,Evapotranspiration,Time Series,!,Time series,time_series,!,!,filename,!,Browser;time series,Global,Select,No,100226,,,
 1,Entity,Evapotranspiration,FAO-56,!,FAO-56 crop coefficient time series,fao_56_kc_coefficient,!,!,filename,!,Browser;time series,Global,Select,No,100502,"!=""""",,
 1,Entity,Evapotranspiration,Time Series,!,Uptake constituents,uptake_constituents,!,!,string,No;Yes,ComboBox,Global,Select,No,100227,,,
@@ -294,7 +295,7 @@
 1,Entity,Build-up,Build-up,!,Sorbed/attached,sorb,!,!,string,Yes; No,ComboBox,Global,Select,No,100149,,,
 1,Entity,Climate settings,Climate settings,!,Precipitation time series,precipitation,!,!,filename;precipitation,!,Browser;precipitation;time series,Global,Select,No,100132,,,
 1,Entity,Constituent,*,!,Diffusion coefficient,diffusion,m~^2/day; m~^2/s; cm~^2/s; cm~^2/day ,m~^2/day,float+Estimate,!,UnitBox,Global,Input,No,100107,>=0,E,Diffusion coefficient must be non-negative
-1,Entity,Constituent,*,!,Exchange rate factor,exchange_rate_factor,!,!,expression,1,expressionEditor,Global,Input,No,100112,>=0,E,Exchange rate factor must be non-negative
+1,Entity,Constituent,*,!,Exchange rate factor,exchange_rate_factor,!,!,expression,1,TextBox,Global,Input,No,100112,>=0,E,Exchange rate factor must be non-negative
 1,Entity,Constituent,*,!,Partitioning coefficient,kd,!,!,dialog,...;Solid aqueous exchange parameters,PushButton,Global,Input,No,100128,,,
 1,Entity,Constituent,*,!,SubType,settling_model,!,!,float+Estimate,Constant velocity; Double Exponential,ComboBox,Material,Select,No,100358,,,
 1,Entity,Constituent,Double Exponential,!,Hindered zone settling parameter,r_hin,!,!,float+Estimate,!,TextBox,Material,Input,No,100359,>=0,E,Hindered zone settling parameter must be non-negative
@@ -318,9 +319,9 @@
 1,Entity,Solver settings,Solver settings,!,Failure criteria number of interations,nr_failure_criteria,!,!,integer,200,TextBox,Global,Input,No,100113,>0,E,Failure criteria number of interations must be positive
 1,Entity,Solver settings,Solver settings,!,Maximum number of matrix inversions allowed,epoch_limit,!,!,integer,20000,TextBox,Global,Input,No,100350,>0,E,Maximum Matrix inversions allowed must be positive
 1,Entity,Solver settings,Solver settings,!,Maximum simulation time,maximum_run_time,!,!,float,864000,TextBox,Global,Input,No,100504,>0,E,Maximum simulation time must be positive
-1,Entity,Solver settings,Solver settings,!,Initial time step size,dt,day;hr;min;s,day,float+Estimate,0.01,UnitBox,Global,Input,No,100115,>0,E,Initial time step must be greater than zero
+1,Entity,Solver settings,Solver settings,!,Initial time step size,dt,day;hr;min;s,day,float,0.01,UnitBox,Global,Input,No,100115,>0,E,Initial time step must be greater than zero
 1,Entity,Solver settings,Solver settings,!,Jackobian update interval,max_j_update_interval,!,!,integer,40,TextBox,Global,Input,No,100117,>=0,E,Jackobian matrix update interval must be non-negative
-1,Entity,Solver settings,Solver settings,!,Newton-Raphson acceptance tolerance,tol,!,!,float+Estimate,0.001,TextBox,Global,Input,No,100125,>0,E,Newton-Raphson acceptance tolerance must be positive
+1,Entity,Solver settings,Solver settings,!,Newton-Raphson acceptance tolerance,tol,!,!,float,0.001,TextBox,Global,Input,No,100125,>0,E,Newton-Raphson acceptance tolerance must be positive
 1,Entity,Project settings,Project settings,!,Simulation end time,time_max,!,!,datetime+getnumber,1,DateTime,Global,Input,Yes,100145,>{time_min},E,Simulation End time must be greater than simulation start time
 1,Entity,Project settings,Project settings,!,Perform mass balance check,mass_balance_check,!,!,string,Yes;No,ComboBox,Global,Select,No,100129,,,
 1,Entity,Project settings,Project settings,!,Perform particle transport simulation,colloid_transport,!,!,string,Yes;No,ComboBox,Global,Select,No,100130,,,
@@ -330,8 +331,8 @@
 1,Entity,Solver settings,Solver settings,!,Restore interval,restore_interval,!,!,integer,20,TextBox,Global,Input,No,100139,,,
 1,Entity,Project settings,Project settings,!,Solution method,solution_method,!,!,string,Quasi implicit Newton-Raphson,ComboBox,Global,Select,No,100147,,,
 1,Entity,Project settings,Project settings,!,Sorption,sorption,!,!,string,Yes;No,ComboBox,Global,Select,No,100360,,,
-1,Entity,Solver settings,Solver settings,!,Solution oscillation tolerance,wiggle_tolerance,!,!,float+Estimate,0.01,TextBox,Global,Input,No,100148,>0;>=0.01,E;W,Solution Oscillation tolerance must be positive;Solution Oscillation tolerance less than 0.01 lead to more computational cost
-1,Entity,Solver settings,Solver settings,!,Time weighting factor,w,!,!,float+Estimate,0,TextBox,Global,Input,No,100104,[0:1],E,Crank-Nicholson time weighting must be between 0 and 1
+1,Entity,Solver settings,Solver settings,!,Solution oscillation tolerance,wiggle_tolerance,!,!,float,0.01,TextBox,Global,Input,No,100148,>0;>=0.01,E;W,Solution Oscillation tolerance must be positive;Solution Oscillation tolerance less than 0.01 lead to more computational cost
+1,Entity,Solver settings,Solver settings,!,Time weighting factor,w,!,!,float,0,TextBox,Global,Input,No,100104,[0:1],E,Crank-Nicholson time weighting must be between 0 and 1
 1,Entity,Particle,Single phase,!,Diffusion coefficient,diffusion,m~^2/day; m~^2/s; cm~^2/s; cm~^2/day ,m~^2/day,float+Estimate,!,UnitBox,Material,Input,No,100108,>=0,E,Diffusion coefficient must be non-negative
 1,Entity,Particle,Single phase,!,Dispersivity,dispersivity,m; cm; ft; in,m,float+Estimate,!,UnitBox,Material,Input,No,100109,>=0,E,Dispersivity must be non-negative
 1,Entity,Particle,Single phase,!,Medium bulk density,bulkdensity,kg/m~^3;g/cm~^3;lb/ft~^3,kg/m~^3,float+Estimate,!,UnitBox,Material,Input,No,100120,>=0,W,A non-negative bulk density should be provided if a sorbing constituent is present
@@ -427,3 +428,13 @@
 1,Entity,Evapotranspiration,Penman (plant),,Half evaporation LAI (kLAI),psychrometric_constant,!,!,string,1.5,UnitBox,Global,Select,No,100319,>0,E,Half evaporation LAI must be positive
 1,Entity,Evapotranspiration,Priestley-Taylor (plant),,Half evaporation LAI (kLAI),psychrometric_constant,!,!,string,1.5,UnitBox,Global,Select,No,100319,>0,E,Half evaporation LAI must be positive
 1,Entity,Evapotranspiration,Aerodynamic (plant),,Half evaporation LAI (kLAI),psychrometric_constant,!,!,string,1.5,UnitBox,Global,Select,No,100319,>0,E,Half evaporation LAI must be positive
+1,Block,Plant,*,!,Maximum leaf area index,lai_max,!,!,float+Estimate,8,TextBox,Material,Input,Yes,100512,>0,E,Maximum leaf area index (LAI_max) must be a positive number
+1,Block,Plant,*,!,Leaf area index growth rate coefficient,k_lai,1/day/~degreeC,1/day/~degreeC,float+Estimate,0.1,TextBox,Material,Input,Yes,100507,>0,E,Leaf growth rate constant must be greater than zero
+1,Block,Plant,*,!,Plant biomass to energy ratio,plant_growth_rate_coefficient,m^3/J,m^3/J,float+Estimate,0.01,TextBox,Material,Input,Yes,100506,>0,E,Plant growth rate coefficient
+1,Block,Plant,*,!,Base temperature,temperature_base,~degreeC,~degreeC,float+Estimate,10,TextBox,Material,Input,Yes,100507,,,
+1,Block,Plant,*,!,Temperature spread coefficient,temperature_spread_factor,~degreeC,~degreeC,float+Estimate,4,TextBox,Material,Input,Yes,100508,>0,E,Temperature spread coefficient must be positive
+1,Block,Plant,*,!,Plant maximum biomass decay coefficient,plant_biomass_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.01,TextBox,Material,Input,Yes,100509,>=0,E,Plant maximum decay coefficient must be positive
+1,Block,Plant,*,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100510,>=0,E,Plant maximum leaf decay coefficient must be positive
+1,Block,Plant,*,!,Optimal temperature,optimal_temperature,~degreeC,~degreeC,float+Estimate,30,TextBox,Material,Input,Yes,100511,,,
+1,Entity,Solver settings,Solver settings,!,Minimum acceptable negative concentration,minimum_acceptable_negative_conc,!,!,float,1.00E-13,TextBox,Global,Input,No,100153,,,
+1,Block,Plant,*,!,Limiting Nutrients,!,!,!,dialog,...; PlantHalfSaturation,PushButton,Initial State,Select,Yes,100505,,,

@@ -34,6 +34,10 @@ CConnection::CConnection(void)
 CConnection::~CConnection(void)
 {
 	for (int i=0; i<Solid_phase.size(); i++) Solid_phase[i] = NULL;
+	Block1 = NULL;
+	Block2 = NULL;
+	RXN = NULL;
+	Controller = NULL;
 }
 
 CConnection::CConnection(const CConnection &CC)
@@ -559,9 +563,9 @@ double CConnection::get_val(int i, int ii)
 
 	if (i==9)
 	{
-		if (Block1->indicator==Soil) 
+		if (Block1->indicator==Soil || Block1->indicator == Plant)
 		{
-			if (Block2->indicator==Soil)
+			if (Block2->indicator==Soil || Block2->indicator == Plant)
 			{
 				vector<int> jj;
 				jj.push_back(ii);
@@ -576,7 +580,7 @@ double CConnection::get_val(int i, int ii)
 		}
 		else
 		{
-			if (Block2->indicator==Soil) 
+			if (Block2->indicator==Soil || Block2->indicator == Plant)
 			{
 				vector<int> jj;
 				jj.push_back(ii);

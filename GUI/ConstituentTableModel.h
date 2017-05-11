@@ -46,7 +46,11 @@ public:
 		
 		return Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled;
 	};
-	~ConstituentTableModel(){};
+	~ConstituentTableModel(){
+		gWidget = NULL;
+		node = NULL;
+		qTable = NULL;
+	};
 	bool insertRows(int row, int count, const QModelIndex & parent = QModelIndex());
 	bool removeRows(int firstRow, int lastRow, const QModelIndex & parent = QModelIndex());
 	void removeCurrentItem();

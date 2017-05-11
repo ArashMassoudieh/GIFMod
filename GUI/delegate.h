@@ -44,6 +44,7 @@ public slots:
 	void openParticleInitialCondition();
 	void openConstituentInitialCondition();
 	void openAqueousExchangeParameters();
+	void openHalfSaturationConstantsPlant();
 	void browserCheck(QString);// const;
 //	void datePicked(QWidget *editor = 0, QModelIndex index = QModelIndex());
 

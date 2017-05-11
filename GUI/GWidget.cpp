@@ -2272,12 +2272,17 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 			plotSubMenu->addAction("Plot Storage");
 			plotSubMenu->addAction("Plot Head");
 			QStringList Porous;
-			Porous << "Soil" << "Darcy" << "Storage";// << "" << "";
+			Porous << "Soil" << "Darcy" << "Storage" << "Plant" ;// << "" << "";
 			if (Porous.contains(n->objectType.ObjectType))
 				plotSubMenu->addAction("Moisture Content");
 			else
 				plotSubMenu->addAction("Water Depth");
 			plotSubMenu->addAction("Evapotranspiration Rate");
+			if (n->objectType.ObjectType == "Plant");
+			{
+				plotSubMenu->addAction("Leaf Area Index");
+				plotSubMenu->addAction("Bio-volume");
+			}
 
 		}
 		if ((model->colloid_transport() && entitiesByType("Particle").count()) ||
@@ -2876,7 +2881,10 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
 			double volume = n->val("a").convertToDefaultUnit().toDouble() * n->val("depth").convertToDefaultUnit().toDouble(); //model->Blocks[model->getblocksq(n->Name().toStdString())].V; //ask Arash
-			plot->addScatterPlot(model->ANS, model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Moisture Content"), 1.0 / volume, 0, format);
+			if (n->objectType.ObjectType=="Plant")
+				plot->addScatterPlot(model->ANS, model->getblocksq(n->Name().toStdString()), model->getblocksq(n->Name().toStdString()) + 3 * Edges().count() + 3 * Nodes().count() ,  QString("%1: %2").arg(n->Name()).arg("Moisture Content"), format);
+			else
+				plot->addScatterPlot(model->ANS, model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Moisture Content"), 1.0 / volume, 0, format);
 			plot->show();
 		}
 		if (selectedAction->text() == "Water Depth")
@@ -2893,6 +2901,22 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 			plot->addScatterPlot(model->ANS, Edges().count() + 2 * Nodes().count() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Evapotranspiration Rate"), 1, 0, format);
 			plot->show();
 		}
+		if (selectedAction->text() == "Leaf Area Index")
+		{
+			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
+			double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
+			plot->addScatterPlot(model->ANS, 3* Edges().count() + 4 * Nodes().count() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Leaf Area Index"), 1, 0, format);
+			plot->show();
+		}
+
+		if (selectedAction->text() == "Bio-volume")
+		{
+			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
+			double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
+			plot->addScatterPlot(model->ANS, 3 * Edges().count() + 3 * Nodes().count() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Bio-volume"), 1, 0, format);
+			plot->show();
+		}
+
 #endif
 		if (selectedAction->text() == "Plot Atmospheric Concentration Record")
 		{

@@ -16,7 +16,7 @@ CMBBlock::CMBBlock(void)
 	setzero=0;
 	outflow_corr_factor = 1;
 	q = 0;
-	fs_params.resize(30);
+	fs_params.resize(40);
 	fs_params[storativity] = 0.01;
 	fs_params[theta_s] = 1;
 
@@ -37,6 +37,17 @@ CMBBlock::CMBBlock(void)
 CMBBlock::~CMBBlock(void)
 {
 	for (int i=0; i<Solid_phase.size(); i++) Solid_phase[i] = NULL;
+	for (int i = 0; i<evaporation_m.size(); i++) evaporation_m[i] = NULL;
+	for (int i = 0; i<buildup.size(); i++) buildup[i] = NULL;
+	light = NULL;
+	temperature = NULL;
+	current_temperature = NULL;
+	current_light = NULL;
+	current_wind = NULL;
+	RXN = NULL;
+	parent = NULL;
+
+
 }
 
 CMBBlock::CMBBlock(const CMBBlock& BB)// copy constructor
@@ -97,6 +108,7 @@ CMBBlock::CMBBlock(const CMBBlock& BB)// copy constructor
 	initial_g_counter_p = BB.initial_g_counter_p; initial_g_counter_l = BB.initial_g_counter_l; initial_g = BB.initial_g;
 	initial_cg_counter_p = BB.initial_cg_counter_p; initial_cg_counter_c = BB.initial_cg_counter_c; initial_cg_counter_l = BB.initial_cg_counter_l; initial_cg = BB.initial_cg;
 	precipitation_swch = BB.precipitation_swch;
+	plant_prop = BB.plant_prop;
 	light_swch = BB.light_swch;
 	buildup = BB.buildup;
 	buildup_id = BB.buildup_id;
@@ -164,6 +176,7 @@ CMBBlock& CMBBlock::operator=(const CMBBlock &BB)
 	bulk_density = BB.bulk_density;
 	initial_g_counter_p = BB.initial_g_counter_p; initial_g_counter_l = BB.initial_g_counter_l; initial_g = BB.initial_g;
 	initial_cg_counter_p = BB.initial_cg_counter_p; initial_cg_counter_c = BB.initial_cg_counter_c; initial_cg_counter_l = BB.initial_cg_counter_l; initial_cg = BB.initial_cg;
+	plant_prop = BB.plant_prop;
 	precipitation_swch = BB.precipitation_swch;
 	light_swch = BB.light_swch;
 	buildup = BB.buildup;
@@ -249,6 +262,9 @@ double CMBBlock::get_val(int i, vector<int> ii)
 	if (i == physical_params::LAI)
 		return plant_prop.LAI;
 
+	if (i == physical_params::pan_evaporation_rate)
+		return get_evaporation(parent->t);
+
 	if (i>=50 && i<100) return fs_params[i-50];
 	if (i>=100 && i<1000) return G[ii[0]][i];
 	if (i>=1000 && i<2000) return CG[ii[0]][i];
@@ -264,6 +280,10 @@ double CMBBlock::get_val(int i, vector<int> ii)
 	if (i>=3000 && i<4000) return Solid_phase[ii[0]]->get_val(i);
 	if (i>=4000 && i<5000) return envexchange[ii[1]]->parameters[i-4000];
 	if (i >= 5000 && i<6000) return RXN->cons[ii[0]].get_val(i);
+	if (i >= 6000 && i<6500) return evaporation_m[ii[0]]->parameters[i - 6000];
+	if (i == 6501 && i<7000) return evaporation_m[ii[0]]->single_crop_coefficient.interpol(dayOfYear(parent->t));
+	if (i >= 7000 && i < 8000) return 
+		plant_prop.half_saturation_constants[i - 7000]; 
 	if (i >= 10000 && i<20000) return G[(i-10000)/1000][(i-10000)%1000];
 	if (i >= 100000 && i<200000) return CG[(i-100000)/10000][(i-100000)%10000];
 
@@ -365,6 +385,12 @@ double CMBBlock::get_val(string SS)
 			int k = RXN->look_up_constituent_no(s[1]);
 			if (k != -1) return CG[k][0];
 		}
+		if (tolower(trim(s[0])) == "hsc")
+		{
+			int k = plant_prop.look_up_limiting_nutrient(s[1]);
+			if (k != -1) return plant_prop.half_saturation_constants[k];
+		}
+
 		if (tolower(trim(s[0])) == "p") return rxn_params[atoi(s[1].c_str())];
 	}
 	else if (s.size()==3)
@@ -407,18 +433,18 @@ double CMBBlock::get_val_star(int i, vector<int> ii)
 {
 	if (i==1) return H_star;
 	if (i==2) return A_star;
-	if (i==3) return V;
+	if (i==3) return V_star;
 	if (i==4) return S_star;
 	if (i==5) return z0;
-	if (i==6) return V/A_star;
+	if (i==6) return V_star/A_star;
 	if (i==7) return 0;
 	if (i==8) return q; 
 	if (i==9)
 	{
 		if ((indicator != Soil) && (indicator != Darcy))
-			return (Heavyside(S_star/V)*S_star/V - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);
+			return (Heavyside(S_star/V_star)*S_star/V_star - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);
 		else
-			return (S_star/V - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);   //allow s to be above 1
+			return (S_star/V_star - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);   //allow s to be above 1
 		}
 	//if (i==12) return DS;
 	if (i==13) return vapor_diffusion;
@@ -460,6 +486,9 @@ double CMBBlock::get_val_star(int i, vector<int> ii)
 	if (i == physical_params::LAI)
 		return plant_prop.LAI;
 
+	if (i == physical_params::pan_evaporation_rate)
+		return get_evaporation(parent->t);
+
 	if (i>=50 && i<100) return fs_params[i-50];
 	if (i>=100 && i<1000) return G_star[ii[0]][i];
 	if (i>=1000 && i<2000) return CG_star[ii[0]][i];
@@ -476,9 +505,10 @@ double CMBBlock::get_val_star(int i, vector<int> ii)
 	if (i>=4000 && i<5000) return envexchange[ii[1]]->parameters[i-4000];
 	if (i >= 5000 && i<6000) return RXN->cons[ii[0]].get_val(i);
 	if (i >= 6000 && i<6500) return evaporation_m[ii[0]]->parameters[i - 6000];
-	if (i == 6501) return evaporation_m[ii[0]]->single_crop_coefficient.interpol(dayOfYear(parent->t));
-	if (i >= 10000 && i<20000) return G[(i - 10000) / 1000][(i - 10000) % 1000];
-	if (i >= 100000 && i<200000) return CG[(i - 100000) / 10000][(i - 100000) % 10000];
+	if (i == 6501 && i<7000) return evaporation_m[ii[0]]->single_crop_coefficient.interpol(dayOfYear(parent->t));
+	if (i >= 7000 && 8000) return plant_prop.half_saturation_constants[i - 7000];
+	if (i >= 10000 && i<20000) return G_star[(i - 10000) / 1000][(i - 10000) % 1000];
+	if (i >= 100000 && i<200000) return CG_star[(i - 100000) / 10000][(i - 100000) % 10000];
 }
 
 double CMBBlock::calc(CStringOP &term, vector<int> ii)  //Works w/o reference(&)
@@ -638,6 +668,10 @@ double CMBBlock::calc(CStringOP &term, vector<int> ii)  //Works w/o reference(&)
 				return out/fabs(out)*sqrt(fabs(out));
 			else
 				return 0;
+		if (term.number == sig_)
+		{
+			return exp(out) / (1 + exp(out));
+		}
 	}
 
 	else
@@ -802,6 +836,10 @@ double CMBBlock::calc_star(CStringOP &term, vector<int> ii)
 				return out/fabs(out)*sqrt(fabs(out));
 			else
 				return 0;
+		if (term.number == sig_)
+		{
+			return exp(out) / (1 + exp(out));
+		}
 	}
 
 	else
@@ -881,6 +919,16 @@ void CMBBlock::set_val(const string &SS, double val)
 		if ((tolower(trim(s[0]))=="sc") || (tolower(trim(s[0]))=="storativity")) fs_params[storativity] = val;
 		if (tolower(trim(s[0]))=="storage_epsilon") fs_params[storage_epsilon] = val;
 		if (tolower(trim(s[0]))=="storage_n") fs_params[storage_n] = val;
+		if (tolower(trim(s[0])) == "lai") plant_prop.LAI = val;
+		if (tolower(trim(s[0])) == "lai_max") fs_params[LAI_max] = val;
+		if (tolower(trim(s[0])) == "k_lai") fs_params[K_LAI] = val;
+		if (tolower(trim(s[0])) == "plant_growth_rate_coefficient") fs_params[plant_growth_rate_coefficient] = val;
+		if (tolower(trim(s[0])) == "temperature_base") fs_params[temperature_base] = val;
+		if (tolower(trim(s[0])) == "temperature_spread_factor") fs_params[temperature_spread_factor] = val;
+		if (tolower(trim(s[0])) == "plant_biomass_decay_factor") fs_params[plant_biomass_decay_factor] = val;
+		if (tolower(trim(s[0])) == "plant_leaf_decay_factor") fs_params[plant_leaf_decay_factor] = val;
+		if (tolower(trim(s[0])) == "optimal_temperature") fs_params[optimal_temperature] = val;
+
 		
 		if (tolower(trim(s[0]))=="outflow_corr_factor") outflow_corr_factor = val;
 		if (tolower(trim(s[0]))=="fixed_status") fixed = val;
@@ -892,6 +940,7 @@ void CMBBlock::set_val(const string &SS, double val)
 		if (tolower(trim(s[0]))=="se*") S_star = V*(val*(fs_params[theta_s]-fs_params[theta_r]) + fs_params[theta_r]);
 		if (tolower(trim(s[0]))=="theta*") S_star = V*val;
 		if (tolower(trim(s[0])) == "light_reduction_factor") light_reduction_factor = val;
+		
 	}
 	else if (s.size()==2)
 	{
@@ -899,6 +948,7 @@ void CMBBlock::set_val(const string &SS, double val)
 		if (tolower(trim(s[0])) == "p") rxn_params[atoi(s[1].c_str())] = val;
 		if (tolower(trim(s[0])) == "g") { initial_g_counter_p.push_back(s[1]); initial_g_counter_l.push_back("mobile"); initial_g.push_back(val); }
 		if (tolower(trim(s[0])) == "cg") { initial_cg_counter_p.push_back(""); initial_cg_counter_l.push_back(""); initial_cg_counter_c.push_back(s[1]);  initial_cg.push_back(val); }
+		if (tolower(trim(s[0])) == "hsc") { plant_prop.limiting_nutrients.push_back(s[1]);  plant_prop.half_saturation_constants.push_back(val); }
 	}
 	else if (s.size()==3)
 	{
@@ -1375,6 +1425,25 @@ int CMBBlock::lookup_env_exchange(string S)
 			out = i;
 
 	return out;
+}
+
+void CMBBlock::set_up_plant_growth_expressions()
+{
+	string s = "f[77]*f[2]*f[18]*_max(1-_exp(-0.65*f[24]):0)";
+	string l_constituent;
+	for (int i = 0; i < plant_prop.limiting_nutrients.size(); i++)
+	{
+		string CG = "cg[" + numbertostring(parent->RXN().look_up_constituent_no(plant_prop.limiting_nutrients[i])) + "]";
+		l_constituent += "*(" + CG + "/(" + CG + "+f["+ numbertostring(7000+i) + "]))";
+	}
+	string temperature_stress = "_exp(-2*((f[19]-f[82])^2)/((f[82]-f[78])^2))";
+	s = "(" + s + l_constituent + "*f[9]*" + temperature_stress +" ) - (f[80]*f[3]*_sig((f[78]-f[19])/f[79]))";
+	plant_prop.plant_growth_rate_expression = CStringOP(s);
+
+	s = "(f[75]*f[76]*_pos(f[19]-f[78])*_max((1-_exp(5.0*(f[24]-f[76]))):0)" + l_constituent + "*f[9]*" + temperature_stress + ")";
+	s = s + "-(f[81]*f[3]*_sig((f[78]-f[19])/f[79]))"; 
+	plant_prop.LAI_growth_rate_expression = s; 
+
 }
 
 double CMBBlock::calc(CStringOP &C)

@@ -1998,7 +1998,7 @@ void MainWindow::on_actionAdd_Soil_triggered()
 
 	new Node(mainGraphWidget, "Soil", QString("Soil (%1)").arg(Soil_Blocks++), -1, newBlockX(), newBlockY());
 
-
+   
 }
 
 void MainWindow::on_actionAdd_Catchment_Area_triggered()

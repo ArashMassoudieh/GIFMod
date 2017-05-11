@@ -15,7 +15,7 @@ ConstituentWindow::ConstituentWindow(QWidget *parent, GraphWidget *gWidget, Node
     QDialog(parent),
     ui(new Ui::ConstituentWindow)
 {
-	gWidget->log(QString("Particle initial condition window started for block %1, experiment %2.").arg(node->Name()).arg(experiment));
+	gWidget->log(QString("Constituent initial condition window started for block %1, experiment %2.").arg(node->Name()).arg(experiment));
 	ui->setupUi(this);
 	QStringList Constituents = gWidget->EntityNames("Constituent");
 	this->node = node;
@@ -47,6 +47,9 @@ void ConstituentWindow::on_pushButton_clicked()
 
 ConstituentWindow::~ConstituentWindow()
 {
+	ui = NULL;
+	node = NULL;
+	model = NULL;
 	delete this;
 }
 
