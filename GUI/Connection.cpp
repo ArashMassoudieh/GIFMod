@@ -34,6 +34,10 @@ CConnection::CConnection(void)
 CConnection::~CConnection(void)
 {
 	for (int i=0; i<Solid_phase.size(); i++) Solid_phase[i] = NULL;
+	Block1 = NULL;
+	Block2 = NULL;
+	RXN = NULL;
+	Controller = NULL;
 }
 
 CConnection::CConnection(const CConnection &CC)

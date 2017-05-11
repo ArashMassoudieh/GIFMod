@@ -16,6 +16,13 @@ public:
 		this->parent = gWidget; // static_cast<GraphWidget*> (parent);
 	}
 
+	~ConstituentDelegate()
+	{
+		parent = NULL;
+		delete this;
+	}
+	
+
 	QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
                           const QModelIndex &index) const Q_DECL_OVERRIDE;
 

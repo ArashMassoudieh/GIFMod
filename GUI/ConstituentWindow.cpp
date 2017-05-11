@@ -47,6 +47,9 @@ void ConstituentWindow::on_pushButton_clicked()
 
 ConstituentWindow::~ConstituentWindow()
 {
+	ui = NULL;
+	node = NULL;
+	model = NULL;
 	delete this;
 }
 

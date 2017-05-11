@@ -37,6 +37,17 @@ CMBBlock::CMBBlock(void)
 CMBBlock::~CMBBlock(void)
 {
 	for (int i=0; i<Solid_phase.size(); i++) Solid_phase[i] = NULL;
+	for (int i = 0; i<evaporation_m.size(); i++) evaporation_m[i] = NULL;
+	for (int i = 0; i<buildup.size(); i++) buildup[i] = NULL;
+	light = NULL;
+	temperature = NULL;
+	current_temperature = NULL;
+	current_light = NULL;
+	current_wind = NULL;
+	RXN = NULL;
+	parent = NULL;
+
+
 }
 
 CMBBlock::CMBBlock(const CMBBlock& BB)// copy constructor

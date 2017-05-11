@@ -437,3 +437,4 @@
 1,Block,Plant,*,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100510,>=0,E,Plant maximum leaf decay coefficient must be positive
 1,Block,Plant,*,!,Optimal temperature,optimal_temperature,~degreeC,~degreeC,float+Estimate,30,TextBox,Material,Input,Yes,100511,,,
 1,Entity,Solver settings,Solver settings,!,Minimum acceptable negative concentration,minimum_acceptable_negative_conc,!,!,float,1.00E-13,TextBox,Global,Input,No,100153,,,
+1,Block,Plant,*,!,Limiting Nutrients,!,!,!,dialog,...; PlantHalfSaturation,PushButton,Initial State,Select,Yes,100505,,,

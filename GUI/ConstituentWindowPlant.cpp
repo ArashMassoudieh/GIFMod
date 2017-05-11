@@ -15,7 +15,7 @@ ConstituentWindowPlant::ConstituentWindowPlant(QWidget *parent, GraphWidget *gWi
     QDialog(parent),
     ui(new Ui::ConstituentWindowPlant)
 {
-	gWidget->log(QString("Constituent initial condition window started for block %1, experiment %2.").arg(node->Name()).arg(experiment));
+	gWidget->log(QString("Limiting nutrient half saturation constant window started for block %1, experiment %2.").arg(node->Name()).arg(experiment));
 	ui->setupUi(this);
 	QStringList Constituents = gWidget->EntityNames("Constituent");
 	this->node = node;
@@ -39,6 +39,7 @@ ConstituentWindowPlant::ConstituentWindowPlant(QWidget *parent, GraphWidget *gWi
 //	connect(ui->pushButton, SIGNAL(clicked()), model, SLOT(removeCurrentItem()));
 
 	this->show();
+	table = NULL;
 }
 void ConstituentWindowPlant::on_pushButton_clicked()
 {
@@ -47,6 +48,9 @@ void ConstituentWindowPlant::on_pushButton_clicked()
 
 ConstituentWindowPlant::~ConstituentWindowPlant()
 {
+	ui = NULL;
+	node = NULL;
+	model = NULL;
 	delete this;
 }
 
