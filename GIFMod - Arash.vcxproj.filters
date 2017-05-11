@@ -128,6 +128,15 @@
     <ClCompile Include="GUI\wizard.cpp" />
     <ClCompile Include="GUI\Sensor.cpp" />
     <ClCompile Include="GUI\TableWidgetDateItem.cpp" />
+    <ClCompile Include="GUI\ConstituentTableModelPlant.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\ConstituentWindowPlant.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\files\moc_ConstituentWindowPlant.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_commandWindow.h" />
@@ -217,6 +226,12 @@
     <ClInclude Include="GUI\Vector.h" />
     <ClInclude Include="GUI\Well.h" />
     <ClInclude Include="GUI\XString.h" />
+    <ClInclude Include="GUI\ConstituentTableModelPlant.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_ConstituentWindowPlant.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="GUI\commandLineEdit.h" />
@@ -266,6 +281,13 @@
     <CustomBuild Include="GUI\reactionwindow.ui" />
     <CustomBuild Include="GUI\runtimeWindow.ui" />
     <CustomBuild Include="GUI\Widget.ui" />
+    <CustomBuild Include="Setup Project\GIFMod Setup.aip" />
+    <CustomBuild Include="GUI\ConstituentWindowPlant.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GUI\ConstituentWindowPlant.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Icons\log_icon.png" />
@@ -280,6 +302,27 @@
     <None Include="GUI\Icons\Save File Icon Stock Photography - Image_ 517502_files\postmessageRelay.html" />
     <None Include="GUI\Icons\Save File Icon Stock Photography - Image_ 517502_files\saved_resource.html" />
     <None Include="GUI\PropList.csv" />
-    <None Include="Setup Project\GIFMod Setup.aip" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;cxx;c;def</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
+      <Extensions>moc;h;cpp</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
+    <Filter Include="Form Files">
+      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
+      <Extensions>ui</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
   </ItemGroup>
 </Project>
