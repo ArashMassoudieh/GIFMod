@@ -25,11 +25,6 @@ struct ConstituentInitialConditionItem
 	QString Constituent, Particle, Model, Value;
 };
 
-struct NutrientHalfSaturationConstantItem
-{
-	QString Constituent, Value;
-};
-
 class Node : public QGraphicsItem
 {
 	//Q_OBJECT
@@ -42,7 +37,6 @@ public:
 		delete model;
 		delete particleInitialConditions;
 		delete constituentInitialConditions;
-		delete NutrientHalfSaturationConstants;
 
 	}
 	objectColor color;
@@ -92,14 +86,11 @@ public:
 	void update(bool fast = false);
 	QString g(QString experimentName = "") const;
 	QString cg(QString experimentName = "") const;
-	QString planthsc(QString experimentName = "") const;
 	QString newNodeName(const QString name, QList<Node*> &nodes) const;
 	QList<ParticleInitialConditionItem> &particleInitialCondition(QString experimentName = "") const;
 	QList<ParticleInitialConditionItem> &particleInitialCondition(QString experimentName = "");
 	QList<ConstituentInitialConditionItem> &constituentInitialCondition(QString experimentName = "") const;
 	QList<ConstituentInitialConditionItem> &constituentInitialCondition(QString experimentName = "");
-	QList<NutrientHalfSaturationConstantItem> &NutrientHalfSaturationConstant(QString experimentName = "") const;
-	QList<NutrientHalfSaturationConstantItem> &NutrientHalfSaturationConstant(QString experimentName = "");
 	QMap<QString, QVariant> compact() const;
 	static Node* unCompact(QMap<QString, QVariant>, GraphWidget *gwidget, bool oldVersion = false);
 	static Node* unCompact10(QMap<QString, QVariant>, GraphWidget *gwidget);
@@ -118,7 +109,6 @@ public:
 	QString GUI;
 	Object_Types itemType;
 	QMap<QString, QList<ParticleInitialConditionItem>>* particleInitialConditions;
-	QMap<QString, QList<NutrientHalfSaturationConstantItem>>* NutrientHalfSaturationConstants;
 	QMap<QString, QList<ConstituentInitialConditionItem>>* constituentInitialConditions;
 	PropList<Node> props;
 	mProp objectType;

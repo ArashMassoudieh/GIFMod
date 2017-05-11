@@ -22,7 +22,6 @@
 #include "node.h"
 #include "ParticleWindow.h"
 #include "ConstituentWindow.h"
-#include "ConstituentWindowPlant.h"
 #include "ExchangeParametersWindow.h"
 #include "observedcombobox.h"
 #include "qmessagebox.h"
@@ -135,10 +134,6 @@ QWidget *Delegate::createEditor(QWidget *parent,
 	if (delegateType.contains("expressionEditor"))
 	{
 		QStringList words = index.data(allowableWordsRole).toStringList();
-		words << this->parent->EntityNames("Constituent");
-		words << this->parent->EntityNames("Reaction parameter");
-		words << this->parent->PhysicalCharacteristicsList;
-		words << this->parent->functionList;
 #ifdef GIFMOD
 		expEditor* editor = new expEditor(words, 0, parent);
 		return editor;
@@ -242,8 +237,6 @@ void Delegate::setEditorData(QWidget *editor,
 			QObject::connect(pushButton, SIGNAL(clicked()), this, SLOT(openParticleInitialCondition()));
 		if (index.data(DefaultValuesListRole).toStringList()[1].contains("Constituent"))
 			QObject::connect(pushButton, SIGNAL(clicked()), this, SLOT(openConstituentInitialCondition()));
-		if (index.data(DefaultValuesListRole).toStringList()[1].contains("PlantHalfSaturation"))
-			QObject::connect(pushButton, SIGNAL(clicked()), this, SLOT(openHalfSaturationConstantsPlant()));
 		if (index.data(DefaultValuesListRole).toStringList()[1].contains("exchange parameters"))
 			QObject::connect(pushButton, SIGNAL(clicked()), this, SLOT(openAqueousExchangeParameters()));
 		
@@ -549,63 +542,6 @@ void Delegate::openParticleInitialCondition()
 			}
 		}
 
-#endif
-}
-
-void Delegate::openHalfSaturationConstantsPlant()
-{
-#ifdef GIFMOD
-	for each(Node *n in parent->Nodes())
-		if (n->isSelected())
-		{
-			QString experimentName = n->parent->experimentName();
-			if (experimentName != "All experiments" || (n->parent->experiments->count() == 2))
-			{
-				new ConstituentWindowPlant(parent->parent, parent, n, experimentName);
-				return;
-			}
-			vector<QVariant> gValues;
-			for (int i = 0; i < n->parent->experimentsList().count(); i++)
-				gValues.push_back(n->cg(parent->experimentsList()[i]));
-			multiValues<> gMultiValues(gValues);
-			if (gMultiValues.sameValues())
-			{
-				new ConstituentWindowPlant(parent->parent, parent, n, experimentName);
-				return;
-			}
-			//				particleInitialConditions->operator[](experimentName) = particleInitialConditions->operator[](parent->firstExperimentName());
-			else
-			{
-				QString message = "You are changing the limiting nutrient half saruration constant for all the experiments. \nPlease choose whether you would like to start from the scratch or from one of the previously defined experiments.";
-				QMessageBox msg;
-				msg.setText(message);
-				msg.setIcon(QMessageBox::Question);
-				msg.setWindowTitle("Limiting nutrient half saturation constants");
-				QList <QAbstractButton *> buttons;
-				QAbstractButton * emptybtn = msg.addButton("Empty initial condition", QMessageBox::AcceptRole);
-				for each (QString experiment in n->parent->experimentsList())
-					buttons.push_back(msg.addButton(QString("Copy from %1").arg(experiment), QMessageBox::AcceptRole));
-				QPushButton * cancel = msg.addButton("Cancel", QMessageBox::RejectRole);
-				msg.setDefaultButton(cancel);
-				msg.exec();
-				if (msg.clickedButton() == cancel)
-					return;
-
-				QList<NutrientHalfSaturationConstantItem> copyFrom;
-				if (msg.clickedButton() != emptybtn)
-				{
-					QAbstractButton * clicked = msg.clickedButton();
-
-					int index = buttons.indexOf(clicked);
-					QStringList lst = n->parent->experimentsList();
-					copyFrom = n->NutrientHalfSaturationConstant(n->parent->experimentsList()[index]);
-				}
-				for each (QString experiment in n->parent->experimentsList())
-					n->NutrientHalfSaturationConstants->operator[](experiment) = copyFrom;
-
-				new ConstituentWindowPlant(parent->parent, parent, n, experimentName);
-			}
-		}
 #endif
 }
 
