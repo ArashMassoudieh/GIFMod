@@ -360,10 +360,10 @@ void runtimeWindow::realtimeDataSlot(double x, double y, bool secondPlot, QStrin
 	plot->xAxis->setRangeUpper(x);
 	//if (x>1) plot->graph(0)->removeDataBefore(x-0.5);
 	static int lastX = -1;
-	if (ui->refreshPlot->isChecked() || ui->progressBar->value() >= lastX + 1) {
+	//if (ui->refreshPlot->isChecked() || ui->progressBar->value() >= lastX + 1) 
 		plot->replot(QCustomPlot::rpQueued);
 		lastX = x;
-	}
+	//}
 
 }
 void runtimeWindow::addScatterPlot(QString name, QVector<double> t, QVector<double> y)
