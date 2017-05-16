@@ -1801,8 +1801,8 @@ void CMedium::do_plant_growth(double dtt)
 	for (int i = 0; i < Blocks.size(); i++)
 		if (Blocks[i].indicator == Plant)
 		{
-			Blocks[i].V_star = Blocks[i].V + 0.5*(Blocks[i].calc(Blocks[i].plant_prop.plant_growth_rate_expression) + Blocks[i].calc_star(Blocks[i].plant_prop.plant_growth_rate_expression))*dtt;
-			Blocks[i].plant_prop.LAI += 0.5*(Blocks[i].calc(Blocks[i].plant_prop.LAI_growth_rate_expression)+ Blocks[i].calc_star(Blocks[i].plant_prop.LAI_growth_rate_expression))*dtt;
+			Blocks[i].V_star = max(Blocks[i].V + 0.5*(Blocks[i].calc(Blocks[i].plant_prop.plant_growth_rate_expression) + Blocks[i].calc_star(Blocks[i].plant_prop.plant_growth_rate_expression))*dtt,1e-6);
+			Blocks[i].plant_prop.LAI = max(Blocks[i].plant_prop.LAI + 0.5*(Blocks[i].calc(Blocks[i].plant_prop.LAI_growth_rate_expression)+ Blocks[i].calc_star(Blocks[i].plant_prop.LAI_growth_rate_expression))*dtt,1e-5);
 		}
 }
 

@@ -1017,6 +1017,12 @@ double mon(double x, double y)
 	return d/(d+y);
 }
 
+
+string tail(std::string const& source, size_t const length) {
+	if (length >= source.size()) { return source; }
+	return source.substr(source.size() - length);
+} // tail
+
 /*template<class _Ty> _Ty min(_Ty _X, _Ty _Y)
 {
 	if (_X > _Y) return _Y; else return _X;

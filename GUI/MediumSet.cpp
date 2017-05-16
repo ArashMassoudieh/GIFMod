@@ -298,8 +298,8 @@ void CMediumSet::set_formulas()
 
 	formulas.formulasQ2[Stream][Catchment] = "(-f[55])/f[56]*_sqs((e[1]-s[1])/f[6])*_mon(_abs(s[1]-e[1])/f[6]:0.001)*((_pos(e[1]-e[5]-e[62])^(1+f[58]))";
 
-	formulas.formulasQ[Plant][Soil] = "f[3]*f[50]*(s[1]-e[1])*(_max(_min(f[9]:1):0)^f[56])";
-	formulas.formulasQ2[Plant][Soil] = "f[3]*f[50]*(s[1]-e[1])*(_max(_min(f[9]:1):0)^f[56])";
+	formulas.formulasQ[Plant][Soil] = "f[3]*f[50]*(s[1]-e[1])*(_max(_min(f[9]:0)^s[54])*f[2]*s[3]";
+	formulas.formulasQ2[Soil][Plant] = "f[3]*f[50]*(s[1]-e[1])*(_max(_min(f[9]:0)^e[54])*f[2]*e[3]";
 
 	//formulas.formulasQ2[Storage][Catchment] = "(-f[55])/f[56]*_sqs((e[1]-s[1])/f[6])*_mon(_abs(s[1]-e[1])/f[6]:0.001)*((_pos(e[1]-e[5]-e[12])^(1+f[58]))";
 	

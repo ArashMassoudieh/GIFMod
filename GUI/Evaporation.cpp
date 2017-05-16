@@ -58,7 +58,7 @@ CEvaporation::CEvaporation(string _model)
 	{
 		string Er = "(f[18]/(1000*f[23]))";
 		string Delta = "(4098*f[22]/((237.3+f[19])^2))";
-		string light_term = "(f[6004]*" + Delta + "/(" + Delta + "f[6003])*" + Er + ")";
+		string light_term = "(f[6004]*" + Delta + "/(" + Delta + " + f[6003])*" + Er + ")";
 		expression = CStringOP("1.3*(" + light_term + ")*86400*f[2]");
 		parameters.resize(5);
 		parameters[3] = 66;
@@ -66,12 +66,12 @@ CEvaporation::CEvaporation(string _model)
 		parameters[3] = 66;
 	}
 
-	if (model == "combined")
+	if (model == "penman")
 	{
 		string Er = "(f[18]/(1000*f[23]))";
 		string Ea = "(0.0000000009424*f[20]*f[22]*(1-f[21])*f[6000])";
 		string Delta = "(4098*f[22]/((237.3+f[19])^2))";
-		string light_term = "(f[6004]*" + Delta + "/(" + Delta + "f[6003])*" + Er + ")";
+		string light_term = "(f[6004]*" + Delta + "/(" + Delta + " + f[6003])*" + Er + ")";
 		string wind_term = "(f[6003]/(f[6003]+" + Delta + ")*" + Ea +")";
 		expression = CStringOP("("+light_term + "+" + wind_term+")*86400*f[2]");
 		//expression = CStringOP("(f[6004]*f[18]/(1+(0.0000004*f[6003]*((237.3+f[19])^2)*_exp(17.27*f[19]/(237.3+f[19]))))/(2501000-(2370*f[19]))/1000*86.400)+((f[6000]*611*f[6003])/((f[6003]*_exp(-17.27*f[19]/(237.3 + f[19])))+(2503878/((237.3+f[19])^2)))*f[20]*(1-f[21])*86.400)");
@@ -99,7 +99,7 @@ CEvaporation::CEvaporation(string _model)
 	{
 		string Er = "(f[18]/(1000*f[23]))";
 		string Delta = "(4098*f[22]/((237.3+f[19])^2))";
-		string light_term = "(f[6004]*" + Delta + "/(" + Delta + "f[6003])*" + Er + ")";
+		string light_term = "(f[6004]*" + Delta + "/(" + Delta + " + f[6003])*" + Er + ")";
 		expression = CStringOP("(1.3*(" + light_term + ")*86400*f[2])*f[24]/(f[24]+f[6006])");
 		parameters.resize(5);
 		parameters[3] = 66;
@@ -107,12 +107,12 @@ CEvaporation::CEvaporation(string _model)
 		parameters[3] = 66;
 	}
 
-	if (model == "combined (plant)")
+	if (model == "penman (plant)")
 	{
 		string Er = "(f[18]/(1000*f[23]))";
 		string Ea = "(0.0000000009424*f[20]*f[22]*(1-f[21])*f[6000])";
 		string Delta = "(4098*f[22]/((237.3+f[19])^2))";
-		string light_term = "(f[6004]*" + Delta + "/(" + Delta + "f[6003])*" + Er + ")";
+		string light_term = "(f[6004]*" + Delta + "/(" + Delta + "+ f[6003])*" + Er + ")";
 		string wind_term = "(f[6003]/(f[6003]+" + Delta + ")*" + Ea + ")";
 		expression = CStringOP("(" + light_term + "+" + wind_term + ")*86400*f[2]*f[24]/(f[24]+f[6006])");
 		//expression = CStringOP("(f[6004]*f[18]/(1+(0.0000004*f[6003]*((237.3+f[19])^2)*_exp(17.27*f[19]/(237.3+f[19]))))/(2501000-(2370*f[19]))/1000*86.400)+((f[6000]*611*f[6003])/((f[6003]*_exp(-17.27*f[19]/(237.3 + f[19])))+(2503878/((237.3+f[19])^2)))*f[20]*(1-f[21])*86.400)");

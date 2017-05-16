@@ -563,9 +563,9 @@ double CConnection::get_val(int i, int ii)
 
 	if (i==9)
 	{
-		if (Block1->indicator==Soil || Block1->indicator == Plant)
+		if (Block1->indicator==Soil || Block1->indicator == Plant || Block1->indicator == Darcy)
 		{
-			if (Block2->indicator==Soil || Block2->indicator == Plant)
+			if (Block2->indicator==Soil || Block2->indicator == Plant || Block2->indicator == Darcy)
 			{
 				vector<int> jj;
 				jj.push_back(ii);
@@ -658,9 +658,9 @@ double CConnection::get_val_star(int i, int ii)
 	
 	if (i==9)
 	{
-		if (Block1->indicator==0) 
+		if ((Block1->indicator==Soil) || (Block1->indicator == Plant) || (Block1->indicator == Darcy))
 		{
-			if (Block2->indicator==0)
+			if ((Block2->indicator==Soil) || (Block2->indicator == Plant) || (Block2->indicator == Darcy))
 			{
 				return 0.5*(Block1->get_val_star(9)+Block2->get_val_star(9));
 			}
@@ -671,7 +671,7 @@ double CConnection::get_val_star(int i, int ii)
 		}
 		else
 		{
-			if (Block2->indicator==0) 
+			if (Block2->indicator==Soil) 
 			{
 				return Block2->get_val_star(9);
 			}

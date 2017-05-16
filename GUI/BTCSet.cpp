@@ -226,11 +226,11 @@ CBTCSet::CBTCSet(string filename, bool varytime)
 			s = getline(file);
 			if (s.size()>0)
 			{
-				if (s[0] == "names")
+				if (tail(s[0],5) == "names" || tail(s[0], 4) == "name")
 					for (int i = 1; i < s.size(); i++) names.push_back(s[i]);
-				if (s[0] == "units")
+				if (tail(s[0],5) == "units" || tail(s[0], 4) == "unit")
 					for (int i = 1; i < s.size(); i++) units.push_back(s[i]);
-				if ((s[0].substr(0, 2) != "//") && (s[0] != "names") && (s[0] != "units"))
+				if ((s[0].substr(0, 2) != "//") && (tail(s[0],5) != "names") && (tail(s[0],5) != "units"))
 				{
 					if (nvars == 0) { nvars = s.size() - 1; BTC.resize(nvars); }
 					if (s.size() == nvars + 1)
@@ -254,11 +254,11 @@ CBTCSet::CBTCSet(string filename, bool varytime)
 			s = getline(file);
 			if (s.size() > 0)
 			{
-				if (s[0] == "names")
+				if (tail(s[0],5) == "names" || tail(s[0], 4) == "name")
 					for (int i = 1; i < s.size(); i++) names.push_back(s[i]);
-				if (s[0] == "units")
+				if (tail(s[0],5) == "units" || tail(s[0], 4) == "unit")
 					for (int i = 1; i < s.size(); i++) units.push_back(s[i]);
-				if ((s[0].substr(0, 2) != "//") && (s[0] != "names") && (s[0] != "units"))
+				if ((s[0].substr(0, 2) != "//") && (tail(s[0],5) != "names") && (tail(s[0],5) != "units"))
 				{
 					if (nvars == 0) { nvars = s.size() / 2; BTC.resize(nvars); }
 
