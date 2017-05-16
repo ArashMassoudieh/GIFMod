@@ -2278,7 +2278,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 			else
 				plotSubMenu->addAction("Water Depth");
 			plotSubMenu->addAction("Evapotranspiration Rate");
-			if (n->objectType.ObjectType == "Plant");
+			if (n->objectType.ObjectType == "Plant")
 			{
 				plotSubMenu->addAction("Leaf Area Index");
 				plotSubMenu->addAction("Bio-volume");

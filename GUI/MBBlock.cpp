@@ -1429,7 +1429,7 @@ int CMBBlock::lookup_env_exchange(string S)
 
 void CMBBlock::set_up_plant_growth_expressions()
 {
-	string s = "f[77]*f[2]*f[18]*_max(1-_exp(-0.65*f[24]):0)";
+	string s = "86400*f[77]*f[2]*f[18]*_max(1-_exp(-0.65*f[24]):0)";
 	string l_constituent;
 	for (int i = 0; i < plant_prop.limiting_nutrients.size(); i++)
 	{
