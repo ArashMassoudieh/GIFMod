@@ -174,7 +174,7 @@ public:
 
         refreshPlot = new QCheckBox(centralWidget);
         refreshPlot->setObjectName(QStringLiteral("refreshPlot"));
-        refreshPlot->setChecked(true);
+        refreshPlot->setChecked(false);
 
         verticalLayout->addWidget(refreshPlot);
 
