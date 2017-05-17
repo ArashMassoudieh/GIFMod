@@ -638,7 +638,7 @@ double CBTC::GetS0(CBTC &M, CBTC &Q)
 	return S0;
 }*/
 
-CBTC operator*(double alpha, CBTC CBTC_T)
+CBTC operator*(double alpha, CBTC &CBTC_T)
 {
 	CBTC S(CBTC_T.n);
 	for (int i=0; i<CBTC_T.n; i++)
@@ -650,7 +650,7 @@ CBTC operator*(double alpha, CBTC CBTC_T)
 	return S;
 }
 
-CBTC operator*(CBTC CBTC_T, double alpha)
+CBTC operator*(CBTC &CBTC_T, double alpha)
 {
 	CBTC S = CBTC_T;
 	for (int i=0; i<CBTC_T.n; i++)
@@ -663,7 +663,7 @@ CBTC operator*(CBTC CBTC_T, double alpha)
 	return S;
 }
 
-CBTC operator/(CBTC BTC1, CBTC BTC2)
+CBTC operator/(CBTC &BTC1, CBTC &BTC2)
 {
 	CBTC S = BTC1;
 	for (int i=0; i<BTC1.n; i++)
@@ -673,7 +673,7 @@ CBTC operator/(CBTC BTC1, CBTC BTC2)
 
 }
 
-CBTC operator-(CBTC BTC1, CBTC BTC2)
+CBTC operator-(CBTC &BTC1, CBTC &BTC2)
 {
 	CBTC S = BTC1;
 	for (int i=0; i<BTC1.n; i++)
@@ -692,7 +692,7 @@ CBTC operator*(CBTC &BTC1, CBTC &BTC2)
 	return S;
 }
 
-CBTC operator%(CBTC BTC1, CBTC BTC2)
+CBTC operator%(CBTC &BTC1, CBTC &BTC2)
 {
 	CBTC S = BTC1;
 	for (int i=0; i<BTC1.n; i++)
@@ -700,7 +700,7 @@ CBTC operator%(CBTC BTC1, CBTC BTC2)
 
 	return S;
 }
-CBTC operator&(CBTC BTC1, CBTC BTC2)
+CBTC operator&(CBTC &BTC1, CBTC &BTC2)
 {
 	CBTC S = BTC1;
 	for (int i=0; i<BTC1.n; i++)
@@ -955,7 +955,7 @@ CBTC& CBTC::operator%=(CBTC &v)
 
 }
 
-CBTC operator+(CBTC v1, CBTC v2) 
+CBTC operator+(CBTC &v1, CBTC &v2) 
 {
 	return v1 += v2;
 }
