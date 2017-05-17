@@ -177,9 +177,12 @@ void runtimeWindow::setExperiment(CMedium *model)
 						realtimeDataSlot(t, vars["dtt"].toDouble(), false, "", t < maxT);
 						interval = 0;
 					}
-					int updateInterval = (ui->refreshPlot->isChecked()) ? 1 : max(1, counter/100);
-					if (interval++ % updateInterval == 0)
+										
+					double res = fabs(log(double(counter)) / log(2.0) - floor(log(double(counter)) / log(2.0)));
+					
+					if (ui->refreshPlot->isChecked() || res==0.0)
 						realtimeDataSlot(t, vars["dtt"].toDouble(), false, "", t < maxT);
+					
 					maxT = (t > maxT) ? t : maxT;
 				}
 				if (vars.keys().contains("epoch count"))
@@ -357,10 +360,10 @@ void runtimeWindow::realtimeDataSlot(double x, double y, bool secondPlot, QStrin
 	plot->xAxis->setRangeUpper(x);
 	//if (x>1) plot->graph(0)->removeDataBefore(x-0.5);
 	static int lastX = -1;
-	if (ui->refreshPlot->isChecked() || ui->progressBar->value() >= lastX + 1) {
+	//if (ui->refreshPlot->isChecked() || ui->progressBar->value() >= lastX + 1) 
 		plot->replot(QCustomPlot::rpQueued);
 		lastX = x;
-	}
+	//}
 
 }
 void runtimeWindow::addScatterPlot(QString name, QVector<double> t, QVector<double> y)
