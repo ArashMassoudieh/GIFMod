@@ -132,6 +132,9 @@ void dukglue_register_method(duk_context* ctx, typename std::conditional<isConst
 	ProtoManager::push_prototype<Cls>(ctx);
 
 	duk_push_c_function(ctx, method_func, sizeof...(Ts));
+	duk_push_string(ctx, "name");
+	duk_push_string(ctx, name);
+	duk_def_prop(ctx, -3, DUK_DEFPROP_HAVE_VALUE);
 
 	duk_push_pointer(ctx, new typename MethodInfo::MethodHolder{ method });
 	duk_put_prop_string(ctx, -2, "\xFF" "method_holder"); // consumes raw method pointer

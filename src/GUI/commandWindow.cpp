@@ -9,34 +9,42 @@
 #include <fstream>
 #include "texToHtml.h"
 
+#include "scriptingengine.h"
 commandWindow::commandWindow(GraphWidget *parent) :
-  QDialog(parent),
-  ui(new Ui::commandWindow)
+	QDialog(parent),
+	ui(new Ui::commandWindow)
 {
-  ui->setupUi(this);
+	ui->setupUi(this);
 
-  connect(ui->lineEdit, SIGNAL(returnPressed()), this, SLOT(newCommandSubmitted()));
-  connect(ui->lineEdit, SIGNAL(navigate(QKeyEvent *)), this, SLOT(commandKeyRelease(QKeyEvent *)));
+	connect(ui->lineEdit, SIGNAL(returnPressed()), this, SLOT(newCommandSubmitted()));
+	connect(ui->lineEdit, SIGNAL(navigate(QKeyEvent *)), this, SLOT(commandKeyRelease(QKeyEvent *)));
 
- // wtitle = title;
- // setWindowTitle(wtitle);
- // this->helpFile = helpFile;
-  //alternateHelpFile = parent->defaultDir().toStdString() + "/" + helpFile;
-  this->parent = parent;
-  //  ui->textEdit->setLineWrapMode(QTextEdit::NoWrap);
- // ui->textEdit->
- // if (!loadHelpFile(alternateHelpFile))
-//	  loadHelpFile(helpFile);
- // ui->save->hide();
- // updateButtons();
+	// wtitle = title;
+	// setWindowTitle(wtitle);
+	// this->helpFile = helpFile;
+	 //alternateHelpFile = parent->defaultDir().toStdString() + "/" + helpFile;
+	this->parent = parent;
+	//  ui->textEdit->setLineWrapMode(QTextEdit::NoWrap);
+   // ui->textEdit->
+   // if (!loadHelpFile(alternateHelpFile))
+  //	  loadHelpFile(helpFile);
+   // ui->save->hide();
+   // updateButtons();
 }
 void commandWindow::newCommandSubmitted()
 {
+	QString result;
 	commandsHistory.append(ui->lineEdit->text());
 	nextIndex = commandsHistory.count() - 1;
 	prevIndex = nextIndex;
-	QString result = parent->runCommand(ui->lineEdit->text()).toString();
-
+	if (ui->toolButtonBasicMode->isChecked()) {
+		result = parent->runCommand(ui->lineEdit->text()).toString();
+	}
+	else {
+		QString code = ui->lineEdit->text().toStdString().data();		
+		ScriptingEngine::instance()->eval(code, result);
+		// result = parent->mainWindow->m_scriptPad.data()->runScript(ui->lineEdit->text(),false);
+	}
 	ui->textEdit->append(QString(">%1").arg(ui->lineEdit->text()));
 	ui->textEdit->append(result);
 	ui->textEdit->append("\n");
@@ -53,12 +61,12 @@ void commandWindow::commandKeyRelease(QKeyEvent *e)
 {
 	qDebug() << prevIndex << nextIndex;
 
-/*	if (prevIndex < 0)
-		prevIndex = 0;
-	if (nextIndex > commandsHistory.count() - 1)
-		nextIndex = commandsHistory.count() - 1;
-	qDebug() << prevIndex << nextIndex;
-	*/
+	/*	if (prevIndex < 0)
+			prevIndex = 0;
+		if (nextIndex > commandsHistory.count() - 1)
+			nextIndex = commandsHistory.count() - 1;
+		qDebug() << prevIndex << nextIndex;
+		*/
 	int index;
 	if (e->key() == Qt::Key_Up)
 	{
@@ -77,4 +85,12 @@ void commandWindow::commandKeyRelease(QKeyEvent *e)
 
 	qDebug() << prevIndex << index << nextIndex;
 	ui->lineEdit->setText(commandsHistory[index]);
+}
+
+void commandWindow::on_toolButtonScriptMode_toggled(bool checked)
+{
+}
+
+void commandWindow::on_toolButtonBasicMode_toggled(bool checked)
+{
 }

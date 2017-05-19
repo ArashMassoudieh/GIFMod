@@ -131,7 +131,6 @@
      <addaction name="actionAdd_Darcy_Block"/>
      <addaction name="actionAdd_Stora_ge"/>
      <addaction name="actionAdd_St_ream"/>
-     <addaction name="actionAdd_Plant"/>
     </widget>
     <addaction name="menuAdd_Block"/>
     <addaction name="actionReactions"/>
@@ -193,9 +192,6 @@
    <property name="mouseTracking">
     <bool>true</bool>
    </property>
-   <property name="windowTitle">
-    <string>File</string>
-   </property>
    <property name="windowOpacity">
     <double>1.000000000000000</double>
    </property>
@@ -220,7 +216,7 @@
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
-    <string>Blocks</string>
+    <string>toolBar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -230,18 +226,18 @@
    </attribute>
    <addaction name="actionAdd_Pond"/>
    <addaction name="separator"/>
+   <addaction name="actionAdd_Plant_Block"/>
    <addaction name="actionAdd_Soil"/>
    <addaction name="actionAdd_Darcy_Block"/>
    <addaction name="actionAdd_Stora_ge"/>
    <addaction name="separator"/>
    <addaction name="actionAdd_Catchment_Area"/>
-   <addaction name="actionAdd_Plant"/>
    <addaction name="actionAdd_St_ream"/>
    <addaction name="separator"/>
   </widget>
   <widget class="QToolBar" name="toolBar_2">
    <property name="windowTitle">
-    <string>View</string>
+    <string>toolBar_2</string>
    </property>
    <attribute name="toolBarArea">
     <enum>LeftToolBarArea</enum>
@@ -258,7 +254,7 @@
     <bool>true</bool>
    </property>
    <property name="windowTitle">
-    <string>Run</string>
+    <string>toolBar_4</string>
    </property>
    <attribute name="toolBarArea">
     <enum>LeftToolBarArea</enum>
@@ -277,7 +273,7 @@
   </widget>
   <widget class="QToolBar" name="experimentsToolbar">
    <property name="windowTitle">
-    <string>experiments</string>
+    <string>experimentsToolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -845,13 +841,16 @@
     <string>Get text commands</string>
    </property>
   </action>
-  <action name="actionAdd_Plant">
+  <action name="actionAdd_Plant_Block">
    <property name="icon">
     <iconset>
-     <normaloff>Icons/plant.png</normaloff>Icons/plant.png</iconset>
+     <normaloff>Icons/Plant.png</normaloff>Icons/Plant.png</iconset>
    </property>
    <property name="text">
-    <string>Add plant</string>
+    <string>Add &amp;Plant Block</string>
+   </property>
+   <property name="toolTip">
+    <string>Add Plant Block</string>
    </property>
   </action>
  </widget>

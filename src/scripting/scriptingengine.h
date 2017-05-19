@@ -9,11 +9,11 @@
 
 
 #include "singelton.h"
-#include "dukglue/dukglue.h"
+#include "dukglue.h"
 #include "ioc.h"
-#include "duktape/console/duk_console.h"
-#include "duktape/logging/duk_logging.h"
-#include "duktape/print-alert/duk_print_alert.h"
+//#include "duktape/console/duk_console.h"
+//#include "duktape/logging/duk_logging.h"
+//#include "duktape/print-alert/duk_print_alert.h"
 
 
 //duk_ret_t init_logging(duk_context *ctx, void *udata) {
@@ -36,10 +36,10 @@
 //}
 
 
-#define REGISTER_JS_CONSTRUCTOR(TYPE) \
+//#define REGISTER_JS_CONSTRUCTOR(TYPE) \
     
-#define REGISTER_META_TYPE_JS_CLASS(TYPE) \
-    qRegisterMetaType<TYPE>(#TYPE); 
+//#define REGISTER_META_TYPE_JS_CLASS(TYPE) \
+//    qRegisterMetaType<TYPE>(#TYPE);
 
 
 class ScriptingEngine : public GenericSingleton<ScriptingEngine> , public IResolvable

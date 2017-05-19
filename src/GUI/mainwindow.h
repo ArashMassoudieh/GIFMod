@@ -13,7 +13,8 @@
 #include "btc.h"
 #include "results.h"
 #include <QDesktopWidget>
-
+#include "ioc.h"
+#include "JSMainWindow.h"
 class GraphWidget;
 class CMedium;
 class CMediumSet;
@@ -26,8 +27,9 @@ class MainWindow;
 }
 
 
-class MainWindow : public QMainWindow
+class MainWindow : public QMainWindow ,  public IResolvable
 {
+friend class JSMainWindow;
 	Q_OBJECT
 
 public:
@@ -232,6 +234,7 @@ private slots:
 	void on_actionShowRuntimeWindow_triggered();
 	void on_actionRecent_triggered();
 	void on_actionReset_colors_triggered();
+    void on_actionAdd_Plant_Block_triggered();
 
 //#ifdef GIFMOD
 	void menuWaterQuality_hovered();

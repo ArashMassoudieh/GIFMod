@@ -17,10 +17,11 @@
 x64/
 x86/
 build/
+builds/
 bld/
 [Bb]in/
 [Oo]bj/
-
+GeneratedFiles/
 # Roslyn cache directories
 *.ide/
 

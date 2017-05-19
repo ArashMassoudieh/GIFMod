@@ -78,6 +78,7 @@ void MainWindow::on_actionAdd_Tracer_triggered()
 
 MainWindow::MainWindow(QWidget *parent, QString applicationName, QString shortName, QString extension, QString metafilename, QString modelfilename) :
 	QMainWindow(parent),
+    IResolvable(Names::mainWindow::name()), // register instance in the IoC container
 	ui(new Ui::MainWindow)
 {
 	this->metafilename = metafilename;
@@ -273,8 +274,7 @@ MainWindow::MainWindow(QWidget *parent, QString applicationName, QString shortNa
 
 #ifdef GIFMOD
 	connect(ui->menuWaterQuality->menuAction(), SIGNAL(hovered()), this, SLOT(menuWaterQuality_hovered()));
-	connect(ui->menuWaterQuality, SIGNAL(triggered()), this, SLOT(menuWaterQuality_triggered()));
-	connect(ui->actionAdd_Plant, SIGNAL(triggered()), this, SLOT(on_actionAdd_plant_triggered()));
+	connect(ui->menuWaterQuality, SIGNAL(triggered()), this, SLOT(menuWaterQuality_triggered()));	
 #endif
 
 
@@ -2828,4 +2828,20 @@ void MainWindow::gwidgetChanged()
 	if (windowTitle().right(1) != "*")
 		setWindowTitle(windowTitle() + "*");
 	//if (mainGraphWidget->undo_counter < 1) 
+}
+void MainWindow::on_actionAdd_Plant_Block_triggered()
+{
+	     static int Plant_Blocks = 1;
+
+		new Node(mainGraphWidget, "Plant", QString("Plant (%1)").arg(Plant_Blocks++), -1, newBlockX(), newBlockY());
+	 
+
+	/*QString fileName = QFileDialog::getOpenFileName(this,
+		tr("Open Script"), "", tr("Js Files (*.js)"));
+
+	QFile file(fileName);
+	file.open(QIODevice::ReadOnly);
+	QString script = file.readAll();
+	file.close();*/
+	//m_scriptPad.data()->runScript(script, true);
 }

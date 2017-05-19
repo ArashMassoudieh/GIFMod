@@ -42,6 +42,10 @@ private slots:
 	void newCommandSubmitted();
 	void commandKeyRelease(QKeyEvent *);
 
+    void on_toolButtonScriptMode_toggled(bool checked);
+
+    void on_toolButtonBasicMode_toggled(bool checked);
+
 private:
   Ui::commandWindow *ui;
  // MainWindow *mainWindow;
