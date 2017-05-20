@@ -132,7 +132,7 @@ CConnection& CConnection::operator=(const CConnection &CC)
 
 }
 
-double CConnection::calc(CStringOP &term, int ii) //The function to calculate connection expressions
+double CConnection::calc(CStringOP &term, int ii) //The function to calculate any expression
 {
 	double out = 0;
 	if ((term.nterms == 1) && (term.nopts == 0))
