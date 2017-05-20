@@ -24,7 +24,8 @@ bld/
 GeneratedFiles/
 # Roslyn cache directories
 *.ide/
-
+#Qt creator user files
+*.pro.user
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
