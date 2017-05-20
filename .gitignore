@@ -207,3 +207,6 @@ $RECYCLE.BIN/
 /GIFMod - Arash.VC.db
 /GIFMod - Arash.VC.VC.opendb
 *.opendb
+/GIFMod.vcxproj
+/GIFMod.vcxproj.filters
+/libs/lapack-blas_lib_win64/lapack-blas_lib_win64.z
