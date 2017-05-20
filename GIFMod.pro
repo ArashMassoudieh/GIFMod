@@ -10,6 +10,7 @@ TEMPLATE = app
 win32:QMAKE_CXXFLAGS += /MP
 
 
+
 #defines
 DEFINES += UNICODE GIFMOD
 
@@ -18,6 +19,7 @@ MOC_DIR = $${BUILD_DIR}/moc
 OBJECTS_DIR = $${BUILD_DIR}/obj
 UI_DIR = $${BUILD_DIR}/tmp-UI
 RCC_DIR = $${BUILD_DIR}/tmp-RCC
+
 
 
 LIBS+= -L$${BUILD_DIR} \
@@ -46,7 +48,7 @@ win32{
                            $${LAPACK_LIB_DIR}/blas_win64_MT.dll
     }
     COPY_EXTRA_FILES += $$PWD/src/resources/GIFModGUIPropList.csv
-
+    COPY_EXTRA_FILES += $$PWD/src/resources/help.txt
 
     for(FILE,COPY_EXTRA_FILES){
                 QMAKE_POST_LINK +=copy /Y "$$system_path($${FILE})" "$$system_path($$BUILD_DIR)" &&
