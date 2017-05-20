@@ -8,7 +8,7 @@
 *.suo
 *.user
 *.sln.docstates
-
+*.vs/
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
@@ -17,13 +17,15 @@
 x64/
 x86/
 build/
+builds/
 bld/
 [Bb]in/
 [Oo]bj/
-
+GeneratedFiles/
 # Roslyn cache directories
 *.ide/
-
+#Qt creator user files
+*.pro.user
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
@@ -72,7 +74,7 @@ ipch/
 *.opensdf
 *.sdf
 *.cachefile
-
+*.VC.db
 # Visual Studio profiler
 *.psess
 *.vsp
