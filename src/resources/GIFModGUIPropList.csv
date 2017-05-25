@@ -370,7 +370,7 @@
 1,Entity,Particle,Triple phase,!,Settling velocity,vs,m/day;cm/day;cm/s;mm/s;ft/day;in/day;in/s,m/day,float+Estimate,!,UnitBox,Material,Input,No,100143,>=0,E,settling velocity must be non-negative
 1,Entity,Particle,Triple phase,!,Specific surface area ,specsurfarea,1/m;1/cm;1/ft;1/in,1/m,float+Estimate,!,UnitBox,Material,Input,No,100150,>=0,E,Specific surface area must be non-negative
 1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Acceptance rate parameter for MCMC sampling,acceptance_rate,!,!,float,0.2,TextBox,Global,Input,No,100151,(0:1),E,Acceptance rate parameter must be between zero and one
-1,Entity,Solver settings,Solver settings,!,Oscillation control,check_oscillation,!,!,string,Yes;No,ComboBox,Global,Select,No,100152,,,
+1,Entity,Solver settings,Solver settings,!,Oscillation control,check_oscillation,!,!,string,No;Yes,ComboBox,Global,Select,No,100152,,,
 1,Entity,Observation,Connector,!,Location,id,!,!,string,populate at runtime;Connector,ComboBox,Global,Select,No,100118,,,
 1,Entity,Observation,Connector,!,Quantity,quan,!,!,string,q;v;A,ObservedComboBox,Global,Select,No,100136,,,
 1,Entity,Sensor,*,!,Name,name,!,!,string,!,TextBox,Global,Input,No,100343,,,
