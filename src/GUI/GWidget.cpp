@@ -3343,8 +3343,8 @@ QStringList GraphWidget::variableValuesHasError()
 						e->errors[variableName] = "Folder not exists.";
 						log(QString("Error: %1, %2, Folder (%3) does not exist.").arg(experiment).arg(variableName).arg(e->getValue(variableName)));
 					}
-				if (e->getProp(variableName, VariableTypeRole).toString().toLower() == "filename")
-					if (e->getProp(variableName, VariableTypeRole).toString().toLower() == "filename")
+				if (e->getProp(variableName, VariableTypeRole).toString().contains("filename"))
+					if (e->getProp(variableName, VariableTypeRole).toString().contains("filename"))
 						if (!e->getValue(variableName).isEmpty())
 						{
 							if (e->getProp(variableName, InputMethodRole) == "Select" && !QFile::exists(fullFilename(e->getValue(variableName), modelPathname())))

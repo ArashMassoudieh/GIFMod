@@ -149,6 +149,7 @@ void CPrecipitation::getfromfile(string filename)
 CBTCSet CPrecipitation::getflow (double A, double dt)
 {
 	CBTCSet Rainflowout(1);
+	if (n == 0) return Rainflowout;
 	Rainflowout.names.clear();
 	Rainflowout.names.push_back("flow");
 	for (double t = s[0]; t<e[n-1]; t+=dt)
