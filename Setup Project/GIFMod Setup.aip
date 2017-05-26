@@ -36,6 +36,7 @@
     <ROW Directory="DO_control_Dir" Directory_Parent="Examples_Dir" DefaultDir="DO_CON~1|DO_control"/>
     <ROW Directory="DRechards_Dir" Directory_Parent="Examples_Dir" DefaultDir="1DRECH~1|1DRechards"/>
     <ROW Directory="DUnconfined_Dir" Directory_Parent="Examples_Dir" DefaultDir="2DUNCO~1|2DUnconfined"/>
+    <ROW Directory="DesktopFolder" Directory_Parent="TARGETDIR" DefaultDir="DESKTO~1|DesktopFolder" IsPseudoRoot="1"/>
     <ROW Directory="Double_exp_settling_Dir" Directory_Parent="Examples_Dir" DefaultDir="DOUBLE~1|Double_exp_settling"/>
     <ROW Directory="Evaporation_Dir" Directory_Parent="Examples_Dir" DefaultDir="EVAPOR~1|Evaporation"/>
     <ROW Directory="Examples_Dir" Directory_Parent="PersonalFolder" DefaultDir="Examples"/>
@@ -406,6 +407,8 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiShortsComponent">
     <ROW Shortcut="Examples" Directory_="SHORTCUTDIR" Name="Examples" Component_="Aeration.GIFM" Target="[Examples_Dir]" Hotkey="0" IconIndex="0" ShowCmd="1"/>
     <ROW Shortcut="GIFMOD" Directory_="SHORTCUTDIR" Name="GIFMOD" Component_="GIFMod.exe" Target="[#GIFMod.exe]" Hotkey="0" Icon_="GIFMod_1.exe" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="GIFMOD_1" Directory_="DesktopFolder" Name="GIFMOD" Component_="GIFMod.exe" Target="[#GIFMod.exe]" Hotkey="0" Icon_="GIFMod_1.exe" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="GIFMOD_2" Directory_="GIFMod_Dir" Name="GIFMOD" Component_="GIFMod.exe" Target="[#GIFMod.exe]" Hotkey="0" Icon_="GIFMod_1.exe" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
     <ROW Shortcut="GIFModProjects" Directory_="GIFMod_Dir" Name="GIFMOD~1|GIFMod Projects" Component_="Aeration.GIFM" Target="[GIFModProjects_Dir]" Hotkey="0" IconIndex="0" ShowCmd="1"/>
     <ROW Shortcut="Uninstall" Directory_="GIFMod_Dir" Name="UNINST~1|Uninstall" Component_="Aeration.GIFM" Target="[SystemFolder]msiexec.exe" Arguments="/x [ProductCode]" Hotkey="0" Icon_="SystemFoldermsiexec.exe" IconIndex="0" ShowCmd="1"/>
     <ROW Shortcut="UsersManual" Directory_="GIFMod_Dir" Name="USER&apos;S~1|User&apos;s Manual" Component_="GIFMod_Users_Manual.pdf_1" Target="[#GIFMod_Users_Manual.pdf]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>

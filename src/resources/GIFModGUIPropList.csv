@@ -11,7 +11,7 @@
 1,Block,Darcy,Darcy,!,Bottom area,a,m~^2;cm~^2;ft~^2,m~^2,float+Estimate,0,UnitBox,Geometry,Input,Yes,100006,>0,E,Area must be greater than zero
 1,Block,Stream,Stream,!,Bottom area,a,m~^2;cm~^2;ft~^2,m~^2,float+Estimate,1,UnitBox,Geometry,Input,Yes,100006,>0,E,Area must be greater than zero
 1,Block,Storage,Storage,!,Bottom area,a,m~^2;cm~^2;ft~^2,m~^2,float+Estimate,0,UnitBox,Geometry,Input,Yes,100006,>0,E,Area must be greater than zero
-1,Block,Plant,Plant,!,Bottom area,a,m~^2;cm~^2;ft~^2,m~^2,float+Estimate,0,UnitBox,Geometry,Input,Yes,100006,>0,E,Area must be greater than zero
+1,Block,Plant,*,!,Bottom area,a,m~^2;cm~^2;ft~^2,m~^2,float+Estimate,0,UnitBox,Geometry,Input,Yes,100006,>0,E,Area must be greater than zero
 1,Block,Catchment,Catchment,!,Bottom elevation,z0,m;cm;ft;in,m,float+Estimate,0,UnitBox,Material,Input,Yes,100013,,,
 1,Block,Pond,Pond,!,Bottom elevation,z0,m;cm;ft;in,m,float+Estimate,0,UnitBox,Geometry,Input,Yes,100013,,,
 1,Block,Soil,*,!,Bottom elevation,z0,m;cm;ft;in,m,float+Estimate,0,UnitBox,Material,Input,Yes,100013,,,
@@ -407,15 +407,15 @@
 1,Entity,Evapotranspiration,FAO-56,,Psychrometric constant,psychrometric_constant,Pa/~degreeC,Pa/~degreeC,string,66.8,UnitBox,Global,Select,No,100319,>0,E,Psychrometric constant must be non-negative
 1,Entity,Evapotranspiration,FAO-56,,Solar-radiation coefficient,coefficient_light,!,!,string,!,TextBox,Global,Select,No,100321,!=0;>=0,W;E,Coefficient is zero;Coefficient must be non-negative
 1,Entity,Constituent,*,!,Mobile,mobile,!,!,string,Yes;No,ComboBox,Material,Select,No,100503,,,
-1,Block,Plant,Plant,!,Bottom elevation,z0,m;cm;ft;in,m,float+Estimate,0,UnitBox,Material,Input,Yes,100013,,,
-1,Block,Plant,Plant,!,Flow expression,flow_expression,!,!,float+Estimate,!,UnitBox,Material,Input,Yes,100024,,,
-1,Block,Plant,Plant,!,moisture content (~theta),theta,!,!,float+Estimate,0.2,TextBox,Material,Input,Yes,100027,>=0;<1,E;W,Moiture content must be non-negative; moisture content is greater than 1
-1,Block,Plant,Plant,!,Initial biomass,v,m~^3;cm~^3;ft~^3;in~^3,m~^3,float,0.01,UnitBox,Geometry,Input,Yes,100034,>0,E,Block depth must be greater than zero
-1,Block,Plant,Plant,!,Root resitivity ,ks,1/m/day;1/cm/day;1/cm/s;1/mm/s;1/ft/day;1/in/day;1/in/s,m/day,float+Estimate,7.128,UnitBox,Material,Input,Yes,100048,!=0; >=0,W;E,Hydraulic conductivity is zero; Hydraulic conductivity must me non-negative
-1,Block,Plant,Plant,!,Maximum moisture content (~thetas),theta_s,!,!,float+Estimate,0.6,TextBox,Material,Input,Yes,100051,(0:1],E,Maximum moisure content must be between zero and one
-1,Block,Plant,Plant,!,Solar-radiation,light,!,!,integer,Yes;No,ComboBox,Environment,Select,Yes,100165,,,
-1,Block,Plant,Plant,!,Matric suction coefficient (~alpha),vg_alpha,1/m;1/cm;1/ft;1/in,1/m,float+Estimate,14.5,UnitBox,Material,Input,Yes,100056,>0,E,Matric suction coefficient ~alpha must be positive
-1,Block,Plant,Plant,!,Matric suction exponent (n),vg_n,!,!,float+Estimate,2,TextBox,Material,Input,Yes,100314,>0,E,Matric suction exponent must be positive
+1,Block,Plant,*,!,Bottom elevation,z0,m;cm;ft;in,m,float+Estimate,0,UnitBox,Material,Input,Yes,100013,,,
+1,Block,Plant,*,!,Flow expression,flow_expression,!,!,float+Estimate,!,UnitBox,Material,Input,Yes,100024,,,
+1,Block,Plant,*,!,moisture content (~theta),theta,!,!,float+Estimate,0.2,TextBox,Material,Input,Yes,100027,>=0;<1,E;W,Moiture content must be non-negative; moisture content is greater than 1
+1,Block,Plant,*,!,Initial biomass,v,m~^3;cm~^3;ft~^3;in~^3,m~^3,float,0.01,UnitBox,Geometry,Input,Yes,100034,>0,E,Block depth must be greater than zero
+1,Block,Plant,*,!,Root resitivity ,ks,1/m/day;1/cm/day;1/cm/s;1/mm/s;1/ft/day;1/in/day;1/in/s,m/day,float+Estimate,7.128,UnitBox,Material,Input,Yes,100048,!=0; >=0,W;E,Hydraulic conductivity is zero; Hydraulic conductivity must me non-negative
+1,Block,Plant,*,!,Maximum moisture content (~thetas),theta_s,!,!,float+Estimate,0.6,TextBox,Material,Input,Yes,100051,(0:1],E,Maximum moisure content must be between zero and one
+1,Block,Plant,*,!,Solar-radiation,light,!,!,integer,Yes;No,ComboBox,Environment,Select,Yes,100165,,,
+1,Block,Plant,*,!,Matric suction coefficient (~alpha),vg_alpha,1/m;1/cm;1/ft;1/in,1/m,float+Estimate,14.5,UnitBox,Material,Input,Yes,100056,>0,E,Matric suction coefficient ~alpha must be positive
+1,Block,Plant,*,!,Matric suction exponent (n),vg_n,!,!,float+Estimate,2,TextBox,Material,Input,Yes,100314,>0,E,Matric suction exponent must be positive
 1,Block,Plant,*,!,Initial leaf area index,lai,!,!,float+Estimate,0.01,TextBox,Material,Input,Yes,100314,>0,E,Initial leaf area index must be greater than zero
 1,Entity,Evapotranspiration,Aerodynamic (plant),!,Uptake constituents,uptake_constituents,!,!,string,No;Yes,ComboBox,Global,Select,No,100227,,,
 1,Entity,Evapotranspiration,Priestley-Taylor (plant),!,Uptake constituents,uptake_constituents,!,!,string,No;Yes,ComboBox,Global,Select,No,100227,,,
@@ -428,13 +428,14 @@
 1,Entity,Evapotranspiration,Penman (plant),,Half evaporation LAI (kLAI),half_evaporation_lai,!,!,string,1.5,UnitBox,Global,Select,No,100319,>0,E,Half evaporation LAI must be positive
 1,Entity,Evapotranspiration,Priestley-Taylor (plant),,Half evaporation LAI (kLAI),half_evaporation_lai,!,!,string,1.5,UnitBox,Global,Select,No,100319,>0,E,Half evaporation LAI must be positive
 1,Entity,Evapotranspiration,Aerodynamic (plant),,Half evaporation LAI (kLAI),half_evaporation_lai,!,!,string,1.5,UnitBox,Global,Select,No,100319,>0,E,Half evaporation LAI must be positive
-1,Block,Plant,*,!,Maximum leaf area index,lai_max,!,!,float+Estimate,8,TextBox,Material,Input,Yes,100512,>0,E,Maximum leaf area index (LAI_max) must be a positive number
-1,Block,Plant,*,!,Leaf area index growth rate coefficient,k_lai,1/day/~degreeC,1/day/~degreeC,float+Estimate,0.1,TextBox,Material,Input,Yes,100507,>0,E,Leaf growth rate constant must be greater than zero
-1,Block,Plant,*,!,Plant biomass to energy ratio,plant_growth_rate_coefficient,m~^3/J,m~^3/J,float+Estimate,0.01,TextBox,Material,Input,Yes,100506,>0,E,Plant growth rate coefficient
-1,Block,Plant,*,!,Base temperature,temperature_base,~degreeC,~degreeC,float+Estimate,10,TextBox,Material,Input,Yes,100507,,,
+1,Block,Plant,Wheat,!,Maximum leaf area index,lai_max,!,!,float+Estimate,8,TextBox,Material,Input,Yes,100512,>0,E,Maximum leaf area index (LAI_max) must be a positive number
+1,Block,Plant,Wheat,!,Leaf area index growth rate coefficient,k_lai,1/day/~degreeC,1/day/~degreeC,float+Estimate,0.1,TextBox,Material,Input,Yes,100507,>0,E,Leaf growth rate constant must be greater than zero
+1,Block,Plant,Wheat,!,Plant biomass to energy ratio,plant_growth_rate_coefficient,m~^3/J,m~^3/J,float+Estimate,0.01,TextBox,Material,Input,Yes,100506,>0,E,Plant growth rate coefficient
+1,Block,Plant,Wheat,!,Base temperature,temperature_base,~degreeC,~degreeC,float+Estimate,10,TextBox,Material,Input,Yes,100507,,,
 1,Block,Plant,*,!,Temperature spread coefficient,temperature_spread_factor,~degreeC,~degreeC,float+Estimate,4,TextBox,Material,Input,Yes,100508,>0,E,Temperature spread coefficient must be positive
-1,Block,Plant,*,!,Plant maximum biomass decay coefficient,plant_biomass_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.01,TextBox,Material,Input,Yes,100509,>=0,E,Plant maximum decay coefficient must be positive
-1,Block,Plant,*,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100510,>=0,E,Plant maximum leaf decay coefficient must be positive
-1,Block,Plant,*,!,Optimal temperature,optimal_temperature,~degreeC,~degreeC,float+Estimate,30,TextBox,Material,Input,Yes,100511,,,
+1,Block,Plant,Wheat,!,Plant maximum biomass decay coefficient,plant_biomass_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.01,TextBox,Material,Input,Yes,100509,>=0,E,Plant maximum decay coefficient must be positive
+1,Block,Plant,Wheat,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100510,>=0,E,Plant maximum leaf decay coefficient must be positive
+1,Block,Plant,Wheat,!,Optimal temperature,optimal_temperature,~degreeC,~degreeC,float+Estimate,30,TextBox,Material,Input,Yes,100511,,,
 1,Entity,Solver settings,Solver settings,!,Minimum acceptable negative concentration,minimum_acceptable_negative_conc,!,!,float,1.00E-13,TextBox,Global,Input,No,100153,,,
 1,Block,Plant,*,!,Limiting Nutrients,!,!,!,dialog,...; PlantHalfSaturation,PushButton,Initial State,Select,Yes,100505,,,
+1,Block,Plant,Wheat,!,Maximum Bio-volume,maximum_biovolume,m~^3;cm~^3;ft~^3;in~^3,m~^3,float,!,UnitBox,Geometry,Input,Yes,100513,>0,E,Maximum bio-volume must be greater than zero

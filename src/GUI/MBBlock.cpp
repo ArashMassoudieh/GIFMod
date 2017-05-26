@@ -22,7 +22,7 @@ CMBBlock::CMBBlock(void)
 
 	fs_params[storage_epsilon] = 0.01;
 	fs_params[storage_n] = 2;
-
+	fs_params[maximum_bio_volume] = 1e6;
 
 	vapor_diffusion=0;
 	DS = 0;
@@ -928,6 +928,7 @@ void CMBBlock::set_val(const string &SS, double val)
 		if (tolower(trim(s[0])) == "plant_biomass_decay_factor") fs_params[plant_biomass_decay_factor] = val;
 		if (tolower(trim(s[0])) == "plant_leaf_decay_factor") fs_params[plant_leaf_decay_factor] = val;
 		if (tolower(trim(s[0])) == "optimal_temperature") fs_params[optimal_temperature] = val;
+		if (tolower(trim(s[0])) == "maximum_biovolume") fs_params[maximum_bio_volume] = val;
 
 		
 		if (tolower(trim(s[0]))=="outflow_corr_factor") outflow_corr_factor = val;
@@ -1429,7 +1430,7 @@ int CMBBlock::lookup_env_exchange(string S)
 
 void CMBBlock::set_up_plant_growth_expressions()
 {
-	string s = "86400*f[77]*f[2]*f[18]*_max((1-_exp(-0.65*f[24])):0)";
+	string s = "86400*(1.0-(f[3]/f[84]))*f[77]*f[2]*f[18]*_max((1-_exp(-0.65*f[24])):0)";
 	string l_constituent;
 	for (int i = 0; i < plant_prop.limiting_nutrients.size(); i++)
 	{
