@@ -907,6 +907,7 @@ void CMCMC::getrealizations(CBTCSet &MCMCout)
 	double inc = 100.0 / n_realizations;
 	for (int jj = 0; jj <= n_realizations/numberOfThreads; jj++)
 	{
+		
 #ifdef GIFMOD
 		vector<vector<CMediumSet>> Sys1(numberOfThreads);
 #endif
@@ -924,7 +925,7 @@ void CMCMC::getrealizations(CBTCSet &MCMCout)
 			qDebug() << "Realization Sample No. : " << realizationNumber;
 			vector<double> param = realized_paramsList.getrow(realizationNumber);
 			Sys1[j][0] = G;
-			Sys1[j][0] = numbertostring(j);
+			Sys1[j][0].ID = numbertostring(j);
 #ifdef GIFMOD
 			//Sys1[j][0].FI.write_details = false;
 #endif

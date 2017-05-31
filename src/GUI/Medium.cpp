@@ -21,6 +21,11 @@ CMedium::CMedium(void)
 
 CMedium::~CMedium(void)
 {
+	ANS.clear();
+	ANS_colloids.clear();
+	ANS_constituents.clear();
+	ANS_obs.clear();
+	ANS_obs_noise.clear();
 	parent = 0;
 	gw = 0;
 	runtimewindow = 0;

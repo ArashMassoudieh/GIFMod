@@ -746,11 +746,12 @@ void MainWindow::inverseRun(CMediumSet *modelSet, runtimeWindow* rtw)
 
 	mainGraphWidget->results = new Results();
 	//**************************************** Genetic ****************************************
-	rtw->setLabel("Deterministic Parameter Estimation");
+	
 	if (GA.justreadmcmc == false && GA.continue_mcmc == false)
 	{
 		if (GA.getfromfilename == "")
 		{
+			rtw->setLabel("Deterministic Parameter Estimation");
 			GA.optimize(rtw);
 
 			// Genetic run time :

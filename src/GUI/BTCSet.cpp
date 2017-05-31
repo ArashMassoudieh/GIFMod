@@ -255,7 +255,7 @@ CBTCSet::CBTCSet(string filename, bool varytime)
 			if (s.size() > 0)
 			{
 				if (tail(s[0],5) == "names" || tail(s[0], 4) == "name")
-					for (int i = 1; i < s.size(); i++) names.push_back(s[i]);
+					for (int i = 1; i < s.size(); i++) if (trim(s[i])!="") names.push_back(s[i]);
 				if (tail(s[0],5) == "units" || tail(s[0], 4) == "unit")
 					for (int i = 1; i < s.size(); i++) units.push_back(s[i]);
 				if ((s[0].substr(0, 2) != "//") && (tail(s[0],5) != "names") && (tail(s[0],5) != "units"))

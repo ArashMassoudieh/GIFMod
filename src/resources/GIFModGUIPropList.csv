@@ -132,38 +132,38 @@
 1,Block,Storage,*,!,Specific storage,storativity,1/m;1/cm;1/ft;1/in,1/m,float+Estimate,0.01,UnitBox,Material,Input,Yes,100332,>=0,E,Specific storage moisure content must be non-negative
 1,Connector,Rating Curve,*,!,Coefficient,rating_curve_coeff,!,!,float+Estimate,!,TextBox,Material,Input,Yes,100181,,,
 1,Connector,Rating Curve,*,!,Datum,rating_curve_datum,m;cm;ft;in,m,float+Estimate,!,UnitBox,Material,Input,Yes,100182,,,
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Calculate posterior correlation,calculate_correlation      ,!,!,string,Yes;No,ComboBox,Global,Select,No,100188,,,
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Calculate posterior distributions,calc_distributions         ,!,!,string,Yes;No,ComboBox,Global,Select,No,100189,,,
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Calculate posterior percentiles,calculate_percentile       ,!,!,string,Yes;No,ComboBox,Global,Select,No,100190,,,
-1,Entity,Markov chain Monte Carlo,Markov Chain Monte Carlo,!,Calculate realization percentiles,calc_output_percentiles    ,!,!,string+estimates,0.025:0.05:0.10:0.25:0.50:0.75:0.90:0.95:0.975,MultiComboBox,Global,Input,No,100191,,,
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Continue MCMC sampling,continuemcmc               ,!,!,string,No;Yes,ComboBox,Global,Select,No,100192,,,
-1,Entity,Genetic algorithm,Genetic algorithm,!,Cross-over probability,pcross                     ,!,!,float+Estimate,1,TextBox,Global,Input,No,100193,(0:1],E,Cross-over probability must be between 0 and 1 and non-zero
-1,Entity,Genetic algorithm,Genetic algorithm,!,GA output file,outputfile                 ,!,!,filename,./GAout.txt,Browser,Global,Input,No,100194,not empty,W,GA output file is not defined.
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Generate output realizations,mcmc_realization           ,!,!,string,Yes;No,ComboBox,Global,Select,No,100195,,,
-1,Entity,Genetic algorithm,Genetic algorithm,!,Initial GA population,initial_population         ,!,!,filename,!,Browser,Global,Select,No,100196,notempty,W,initial GA population input file is not defined.
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Initial purturbation,noinipurt                  ,!,!,string,Yes;No,ComboBox,Global,Select,No,100197,,,
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC burn-in  number,burnout                    ,!,!,integer,50,TextBox,Global,Input,No,100198,>=0;<{nmcmcsamples},E;E,burn-out must be non-negative;burn-out must be less than number of MCMC samples
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC number of chains,nchains                    ,!,!,integer,8,TextBox,Global,Input,No,100199,>0;<{nmcmcsamples},E;E,Number of chains must be a positive number;Number of chains must be less than number of MCMC samples
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC data file,mcmcoutputfile             ,!,!,filename,./mcmcoutput.txt,Browser,Global,Input,No,100200,not empty,W,MCMC output file is not defined.
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC purturbation scale,purtfac                    ,!,!,float+Estimate,0.05,TextBox,Global,Input,No,100202,>0,E,Purturbation scale must be positive
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC purturbation scale rate of change,purtscale                    ,!,!,float+Estimate,0.75,TextBox,Global,Input,No,100501,>0,E,Rate of change of purturbation scale must be positive
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC sample output interval,writeinterval              ,!,!,integer,1,TextBox,Global,Input,No,100203,>0,E,MCMC sample output interval must be greater than 0
-1,Entity,Genetic algorithm,Genetic algorithm,!,Mutation probability,pmute                      ,!,!,float+Estimate,0.008,TextBox,Global,Input,No,100204,(0:0.01],E,Mutation probability must be between 0 and 0.01
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Number of bins used for calculating posterior distributions,no_bins                    ,!,!,integer,20,TextBox,Global,Input,No,100205,>0,E,Number of bins must be positive integer
-1,Entity,Genetic algorithm,Genetic algorithm,!,Number of generations,ngen                       ,!,!,integer,50,TextBox,Global,Input,No,100206,>0,E,Number of generations must be a postive integer
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Number of MCMC samples,nmcmcsamples               ,!,!,integer,500,TextBox,Global,Input,No,100207,>0,E,Number of MCMC samples must be positive integer
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Number of realization for MCMC post-processing,nrealizations              ,!,!,integer,100,TextBox,Global,Input,No,100208,>0,E,number of realization for MCMC post-processing must be positive
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Only read the MCMC outputs from file,justreadmcmc               ,!,!,string,No;Yes,ComboBox,Global,Select,No,100209,,,
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Perform global sensitivity analysis,global_sensitivity         ,!,!,string,No;Yes,ComboBox,Global,Select,No,100210,,,
-1,Entity,Genetic algorithm,Genetic algorithm,!,Perform local sensitivity analysis,calculate_sensitivity      ,!,!,string,No;Yes,ComboBox,Global,Select,No,100211,,,
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Perform MCMC simulation,mcmc_run                   ,!,!,string,Yes;No,ComboBox,Global,Select,No,100212,,,
-1,Entity,Genetic algorithm,Genetic algorithm,!,Population,maxpop                     ,!,!,integer,40,TextBox,Global,Input,No,100213,>1,E,Population must be greater than equal to two and an even number
-1,Entity,Genetic algorithm,Genetic algorithm,!,Read GA analysis from file,readfromgafile             ,!,!,filename,!,Browser,Global,Select,No,100214,notempty,W,GA input file is not defined.
-1,Entity,Genetic algorithm,Genetic algorithm,!,Save realization outputs in a file,obs_realization_writeout   ,!,!,string,Yes;No,ComboBox,Global,Select,No,100215,,,
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Sensititivy-based purturbation factor,sensbasedpurt              ,!,!,string,No;Yes,ComboBox,Global,Select,No,100216,,,
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Sensitivity purturbation factor,dp_sensitivity             ,!,!,float+Estimate,0.001,TextBox,Global,Input,No,100217,>0,E,Sensitivity purturbation factor must be greater than zero
-1,Entity,Genetic algorithm,Genetic algorithm,!,Shake-scale,shakescale                 ,!,!,float+Estimate,0.05,TextBox,Global,Input,No,100218,>=0,E,Shake-scale must be non-negative
-1,Entity,Genetic algorithm,Genetic algorithm,!,Shake-scale reduction factor,shakescalered              ,!,!,float+Estimate,0.2,TextBox,Global,Input,No,100219,(0:1),E,Shake-scale reduction factor must be between 0 and 1
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Calculate posterior correlation,calculate_correlation,!,!,string,Yes;No,ComboBox,Global,Select,No,100188,,,
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Calculate posterior distributions,calc_distributions,!,!,string,Yes;No,ComboBox,Global,Select,No,100189,,,
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Calculate posterior percentiles,calculate_percentile,!,!,string,Yes;No,ComboBox,Global,Select,No,100190,,,
+1,Entity,Markov chain Monte Carlo,Markov Chain Monte Carlo,!,Calculate realization percentiles,calc_output_percentiles,!,!,string+estimates,0.025:0.05:0.10:0.25:0.50:0.75:0.90:0.95:0.975,MultiComboBox,Global,Input,No,100191,,,
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Continue MCMC sampling,continuemcmc,!,!,string,No;Yes,ComboBox,Global,Select,No,100192,,,
+1,Entity,Genetic algorithm,Genetic algorithm,!,Cross-over probability,pcross,!,!,float+Estimate,1,TextBox,Global,Input,No,100193,(0:1],E,Cross-over probability must be between 0 and 1 and non-zero
+1,Entity,Genetic algorithm,Genetic algorithm,!,GA output file,outputfile,!,!,filename,./GAout.txt,Browser,Global,Input,No,100194,not empty,W,GA output file is not defined.
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Generate output realizations,mcmc_realization,!,!,string,Yes;No,ComboBox,Global,Select,No,100195,,,
+1,Entity,Genetic algorithm,Genetic algorithm,!,Initial GA population,initial_population,!,!,filename,!,Browser,Global,Select,No,100196,notempty,W,initial GA population input file is not defined.
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Initial purturbation,noinipurt,!,!,string,Yes;No,ComboBox,Global,Select,No,100197,,,
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC burn-in  number,burnout,!,!,integer,50,TextBox,Global,Input,No,100198,>=0;<{nmcmcsamples},E;E,burn-out must be non-negative;burn-out must be less than number of MCMC samples
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC number of chains,nchains,!,!,integer,8,TextBox,Global,Input,No,100199,>0;<{nmcmcsamples},E;E,Number of chains must be a positive number;Number of chains must be less than number of MCMC samples
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC data file,mcmcoutputfile,!,!,filename,./mcmcoutput.txt,Browser,Global,Input,No,100200,not empty,W,MCMC output file is not defined.
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC purturbation scale,purtfac,!,!,float+Estimate,0.05,TextBox,Global,Input,No,100202,>0,E,Purturbation scale must be positive
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC purturbation scale rate of change,purtscale,!,!,float+Estimate,0.75,TextBox,Global,Input,No,100501,>0,E,Rate of change of purturbation scale must be positive
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC sample output interval,writeinterval,!,!,integer,1,TextBox,Global,Input,No,100203,>0,E,MCMC sample output interval must be greater than 0
+1,Entity,Genetic algorithm,Genetic algorithm,!,Mutation probability,pmute,!,!,float+Estimate,0.008,TextBox,Global,Input,No,100204,(0:0.01],E,Mutation probability must be between 0 and 0.01
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Number of bins used for calculating posterior distributions,no_bins,!,!,integer,20,TextBox,Global,Input,No,100205,>0,E,Number of bins must be positive integer
+1,Entity,Genetic algorithm,Genetic algorithm,!,Number of generations,ngen,!,!,integer,50,TextBox,Global,Input,No,100206,>0,E,Number of generations must be a postive integer
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Number of MCMC samples,nmcmcsamples,!,!,integer,500,TextBox,Global,Input,No,100207,>0,E,Number of MCMC samples must be positive integer
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Number of realization for MCMC post-processing,nrealizations,!,!,integer,100,TextBox,Global,Input,No,100208,>0,E,number of realization for MCMC post-processing must be positive
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Only read the MCMC outputs from file,justreadmcmc,!,!,string,No;Yes,ComboBox,Global,Select,No,100209,,,
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Perform global sensitivity analysis,global_sensitivity,!,!,string,No;Yes,ComboBox,Global,Select,No,100210,,,
+1,Entity,Genetic algorithm,Genetic algorithm,!,Perform local sensitivity analysis,calculate_sensitivity,!,!,string,No;Yes,ComboBox,Global,Select,No,100211,,,
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Perform MCMC simulation,mcmc_run,!,!,string,Yes;No,ComboBox,Global,Select,No,100212,,,
+1,Entity,Genetic algorithm,Genetic algorithm,!,Population,maxpop,!,!,integer,40,TextBox,Global,Input,No,100213,>1,E,Population must be greater than equal to two and an even number
+1,Entity,Genetic algorithm,Genetic algorithm,!,Read GA analysis from file,readfromgafile,!,!,filename,!,Browser,Global,Select,No,100214,notempty,W,GA input file is not defined.
+1,Entity,Genetic algorithm,Genetic algorithm,!,Save realization outputs in a file,obs_realization_writeout,!,!,string,Yes;No,ComboBox,Global,Select,No,100215,,,
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Sensititivy-based purturbation factor,sensbasedpurt,!,!,string,No;Yes,ComboBox,Global,Select,No,100216,,,
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Sensitivity purturbation factor,dp_sensitivity,!,!,float+Estimate,0.001,TextBox,Global,Input,No,100217,>0,E,Sensitivity purturbation factor must be greater than zero
+1,Entity,Genetic algorithm,Genetic algorithm,!,Shake-scale,shakescale,!,!,float+Estimate,0.05,TextBox,Global,Input,No,100218,>=0,E,Shake-scale must be non-negative
+1,Entity,Genetic algorithm,Genetic algorithm,!,Shake-scale reduction factor,shakescalered,!,!,float+Estimate,0.2,TextBox,Global,Input,No,100219,(0:1),E,Shake-scale reduction factor must be between 0 and 1
 1,Entity,Genetic algorithm,Genetic algorithm,!,Number of threads,number_of_threads,!,!,integer,16,TextBox,Global,Input,No,100220,>0,E,Number of threads should be positive
 1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Realized parameters Output File,realizedparam,!,!,string,!,Browser,Global,Input,No,100221,,,
 1,Entity,Evapotranspiration,*,!,Name,!,!,!,string,!,TextBox,Global,Input,No,100222,,,
