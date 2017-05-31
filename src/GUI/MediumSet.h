@@ -148,6 +148,7 @@ public:
 	bool failed;
 	void CMediumSet::finalize_set_param();
 	int CMediumSet::epoch_count();
+	void clear();
 	string ID; 
 //GUI
 	GraphWidget *gw = 0;

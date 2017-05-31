@@ -17,6 +17,7 @@ CMediumSet::~CMediumSet()
 	ANS_obs.clear();
 	ANS_hyd.clear();
 	gw = NULL;
+	
 
 }
 
@@ -968,6 +969,18 @@ int CMediumSet::epoch_count()
 	for (int i = 0; i < Medium.size(); i++) out += Medium[i].epoch_count;
 
 	return out; 
+}
+
+void CMediumSet::clear()
+{
+	ANS_colloids.clear();
+	ANS_constituents.clear();
+	ANS_control.clear();
+	ANS_hyd.clear();
+	ANS_obs.clear();
+	ANS_obs_noise.clear();
+	measured_data.clear();
+	Medium.clear();
 }
 
 #endif

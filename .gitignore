@@ -204,10 +204,9 @@ $RECYCLE.BIN/
 *.msi
 *.msm
 *.msp
-/GIFMod - Arash.VC.db
-/GIFMod - Arash.VC.VC.opendb
-*.opendb
+/src/GUI
 /GIFMod.vcxproj
 /GIFMod.vcxproj.filters
 /libs/lapack-blas_lib_win64/lapack-blas_lib_win64.z
 /GIFMod.sln
+/GIFMod.VC.VC.opendb

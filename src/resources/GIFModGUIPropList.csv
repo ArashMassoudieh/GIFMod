@@ -132,38 +132,38 @@
 1,Block,Storage,*,!,Specific storage,storativity,1/m;1/cm;1/ft;1/in,1/m,float+Estimate,0.01,UnitBox,Material,Input,Yes,100332,>=0,E,Specific storage moisure content must be non-negative
 1,Connector,Rating Curve,*,!,Coefficient,rating_curve_coeff,!,!,float+Estimate,!,TextBox,Material,Input,Yes,100181,,,
 1,Connector,Rating Curve,*,!,Datum,rating_curve_datum,m;cm;ft;in,m,float+Estimate,!,UnitBox,Material,Input,Yes,100182,,,
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Calculate posterior correlation,calculate_correlation      ,!,!,string,Yes;No,ComboBox,Global,Select,No,100188,,,
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Calculate posterior distributions,calc_distributions         ,!,!,string,Yes;No,ComboBox,Global,Select,No,100189,,,
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Calculate posterior percentiles,calculate_percentile       ,!,!,string,Yes;No,ComboBox,Global,Select,No,100190,,,
-1,Entity,Markov chain Monte Carlo,Markov Chain Monte Carlo,!,Calculate realization percentiles,calc_output_percentiles    ,!,!,string+estimates,0.025:0.05:0.10:0.25:0.50:0.75:0.90:0.95:0.975,MultiComboBox,Global,Input,No,100191,,,
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Continue MCMC sampling,continuemcmc               ,!,!,string,No;Yes,ComboBox,Global,Select,No,100192,,,
-1,Entity,Genetic algorithm,Genetic algorithm,!,Cross-over probability,pcross                     ,!,!,float+Estimate,1,TextBox,Global,Input,No,100193,(0:1],E,Cross-over probability must be between 0 and 1 and non-zero
-1,Entity,Genetic algorithm,Genetic algorithm,!,GA output file,outputfile                 ,!,!,filename,./GAout.txt,Browser,Global,Input,No,100194,not empty,W,GA output file is not defined.
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Generate output realizations,mcmc_realization           ,!,!,string,Yes;No,ComboBox,Global,Select,No,100195,,,
-1,Entity,Genetic algorithm,Genetic algorithm,!,Initial GA population,initial_population         ,!,!,filename,!,Browser,Global,Select,No,100196,notempty,W,initial GA population input file is not defined.
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Initial purturbation,noinipurt                  ,!,!,string,Yes;No,ComboBox,Global,Select,No,100197,,,
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC burn-in  number,burnout                    ,!,!,integer,50,TextBox,Global,Input,No,100198,>=0;<{nmcmcsamples},E;E,burn-out must be non-negative;burn-out must be less than number of MCMC samples
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC number of chains,nchains                    ,!,!,integer,8,TextBox,Global,Input,No,100199,>0;<{nmcmcsamples},E;E,Number of chains must be a positive number;Number of chains must be less than number of MCMC samples
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC data file,mcmcoutputfile             ,!,!,filename,./mcmcoutput.txt,Browser,Global,Input,No,100200,not empty,W,MCMC output file is not defined.
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC purturbation scale,purtfac                    ,!,!,float+Estimate,0.05,TextBox,Global,Input,No,100202,>0,E,Purturbation scale must be positive
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC purturbation scale rate of change,purtscale                    ,!,!,float+Estimate,0.75,TextBox,Global,Input,No,100501,>0,E,Rate of change of purturbation scale must be positive
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC sample output interval,writeinterval              ,!,!,integer,1,TextBox,Global,Input,No,100203,>0,E,MCMC sample output interval must be greater than 0
-1,Entity,Genetic algorithm,Genetic algorithm,!,Mutation probability,pmute                      ,!,!,float+Estimate,0.008,TextBox,Global,Input,No,100204,(0:0.01],E,Mutation probability must be between 0 and 0.01
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Number of bins used for calculating posterior distributions,no_bins                    ,!,!,integer,20,TextBox,Global,Input,No,100205,>0,E,Number of bins must be positive integer
-1,Entity,Genetic algorithm,Genetic algorithm,!,Number of generations,ngen                       ,!,!,integer,50,TextBox,Global,Input,No,100206,>0,E,Number of generations must be a postive integer
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Number of MCMC samples,nmcmcsamples               ,!,!,integer,500,TextBox,Global,Input,No,100207,>0,E,Number of MCMC samples must be positive integer
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Number of realization for MCMC post-processing,nrealizations              ,!,!,integer,100,TextBox,Global,Input,No,100208,>0,E,number of realization for MCMC post-processing must be positive
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Only read the MCMC outputs from file,justreadmcmc               ,!,!,string,No;Yes,ComboBox,Global,Select,No,100209,,,
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Perform global sensitivity analysis,global_sensitivity         ,!,!,string,No;Yes,ComboBox,Global,Select,No,100210,,,
-1,Entity,Genetic algorithm,Genetic algorithm,!,Perform local sensitivity analysis,calculate_sensitivity      ,!,!,string,No;Yes,ComboBox,Global,Select,No,100211,,,
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Perform MCMC simulation,mcmc_run                   ,!,!,string,Yes;No,ComboBox,Global,Select,No,100212,,,
-1,Entity,Genetic algorithm,Genetic algorithm,!,Population,maxpop                     ,!,!,integer,40,TextBox,Global,Input,No,100213,>1,E,Population must be greater than equal to two and an even number
-1,Entity,Genetic algorithm,Genetic algorithm,!,Read GA analysis from file,readfromgafile             ,!,!,filename,!,Browser,Global,Select,No,100214,notempty,W,GA input file is not defined.
-1,Entity,Genetic algorithm,Genetic algorithm,!,Save realization outputs in a file,obs_realization_writeout   ,!,!,string,Yes;No,ComboBox,Global,Select,No,100215,,,
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Sensititivy-based purturbation factor,sensbasedpurt              ,!,!,string,No;Yes,ComboBox,Global,Select,No,100216,,,
-1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Sensitivity purturbation factor,dp_sensitivity             ,!,!,float+Estimate,0.001,TextBox,Global,Input,No,100217,>0,E,Sensitivity purturbation factor must be greater than zero
-1,Entity,Genetic algorithm,Genetic algorithm,!,Shake-scale,shakescale                 ,!,!,float+Estimate,0.05,TextBox,Global,Input,No,100218,>=0,E,Shake-scale must be non-negative
-1,Entity,Genetic algorithm,Genetic algorithm,!,Shake-scale reduction factor,shakescalered              ,!,!,float+Estimate,0.2,TextBox,Global,Input,No,100219,(0:1),E,Shake-scale reduction factor must be between 0 and 1
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Calculate posterior correlation,calculate_correlation,!,!,string,Yes;No,ComboBox,Global,Select,No,100188,,,
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Calculate posterior distributions,calc_distributions,!,!,string,Yes;No,ComboBox,Global,Select,No,100189,,,
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Calculate posterior percentiles,calculate_percentile,!,!,string,Yes;No,ComboBox,Global,Select,No,100190,,,
+1,Entity,Markov chain Monte Carlo,Markov Chain Monte Carlo,!,Calculate realization percentiles,calc_output_percentiles,!,!,string+estimates,0.025:0.05:0.10:0.25:0.50:0.75:0.90:0.95:0.975,MultiComboBox,Global,Input,No,100191,,,
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Continue MCMC sampling,continuemcmc,!,!,string,No;Yes,ComboBox,Global,Select,No,100192,,,
+1,Entity,Genetic algorithm,Genetic algorithm,!,Cross-over probability,pcross,!,!,float+Estimate,1,TextBox,Global,Input,No,100193,(0:1],E,Cross-over probability must be between 0 and 1 and non-zero
+1,Entity,Genetic algorithm,Genetic algorithm,!,GA output file,outputfile,!,!,filename,./GAout.txt,Browser,Global,Input,No,100194,not empty,W,GA output file is not defined.
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Generate output realizations,mcmc_realization,!,!,string,Yes;No,ComboBox,Global,Select,No,100195,,,
+1,Entity,Genetic algorithm,Genetic algorithm,!,Initial GA population,initial_population,!,!,filename,!,Browser,Global,Select,No,100196,notempty,W,initial GA population input file is not defined.
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Initial purturbation,noinipurt,!,!,string,Yes;No,ComboBox,Global,Select,No,100197,,,
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC burn-in  number,burnout,!,!,integer,50,TextBox,Global,Input,No,100198,>=0;<{nmcmcsamples},E;E,burn-out must be non-negative;burn-out must be less than number of MCMC samples
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC number of chains,nchains,!,!,integer,8,TextBox,Global,Input,No,100199,>0;<{nmcmcsamples},E;E,Number of chains must be a positive number;Number of chains must be less than number of MCMC samples
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC data file,mcmcoutputfile,!,!,filename,./mcmcoutput.txt,Browser,Global,Input,No,100200,not empty,W,MCMC output file is not defined.
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC purturbation scale,purtfac,!,!,float+Estimate,0.05,TextBox,Global,Input,No,100202,>0,E,Purturbation scale must be positive
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC purturbation scale rate of change,purtscale,!,!,float+Estimate,0.75,TextBox,Global,Input,No,100501,>0,E,Rate of change of purturbation scale must be positive
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,MCMC sample output interval,writeinterval,!,!,integer,1,TextBox,Global,Input,No,100203,>0,E,MCMC sample output interval must be greater than 0
+1,Entity,Genetic algorithm,Genetic algorithm,!,Mutation probability,pmute,!,!,float+Estimate,0.008,TextBox,Global,Input,No,100204,(0:0.01],E,Mutation probability must be between 0 and 0.01
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Number of bins used for calculating posterior distributions,no_bins,!,!,integer,20,TextBox,Global,Input,No,100205,>0,E,Number of bins must be positive integer
+1,Entity,Genetic algorithm,Genetic algorithm,!,Number of generations,ngen,!,!,integer,50,TextBox,Global,Input,No,100206,>0,E,Number of generations must be a postive integer
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Number of MCMC samples,nmcmcsamples,!,!,integer,500,TextBox,Global,Input,No,100207,>0,E,Number of MCMC samples must be positive integer
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Number of realization for MCMC post-processing,nrealizations,!,!,integer,100,TextBox,Global,Input,No,100208,>0,E,number of realization for MCMC post-processing must be positive
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Only read the MCMC outputs from file,justreadmcmc,!,!,string,No;Yes,ComboBox,Global,Select,No,100209,,,
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Perform global sensitivity analysis,global_sensitivity,!,!,string,No;Yes,ComboBox,Global,Select,No,100210,,,
+1,Entity,Genetic algorithm,Genetic algorithm,!,Perform local sensitivity analysis,calculate_sensitivity,!,!,string,No;Yes,ComboBox,Global,Select,No,100211,,,
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Perform MCMC simulation,mcmc_run,!,!,string,Yes;No,ComboBox,Global,Select,No,100212,,,
+1,Entity,Genetic algorithm,Genetic algorithm,!,Population,maxpop,!,!,integer,40,TextBox,Global,Input,No,100213,>1,E,Population must be greater than equal to two and an even number
+1,Entity,Genetic algorithm,Genetic algorithm,!,Read GA analysis from file,readfromgafile,!,!,filename,!,Browser,Global,Select,No,100214,notempty,W,GA input file is not defined.
+1,Entity,Genetic algorithm,Genetic algorithm,!,Save realization outputs in a file,obs_realization_writeout,!,!,string,Yes;No,ComboBox,Global,Select,No,100215,,,
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Sensititivy-based purturbation factor,sensbasedpurt,!,!,string,No;Yes,ComboBox,Global,Select,No,100216,,,
+1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Sensitivity purturbation factor,dp_sensitivity,!,!,float+Estimate,0.001,TextBox,Global,Input,No,100217,>0,E,Sensitivity purturbation factor must be greater than zero
+1,Entity,Genetic algorithm,Genetic algorithm,!,Shake-scale,shakescale,!,!,float+Estimate,0.05,TextBox,Global,Input,No,100218,>=0,E,Shake-scale must be non-negative
+1,Entity,Genetic algorithm,Genetic algorithm,!,Shake-scale reduction factor,shakescalered,!,!,float+Estimate,0.2,TextBox,Global,Input,No,100219,(0:1),E,Shake-scale reduction factor must be between 0 and 1
 1,Entity,Genetic algorithm,Genetic algorithm,!,Number of threads,number_of_threads,!,!,integer,16,TextBox,Global,Input,No,100220,>0,E,Number of threads should be positive
 1,Entity,Markov chain Monte Carlo,Markov chain Monte Carlo,!,Realized parameters Output File,realizedparam,!,!,string,!,Browser,Global,Input,No,100221,,,
 1,Entity,Evapotranspiration,*,!,Name,!,!,!,string,!,TextBox,Global,Input,No,100222,,,
@@ -428,14 +428,224 @@
 1,Entity,Evapotranspiration,Penman (plant),,Half evaporation LAI (kLAI),half_evaporation_lai,!,!,string,1.5,UnitBox,Global,Select,No,100319,>0,E,Half evaporation LAI must be positive
 1,Entity,Evapotranspiration,Priestley-Taylor (plant),,Half evaporation LAI (kLAI),half_evaporation_lai,!,!,string,1.5,UnitBox,Global,Select,No,100319,>0,E,Half evaporation LAI must be positive
 1,Entity,Evapotranspiration,Aerodynamic (plant),,Half evaporation LAI (kLAI),half_evaporation_lai,!,!,string,1.5,UnitBox,Global,Select,No,100319,>0,E,Half evaporation LAI must be positive
-1,Block,Plant,Wheat,!,Maximum leaf area index,lai_max,!,!,float+Estimate,8,TextBox,Material,Input,Yes,100512,>0,E,Maximum leaf area index (LAI_max) must be a positive number
-1,Block,Plant,Wheat,!,Leaf area index growth rate coefficient,k_lai,1/day/~degreeC,1/day/~degreeC,float+Estimate,0.1,TextBox,Material,Input,Yes,100507,>0,E,Leaf growth rate constant must be greater than zero
-1,Block,Plant,Wheat,!,Plant biomass to energy ratio,plant_growth_rate_coefficient,m~^3/J,m~^3/J,float+Estimate,0.01,TextBox,Material,Input,Yes,100506,>0,E,Plant growth rate coefficient
-1,Block,Plant,Wheat,!,Base temperature,temperature_base,~degreeC,~degreeC,float+Estimate,10,TextBox,Material,Input,Yes,100507,,,
-1,Block,Plant,*,!,Temperature spread coefficient,temperature_spread_factor,~degreeC,~degreeC,float+Estimate,4,TextBox,Material,Input,Yes,100508,>0,E,Temperature spread coefficient must be positive
-1,Block,Plant,Wheat,!,Plant maximum biomass decay coefficient,plant_biomass_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.01,TextBox,Material,Input,Yes,100509,>=0,E,Plant maximum decay coefficient must be positive
-1,Block,Plant,Wheat,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100510,>=0,E,Plant maximum leaf decay coefficient must be positive
-1,Block,Plant,Wheat,!,Optimal temperature,optimal_temperature,~degreeC,~degreeC,float+Estimate,30,TextBox,Material,Input,Yes,100511,,,
 1,Entity,Solver settings,Solver settings,!,Minimum acceptable negative concentration,minimum_acceptable_negative_conc,!,!,float,1.00E-13,TextBox,Global,Input,No,100153,,,
-1,Block,Plant,*,!,Limiting Nutrients,!,!,!,dialog,...; PlantHalfSaturation,PushButton,Initial State,Select,Yes,100505,,,
-1,Block,Plant,Wheat,!,Maximum Bio-volume,maximum_biovolume,m~^3;cm~^3;ft~^3;in~^3,m~^3,float,!,UnitBox,Geometry,Input,Yes,100513,>0,E,Maximum bio-volume must be greater than zero
+1,Block,Plant,soybeans ,!,Maximum leaf area index,lai_max,!,!,float+Estimate,5,TextBox,Material,Input,Yes,100512,>0,E,Maximum leaf area index (LAI_max) must be a positive number
+1,Block,Plant,soybeans ,!,Leaf area index growth rate coefficient,k_lai,1/day/~degreeC,1/day/~degreeC,float+Estimate,0.1,TextBox,Material,Input,Yes,100507,>0,E,Leaf growth rate constant must be greater than zero
+1,Block,Plant,soybeans ,!,Plant biomass to energy ratio,plant_growth_rate_coefficient,m~^3/J,m~^3/J,float+Estimate,0.00000025,TextBox,Material,Input,Yes,100506,>0,E,Plant growth rate coefficient
+1,Block,Plant,soybeans ,!,Base temperature,temperature_base,~degreeC,~degreeC,float+Estimate,10,TextBox,Material,Input,Yes,100507,,,
+1,Block,Plant,soybeans ,!,Temperature spread coefficient,temperature_spread_factor,~degreeC,~degreeC,float+Estimate,4,TextBox,Material,Input,Yes,100508,>0,E,Temperature spread coefficient must be positive
+1,Block,Plant,soybeans ,!,Plant maximum biomass decay coefficient,plant_biomass_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.01,TextBox,Material,Input,Yes,100509,>=0,E,Plant maximum decay coefficient must be positive
+1,Block,Plant,soybeans ,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100510,>=0,E,Plant maximum leaf decay coefficient must be positive
+1,Block,Plant,soybeans ,!,Optimal temperature,optimal_temperature,~degreeC,~degreeC,float+Estimate,25,TextBox,Material,Input,Yes,100511,,,
+1,Block,Plant,soybeans ,!,Limiting Nutrients,!,!,!,dialog,...; PlantHalfSaturation,PushButton,Initial State,Select,Yes,100505,,,
+1,Block,Plant,soybeans ,!,Maximum Bio-volume,maximum_biovolume,m~^3;cm~^3;ft~^3;in~^3,m~^3,float,0.05,UnitBox,Geometry,Input,Yes,100513,>0,E,Maximum bio-volume must be greater than zero
+1,Block,Plant,corn ,!,Maximum leaf area index,lai_max,!,!,float+Estimate,5,TextBox,Material,Input,Yes,100512,>0,E,Maximum leaf area index (LAI_max) must be a positive number
+1,Block,Plant,corn ,!,Leaf area index growth rate coefficient,k_lai,1/day/~degreeC,1/day/~degreeC,float+Estimate,0.1,TextBox,Material,Input,Yes,100507,>0,E,Leaf growth rate constant must be greater than zero
+1,Block,Plant,corn ,!,Plant biomass to energy ratio,plant_growth_rate_coefficient,m~^3/J,m~^3/J,float+Estimate,0.0000004,TextBox,Material,Input,Yes,100506,>0,E,Plant growth rate coefficient
+1,Block,Plant,corn ,!,Base temperature,temperature_base,~degreeC,~degreeC,float+Estimate,8,TextBox,Material,Input,Yes,100507,,,
+1,Block,Plant,corn ,!,Temperature spread coefficient,temperature_spread_factor,~degreeC,~degreeC,float+Estimate,4,TextBox,Material,Input,Yes,100508,>0,E,Temperature spread coefficient must be positive
+1,Block,Plant,corn ,!,Plant maximum biomass decay coefficient,plant_biomass_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.01,TextBox,Material,Input,Yes,100509,>=0,E,Plant maximum decay coefficient must be positive
+1,Block,Plant,corn ,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100510,>=0,E,Plant maximum leaf decay coefficient must be positive
+1,Block,Plant,corn ,!,Optimal temperature,optimal_temperature,~degreeC,~degreeC,float+Estimate,25,TextBox,Material,Input,Yes,100511,,,
+1,Block,Plant,corn ,!,Limiting Nutrients,!,!,!,dialog,...; PlantHalfSaturation,PushButton,Initial State,Select,Yes,100505,,,
+1,Block,Plant,corn ,!,Maximum Bio-volume,maximum_biovolume,m~^3;cm~^3;ft~^3;in~^3,m~^3,float,0.05,UnitBox,Geometry,Input,Yes,100513,>0,E,Maximum bio-volume must be greater than zero
+1,Block,Plant,grain sorghum,!,Maximum leaf area index,lai_max,!,!,float+Estimate,5,TextBox,Material,Input,Yes,100512,>0,E,Maximum leaf area index (LAI_max) must be a positive number
+1,Block,Plant,grain sorghum,!,Leaf area index growth rate coefficient,k_lai,1/day/~degreeC,1/day/~degreeC,float+Estimate,0.1,TextBox,Material,Input,Yes,100507,>0,E,Leaf growth rate constant must be greater than zero
+1,Block,Plant,grain sorghum,!,Plant biomass to energy ratio,plant_growth_rate_coefficient,m~^3/J,m~^3/J,float+Estimate,0.00000035,TextBox,Material,Input,Yes,100506,>0,E,Plant growth rate coefficient
+1,Block,Plant,grain sorghum,!,Base temperature,temperature_base,~degreeC,~degreeC,float+Estimate,10,TextBox,Material,Input,Yes,100507,,,
+1,Block,Plant,grain sorghum,!,Temperature spread coefficient,temperature_spread_factor,~degreeC,~degreeC,float+Estimate,4,TextBox,Material,Input,Yes,100508,>0,E,Temperature spread coefficient must be positive
+1,Block,Plant,grain sorghum,!,Plant maximum biomass decay coefficient,plant_biomass_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.01,TextBox,Material,Input,Yes,100509,>=0,E,Plant maximum decay coefficient must be positive
+1,Block,Plant,grain sorghum,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100510,>=0,E,Plant maximum leaf decay coefficient must be positive
+1,Block,Plant,grain sorghum,!,Optimal temperature,optimal_temperature,~degreeC,~degreeC,float+Estimate,27.5,TextBox,Material,Input,Yes,100511,,,
+1,Block,Plant,grain sorghum,!,Limiting Nutrients,!,!,!,dialog,...; PlantHalfSaturation,PushButton,Initial State,Select,Yes,100505,,,
+1,Block,Plant,grain sorghum,!,Maximum Bio-volume,maximum_biovolume,m~^3;cm~^3;ft~^3;in~^3,m~^3,float,0.05,UnitBox,Geometry,Input,Yes,100513,>0,E,Maximum bio-volume must be greater than zero
+1,Block,Plant,winter wheat,!,Maximum leaf area index,lai_max,!,!,float+Estimate,8,TextBox,Material,Input,Yes,100512,>0,E,Maximum leaf area index (LAI_max) must be a positive number
+1,Block,Plant,winter wheat,!,Leaf area index growth rate coefficient,k_lai,1/day/~degreeC,1/day/~degreeC,float+Estimate,0.1,TextBox,Material,Input,Yes,100507,>0,E,Leaf growth rate constant must be greater than zero
+1,Block,Plant,winter wheat,!,Plant biomass to energy ratio,plant_growth_rate_coefficient,m~^3/J,m~^3/J,float+Estimate,0.00000035,TextBox,Material,Input,Yes,100506,>0,E,Plant growth rate coefficient
+1,Block,Plant,winter wheat,!,Base temperature,temperature_base,~degreeC,~degreeC,float+Estimate,0,TextBox,Material,Input,Yes,100507,,,
+1,Block,Plant,winter wheat,!,Temperature spread coefficient,temperature_spread_factor,~degreeC,~degreeC,float+Estimate,4,TextBox,Material,Input,Yes,100508,>0,E,Temperature spread coefficient must be positive
+1,Block,Plant,winter wheat,!,Plant maximum biomass decay coefficient,plant_biomass_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.01,TextBox,Material,Input,Yes,100509,>=0,E,Plant maximum decay coefficient must be positive
+1,Block,Plant,winter wheat,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100510,>=0,E,Plant maximum leaf decay coefficient must be positive
+1,Block,Plant,winter wheat,!,Optimal temperature,optimal_temperature,~degreeC,~degreeC,float+Estimate,15,TextBox,Material,Input,Yes,100511,,,
+1,Block,Plant,winter wheat,!,Limiting Nutrients,!,!,!,dialog,...; PlantHalfSaturation,PushButton,Initial State,Select,Yes,100505,,,
+1,Block,Plant,winter wheat,!,Maximum Bio-volume,maximum_biovolume,m~^3;cm~^3;ft~^3;in~^3,m~^3,float,0.05,UnitBox,Geometry,Input,Yes,100513,>0,E,Maximum bio-volume must be greater than zero
+1,Block,Plant,spring wheat,!,Maximum leaf area index,lai_max,!,!,float+Estimate,9,TextBox,Material,Input,Yes,100512,>0,E,Maximum leaf area index (LAI_max) must be a positive number
+1,Block,Plant,spring wheat,!,Leaf area index growth rate coefficient,k_lai,1/day/~degreeC,1/day/~degreeC,float+Estimate,0.1,TextBox,Material,Input,Yes,100507,>0,E,Leaf growth rate constant must be greater than zero
+1,Block,Plant,spring wheat,!,Plant biomass to energy ratio,plant_growth_rate_coefficient,m~^3/J,m~^3/J,float+Estimate,0.00000035,TextBox,Material,Input,Yes,100506,>0,E,Plant growth rate coefficient
+1,Block,Plant,spring wheat,!,Base temperature,temperature_base,~degreeC,~degreeC,float+Estimate,0,TextBox,Material,Input,Yes,100507,,,
+1,Block,Plant,spring wheat,!,Temperature spread coefficient,temperature_spread_factor,~degreeC,~degreeC,float+Estimate,4,TextBox,Material,Input,Yes,100508,>0,E,Temperature spread coefficient must be positive
+1,Block,Plant,spring wheat,!,Plant maximum biomass decay coefficient,plant_biomass_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.01,TextBox,Material,Input,Yes,100509,>=0,E,Plant maximum decay coefficient must be positive
+1,Block,Plant,spring wheat,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100510,>=0,E,Plant maximum leaf decay coefficient must be positive
+1,Block,Plant,spring wheat,!,Optimal temperature,optimal_temperature,~degreeC,~degreeC,float+Estimate,15,TextBox,Material,Input,Yes,100511,,,
+1,Block,Plant,spring wheat,!,Limiting Nutrients,!,!,!,dialog,...; PlantHalfSaturation,PushButton,Initial State,Select,Yes,100505,,,
+1,Block,Plant,spring wheat,!,Maximum Bio-volume,maximum_biovolume,m~^3;cm~^3;ft~^3;in~^3,m~^3,float,0.05,UnitBox,Geometry,Input,Yes,100513,>0,E,Maximum bio-volume must be greater than zero
+1,Block,Plant,durham wheat,!,Maximum leaf area index,lai_max,!,!,float+Estimate,9,TextBox,Material,Input,Yes,100512,>0,E,Maximum leaf area index (LAI_max) must be a positive number
+1,Block,Plant,durham wheat,!,Leaf area index growth rate coefficient,k_lai,1/day/~degreeC,1/day/~degreeC,float+Estimate,0.1,TextBox,Material,Input,Yes,100507,>0,E,Leaf growth rate constant must be greater than zero
+1,Block,Plant,durham wheat,!,Plant biomass to energy ratio,plant_growth_rate_coefficient,m~^3/J,m~^3/J,float+Estimate,0.00000025,TextBox,Material,Input,Yes,100506,>0,E,Plant growth rate coefficient
+1,Block,Plant,durham wheat,!,Base temperature,temperature_base,~degreeC,~degreeC,float+Estimate,0,TextBox,Material,Input,Yes,100507,,,
+1,Block,Plant,durham wheat,!,Temperature spread coefficient,temperature_spread_factor,~degreeC,~degreeC,float+Estimate,4,TextBox,Material,Input,Yes,100508,>0,E,Temperature spread coefficient must be positive
+1,Block,Plant,durham wheat,!,Plant maximum biomass decay coefficient,plant_biomass_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.01,TextBox,Material,Input,Yes,100509,>=0,E,Plant maximum decay coefficient must be positive
+1,Block,Plant,durham wheat,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100510,>=0,E,Plant maximum leaf decay coefficient must be positive
+1,Block,Plant,durham wheat,!,Optimal temperature,optimal_temperature,~degreeC,~degreeC,float+Estimate,15,TextBox,Material,Input,Yes,100511,,,
+1,Block,Plant,durham wheat,!,Limiting Nutrients,!,!,!,dialog,...; PlantHalfSaturation,PushButton,Initial State,Select,Yes,100505,,,
+1,Block,Plant,durham wheat,!,Maximum Bio-volume,maximum_biovolume,m~^3;cm~^3;ft~^3;in~^3,m~^3,float,0.05,UnitBox,Geometry,Input,Yes,100513,>0,E,Maximum bio-volume must be greater than zero
+1,Block,Plant,barley ,!,Maximum leaf area index,lai_max,!,!,float+Estimate,8,TextBox,Material,Input,Yes,100512,>0,E,Maximum leaf area index (LAI_max) must be a positive number
+1,Block,Plant,barley ,!,Leaf area index growth rate coefficient,k_lai,1/day/~degreeC,1/day/~degreeC,float+Estimate,0.1,TextBox,Material,Input,Yes,100507,>0,E,Leaf growth rate constant must be greater than zero
+1,Block,Plant,barley ,!,Plant biomass to energy ratio,plant_growth_rate_coefficient,m~^3/J,m~^3/J,float+Estimate,0.00000035,TextBox,Material,Input,Yes,100506,>0,E,Plant growth rate coefficient
+1,Block,Plant,barley ,!,Base temperature,temperature_base,~degreeC,~degreeC,float+Estimate,0,TextBox,Material,Input,Yes,100507,,,
+1,Block,Plant,barley ,!,Temperature spread coefficient,temperature_spread_factor,~degreeC,~degreeC,float+Estimate,4,TextBox,Material,Input,Yes,100508,>0,E,Temperature spread coefficient must be positive
+1,Block,Plant,barley ,!,Plant maximum biomass decay coefficient,plant_biomass_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.01,TextBox,Material,Input,Yes,100509,>=0,E,Plant maximum decay coefficient must be positive
+1,Block,Plant,barley ,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100510,>=0,E,Plant maximum leaf decay coefficient must be positive
+1,Block,Plant,barley ,!,Optimal temperature,optimal_temperature,~degreeC,~degreeC,float+Estimate,15,TextBox,Material,Input,Yes,100511,,,
+1,Block,Plant,barley ,!,Limiting Nutrients,!,!,!,dialog,...; PlantHalfSaturation,PushButton,Initial State,Select,Yes,100505,,,
+1,Block,Plant,barley ,!,Maximum Bio-volume,maximum_biovolume,m~^3;cm~^3;ft~^3;in~^3,m~^3,float,0.05,UnitBox,Geometry,Input,Yes,100513,>0,E,Maximum bio-volume must be greater than zero
+1,Block,Plant,oats ,!,Maximum leaf area index,lai_max,!,!,float+Estimate,8,TextBox,Material,Input,Yes,100512,>0,E,Maximum leaf area index (LAI_max) must be a positive number
+1,Block,Plant,oats ,!,Leaf area index growth rate coefficient,k_lai,1/day/~degreeC,1/day/~degreeC,float+Estimate,0.1,TextBox,Material,Input,Yes,100507,>0,E,Leaf growth rate constant must be greater than zero
+1,Block,Plant,oats ,!,Plant biomass to energy ratio,plant_growth_rate_coefficient,m~^3/J,m~^3/J,float+Estimate,0.00000035,TextBox,Material,Input,Yes,100506,>0,E,Plant growth rate coefficient
+1,Block,Plant,oats ,!,Base temperature,temperature_base,~degreeC,~degreeC,float+Estimate,0,TextBox,Material,Input,Yes,100507,,,
+1,Block,Plant,oats ,!,Temperature spread coefficient,temperature_spread_factor,~degreeC,~degreeC,float+Estimate,4,TextBox,Material,Input,Yes,100508,>0,E,Temperature spread coefficient must be positive
+1,Block,Plant,oats ,!,Plant maximum biomass decay coefficient,plant_biomass_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.01,TextBox,Material,Input,Yes,100509,>=0,E,Plant maximum decay coefficient must be positive
+1,Block,Plant,oats ,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100510,>=0,E,Plant maximum leaf decay coefficient must be positive
+1,Block,Plant,oats ,!,Optimal temperature,optimal_temperature,~degreeC,~degreeC,float+Estimate,15,TextBox,Material,Input,Yes,100511,,,
+1,Block,Plant,oats ,!,Limiting Nutrients,!,!,!,dialog,...; PlantHalfSaturation,PushButton,Initial State,Select,Yes,100505,,,
+1,Block,Plant,oats ,!,Maximum Bio-volume,maximum_biovolume,m~^3;cm~^3;ft~^3;in~^3,m~^3,float,0.05,UnitBox,Geometry,Input,Yes,100513,>0,E,Maximum bio-volume must be greater than zero
+1,Block,Plant,sunflower ,!,Maximum leaf area index,lai_max,!,!,float+Estimate,5,TextBox,Material,Input,Yes,100512,>0,E,Maximum leaf area index (LAI_max) must be a positive number
+1,Block,Plant,sunflower ,!,Leaf area index growth rate coefficient,k_lai,1/day/~degreeC,1/day/~degreeC,float+Estimate,0.1,TextBox,Material,Input,Yes,100507,>0,E,Leaf growth rate constant must be greater than zero
+1,Block,Plant,sunflower ,!,Plant biomass to energy ratio,plant_growth_rate_coefficient,m~^3/J,m~^3/J,float+Estimate,0.0000006,TextBox,Material,Input,Yes,100506,>0,E,Plant growth rate coefficient
+1,Block,Plant,sunflower ,!,Base temperature,temperature_base,~degreeC,~degreeC,float+Estimate,6,TextBox,Material,Input,Yes,100507,,,
+1,Block,Plant,sunflower ,!,Temperature spread coefficient,temperature_spread_factor,~degreeC,~degreeC,float+Estimate,4,TextBox,Material,Input,Yes,100508,>0,E,Temperature spread coefficient must be positive
+1,Block,Plant,sunflower ,!,Plant maximum biomass decay coefficient,plant_biomass_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.01,TextBox,Material,Input,Yes,100509,>=0,E,Plant maximum decay coefficient must be positive
+1,Block,Plant,sunflower ,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100510,>=0,E,Plant maximum leaf decay coefficient must be positive
+1,Block,Plant,sunflower ,!,Optimal temperature,optimal_temperature,~degreeC,~degreeC,float+Estimate,25,TextBox,Material,Input,Yes,100511,,,
+1,Block,Plant,sunflower ,!,Limiting Nutrients,!,!,!,dialog,...; PlantHalfSaturation,PushButton,Initial State,Select,Yes,100505,,,
+1,Block,Plant,sunflower ,!,Maximum Bio-volume,maximum_biovolume,m~^3;cm~^3;ft~^3;in~^3,m~^3,float,0.05,UnitBox,Geometry,Input,Yes,100513,>0,E,Maximum bio-volume must be greater than zero
+1,Block,Plant,stripper cotton,!,Maximum leaf area index,lai_max,!,!,float+Estimate,5,TextBox,Material,Input,Yes,100512,>0,E,Maximum leaf area index (LAI_max) must be a positive number
+1,Block,Plant,stripper cotton,!,Leaf area index growth rate coefficient,k_lai,1/day/~degreeC,1/day/~degreeC,float+Estimate,0.1,TextBox,Material,Input,Yes,100507,>0,E,Leaf growth rate constant must be greater than zero
+1,Block,Plant,stripper cotton,!,Plant biomass to energy ratio,plant_growth_rate_coefficient,m~^3/J,m~^3/J,float+Estimate,0.000000175,TextBox,Material,Input,Yes,100506,>0,E,Plant growth rate coefficient
+1,Block,Plant,stripper cotton,!,Base temperature,temperature_base,~degreeC,~degreeC,float+Estimate,12,TextBox,Material,Input,Yes,100507,,,
+1,Block,Plant,stripper cotton,!,Temperature spread coefficient,temperature_spread_factor,~degreeC,~degreeC,float+Estimate,4,TextBox,Material,Input,Yes,100508,>0,E,Temperature spread coefficient must be positive
+1,Block,Plant,stripper cotton,!,Plant maximum biomass decay coefficient,plant_biomass_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.01,TextBox,Material,Input,Yes,100509,>=0,E,Plant maximum decay coefficient must be positive
+1,Block,Plant,stripper cotton,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100510,>=0,E,Plant maximum leaf decay coefficient must be positive
+1,Block,Plant,stripper cotton,!,Optimal temperature,optimal_temperature,~degreeC,~degreeC,float+Estimate,27.5,TextBox,Material,Input,Yes,100511,,,
+1,Block,Plant,stripper cotton,!,Limiting Nutrients,!,!,!,dialog,...; PlantHalfSaturation,PushButton,Initial State,Select,Yes,100505,,,
+1,Block,Plant,stripper cotton,!,Maximum Bio-volume,maximum_biovolume,m~^3;cm~^3;ft~^3;in~^3,m~^3,float,0.05,UnitBox,Geometry,Input,Yes,100513,>0,E,Maximum bio-volume must be greater than zero
+1,Block,Plant,picker cotton,!,Maximum leaf area index,lai_max,!,!,float+Estimate,5,TextBox,Material,Input,Yes,100512,>0,E,Maximum leaf area index (LAI_max) must be a positive number
+1,Block,Plant,picker cotton,!,Leaf area index growth rate coefficient,k_lai,1/day/~degreeC,1/day/~degreeC,float+Estimate,0.1,TextBox,Material,Input,Yes,100507,>0,E,Leaf growth rate constant must be greater than zero
+1,Block,Plant,picker cotton,!,Plant biomass to energy ratio,plant_growth_rate_coefficient,m~^3/J,m~^3/J,float+Estimate,0.0000002,TextBox,Material,Input,Yes,100506,>0,E,Plant growth rate coefficient
+1,Block,Plant,picker cotton,!,Base temperature,temperature_base,~degreeC,~degreeC,float+Estimate,12,TextBox,Material,Input,Yes,100507,,,
+1,Block,Plant,picker cotton,!,Temperature spread coefficient,temperature_spread_factor,~degreeC,~degreeC,float+Estimate,4,TextBox,Material,Input,Yes,100508,>0,E,Temperature spread coefficient must be positive
+1,Block,Plant,picker cotton,!,Plant maximum biomass decay coefficient,plant_biomass_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.01,TextBox,Material,Input,Yes,100509,>=0,E,Plant maximum decay coefficient must be positive
+1,Block,Plant,picker cotton,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100510,>=0,E,Plant maximum leaf decay coefficient must be positive
+1,Block,Plant,picker cotton,!,Optimal temperature,optimal_temperature,~degreeC,~degreeC,float+Estimate,27.5,TextBox,Material,Input,Yes,100511,,,
+1,Block,Plant,picker cotton,!,Limiting Nutrients,!,!,!,dialog,...; PlantHalfSaturation,PushButton,Initial State,Select,Yes,100505,,,
+1,Block,Plant,picker cotton,!,Maximum Bio-volume,maximum_biovolume,m~^3;cm~^3;ft~^3;in~^3,m~^3,float,0.05,UnitBox,Geometry,Input,Yes,100513,>0,E,Maximum bio-volume must be greater than zero
+1,Block,Plant,peanuts ,!,Maximum leaf area index,lai_max,!,!,float+Estimate,5,TextBox,Material,Input,Yes,100512,>0,E,Maximum leaf area index (LAI_max) must be a positive number
+1,Block,Plant,peanuts ,!,Leaf area index growth rate coefficient,k_lai,1/day/~degreeC,1/day/~degreeC,float+Estimate,0.1,TextBox,Material,Input,Yes,100507,>0,E,Leaf growth rate constant must be greater than zero
+1,Block,Plant,peanuts ,!,Plant biomass to energy ratio,plant_growth_rate_coefficient,m~^3/J,m~^3/J,float+Estimate,0.0000002,TextBox,Material,Input,Yes,100506,>0,E,Plant growth rate coefficient
+1,Block,Plant,peanuts ,!,Base temperature,temperature_base,~degreeC,~degreeC,float+Estimate,13.5,TextBox,Material,Input,Yes,100507,,,
+1,Block,Plant,peanuts ,!,Temperature spread coefficient,temperature_spread_factor,~degreeC,~degreeC,float+Estimate,4,TextBox,Material,Input,Yes,100508,>0,E,Temperature spread coefficient must be positive
+1,Block,Plant,peanuts ,!,Plant maximum biomass decay coefficient,plant_biomass_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.01,TextBox,Material,Input,Yes,100509,>=0,E,Plant maximum decay coefficient must be positive
+1,Block,Plant,peanuts ,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100510,>=0,E,Plant maximum leaf decay coefficient must be positive
+1,Block,Plant,peanuts ,!,Optimal temperature,optimal_temperature,~degreeC,~degreeC,float+Estimate,25,TextBox,Material,Input,Yes,100511,,,
+1,Block,Plant,peanuts ,!,Limiting Nutrients,!,!,!,dialog,...; PlantHalfSaturation,PushButton,Initial State,Select,Yes,100505,,,
+1,Block,Plant,peanuts ,!,Maximum Bio-volume,maximum_biovolume,m~^3;cm~^3;ft~^3;in~^3,m~^3,float,0.05,UnitBox,Geometry,Input,Yes,100513,>0,E,Maximum bio-volume must be greater than zero
+1,Block,Plant,rice ,!,Maximum leaf area index,lai_max,!,!,float+Estimate,6.5,TextBox,Material,Input,Yes,100512,>0,E,Maximum leaf area index (LAI_max) must be a positive number
+1,Block,Plant,rice ,!,Leaf area index growth rate coefficient,k_lai,1/day/~degreeC,1/day/~degreeC,float+Estimate,0.1,TextBox,Material,Input,Yes,100507,>0,E,Leaf growth rate constant must be greater than zero
+1,Block,Plant,rice ,!,Plant biomass to energy ratio,plant_growth_rate_coefficient,m~^3/J,m~^3/J,float+Estimate,0.0000002,TextBox,Material,Input,Yes,100506,>0,E,Plant growth rate coefficient
+1,Block,Plant,rice ,!,Base temperature,temperature_base,~degreeC,~degreeC,float+Estimate,10,TextBox,Material,Input,Yes,100507,,,
+1,Block,Plant,rice ,!,Temperature spread coefficient,temperature_spread_factor,~degreeC,~degreeC,float+Estimate,4,TextBox,Material,Input,Yes,100508,>0,E,Temperature spread coefficient must be positive
+1,Block,Plant,rice ,!,Plant maximum biomass decay coefficient,plant_biomass_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.01,TextBox,Material,Input,Yes,100509,>=0,E,Plant maximum decay coefficient must be positive
+1,Block,Plant,rice ,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100510,>=0,E,Plant maximum leaf decay coefficient must be positive
+1,Block,Plant,rice ,!,Optimal temperature,optimal_temperature,~degreeC,~degreeC,float+Estimate,25,TextBox,Material,Input,Yes,100511,,,
+1,Block,Plant,rice ,!,Limiting Nutrients,!,!,!,dialog,...; PlantHalfSaturation,PushButton,Initial State,Select,Yes,100505,,,
+1,Block,Plant,rice ,!,Maximum Bio-volume,maximum_biovolume,m~^3;cm~^3;ft~^3;in~^3,m~^3,float,0.05,UnitBox,Geometry,Input,Yes,100513,>0,E,Maximum bio-volume must be greater than zero
+1,Block,Plant,potato ,!,Maximum leaf area index,lai_max,!,!,float+Estimate,5,TextBox,Material,Input,Yes,100512,>0,E,Maximum leaf area index (LAI_max) must be a positive number
+1,Block,Plant,potato ,!,Leaf area index growth rate coefficient,k_lai,1/day/~degreeC,1/day/~degreeC,float+Estimate,0.1,TextBox,Material,Input,Yes,100507,>0,E,Leaf growth rate constant must be greater than zero
+1,Block,Plant,potato ,!,Plant biomass to energy ratio,plant_growth_rate_coefficient,m~^3/J,m~^3/J,float+Estimate,0.00000015,TextBox,Material,Input,Yes,100506,>0,E,Plant growth rate coefficient
+1,Block,Plant,potato ,!,Base temperature,temperature_base,~degreeC,~degreeC,float+Estimate,3,TextBox,Material,Input,Yes,100507,,,
+1,Block,Plant,potato ,!,Temperature spread coefficient,temperature_spread_factor,~degreeC,~degreeC,float+Estimate,4,TextBox,Material,Input,Yes,100508,>0,E,Temperature spread coefficient must be positive
+1,Block,Plant,potato ,!,Plant maximum biomass decay coefficient,plant_biomass_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.01,TextBox,Material,Input,Yes,100509,>=0,E,Plant maximum decay coefficient must be positive
+1,Block,Plant,potato ,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100510,>=0,E,Plant maximum leaf decay coefficient must be positive
+1,Block,Plant,potato ,!,Optimal temperature,optimal_temperature,~degreeC,~degreeC,float+Estimate,18,TextBox,Material,Input,Yes,100511,,,
+1,Block,Plant,potato ,!,Limiting Nutrients,!,!,!,dialog,...; PlantHalfSaturation,PushButton,Initial State,Select,Yes,100505,,,
+1,Block,Plant,potato ,!,Maximum Bio-volume,maximum_biovolume,m~^3;cm~^3;ft~^3;in~^3,m~^3,float,0.05,UnitBox,Geometry,Input,Yes,100513,>0,E,Maximum bio-volume must be greater than zero
+1,Block,Plant,winter peas,!,Maximum leaf area index,lai_max,!,!,float+Estimate,9,TextBox,Material,Input,Yes,100512,>0,E,Maximum leaf area index (LAI_max) must be a positive number
+1,Block,Plant,winter peas,!,Leaf area index growth rate coefficient,k_lai,1/day/~degreeC,1/day/~degreeC,float+Estimate,0.1,TextBox,Material,Input,Yes,100507,>0,E,Leaf growth rate constant must be greater than zero
+1,Block,Plant,winter peas,!,Plant biomass to energy ratio,plant_growth_rate_coefficient,m~^3/J,m~^3/J,float+Estimate,0.0000002,TextBox,Material,Input,Yes,100506,>0,E,Plant growth rate coefficient
+1,Block,Plant,winter peas,!,Base temperature,temperature_base,~degreeC,~degreeC,float+Estimate,1,TextBox,Material,Input,Yes,100507,,,
+1,Block,Plant,winter peas,!,Temperature spread coefficient,temperature_spread_factor,~degreeC,~degreeC,float+Estimate,4,TextBox,Material,Input,Yes,100508,>0,E,Temperature spread coefficient must be positive
+1,Block,Plant,winter peas,!,Plant maximum biomass decay coefficient,plant_biomass_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.01,TextBox,Material,Input,Yes,100509,>=0,E,Plant maximum decay coefficient must be positive
+1,Block,Plant,winter peas,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100510,>=0,E,Plant maximum leaf decay coefficient must be positive
+1,Block,Plant,winter peas,!,Optimal temperature,optimal_temperature,~degreeC,~degreeC,float+Estimate,14,TextBox,Material,Input,Yes,100511,,,
+1,Block,Plant,winter peas,!,Limiting Nutrients,!,!,!,dialog,...; PlantHalfSaturation,PushButton,Initial State,Select,Yes,100505,,,
+1,Block,Plant,winter peas,!,Maximum Bio-volume,maximum_biovolume,m~^3;cm~^3;ft~^3;in~^3,m~^3,float,0.05,UnitBox,Geometry,Input,Yes,100513,>0,E,Maximum bio-volume must be greater than zero
+1,Block,Plant,lentles ,!,Maximum leaf area index,lai_max,!,!,float+Estimate,2.5,TextBox,Material,Input,Yes,100512,>0,E,Maximum leaf area index (LAI_max) must be a positive number
+1,Block,Plant,lentles ,!,Leaf area index growth rate coefficient,k_lai,1/day/~degreeC,1/day/~degreeC,float+Estimate,0.1,TextBox,Material,Input,Yes,100507,>0,E,Leaf growth rate constant must be greater than zero
+1,Block,Plant,lentles ,!,Plant biomass to energy ratio,plant_growth_rate_coefficient,m~^3/J,m~^3/J,float+Estimate,0.00000025,TextBox,Material,Input,Yes,100506,>0,E,Plant growth rate coefficient
+1,Block,Plant,lentles ,!,Base temperature,temperature_base,~degreeC,~degreeC,float+Estimate,1,TextBox,Material,Input,Yes,100507,,,
+1,Block,Plant,lentles ,!,Temperature spread coefficient,temperature_spread_factor,~degreeC,~degreeC,float+Estimate,4,TextBox,Material,Input,Yes,100508,>0,E,Temperature spread coefficient must be positive
+1,Block,Plant,lentles ,!,Plant maximum biomass decay coefficient,plant_biomass_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.01,TextBox,Material,Input,Yes,100509,>=0,E,Plant maximum decay coefficient must be positive
+1,Block,Plant,lentles ,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100510,>=0,E,Plant maximum leaf decay coefficient must be positive
+1,Block,Plant,lentles ,!,Optimal temperature,optimal_temperature,~degreeC,~degreeC,float+Estimate,14,TextBox,Material,Input,Yes,100511,,,
+1,Block,Plant,lentles ,!,Limiting Nutrients,!,!,!,dialog,...; PlantHalfSaturation,PushButton,Initial State,Select,Yes,100505,,,
+1,Block,Plant,lentles ,!,Maximum Bio-volume,maximum_biovolume,m~^3;cm~^3;ft~^3;in~^3,m~^3,float,0.05,UnitBox,Geometry,Input,Yes,100513,>0,E,Maximum bio-volume must be greater than zero
+1,Block,Plant,sorghum hay,!,Maximum leaf area index,lai_max,!,!,float+Estimate,5,TextBox,Material,Input,Yes,100512,>0,E,Maximum leaf area index (LAI_max) must be a positive number
+1,Block,Plant,sorghum hay,!,Leaf area index growth rate coefficient,k_lai,1/day/~degreeC,1/day/~degreeC,float+Estimate,0.1,TextBox,Material,Input,Yes,100507,>0,E,Leaf growth rate constant must be greater than zero
+1,Block,Plant,sorghum hay,!,Plant biomass to energy ratio,plant_growth_rate_coefficient,m~^3/J,m~^3/J,float+Estimate,0.00000035,TextBox,Material,Input,Yes,100506,>0,E,Plant growth rate coefficient
+1,Block,Plant,sorghum hay,!,Base temperature,temperature_base,~degreeC,~degreeC,float+Estimate,8,TextBox,Material,Input,Yes,100507,,,
+1,Block,Plant,sorghum hay,!,Temperature spread coefficient,temperature_spread_factor,~degreeC,~degreeC,float+Estimate,4,TextBox,Material,Input,Yes,100508,>0,E,Temperature spread coefficient must be positive
+1,Block,Plant,sorghum hay,!,Plant maximum biomass decay coefficient,plant_biomass_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.01,TextBox,Material,Input,Yes,100509,>=0,E,Plant maximum decay coefficient must be positive
+1,Block,Plant,sorghum hay,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100510,>=0,E,Plant maximum leaf decay coefficient must be positive
+1,Block,Plant,sorghum hay,!,Optimal temperature,optimal_temperature,~degreeC,~degreeC,float+Estimate,25,TextBox,Material,Input,Yes,100511,,,
+1,Block,Plant,sorghum hay,!,Limiting Nutrients,!,!,!,dialog,...; PlantHalfSaturation,PushButton,Initial State,Select,Yes,100505,,,
+1,Block,Plant,sorghum hay,!,Maximum Bio-volume,maximum_biovolume,m~^3;cm~^3;ft~^3;in~^3,m~^3,float,0.05,UnitBox,Geometry,Input,Yes,100513,>0,E,Maximum bio-volume must be greater than zero
+1,Block,Plant,alfalfa ,!,Maximum leaf area index,lai_max,!,!,float+Estimate,5,TextBox,Material,Input,Yes,100512,>0,E,Maximum leaf area index (LAI_max) must be a positive number
+1,Block,Plant,alfalfa ,!,Leaf area index growth rate coefficient,k_lai,1/day/~degreeC,1/day/~degreeC,float+Estimate,0.1,TextBox,Material,Input,Yes,100507,>0,E,Leaf growth rate constant must be greater than zero
+1,Block,Plant,alfalfa ,!,Plant biomass to energy ratio,plant_growth_rate_coefficient,m~^3/J,m~^3/J,float+Estimate,0.0000002,TextBox,Material,Input,Yes,100506,>0,E,Plant growth rate coefficient
+1,Block,Plant,alfalfa ,!,Base temperature,temperature_base,~degreeC,~degreeC,float+Estimate,4,TextBox,Material,Input,Yes,100507,,,
+1,Block,Plant,alfalfa ,!,Temperature spread coefficient,temperature_spread_factor,~degreeC,~degreeC,float+Estimate,4,TextBox,Material,Input,Yes,100508,>0,E,Temperature spread coefficient must be positive
+1,Block,Plant,alfalfa ,!,Plant maximum biomass decay coefficient,plant_biomass_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.01,TextBox,Material,Input,Yes,100509,>=0,E,Plant maximum decay coefficient must be positive
+1,Block,Plant,alfalfa ,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100510,>=0,E,Plant maximum leaf decay coefficient must be positive
+1,Block,Plant,alfalfa ,!,Optimal temperature,optimal_temperature,~degreeC,~degreeC,float+Estimate,20,TextBox,Material,Input,Yes,100511,,,
+1,Block,Plant,alfalfa ,!,Limiting Nutrients,!,!,!,dialog,...; PlantHalfSaturation,PushButton,Initial State,Select,Yes,100505,,,
+1,Block,Plant,alfalfa ,!,Maximum Bio-volume,maximum_biovolume,m~^3;cm~^3;ft~^3;in~^3,m~^3,float,0.05,UnitBox,Geometry,Input,Yes,100513,>0,E,Maximum bio-volume must be greater than zero
+1,Block,Plant,range ,!,Maximum leaf area index,lai_max,!,!,float+Estimate,5,TextBox,Material,Input,Yes,100512,>0,E,Maximum leaf area index (LAI_max) must be a positive number
+1,Block,Plant,range ,!,Leaf area index growth rate coefficient,k_lai,1/day/~degreeC,1/day/~degreeC,float+Estimate,0.1,TextBox,Material,Input,Yes,100507,>0,E,Leaf growth rate constant must be greater than zero
+1,Block,Plant,range ,!,Plant biomass to energy ratio,plant_growth_rate_coefficient,m~^3/J,m~^3/J,float+Estimate,0.0000003,TextBox,Material,Input,Yes,100506,>0,E,Plant growth rate coefficient
+1,Block,Plant,range ,!,Base temperature,temperature_base,~degreeC,~degreeC,float+Estimate,8,TextBox,Material,Input,Yes,100507,,,
+1,Block,Plant,range ,!,Temperature spread coefficient,temperature_spread_factor,~degreeC,~degreeC,float+Estimate,4,TextBox,Material,Input,Yes,100508,>0,E,Temperature spread coefficient must be positive
+1,Block,Plant,range ,!,Plant maximum biomass decay coefficient,plant_biomass_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.01,TextBox,Material,Input,Yes,100509,>=0,E,Plant maximum decay coefficient must be positive
+1,Block,Plant,range ,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100510,>=0,E,Plant maximum leaf decay coefficient must be positive
+1,Block,Plant,range ,!,Optimal temperature,optimal_temperature,~degreeC,~degreeC,float+Estimate,25,TextBox,Material,Input,Yes,100511,,,
+1,Block,Plant,range ,!,Limiting Nutrients,!,!,!,dialog,...; PlantHalfSaturation,PushButton,Initial State,Select,Yes,100505,,,
+1,Block,Plant,range ,!,Maximum Bio-volume,maximum_biovolume,m~^3;cm~^3;ft~^3;in~^3,m~^3,float,0.05,UnitBox,Geometry,Input,Yes,100513,>0,E,Maximum bio-volume must be greater than zero
+1,Block,Plant,spring pasture,!,Maximum leaf area index,lai_max,!,!,float+Estimate,5,TextBox,Material,Input,Yes,100512,>0,E,Maximum leaf area index (LAI_max) must be a positive number
+1,Block,Plant,spring pasture,!,Leaf area index growth rate coefficient,k_lai,1/day/~degreeC,1/day/~degreeC,float+Estimate,0.1,TextBox,Material,Input,Yes,100507,>0,E,Leaf growth rate constant must be greater than zero
+1,Block,Plant,spring pasture,!,Plant biomass to energy ratio,plant_growth_rate_coefficient,m~^3/J,m~^3/J,float+Estimate,0.0000003,TextBox,Material,Input,Yes,100506,>0,E,Plant growth rate coefficient
+1,Block,Plant,spring pasture,!,Base temperature,temperature_base,~degreeC,~degreeC,float+Estimate,8,TextBox,Material,Input,Yes,100507,,,
+1,Block,Plant,spring pasture,!,Temperature spread coefficient,temperature_spread_factor,~degreeC,~degreeC,float+Estimate,4,TextBox,Material,Input,Yes,100508,>0,E,Temperature spread coefficient must be positive
+1,Block,Plant,spring pasture,!,Plant maximum biomass decay coefficient,plant_biomass_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.01,TextBox,Material,Input,Yes,100509,>=0,E,Plant maximum decay coefficient must be positive
+1,Block,Plant,spring pasture,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100510,>=0,E,Plant maximum leaf decay coefficient must be positive
+1,Block,Plant,spring pasture,!,Optimal temperature,optimal_temperature,~degreeC,~degreeC,float+Estimate,25,TextBox,Material,Input,Yes,100511,,,
+1,Block,Plant,spring pasture,!,Limiting Nutrients,!,!,!,dialog,...; PlantHalfSaturation,PushButton,Initial State,Select,Yes,100505,,,
+1,Block,Plant,spring pasture,!,Maximum Bio-volume,maximum_biovolume,m~^3;cm~^3;ft~^3;in~^3,m~^3,float,0.05,UnitBox,Geometry,Input,Yes,100513,>0,E,Maximum bio-volume must be greater than zero
+1,Block,Plant,winter pasture,!,Maximum leaf area index,lai_max,!,!,float+Estimate,8,TextBox,Material,Input,Yes,100512,>0,E,Maximum leaf area index (LAI_max) must be a positive number
+1,Block,Plant,winter pasture,!,Leaf area index growth rate coefficient,k_lai,1/day/~degreeC,1/day/~degreeC,float+Estimate,0.1,TextBox,Material,Input,Yes,100507,>0,E,Leaf growth rate constant must be greater than zero
+1,Block,Plant,winter pasture,!,Plant biomass to energy ratio,plant_growth_rate_coefficient,m~^3/J,m~^3/J,float+Estimate,0.00000035,TextBox,Material,Input,Yes,100506,>0,E,Plant growth rate coefficient
+1,Block,Plant,winter pasture,!,Base temperature,temperature_base,~degreeC,~degreeC,float+Estimate,0,TextBox,Material,Input,Yes,100507,,,
+1,Block,Plant,winter pasture,!,Temperature spread coefficient,temperature_spread_factor,~degreeC,~degreeC,float+Estimate,4,TextBox,Material,Input,Yes,100508,>0,E,Temperature spread coefficient must be positive
+1,Block,Plant,winter pasture,!,Plant maximum biomass decay coefficient,plant_biomass_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.01,TextBox,Material,Input,Yes,100509,>=0,E,Plant maximum decay coefficient must be positive
+1,Block,Plant,winter pasture,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100510,>=0,E,Plant maximum leaf decay coefficient must be positive
+1,Block,Plant,winter pasture,!,Optimal temperature,optimal_temperature,~degreeC,~degreeC,float+Estimate,15,TextBox,Material,Input,Yes,100511,,,
+1,Block,Plant,winter pasture,!,Limiting Nutrients,!,!,!,dialog,...; PlantHalfSaturation,PushButton,Initial State,Select,Yes,100505,,,
+1,Block,Plant,winter pasture,!,Maximum Bio-volume,maximum_biovolume,m~^3;cm~^3;ft~^3;in~^3,m~^3,float,0.05,UnitBox,Geometry,Input,Yes,100513,>0,E,Maximum bio-volume must be greater than zero
+1,Block,Plant,pine trees,!,Maximum leaf area index,lai_max,!,!,float+Estimate,5,TextBox,Material,Input,Yes,100512,>0,E,Maximum leaf area index (LAI_max) must be a positive number
+1,Block,Plant,pine trees,!,Leaf area index growth rate coefficient,k_lai,1/day/~degreeC,1/day/~degreeC,float+Estimate,0.1,TextBox,Material,Input,Yes,100507,>0,E,Leaf growth rate constant must be greater than zero
+1,Block,Plant,pine trees,!,Plant biomass to energy ratio,plant_growth_rate_coefficient,m~^3/J,m~^3/J,float+Estimate,0.000000165,TextBox,Material,Input,Yes,100506,>0,E,Plant growth rate coefficient
+1,Block,Plant,pine trees,!,Base temperature,temperature_base,~degreeC,~degreeC,float+Estimate,2,TextBox,Material,Input,Yes,100507,,,
+1,Block,Plant,pine trees,!,Temperature spread coefficient,temperature_spread_factor,~degreeC,~degreeC,float+Estimate,4,TextBox,Material,Input,Yes,100508,>0,E,Temperature spread coefficient must be positive
+1,Block,Plant,pine trees,!,Plant maximum biomass decay coefficient,plant_biomass_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.01,TextBox,Material,Input,Yes,100509,>=0,E,Plant maximum decay coefficient must be positive
+1,Block,Plant,pine trees,!,Plant maximum leaf decay coefficient,plant_leaf_decay_factor,1/day; 1/s; 1/hr; 1/min,1/day,float+Estimate,0.02,TextBox,Material,Input,Yes,100510,>=0,E,Plant maximum leaf decay coefficient must be positive
+1,Block,Plant,pine trees,!,Optimal temperature,optimal_temperature,~degreeC,~degreeC,float+Estimate,20,TextBox,Material,Input,Yes,100511,,,
+1,Block,Plant,pine trees,!,Limiting Nutrients,!,!,!,dialog,...; PlantHalfSaturation,PushButton,Initial State,Select,Yes,100505,,,
+1,Block,Plant,pine trees,!,Maximum Bio-volume,maximum_biovolume,m~^3;cm~^3;ft~^3;in~^3,m~^3,float,0.05,UnitBox,Geometry,Input,Yes,100513,>0,E,Maximum bio-volume must be greater than zero

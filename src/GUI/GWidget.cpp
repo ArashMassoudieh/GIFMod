@@ -1526,10 +1526,16 @@ void GraphWidget::clear()
 		delete results;
 	if (resultsSet.size())
 		resultsSet.clear();
+	if (modelSet)
+	{
+		modelSet->clear();
+	}
 	if (model)
+	{
+		model->~CMedium();
 		delete model;
-	//if (modelSet) 
-	//	delete modelSet;
+	}
+	
 	model = 0; modelSet = 0; results = 0;
 	experimentsComboClear();
 	hasResults = false;
@@ -2252,7 +2258,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 			menu.addAction("Plot Atmospheric Concentration Record");
 		}
 	}
-	model = (experimentID() == 0) ? 0 : &(modelSet->Medium[experimentID() - 1]);
+	model = (experimentID() == 0 || modelSet->Medium.size()==0) ? 0 : &(modelSet->Medium[experimentID() - 1]);
 
 	if (model == 0)
 		if (modelSet)
