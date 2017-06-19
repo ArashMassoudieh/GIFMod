@@ -1313,10 +1313,13 @@ void CMediumSet::g_get_params()
 void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 {
 	QList <Node*> nodes = gw->Nodes();
+	
+	QStringList nodenames_sorted = gw->nodeNames();
+	nodenames_sorted.sort();
 //#pragma omp parallel for 
-	for (int i = 0; i < nodes.count(); i++)
+	for (int i = 0; i < nodenames_sorted.count(); i++)
 	{
-		Node* n = nodes[i];
+		Node* n = nodes[gw->nodeNames().indexOf(nodenames_sorted[i])];
 		CMBBlock B;
 		if (n->objectType.ObjectType == "Soil") { B.indicator = Block_types::Soil; } // 0
 		if (n->objectType.ObjectType == "Pond") { B.indicator = Block_types::Pond; } //1
@@ -1408,10 +1411,12 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 		}
 	}
 	QList <Edge*> edges = gw->Edges();
+	QStringList edgenames_sorted = gw->edgeNames();
+	edgenames_sorted.sort();
 //#pragma omp parallel for
 	for (int i = 0; i < edges.count(); i++)
 	{
-		Edge *e = edges[i];
+		Edge *e = edges[gw->edgeNames().indexOf(edgenames_sorted[i])];
 		CConnection C;
 		C.flow_params.resize(20);
 		C.ID = e->Name().toStdString();
