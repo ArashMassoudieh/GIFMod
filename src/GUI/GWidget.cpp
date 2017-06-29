@@ -2210,14 +2210,17 @@ void GraphWidget::deleteProcess(Process *process)
 	delete process;
 }
 
-void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
+void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 {
-
-	QMenu menu;
-	menu.addAction("Delete");
-	menu.addAction("Select");
+	bool called_by_clicking_on_graphical_object = false;
+	if (!menu) {
+		menu = new QMenu;
+		menu->addAction("Delete");
+		called_by_clicking_on_graphical_object = true; 
+	}
+	menu->addAction("Select");
 #ifdef GIFMOD
-	menu.addAction("Make array of blocks");
+	menu->addAction("Make array of blocks");
 #endif
 	QMap < QAction *, QStringList> menuKey;
 	if (n->getValue("Inflow time series") != ""&& n->getValue("Inflow time series") != ".")
@@ -2236,8 +2239,8 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 		}
 		if (inflowGraphNames.count())
 		{
-			menu.addSeparator();
-			QMenu *inflowSubMenu = menu.addMenu("Plot Inflow Properties");
+			menu->addSeparator();
+			QMenu *inflowSubMenu = menu->addMenu("Plot Inflow Properties");
 			for each (QString subMenuTitle in inflowGraphNames.keys())
 			{
 				QStringList list;
@@ -2253,9 +2256,9 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 		CBTC record = CBTC(file.replace("./", modelPathname().append('/')).toStdString());
 		if (record.n)
 		{
-			menu.addSeparator();
+			menu->addSeparator();
 			//QMenu *atmosphericSubMenu = menu.addMenu(
-			menu.addAction("Plot Atmospheric Concentration Record");
+			menu->addAction("Plot Atmospheric Concentration Record");
 		}
 	}
 	model = (experimentID() == 0 || modelSet->Medium.size()==0) ? 0 : &(modelSet->Medium[experimentID() - 1]);
@@ -2264,8 +2267,8 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 		if (modelSet)
 			if (hasResults)
 			{
-				menu.addSeparator();
-				menu.addAction("No expeiments selected to show the results.")->setEnabled(false);
+				menu->addSeparator();
+				menu->addAction("No expeiments selected to show the results.")->setEnabled(false);
 			}
 	if (model != 0)
 	{
@@ -2273,8 +2276,8 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 //		if (model->ANS.BTC[model->getblocksq(n->Name().toStdString())].n > 0)
 		if (hasResults)
 			{
-			menu.addSeparator();
-			QMenu *plotSubMenu = menu.addMenu("Plot Hydraulic Results");
+			menu->addSeparator();
+			QMenu *plotSubMenu = menu->addMenu("Plot Hydraulic Results");
 			plotSubMenu->addAction("Plot Storage");
 			plotSubMenu->addAction("Plot Head");
 			QStringList Porous;
@@ -2294,7 +2297,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 		if ((model->colloid_transport() && entitiesByType("Particle").count()) ||
 			(model->constituent_transport() && entitiesByType("Constituent").count()))
 		{
-			QMenu *waterQualitySubMenu = menu.addMenu("Plot Water Quality Results");
+			QMenu *waterQualitySubMenu = menu->addMenu("Plot Water Quality Results");
 
 			if (model->colloid_transport() && entitiesByType("Particle").count())
 			{
@@ -2351,7 +2354,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 			if (model->constituent_transport() && entitiesByType("Constituent").count())
 			{
 				if (model->colloid_transport() && entitiesByType("Particle").count())
-					menu.addSeparator();
+					menu->addSeparator();
 				for each (Entity *e in entitiesByType("Constituent"))
 				{
 					//QMenu *constituentSubMenu = waterQualitySubMenu->addMenu(e->Name());
@@ -2425,19 +2428,19 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 		}
 #endif
 #ifdef GWA
-		menu.addSeparator();
+		menu->addSeparator();
 		if (n->objectType.ObjectType == "Well")
 		{
-			menu.addAction("Plot Young Age Distribution");
-			menu.addAction("Plot Cumulative Young Age Distribution");
+			menu->addAction("Plot Young Age Distribution");
+			menu->addAction("Plot Cumulative Young Age Distribution");
 			if (results->youngAgeDistributionRealizations.size())
-				menu.addAction("Plot Young Age Distribution (Realizations)");
+				menu->addAction("Plot Young Age Distribution (Realizations)");
 			if (results->cumulativeYoungAgeDistributionRealizations.size())
-				menu.addAction("Plot Cumulative Young Age Distribution (Realizations)");
+				menu->addAction("Plot Cumulative Young Age Distribution (Realizations)");
 			if (results->youngAgeDistributionRealizationPercentiles.size())
-				menu.addAction("Plot Young Age Distribution (Percentiles)");
+				menu->addAction("Plot Young Age Distribution (Percentiles)");
 			if (results->cumulativeYoungAgeDistributionRealizationPercentiles.size())
-				menu.addAction("Plot Cumulative Young Age Distribution (Percentiles)");
+				menu->addAction("Plot Cumulative Young Age Distribution (Percentiles)");
 
 			if (model->projected.names.size() > 0)
 			{
@@ -2450,8 +2453,8 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 				}
 				if (tracersList.count())
 				{
-					menu.addSeparator();
-					QMenu *plotSubMenu = menu.addMenu("Plot Projected Tracer concentrations");
+					menu->addSeparator();
+					QMenu *plotSubMenu = menu->addMenu("Plot Projected Tracer concentrations");
 					for each(QString tracerName in tracersList)
 					{
 						QAction* ac = plotSubMenu->addAction(tracerName);
@@ -2463,7 +2466,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 
 					if (results->projectedTracerConcentrations.size())
 					{
-						QMenu *plotSubMenu = menu.addMenu("Plot Projected Tracer concentrations (Realizations)");
+						QMenu *plotSubMenu = menu->addMenu("Plot Projected Tracer concentrations (Realizations)");
 						for each(QString tracerName in tracersList)
 						{
 							QAction* ac = plotSubMenu->addAction(tracerName);
@@ -2472,7 +2475,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 							list.append(tracerName);
 							menuKey.insert(ac, list);
 						}
-						QMenu *plotSubMenu2 = menu.addMenu("Plot Projected Tracer concentrations (Percentiles)");
+						QMenu *plotSubMenu2 = menu->addMenu("Plot Projected Tracer concentrations (Percentiles)");
 						for each(QString tracerName in tracersList)
 						{
 							QAction* ac = plotSubMenu2->addAction(tracerName);
@@ -2487,7 +2490,12 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 		}
 #endif
 	}
-	QAction *selectedAction = menu.exec(mapToGlobal(mapFromScene(pos.toPoint())));
+	QAction *selectedAction;
+	if (called_by_clicking_on_graphical_object)
+		selectedAction = menu->exec(mapToGlobal(mapFromScene(pos.toPoint())));
+	else
+		selectedAction = menu->exec(pos.toPoint());
+	
 	if (selectedAction != nullptr)
 	{
 		if (selectedAction->text() == "Select")
@@ -3045,11 +3053,16 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos)
 
 }
 
-void GraphWidget::edgeContextMenuRequested(Edge* e, QPointF pos)
+void GraphWidget::edgeContextMenuRequested(Edge* e, QPointF pos, QMenu *menu)
 {
-	QMenu menu;
-	QAction *deleteAction = menu.addAction("Delete");
-	QAction *markAction = menu.addAction("Select");
+	QAction *deleteAction;
+	bool called_by_clicking_on_graphical_object = false;
+	if (!menu) {
+		menu = new QMenu();
+		deleteAction = menu->addAction("Delete");
+		called_by_clicking_on_graphical_object = true; 
+	}
+	QAction *markAction = menu->addAction("Select");
 #ifdef GIFMOD
 	model = (experimentID() == 0) ? 0 : &(modelSet->Medium[experimentID() - 1]);
 
@@ -3057,21 +3070,25 @@ void GraphWidget::edgeContextMenuRequested(Edge* e, QPointF pos)
 		if (modelSet)
 			if (hasResults)
 			{
-				menu.addSeparator();
-				menu.addAction("No expeiments selected to show the results.")->setEnabled(false);
+				menu->addSeparator();
+				menu->addAction("No expeiments selected to show the results.")->setEnabled(false);
 			}
 	if (model != 0)
 	{
-		menu.addSeparator();
-		menu.addAction("Plot Flow");
-		menu.addAction("Velocity");
-		menu.addAction("Area");
-		menu.addAction("Vapor exchange rate"); //NEW
+		menu->addSeparator();
+		menu->addAction("Plot Flow");
+		menu->addAction("Velocity");
+		menu->addAction("Area");
+		menu->addAction("Vapor exchange rate"); //NEW
 
 
 	}
 
-	QAction *selectedAction = menu.exec(mapToGlobal(mapFromScene(pos.toPoint())));
+	QAction *selectedAction;
+	if (called_by_clicking_on_graphical_object)
+		selectedAction = menu->exec(mapToGlobal(mapFromScene(pos.toPoint())));
+	else
+		selectedAction = menu->exec(pos.toPoint());
 	if (selectedAction != nullptr)
 	{
 		if (selectedAction->text() == "Select")
@@ -3901,7 +3918,7 @@ bool isFuzzyEqual(double a, double b, double allowableError)
 
 /*
 {
-QMenu *waterQualitySubMenu = menu.addMenu("Plot Water Quality Results");
+QMenu *waterQualitySubMenu = menu->addMenu("Plot Water Quality Results");
 
 if (model->colloid_transport() && entitiesByType("Particle").count())
 {

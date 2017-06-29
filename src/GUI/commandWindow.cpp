@@ -14,11 +14,25 @@ commandWindow::commandWindow(GraphWidget *parent) :
 	QDialog(parent),
 	ui(new Ui::commandWindow)
 {
+	
 	ui->setupUi(this);
+	ui->textEdit->setEnabled(false);
+	
+	QStringList wordList;
+	wordList << "alpha" << "omega" << "omicron" << "zeta";
+
+	completer = new QCompleter(wordList, this);
+	//completer = new QCompleter(this);
+	//completer->setModel(modelFromFile(":/resources/wordlist.txt"));
+
+	completer->setModelSorting(QCompleter::CaseInsensitivelySortedModel);
+	completer->setCaseSensitivity(Qt::CaseInsensitive);
+	completer->setWrapAround(false);
+	ui->lineEdit->setCompleter(completer);
 
 	connect(ui->lineEdit, SIGNAL(returnPressed()), this, SLOT(newCommandSubmitted()));
 	connect(ui->lineEdit, SIGNAL(navigate(QKeyEvent *)), this, SLOT(commandKeyRelease(QKeyEvent *)));
-
+	
 	// wtitle = title;
 	// setWindowTitle(wtitle);
 	// this->helpFile = helpFile;
@@ -37,14 +51,14 @@ void commandWindow::newCommandSubmitted()
 	commandsHistory.append(ui->lineEdit->text());
 	nextIndex = commandsHistory.count() - 1;
 	prevIndex = nextIndex;
-	if (ui->toolButtonBasicMode->isChecked()) {
+	//if (ui->toolButtonBasicMode->isChecked()) {
 		result = parent->runCommand(ui->lineEdit->text()).toString();
-	}
-	else {
+	//}
+	/*else {
 		QString code = ui->lineEdit->text().toStdString().data();		
 		ScriptingEngine::instance()->eval(code, result);
 		// result = parent->mainWindow->m_scriptPad.data()->runScript(ui->lineEdit->text(),false);
-	}
+	}*/
 	ui->textEdit->append(QString(">%1").arg(ui->lineEdit->text()));
 	ui->textEdit->append(result);
 	ui->textEdit->append("\n");

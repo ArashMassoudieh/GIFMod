@@ -167,6 +167,7 @@ MainWindow::MainWindow(QWidget *parent, QString applicationName, QString shortNa
 	dockProjectExplorer->setMinimumWidth(size().width() / 3.5);
 	qDebug() << "1.5";
 	projectExplorer = new QTreeView(projectExplorerContents);
+	projectExplorer->setParent(this); 
 	projectExplorer->setGeometry(this->rect());
 	projectExplorer->setContextMenuPolicy(Qt::CustomContextMenu);
 
@@ -925,24 +926,36 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 	if (projectExplorer->indexAt(pos).data(Role::TreeItemType) == TreeItem::Type::NodeItem)
 	{
 		//QMenu *menu = new QMenu;
+		Node *n = mainGraphWidget->node(projectExplorer->indexAt(pos).data().toString());
+
 		TreeModel *model = projModel;
 		TreeItem *item = model->itemFromIndex(projectExplorer->indexAt(pos));
 		QString name = projectExplorer->indexAt(pos).data().toString();
 		QModelIndex index = projectExplorer->indexAt(pos);
 		removeProjectExplorerNodeItem(name, index); // model, type, index);
 		menu->addAction(QString("Delete %1").arg(name), this, SLOT(removeProjectExplorerNodeItem()));
-		menu->exec(projectExplorer->mapToGlobal(pos));
+		QMap < QAction *, QStringList> menuKey;
+		mainGraphWidget->model = (mainGraphWidget->experimentID() == 0 || mainGraphWidget->modelSet->Medium.size() == 0) ? 0 : &(mainGraphWidget->modelSet->Medium[mainGraphWidget->experimentID() - 1]);
+		QPoint pos2;
+		pos2.setX(pos.x() + dockProjectExplorer->x());
+		pos2.setY(pos.y() + dockProjectExplorer->y());
+		mainGraphWidget->nodeContextMenuRequested(n,mapToGlobal(pos2), menu);
+		
 	}
 	if (projectExplorer->indexAt(pos).data(Role::TreeItemType) == TreeItem::Type::EdgeItem)
 	{
 		//QMenu *menu = new QMenu;
+		Edge *n = mainGraphWidget->edge(projectExplorer->indexAt(pos).data().toString());
 		TreeModel *model = projModel;
 		TreeItem *item = model->itemFromIndex(projectExplorer->indexAt(pos));
 		QString name = projectExplorer->indexAt(pos).data().toString();
 		QModelIndex index = projectExplorer->indexAt(pos);
 		removeProjectExplorerEdgeItem(name, index); // model, type, index);
 		menu->addAction(QString("Delete %1").arg(name), this, SLOT(removeProjectExplorerEdgeItem()));
-		menu->exec(projectExplorer->mapToGlobal(pos));
+		QPoint pos2;
+		pos2.setX(pos.x() + dockProjectExplorer->x());
+		pos2.setY(pos.y() + dockProjectExplorer->y());
+		mainGraphWidget->edgeContextMenuRequested(n, mapToGlobal(pos2), menu);
 	}
 	if (projectExplorer->indexAt(pos).data(Role::TreeItemType) == TreeItem::Type::Item)
 	{
@@ -1163,7 +1176,7 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 		menu->addAction(QString("Open reaction network window"), this, SLOT(openRXNWindow()));
 		menu->exec(projectExplorer->mapToGlobal(pos));
 	}
-	menu->exec(projectExplorer->mapToGlobal(pos));
+	//menu->exec(projectExplorer->mapToGlobal(pos));
 }
 void MainWindow::on_actionmenuRecent_triggered()//QString fileName)
 {

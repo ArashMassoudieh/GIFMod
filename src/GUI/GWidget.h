@@ -292,8 +292,8 @@ public:
 	//void setpropModel(PropModel *_propModel);
 	void scaleView(qreal scaleFactor); 
 	bool select(const QString &name, const QString type) const;
-	void nodeContextMenuRequested(Node* ,QPointF pos);
-	void edgeContextMenuRequested(Edge*, QPointF pos);
+	void nodeContextMenuRequested(Node* ,QPointF pos, QMenu *menu=NULL);
+	void edgeContextMenuRequested(Edge*, QPointF pos, QMenu *menu=NULL);
 	void warning(QString){};
 	QStringList script() const;
 	QStringList s_get_params() const;

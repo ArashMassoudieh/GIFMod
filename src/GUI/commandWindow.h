@@ -5,6 +5,7 @@
 #include "vector.h"
 #include "navigationList.h"
 #include "GWidget.h"
+#include "CommandTextEdit.h"
 
 
 
@@ -21,6 +22,7 @@ public:
 	commandWindow(GraphWidget *parent);
   commandWindow() {};
   ~commandWindow() {};
+  QCompleter *completer;
 //  void append(QString text);
 //  void append(QStringList text);
 //  void append(vector<string> text);

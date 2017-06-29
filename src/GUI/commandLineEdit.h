@@ -2,16 +2,31 @@
 #include "qlineedit.h"
 #include "qevent.h"
 #include "qcompleter.h"
+#include "qtextedit.h"
 
-class commandLineEdit : public QLineEdit
+class commandLineEdit : public QTextEdit
 {
 	Q_OBJECT
 
 public:
-	explicit commandLineEdit(QWidget *parent = Q_NULLPTR) : QLineEdit(parent) {};
+	explicit commandLineEdit(QWidget *parent = Q_NULLPTR);
+	void setCompleter(QCompleter *c);
+	QCompleter *completer() const;
+	QString text();
+protected:
+	void keyPressEvent(QKeyEvent *e) override;
+	void focusInEvent(QFocusEvent *e) override;
+
+	private slots:
+	void insertCompletion(const QString &completion);
+
+private:
+	QString textUnderCursor() const;
+
+private:
+	QCompleter *c;
 	
-	/*
-	struct expEditorPri {
+/*	struct expEditorPri {
 		//ReactionTableModel* Model;
 		QCompleter* Comp;
 		QStringList Words;
@@ -36,7 +51,7 @@ public:
 		connect(d->Comp, SIGNAL(activated(QString)), this, SLOT(onCompletorActivated(QString)));
 	}
 
-
+/*
 
 	void focusInEvent(QFocusEvent *e)
 	{

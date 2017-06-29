@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>672</width>
-    <height>459</height>
+    <width>813</width>
+    <height>571</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -87,63 +87,38 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0">
-    <widget class="QTextEdit" name="textEdit"/>
-   </item>
    <item row="2" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetFixedSize</enum>
+     </property>
      <item>
-      <widget class="commandLineEdit" name="lineEdit"/>
-     </item>
-     <item>
-      <widget class="QToolButton" name="toolButtonScriptMode">
-       <property name="text">
-        <string>JS mode</string>
+      <widget class="commandLineEdit" name="lineEdit">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
-       <property name="checkable">
-        <bool>true</bool>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>30</height>
+        </size>
        </property>
-       <property name="autoExclusive">
-        <bool>true</bool>
-       </property>
-       <property name="toolButtonStyle">
-        <enum>Qt::ToolButtonTextOnly</enum>
-       </property>
-       <attribute name="buttonGroup">
-        <string notr="true">buttonGroup</string>
-       </attribute>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="toolButtonBasicMode">
-       <property name="text">
-        <string>Basic Mode</string>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-       <property name="autoExclusive">
-        <bool>true</bool>
-       </property>
-       <property name="toolButtonStyle">
-        <enum>Qt::ToolButtonTextOnly</enum>
-       </property>
-       <attribute name="buttonGroup">
-        <string notr="true">buttonGroup</string>
-       </attribute>
       </widget>
      </item>
     </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QTextEdit" name="textEdit"/>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
    <class>commandLineEdit</class>
-   <extends>QLineEdit</extends>
+   <extends>QTextEdit</extends>
    <header>commandlineedit.h</header>
   </customwidget>
  </customwidgets>
