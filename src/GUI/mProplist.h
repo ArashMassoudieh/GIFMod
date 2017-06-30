@@ -41,6 +41,7 @@ public:
 	QStringList mPropList::inputMethods(const mProp &mP = '*') const;
 
 	mPropList mPropList::filter(const mProp &mP) const;
+	QStringList extract_props_for_type(QString s);
 	mPropList mPropList::filter(const QList<mProp> mP) const;
 	int setProp(const QString _PropertyName, const XString _Value = "", const mProp _Filter = '*');
 };

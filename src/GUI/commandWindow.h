@@ -6,7 +6,7 @@
 #include "navigationList.h"
 #include "GWidget.h"
 #include "CommandTextEdit.h"
-
+#include "Command.h"
 
 
 
@@ -23,6 +23,9 @@ public:
   commandWindow() {};
   ~commandWindow() {};
   QCompleter *completer;
+  void SetCompleter(QString s);
+  QList<CCommand> *commands;
+  
 //  void append(QString text);
 //  void append(QStringList text);
 //  void append(vector<string> text);
@@ -43,7 +46,9 @@ private slots:
 //	void on_save_clicked();
 	void newCommandSubmitted();
 	void commandKeyRelease(QKeyEvent *);
-
+	void commandDotRelease(QKeyEvent * e);
+	void commandCommaRelease(QKeyEvent * e);
+	void commandSpaceRelease(QKeyEvent * e);
     void on_toolButtonScriptMode_toggled(bool checked);
 
     void on_toolButtonBasicMode_toggled(bool checked);

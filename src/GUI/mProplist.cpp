@@ -257,6 +257,20 @@ mPropList mPropList::filter(const mProp &mP) const
 //	qDebug() << "filter:" << counter++;
 	return(r);
 }
+
+QStringList mPropList::extract_props_for_type(QString s)
+{
+	
+	QStringList outlist; 
+	
+	for (int i = 0; i < List.size(); i++)
+	{
+		if (List[i].ObjectType == s.toLower() || List[i].ObjectType == "*") outlist.append(List[i].VariableName);
+	}
+	//	qDebug() << "filter:" << counter++;
+	return(outlist);
+}
+
 mPropList mPropList::filter(const QList<mProp> mP) const
 {
 	static int counter = 0;

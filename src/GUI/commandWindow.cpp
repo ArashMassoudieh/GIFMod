@@ -17,11 +17,8 @@ commandWindow::commandWindow(GraphWidget *parent) :
 	
 	ui->setupUi(this);
 	ui->textEdit->setEnabled(false);
+	SetCompleter(ui->lineEdit->toPlainText());
 	
-	QStringList wordList;
-	wordList << "alpha" << "omega" << "omicron" << "zeta";
-
-	completer = new QCompleter(wordList, this);
 	//completer = new QCompleter(this);
 	//completer->setModel(modelFromFile(":/resources/wordlist.txt"));
 
@@ -29,9 +26,13 @@ commandWindow::commandWindow(GraphWidget *parent) :
 	completer->setCaseSensitivity(Qt::CaseInsensitive);
 	completer->setWrapAround(false);
 	ui->lineEdit->setCompleter(completer);
+	commands = new QList<CCommand>;
 
-	connect(ui->lineEdit, SIGNAL(returnPressed()), this, SLOT(newCommandSubmitted()));
+	connect(ui->lineEdit, SIGNAL(returnPressed(QKeyEvent *)), this, SLOT(newCommandSubmitted()));
 	connect(ui->lineEdit, SIGNAL(navigate(QKeyEvent *)), this, SLOT(commandKeyRelease(QKeyEvent *)));
+	connect(ui->lineEdit, SIGNAL(DotPressed(QKeyEvent *)), this, SLOT(commandDotRelease(QKeyEvent *)));
+	connect(ui->lineEdit, SIGNAL(SpacePressed(QKeyEvent *)), this, SLOT(commandSpaceRelease(QKeyEvent *)));
+	connect(ui->lineEdit, SIGNAL(CommaPressed(QKeyEvent *)), this, SLOT(commandCommaRelease(QKeyEvent *)));
 	
 	// wtitle = title;
 	// setWindowTitle(wtitle);
@@ -47,6 +48,7 @@ commandWindow::commandWindow(GraphWidget *parent) :
 }
 void commandWindow::newCommandSubmitted()
 {
+	commands->append(ui->lineEdit->text());
 	QString result;
 	commandsHistory.append(ui->lineEdit->text());
 	nextIndex = commandsHistory.count() - 1;
@@ -70,6 +72,45 @@ void commandWindow::newCommandSubmitted()
 //void commandWindow::writetotempfile()
 //{
 //}
+
+void commandWindow::SetCompleter(QString s)
+{
+	QStringList wordList;
+	if (s.trimmed() == "")
+	{
+		wordList << "add" << "zoom"<< "help" << "clear" << "list"<<"add";
+	}
+	if (s.trimmed() == "add")
+	{
+		wordList << "pond" << "soil" << "storage" << "catchment" << "darcy" << "stream" << "plant";
+	}
+	if (s.trimmed().right(1)==",")
+		if (s.trimmed().left(3) == "add")
+		{
+			wordList = parent->mList->extract_props_for_type(s.trimmed().mid(3, s.length() - 4));
+		}
+	
+
+	completer = new QCompleter(wordList, this);
+
+}
+
+void commandWindow::commandDotRelease(QKeyEvent *e)
+{
+	qDebug() << "dot";
+}
+
+void commandWindow::commandCommaRelease(QKeyEvent *e)
+{
+	SetCompleter(ui->lineEdit->toPlainText());
+	ui->lineEdit->setCompleter(completer);
+}
+
+void commandWindow::commandSpaceRelease(QKeyEvent * e)
+{
+	SetCompleter(ui->lineEdit->toPlainText());
+	ui->lineEdit->setCompleter(completer);
+}
 
 void commandWindow::commandKeyRelease(QKeyEvent *e)
 {
