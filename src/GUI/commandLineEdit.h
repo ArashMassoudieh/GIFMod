@@ -10,7 +10,7 @@ class commandLineEdit : public QTextEdit
 
 public:
 	explicit commandLineEdit(QWidget *parent = Q_NULLPTR);
-	void setCompleter(QCompleter *c);
+	void setCompleter(QCompleter *c); //updates the completer
 	QCompleter *completer() const;
 	QString text();
 protected:

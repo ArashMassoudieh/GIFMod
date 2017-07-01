@@ -5,7 +5,7 @@
 #include "vector.h"
 #include "navigationList.h"
 #include "GWidget.h"
-#include "CommandTextEdit.h"
+//#include "CommandTextEdit.h"
 #include "Command.h"
 
 
