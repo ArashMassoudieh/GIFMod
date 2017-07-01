@@ -271,6 +271,21 @@ QStringList mPropList::extract_props_for_type(QString s)
 	return(outlist);
 }
 
+QStringList mPropList::extract_units_for_prop(QString type, QString property)
+{
+
+	QStringList outlist;
+
+	for (int i = 0; i < List.size(); i++)
+	{
+		if (List[i].ObjectType == type.toLower() || List[i].ObjectType == "*") 
+			if (List[i].VariableName.toQString() == property)
+			outlist.append(List[i].VariableUnit);
+	}
+	//	qDebug() << "filter:" << counter++;
+	return(outlist);
+}
+
 mPropList mPropList::filter(const QList<mProp> mP) const
 {
 	static int counter = 0;

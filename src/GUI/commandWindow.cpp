@@ -95,6 +95,31 @@ void commandWindow::SetCompleter(QString s)
 
 }
 
+QStringList commandWindow::extract_props_for_type(QString type)
+{
+	return parent->mList->extract_props_for_type(type);
+}
+
+QStringList commandWindow::extract_units_for_prop(QString type, QString property)
+{
+	return parent->mList->extract_units_for_prop(type, property);
+}
+
+QStringList commandWindow::extract_nodes(QString type)
+{
+	if (type == "")
+		return parent->nodeNames();
+	else
+	{
+		QStringList outlist;
+		for (int i = 0; i < parent->Nodes().size(); i++)
+			if (parent->Nodes()[i]->ObjectType().ObjectType == type)
+				outlist.append(parent->Nodes()[i]->Name());
+		return outlist;
+	}
+}
+
+
 void commandWindow::commandDotRelease(QKeyEvent *e)
 {
 	qDebug() << "dot";

@@ -24,6 +24,9 @@ public:
   ~commandWindow() {};
   QCompleter *completer;
   void SetCompleter(QString s);
+  QStringList extract_props_for_type(QString type);
+  QStringList extract_units_for_prop(QString type, QString property);
+  QStringList extract_nodes(QString type = "");
   QList<CCommand> *commands;
   
 //  void append(QString text);
