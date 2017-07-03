@@ -15,7 +15,7 @@ public:
 	CCommand(string s);
 	~CCommand();
 	QString command;
-	QString name; 
+	QStringList values; 
 	QMap<QString,XString> parameters; 
 
 	

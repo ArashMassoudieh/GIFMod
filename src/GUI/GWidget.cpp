@@ -3706,7 +3706,7 @@ QVariant GraphWidget::runCommand(CCommand &command)
 
 	if (command.command == "zoom" || command.command == "z")
 	{
-		if (command.name == "e" || command.name == "extent" || command.name == "a" || command.name == "all")
+		if (command.values[0] == "e" || command.values[0] == "extent" || command.values[0] == "a" || command.values[0] == "all")
 			mainWindow->zoomAll();
 		
 	}
@@ -3715,19 +3715,19 @@ QVariant GraphWidget::runCommand(CCommand &command)
 	{
 		QStringList result;
 		
-		if (command.name == "nodes" || command.name == "")
+		if (command.values[0] == "nodes" || command.values[0] == "")
 		{
 			result = nodeNames();
 		}
-		if (command.name == "ponds")
+		if (command.values[0] == "ponds")
 		{
 			result = nodeNames("pond");
 		}
-		if (command.name == "catchments")
+		if (command.values[0] == "catchments")
 		{
 			result = nodeNames("catchment");
 		}
-		if (command.name == "soils")
+		if (command.values[0] == "soils")
 		{
 			result = nodeNames("soil");
 		}
@@ -3743,8 +3743,9 @@ QVariant GraphWidget::runCommand(CCommand &command)
 		//	output = "Syntax error.";
 		//else
 		{
-			QString name = command.name;
+			QStringList values = command.values;
 			//int equalIndex = args.indexOf("=");
+			for (int val_counter=0; val_counter<command.values.count(); val_counter++)
 			foreach(QString key, command.parameters.keys())
 			{
 				QString propName = key;
@@ -3752,16 +3753,16 @@ QVariant GraphWidget::runCommand(CCommand &command)
 				int found = 0;
 				Node *n = 0; Edge* ed = 0; Entity *en = 0;
 				if (type == "*" || type == "node" || type == "block")
-					if (nodeNames().contains(name))
+					if (nodeNames().contains(values[val_counter]))
 					{
 						found++;
-						n = node(name);
+						n = node(values[val_counter]);
 					}
 				if (type == "*" || type == "edge" || type == "connector")
-					if (edgeNames().contains(name))
+					if (edgeNames().contains(values[val_counter]))
 					{
 						found++;
-						ed = edge(name);
+						ed = edge(values[val_counter]);
 					}
 				QStringList typesList;
 				if (type == "*")
@@ -3769,21 +3770,21 @@ QVariant GraphWidget::runCommand(CCommand &command)
 				else
 					typesList << type;
 				for (int i = 0; i < typesList.count(); i++)
-					if (EntityNames(typesList[i]).contains(name))
+					if (EntityNames(typesList[i]).contains(values[val_counter]))
 					{
 						found++;
-						en = entity(name, typesList[i]);
+						en = entity(values[val_counter], typesList[i]);
 					}
 
 				if (!found)
-					output = QString("%1 not found in the model.").arg(name);
+					output = QString("%1 not found in the model.").arg(values[val_counter]);
 				else if (found > 1)
-					output = QString("More than one %1 found in the model, please specify the type of the object you want to set value.").arg(name);
+					output = QString("More than one %1 found in the model, please specify the type of the object you want to set value.").arg(values[val_counter]);
 				else
 				{
 					if (n) {
 						if (!mList->extract_props_for_type(n->objectType.ObjectType).contains(propName))
-							output = QString(name + " does not have a property called " + key);
+							output = QString(values[val_counter] + " does not have a property called " + key);
 						else
 						{
 							QStringList unitsList = n->getProp(propName, UnitsListRole).toStringList();
@@ -3801,7 +3802,7 @@ QVariant GraphWidget::runCommand(CCommand &command)
 					}
 					if (ed) {
 						if (!mList->extract_props_for_type(ed->objectType.ObjectType).contains(propName))
-							output = QString(name + " does not have a property called " + key);
+							output = QString(values[val_counter] + " does not have a property called " + key);
 						else
 						{
 							QStringList unitsList = ed->getProp(propName, UnitsListRole).toStringList();
@@ -3825,7 +3826,7 @@ QVariant GraphWidget::runCommand(CCommand &command)
 					}
 					if (en) {
 						if (!mList->extract_props_for_type(en->objectType.ObjectType).contains(propName))
-							output = QString(name + " does not have a property called " + key);
+							output = QString(values[val_counter] + " does not have a property called " + key);
 						else
 						{
 							QStringList unitsList = ed->getProp(propName, UnitsListRole).toStringList();
@@ -3858,11 +3859,11 @@ QVariant GraphWidget::runCommand(CCommand &command)
 	
 	if (command.command == "add")
 	{
-		if (command.name == "")
+		if (command.values[0] == "")
 			output = "Syntax error.";
 		else
 		{
-			QString e = command.name.toLower();
+			QString e = command.values[0].toLower();
 			QStringList addfromMainWindow;
 			addfromMainWindow << "soil" << "pond" << "catchment" << "darcy" << "storage"<< "stream" << "plant";
 			if (addfromMainWindow.contains(e))
