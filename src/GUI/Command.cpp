@@ -1,5 +1,6 @@
 
 #include "Command.h"
+#include "utility_funcs.h"
 
 
 
@@ -9,14 +10,14 @@ CCommand::CCommand()
 
 CCommand::CCommand(QString s) //create command from script
 {
-	QStringList list = s.split(",");
+	QStringList list = s.split(":");
 	if (list.size() == 0) return;
 	 
-	command = list[0].split(" ")[0];
-	if (list[0].split(" ").size() == 2) name = list[0].split(" ")[1];
+	command = extract_by_space_quote(list[0].trimmed().toLower())[0];
+	if (extract_by_space_quote(list[0].trimmed().toLower()).size() > 1) name = extract_by_space_quote(list[0].trimmed())[1].trimmed();
 	for (int i = 1; i < list.size(); i++)
 	{
-		parameters[list[i].split("=")[0]] = list[i].split("=")[1];
+		parameters[list[i].split("=")[0].trimmed().toLower()] = list[i].split("=")[1].trimmed().toLower();
 	}
 }
 

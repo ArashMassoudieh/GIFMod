@@ -4,6 +4,7 @@
 #include <qstring.h>
 #include <qdatetime.h>
 #include <utility_funcs.h>
+#include <qstringlist.h>
 
 double min(double x, double y)
 {
@@ -162,4 +163,36 @@ QStringList specialSplit(QString s)
 	}
 	r.removeAll("");
 	return r;
+}
+
+QStringList extract_by_space_quote(QString s)
+{
+	QString del1 = "'";
+	
+	bool inside_quote = false; 
+	for (int i = 0; i < s.size(); i++)
+	{
+		if (s.mid(i, 1) == "'")
+		{
+			inside_quote = !inside_quote;
+			s.remove(i, 1);
+		}
+		if (inside_quote)
+			if (s.mid(i, 1) == " ") s.replace(i,1, "|");
+
+	}
+	QStringList out = s.split(" ");
+	for (int i = 0; i < out.size(); i++) out[i].replace("|", " ");
+	return out; 
+}
+
+vector<int> find_indexes_of(QString &s, QString &s1)
+{
+	vector<int> out;
+	int i = 0;
+	while (s.indexOf(s1, i) != -1)
+		out.push_back(s.indexOf(s1, i));
+
+	return out; 
+
 }

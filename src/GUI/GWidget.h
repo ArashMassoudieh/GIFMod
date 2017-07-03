@@ -14,6 +14,7 @@
 #include "XString.h"
 //#include "helpWindow.h"
 #include "colorscheme.h"
+#include "Command.h"
 
 //class MainWindow;
 class helpWindow;
@@ -176,7 +177,8 @@ public:
 	void clearRXN();
 	TreeModel *treeModel;
 	void expandNode(const QModelIndex &parentIndex, bool expand);
-/*	QString getInflowFileName(){
+	QMap<QString, QString> find_objects(QString name);
+	/*	QString getInflowFileName(){
 		return QFileDialog::getOpenFileName(
 			qApp->activeWindow(),
 			tr("Select the File"),
@@ -190,7 +192,8 @@ public:
 	CMedium *model = 0;
 	vector<Results *> resultsSet;
 	bool wizard(QList<command>&commands);
-	QVariant runCommand(QString command);
+	QVariant runCommand(CCommand & command);
+	//QVariant runCommand(QString command);
 	QVariant runCommand(QString command, QList<XString> arguments);// = QList<XString>());
 #endif
 #ifdef GWA

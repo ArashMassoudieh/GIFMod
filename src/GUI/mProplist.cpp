@@ -265,7 +265,7 @@ QStringList mPropList::extract_props_for_type(QString s)
 	
 	for (int i = 0; i < List.size(); i++)
 	{
-		if (List[i].ObjectType == s.toLower() || List[i].ObjectType == "*") outlist.append(List[i].VariableName);
+		if (List[i].ObjectType.toLower() == s.toLower() || List[i].ObjectType == "*") outlist.append(List[i].VariableName.toLower());
 	}
 	//	qDebug() << "filter:" << counter++;
 	return(outlist);

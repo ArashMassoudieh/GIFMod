@@ -54,7 +54,7 @@ void commandWindow::newCommandSubmitted()
 	nextIndex = commandsHistory.count() - 1;
 	prevIndex = nextIndex;
 	//if (ui->toolButtonBasicMode->isChecked()) {
-		result = parent->runCommand(ui->lineEdit->text()).toString();
+		result = parent->runCommand(commands->value(commands->size()-1)).toString();
 	//}
 	/*else {
 		QString code = ui->lineEdit->text().toStdString().data();		

@@ -37,3 +37,5 @@ QList<int> dayfractiontotime(double dayFraction = 0);
 
 QString float2datetime(const double d, QString format = "MM/dd/yyyy hh:mm:ss", bool ignorefirst50years = true);
 QStringList specialSplit(QString s);
+QStringList extract_by_space_quote(QString s);
+vector<int> find_indexes_of(QString &s, QString &s1);

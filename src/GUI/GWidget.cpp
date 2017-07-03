@@ -3637,27 +3637,32 @@ bool GraphWidget::wizard(QList<command> &commands)
 {
 	return true;
 }
-QVariant GraphWidget::runCommand(QString command)
+
+QMap<QString, QString> GraphWidget::find_objects(QString name)
 {
-	command.replace("=", " = ");
-//	QStringList list = command.split(' ');
-	QStringList list = specialSplit(command);
-	if (list.count() == 0)
-		return QVariant();
-	QString cmd = list[0];
-	QList<XString> args;
-	for (int i = 1; i < list.count(); i++)
-	{
-		XString arg;
-		if (list[i].contains('[') && list[i].contains(']'))
-			arg = XString::fromQStringUnit(list[i]);
-		else
-			arg = list[i];
-		args.append(arg);
-	}
-	return runCommand(cmd, args);
+	QMap<QString, QString> out;
+
+	if (nodeNames().contains(name))
+		out[node(name)->Name()] = node(name)->objectType.ObjectType;
+
+
+	if (edgeNames().contains(name))
+		out[edge(name)->Name()] = edge(name)->objectType.ObjectType;
+
+	QStringList typesList;
+
+	typesList << "Constituent" << "Particle";// << ""
+
+	for (int i = 0; i < typesList.count(); i++)
+		if (EntityNames(typesList[i]).contains(name))
+		{
+			out[entity(name)->Name()] = entity(name)->objectType.ObjectType;
+		}
+	return out;
 }
-QVariant GraphWidget::runCommand(QString command, QList<XString> arguments)
+
+
+QVariant GraphWidget::runCommand(CCommand &command)
 {
 	//settings
 	bool writeOutput = true, writeDetails = false, orderedOutput = false;
@@ -3665,11 +3670,11 @@ QVariant GraphWidget::runCommand(QString command, QList<XString> arguments)
 	QString experiment = "All experiments";
 
 
-	QString cmd = command.toLower().trimmed();
-	QList<XString> args;
+	//QString cmd = command.toLower().trimmed();
+	//QList<XString> args;
 	QStringList settings;
 	QString output;
-	for (int i = 0; i < arguments.count(); i++)
+	/*for (int i = 0; i < arguments.count(); i++)
 	{
 		XString arg = arguments[i];
 		QString setting = arg.toQString().toLower().trimmed();
@@ -3692,40 +3697,37 @@ QVariant GraphWidget::runCommand(QString command, QList<XString> arguments)
 		}
 		else //consider argument
 			args.append(arg);
-	}
-	if (cmd == "help")
+	}*/
+	if (command.command == "help")
 		output.append("Command line syntax is: command [-setting]\nor command [argument] [argument] [-setting]");
 
-	if (cmd == "clear")
+	if (command.command == "clear")
 		clear();
 
-	if (cmd == "zoom" || cmd == "z")
+	if (command.command == "zoom" || command.command == "z")
 	{
-		if (args.count())
-		{
-			if (args[0] == "e" || args[0] == "extent" || args[0] == "a" || args[0] == "all")
-				mainWindow->zoomAll();
-		}
+		if (command.name == "e" || command.name == "extent" || command.name == "a" || command.name == "all")
+			mainWindow->zoomAll();
+		
 	}
 
-	if (cmd == "list")
+	if (command.command == "list")
 	{
 		QStringList result;
-		if (!args.count())
-			args.append("nodes");
-		if (args[0] == "nodes")
+		
+		if (command.name == "nodes" || command.name == "")
 		{
 			result = nodeNames();
 		}
-		if (args[0] == "ponds")
+		if (command.name == "ponds")
 		{
 			result = nodeNames("pond");
 		}
-		if (args[0] == "catchments")
+		if (command.name == "catchments")
 		{
 			result = nodeNames("catchment");
 		}
-		if (args[0] == "soils")
+		if (command.name == "soils")
 		{
 			result = nodeNames("soil");
 		}
@@ -3735,111 +3737,134 @@ QVariant GraphWidget::runCommand(QString command, QList<XString> arguments)
 		output = result.join('\n');
 	}
 
-	if (cmd == "set")
+	if (command.command == "setprop")
 	{
-		if (!args.contains("=") || args.indexOf("=") < 2)
-			output = "Syntax error.";
-		else
+		//if (!args.contains("=") || args.indexOf("=") < 2)
+		//	output = "Syntax error.";
+		//else
 		{
-			QString name = args[0];
-			int equalIndex = args.indexOf("=");
-			QString propName = args[equalIndex - 1];
-			XString value = args[equalIndex + 1];
-			int found = 0;
-			Node *n = 0; Edge* ed = 0; Entity *en = 0;
-			if (type == "*" || type == "node" || type == "block")
-				if (nodeNames().contains(name))
-				{
-					found++;
-					n = node(name);
-				}
-			if (type == "*" || type == "edge" || type == "connector")
-				if (edgeNames().contains(name))
-				{
-					found++;
-					ed = edge(name);
-				}
-			QStringList typesList;
-			if (type == "*")
-				typesList << "Constituent" << "Particle";// << ""
-			else
-				typesList << type;
-			for (int i = 0; i < typesList.count(); i++)
-				if (EntityNames(typesList[i]).contains(name))
-				{
-					found++;
-					en = entity(name, typesList[i]);
-				}
-
-			if (!found)
-				output = QString("%1 not found in the model.").arg(name);
-			else if (found > 1)
-				output = QString("More than one %1 found in the model, please specify the type of the object you want to set value.").arg(name);
-			else
+			QString name = command.name;
+			//int equalIndex = args.indexOf("=");
+			foreach(QString key, command.parameters.keys())
 			{
-				if (n) {
-					QStringList unitsList = n->getProp(propName, UnitsListRole).toStringList();
-					QString defaultUnit = n->getProp(propName, defaultUnitRole).toString();
-					QString unit = "";
-					for (int i = 0; i < unitsList.count(); i++)
-						if (XString::coefficient(XString::reformBack(value.unit)) == XString::coefficient(XString::reformBack(unitsList[i])))
-							unit = unitsList[i];
-					value.unit = (unit == "") ? defaultUnit : unit;
-					value.setUnitsList(unitsList);
-					value.defaultUnit = defaultUnit;
-					n->props.setProp(propName, value, experiment); n->changed();// update();
-				}
-				if (ed)	{
-					QStringList unitsList = ed->getProp(propName, UnitsListRole).toStringList();
-					QString defaultUnit = ed->getProp(propName, defaultUnitRole).toString();
-					QString unit = "";
-					for (int i = 0; i < unitsList.count(); i++)
+				QString propName = key;
+				XString value = command.parameters.value(key);;
+				int found = 0;
+				Node *n = 0; Edge* ed = 0; Entity *en = 0;
+				if (type == "*" || type == "node" || type == "block")
+					if (nodeNames().contains(name))
 					{
-						if (XString::reformBack(value.unit) == XString::reformBack(unitsList[i])
-							|| XString::coefficient(value.unit) == XString::coefficient(unitsList[i]))
+						found++;
+						n = node(name);
+					}
+				if (type == "*" || type == "edge" || type == "connector")
+					if (edgeNames().contains(name))
+					{
+						found++;
+						ed = edge(name);
+					}
+				QStringList typesList;
+				if (type == "*")
+					typesList << "Constituent" << "Particle";// << ""
+				else
+					typesList << type;
+				for (int i = 0; i < typesList.count(); i++)
+					if (EntityNames(typesList[i]).contains(name))
+					{
+						found++;
+						en = entity(name, typesList[i]);
+					}
+
+				if (!found)
+					output = QString("%1 not found in the model.").arg(name);
+				else if (found > 1)
+					output = QString("More than one %1 found in the model, please specify the type of the object you want to set value.").arg(name);
+				else
+				{
+					if (n) {
+						if (!mList->extract_props_for_type(n->objectType.ObjectType).contains(propName))
+							output = QString(name + " does not have a property called " + key);
+						else
 						{
-							unit = unitsList[i];
-							exit;
+							QStringList unitsList = n->getProp(propName, UnitsListRole).toStringList();
+							QString defaultUnit = n->getProp(propName, defaultUnitRole).toString();
+							QString unit = "";
+							if (value.unit == "") value.unit = defaultUnit;
+							for (int i = 0; i < unitsList.count(); i++)
+								if (XString::coefficient(XString::reformBack(value.unit)) == XString::coefficient(XString::reformBack(unitsList[i])))
+									unit = unitsList[i];
+							value.unit = (unit == "") ? defaultUnit : unit;
+							value.setUnitsList(unitsList);
+							value.defaultUnit = defaultUnit;
+							n->props.setProp(propName, value, experiment); n->changed();// update();
 						}
 					}
-					value.unit = (unit == "") ? defaultUnit : unit;
-					value.setUnitsList(unitsList);
-					value.defaultUnit = defaultUnit;
-					ed->props.setProp(propName, value, experiment); ed->changed(); // update();
-				}
-				if (en)	{
-					QStringList unitsList = ed->getProp(propName, UnitsListRole).toStringList();
-					QString defaultUnit = ed->getProp(propName, defaultUnitRole).toString();
-					QString unit = "";
-					for (int i = 0; i < unitsList.count(); i++)
-					{
-						if (XString::reformBack(value.unit) == XString::reformBack(unitsList[i])
-							|| XString::coefficient(value.unit) == XString::coefficient(unitsList[i]))
+					if (ed) {
+						if (!mList->extract_props_for_type(ed->objectType.ObjectType).contains(propName))
+							output = QString(name + " does not have a property called " + key);
+						else
 						{
-							unit = unitsList[i];
-							exit;
+							QStringList unitsList = ed->getProp(propName, UnitsListRole).toStringList();
+							QString defaultUnit = ed->getProp(propName, defaultUnitRole).toString();
+							if (value.unit == "") value.unit = defaultUnit;
+							QString unit = "";
+							for (int i = 0; i < unitsList.count(); i++)
+							{
+								if (XString::reformBack(value.unit) == XString::reformBack(unitsList[i])
+									|| XString::coefficient(value.unit) == XString::coefficient(unitsList[i]))
+								{
+									unit = unitsList[i];
+									exit;
+								}
+							}
+							value.unit = (unit == "") ? defaultUnit : unit;
+							value.setUnitsList(unitsList);
+							value.defaultUnit = defaultUnit;
+							ed->props.setProp(propName, value, experiment); ed->changed(); // update();
 						}
 					}
-					value.unit = (unit == "") ? defaultUnit : unit;
-					value.setUnitsList(unitsList);
-					value.defaultUnit = defaultUnit;
-					en->props.setProp(propName, value, experiment);	en->changed();// update();
+					if (en) {
+						if (!mList->extract_props_for_type(en->objectType.ObjectType).contains(propName))
+							output = QString(name + " does not have a property called " + key);
+						else
+						{
+							QStringList unitsList = ed->getProp(propName, UnitsListRole).toStringList();
+							QString defaultUnit = ed->getProp(propName, defaultUnitRole).toString();
+							if (value.unit == "") value.unit = defaultUnit;
+							QString unit = "";
+							for (int i = 0; i < unitsList.count(); i++)
+							{
+								if (XString::reformBack(value.unit) == XString::reformBack(unitsList[i])
+									|| XString::coefficient(value.unit) == XString::coefficient(unitsList[i]))
+								{
+									unit = unitsList[i];
+									exit;
+								}
+							}
+							value.unit = (unit == "") ? defaultUnit : unit;
+							value.setUnitsList(unitsList);
+							value.defaultUnit = defaultUnit;
+							en->props.setProp(propName, value, experiment);	en->changed();// update();
+						}
+					}
+					mainWindow->tableProp->repaint();
 				}
-				mainWindow->tableProp->repaint();
 			}
 		}
 	}
+	
+	
 
 	
-	if (cmd == "add")
+	if (command.command == "add")
 	{
-		if (args.count() < 1)
+		if (command.name == "")
 			output = "Syntax error.";
 		else
 		{
-			QString e = args[0].trimmed().toLower();
+			QString e = command.name.toLower();
 			QStringList addfromMainWindow;
-			addfromMainWindow << "soil" << "pond" << "catchment" << "darcy" << "storage";
+			addfromMainWindow << "soil" << "pond" << "catchment" << "darcy" << "storage"<< "stream" << "plant";
 			if (addfromMainWindow.contains(e))
 				mainWindow->add(e);
 
@@ -3849,7 +3874,8 @@ QVariant GraphWidget::runCommand(QString command, QList<XString> arguments)
 			if (entityTypes.contains(e))
 				new Entity(exactType[entityTypes.indexOf(e)]);
 			
-			if (args.count() >= 3)
+			//adding connectors
+			/*if (args.count() >= 3)
 			{
 				if (e == "connector")
 				{
@@ -3865,13 +3891,14 @@ QVariant GraphWidget::runCommand(QString command, QList<XString> arguments)
 					else
 						new Edge(n1, n2, this);
 				}
-			}
+			}*/
 		}
 	}
 
 	
-	//	if (cmd=="addpondnode")
+	
 
+	
 	if (writeOutput)
 		//		logW->append(output);
 		return output;
