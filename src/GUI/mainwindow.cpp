@@ -921,7 +921,8 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 #endif
 
 		menu->addAction(QString("Add %1").arg(type) , this, SLOT(addProjectExplorerTreeItem()));
-//		menu->exec(projectExplorer->mapToGlobal(pos));
+//		
+		
 	}
 	if (projectExplorer->indexAt(pos).data(Role::TreeItemType) == TreeItem::Type::NodeItem)
 	{
@@ -942,7 +943,7 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 		mainGraphWidget->nodeContextMenuRequested(n,mapToGlobal(pos2), menu);
 		
 	}
-	if (projectExplorer->indexAt(pos).data(Role::TreeItemType) == TreeItem::Type::EdgeItem)
+	else if (projectExplorer->indexAt(pos).data(Role::TreeItemType) == TreeItem::Type::EdgeItem)
 	{
 		//QMenu *menu = new QMenu;
 		Edge *n = mainGraphWidget->edge(projectExplorer->indexAt(pos).data().toString());
@@ -1176,7 +1177,8 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 		menu->addAction(QString("Open reaction network window"), this, SLOT(openRXNWindow()));
 		menu->exec(projectExplorer->mapToGlobal(pos));
 	}
-	//menu->exec(projectExplorer->mapToGlobal(pos));
+	if (projectExplorer->indexAt(pos).data(Role::TreeItemType) != TreeItem::Type::EdgeItem && projectExplorer->indexAt(pos).data(Role::TreeItemType) != TreeItem::Type::NodeItem) 
+		menu->exec(projectExplorer->mapToGlobal(pos));
 }
 void MainWindow::on_actionmenuRecent_triggered()//QString fileName)
 {
