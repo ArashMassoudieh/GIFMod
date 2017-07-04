@@ -1974,22 +1974,26 @@ void MainWindow::paintEvent(QPaintEvent *e)
 	//painter.drawLine(0, 0, 100, 100);
 }
 
-void MainWindow::add(QString entity)
+Node* MainWindow::add(QString entity)
 {
 	entity = entity.trimmed().toLower();
-
+	QString name;
 	if (entity == "soil")
-		on_actionAdd_Soil_triggered();
+		name = on_actionAdd_Soil_triggered();
 	if (entity == "pond")
-		on_actionAdd_Pond_triggered();
+		name = on_actionAdd_Pond_triggered();
 	if (entity == "catchment")
-		on_actionAdd_Catchment_Area_triggered();
+		name = on_actionAdd_Catchment_Area_triggered();
 	if (entity == "darcy")
-		on_actionAdd_Darcy_Block_triggered();
+		name = on_actionAdd_Darcy_Block_triggered();
 	if (entity == "storage")
-		on_actionAdd_Stora_ge_triggered();
+		name = on_actionAdd_Stora_ge_triggered();
 	if (entity == "plant")
-		on_actionAdd_plant_triggered();
+		name = on_actionAdd_plant_triggered();
+	if (entity == "stream")
+		name = on_actionAdd_St_ream_triggered();
+
+	return mainGraphWidget->node(name);
 /*	if (entity == "pond")
 		on_actionAdd_Pond_triggered();
 	if (entity == "soil")
@@ -1999,62 +2003,63 @@ void MainWindow::add(QString entity)
 		*/
 }
 
-void MainWindow::on_actionAdd_Pond_triggered()
+QString MainWindow::on_actionAdd_Pond_triggered()
 {
 	//add Pond
 	static int Pond_Blocks = 1;
-	new Node(mainGraphWidget, "Pond", QString("Pond (%1)").arg(Pond_Blocks++), -1, newBlockX(), newBlockY());
+	Node* n = new Node(mainGraphWidget, "Pond", QString("Pond (%1)").arg(Pond_Blocks++), -1, newBlockX(), newBlockY());
+	return n->Name();
 }
 
-void MainWindow::on_actionAdd_Soil_triggered()
+QString MainWindow::on_actionAdd_Soil_triggered()
 {
 	//add Soil
 	static int Soil_Blocks = 1;
 
-	new Node(mainGraphWidget, "Soil", QString("Soil (%1)").arg(Soil_Blocks++), -1, newBlockX(), newBlockY());
-
+	Node* n = new Node(mainGraphWidget, "Soil", QString("Soil (%1)").arg(Soil_Blocks++), -1, newBlockX(), newBlockY());
+	return n->Name();
    
 }
 
-void MainWindow::on_actionAdd_Catchment_Area_triggered()
+QString MainWindow::on_actionAdd_Catchment_Area_triggered()
 {
 	static int Catchment_Blocks = 1;
 
-	new Node(mainGraphWidget, "Catchment", QString("Catchment (%1)").arg(Catchment_Blocks++), -1, newBlockX(), newBlockY());
-
+	Node* n = new Node(mainGraphWidget, "Catchment", QString("Catchment (%1)").arg(Catchment_Blocks++), -1, newBlockX(), newBlockY());
+	return n->Name();
 
 }
 
-void MainWindow::on_actionAdd_Darcy_Block_triggered()
+QString MainWindow::on_actionAdd_Darcy_Block_triggered()
 {
 	static int Darcy_Blocks = 1;
 
-	new Node(mainGraphWidget, "Darcy", QString("Darcy (%1)").arg(Darcy_Blocks++), -1, newBlockX(), newBlockY());
-
+	Node* n = new Node(mainGraphWidget, "Darcy", QString("Darcy (%1)").arg(Darcy_Blocks++), -1, newBlockX(), newBlockY());
+	return n->Name();
 }
 
-void MainWindow::on_actionAdd_Stora_ge_triggered()
+QString MainWindow::on_actionAdd_Stora_ge_triggered()
 {
 	static int Storage_Blocks = 1;
 
-	new Node(mainGraphWidget, "Storage", QString("Storage (%1)").arg(Storage_Blocks++), -1, newBlockX(), newBlockY());
-
+	Node* n = new Node(mainGraphWidget, "Storage", QString("Storage (%1)").arg(Storage_Blocks++), -1, newBlockX(), newBlockY());
+	return n->Name();
 }
 
-void MainWindow::on_actionAdd_St_ream_triggered()
+QString MainWindow::on_actionAdd_St_ream_triggered()
 {
 	static int Stream_Blocks = 1;
 
-	new Node(mainGraphWidget, "Stream", QString("Stream (%1)").arg(Stream_Blocks++), -1, newBlockX(), newBlockY());
-
+	Node* n = new Node(mainGraphWidget, "Stream", QString("Stream (%1)").arg(Stream_Blocks++), -1, newBlockX(), newBlockY());
+	return n->Name();
 }
 
-void MainWindow::on_actionAdd_plant_triggered()
+QString MainWindow::on_actionAdd_plant_triggered()
 {
 	static int Plant_Blocks = 1;
 
-	new Node(mainGraphWidget, "Plant", QString("Plant (%1)").arg(Plant_Blocks++), -1, newBlockX(), newBlockY());
-
+	Node* n = new Node(mainGraphWidget, "Plant", QString("Plant (%1)").arg(Plant_Blocks++), -1, newBlockX(), newBlockY());
+	return n->Name();
 }
 
 void MainWindow::on_actionAdd_Connector_triggered(bool checked)

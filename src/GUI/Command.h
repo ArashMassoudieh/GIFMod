@@ -17,6 +17,7 @@ public:
 	QString command;
 	QStringList values; 
 	QMap<QString,XString> parameters; 
+	QString Validate_text; 
 
 	
 };

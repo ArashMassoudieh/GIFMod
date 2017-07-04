@@ -27,12 +27,18 @@ Entity::Entity(const QString _type, QString _name, GraphWidget *_parent)
 	static int ID;
 	if (_name == "No Name" || _name == "") 
 		_name = _type;
-	if (_type == "Reaction parameter" || _type == "Constituent")
+	if (_type == "Reaction parameter" || _type == "Constituent" || _type=="External flux" || _type=="Build-up" || _type=="Particle")
 	{
 		QStringList existingNames;
 		for each (Entity *e in parent->entitiesByType("Constituent"))
 			existingNames.append(e->Name());
+		for each (Entity *e in parent->entitiesByType("Particles"))
+			existingNames.append(e->Name());
 		for each (Entity *e in parent->entitiesByType("Reaction parameter"))
+			existingNames.append(e->Name());
+		for each (Entity *e in parent->entitiesByType("External flux"))
+			existingNames.append(e->Name());
+		for each (Entity *e in parent->entitiesByType("Build-up"))
 			existingNames.append(e->Name());
 		name = newEntityName(_name, existingNames);
 	}

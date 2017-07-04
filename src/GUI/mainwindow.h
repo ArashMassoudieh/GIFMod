@@ -86,7 +86,7 @@ public:
 		readRecentFilesList();
 	}
 	void readRecentFilesList();
-	void add(QString entity);
+	Node* add(QString entity);
 protected:
 	void paintEvent(QPaintEvent *e);
 public slots:
@@ -101,22 +101,20 @@ public slots:
 
 private slots:
 
-	void on_actionAdd_Pond_triggered();
+	QString on_actionAdd_Pond_triggered();
 
-	void on_actionAdd_Soil_triggered();
+	QString on_actionAdd_Soil_triggered();
 
-	void on_actionAdd_Catchment_Area_triggered();
+	QString on_actionAdd_Catchment_Area_triggered();
 
-	void on_actionAdd_Darcy_Block_triggered();
+	QString on_actionAdd_Darcy_Block_triggered();
 
-	void on_actionAdd_Stora_ge_triggered();
+	QString on_actionAdd_Stora_ge_triggered();
 
-	void on_actionAdd_St_ream_triggered();
+	QString on_actionAdd_St_ream_triggered();
 
-	void on_actionAdd_plant_triggered();
+	QString on_actionAdd_plant_triggered();
 	
-	//    void on_actionAdd_Interface_triggered();
-
 	void on_actionAdd_Connector_triggered(bool checked);
 
 	void on_action_Select_triggered(bool checked);

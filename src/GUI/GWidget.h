@@ -178,6 +178,10 @@ public:
 	TreeModel *treeModel;
 	void expandNode(const QModelIndex &parentIndex, bool expand);
 	QMap<QString, QString> find_objects(QString name);
+	
+	QString setprop(Node * n, QString & propname, XString & value, QString &experiment);
+	QString setprop(Edge * ed, QString & propname, XString & value, QString &experiment);
+	QString setprop(Entity * en, QString & propname, XString & value, QString &experiment);
 	/*	QString getInflowFileName(){
 		return QFileDialog::getOpenFileName(
 			qApp->activeWindow(),
@@ -192,9 +196,9 @@ public:
 	CMedium *model = 0;
 	vector<Results *> resultsSet;
 	bool wizard(QList<command>&commands);
-	QVariant runCommand(CCommand & command);
+	QVariant runCommand(CCommand & command); //runs the commands submitted into script window
 	//QVariant runCommand(QString command);
-	QVariant runCommand(QString command, QList<XString> arguments);// = QList<XString>());
+	//QVariant runCommand(QString command, QList<XString> arguments);// = QList<XString>());
 #endif
 #ifdef GWA
 	CGWA *model = 0;

@@ -10,6 +10,7 @@ CCommand::CCommand()
 
 CCommand::CCommand(QString s) //create command from script
 {
+	
 	QStringList list = s.split(":");
 	if (list.size() == 0) return;
 	 
@@ -17,9 +18,16 @@ CCommand::CCommand(QString s) //create command from script
 	if (extract_by_space_quote(list[0].trimmed().toLower()).size() > 1) values = extract_by_space_quote(list[0].trimmed());
 	values.removeAt(0);
 	for (int i = 0; i < values.count(); i++) values[i] = values[i].trimmed();
-	for (int i = 1; i < list.size(); i++)
+	if (list.size() > 1)
 	{
-		parameters[list[i].split("=")[0].trimmed().toLower()] = list[i].split("=")[1].trimmed().toLower();
+		QStringList param_list = list[1].split(",");
+		for (int i = 0; i < param_list.size(); i++)
+		{
+			if (param_list[i].split("=").size() != 2)
+				Validate_text = "Syntax error";
+			else
+				parameters[param_list[i].split("=")[0].trimmed().toLower()] = param_list[i].split("=")[1].trimmed().toLower();
+		}
 	}
 }
 
@@ -28,6 +36,7 @@ CCommand::CCommand(const CCommand & s)
 	values = s.values;
 	parameters = s.parameters;
 	command = s.command;
+	Validate_text = s.Validate_text;
 }
 
 CCommand& CCommand::operator=(const CCommand & s)
@@ -35,6 +44,7 @@ CCommand& CCommand::operator=(const CCommand & s)
 	command = s.command;
 	parameters = s.parameters;
 	values = s.values;
+	Validate_text = s.Validate_text;
 
 	return *this;
 }
