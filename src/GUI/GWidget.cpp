@@ -1314,7 +1314,7 @@ QStringList GraphWidget::EntityNames(const QString &type) const
 Entity* GraphWidget::entityByName(const QString &name) const
 {
 	for each (Entity *e in Entities)
-		if (e->Name() == name)
+		if (e->Name().toLower() == name.toLower())
 			return e;
 	return 0;
 }
@@ -1355,8 +1355,8 @@ Edge* GraphWidget::edge(const QString &name) const
 Entity* GraphWidget::entity(const QString &name, const QString &type) const
 {
 	for each (Entity* i in Entities)
-		if (i->Name() == name) 
-			if (type == "*" || i->objectType.ObjectType == type)	return i;
+		if (i->Name().toLower() == name.toLower()) 
+			if (type == "*" || i->objectType.ObjectType.toLower() == type.toLower())	return i;
 	return nullptr;
 }
 
@@ -3764,16 +3764,12 @@ QVariant GraphWidget::runCommand(CCommand &command)
 						found++;
 						ed = edge(values[val_counter]);
 					}
-				QStringList typesList;
-				if (type == "*")
-					typesList << "Constituent" << "Particle";// << ""
-				else
-					typesList << type;
-				for (int i = 0; i < typesList.count(); i++)
-					if (EntityNames(typesList[i]).contains(values[val_counter]))
+				
+				
+					if (entityByName(values[val_counter]))
 					{
 						found++;
-						en = entity(values[val_counter], typesList[i]);
+						en = entity(values[val_counter]);
 					}
 
 				if (!found)
@@ -3829,8 +3825,8 @@ QVariant GraphWidget::runCommand(CCommand &command)
 							output = QString(values[val_counter] + " does not have a property called " + key);
 						else
 						{
-							QStringList unitsList = ed->getProp(propName, UnitsListRole).toStringList();
-							QString defaultUnit = ed->getProp(propName, defaultUnitRole).toString();
+							QStringList unitsList = en->getProp(propName, UnitsListRole).toStringList();
+							QString defaultUnit = en->getProp(propName, defaultUnitRole).toString();
 							if (value.unit == "") value.unit = defaultUnit;
 							QString unit = "";
 							for (int i = 0; i < unitsList.count(); i++)
@@ -3873,7 +3869,7 @@ QVariant GraphWidget::runCommand(CCommand &command)
 			entityTypes << "constituent" << "particle";
 			exactType << "Constituent" << "Particle";
 			if (entityTypes.contains(e))
-				new Entity(exactType[entityTypes.indexOf(e)]);
+				new Entity(exactType[entityTypes.indexOf(e)],"No Name",this);
 			
 			//adding connectors
 			/*if (args.count() >= 3)
