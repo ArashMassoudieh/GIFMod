@@ -31,7 +31,7 @@
 #include "qvariant.h"
 #include "colorScheme.h"
 //#include "utility_funcs.h"
-
+#include "qfiledialog.h"
 #ifdef GIFMOD
 #include "medium.h"
 #include "mainwindow.h"
@@ -1568,6 +1568,7 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 {
 	for (int i = 0; i<list.size(); i++)
 	{
+		QString newpath = "";
 		if (list[i].value("GUI").toString() == "Graphic Widget")
 		{
 			qDebug() << list[i].value("GUI").toString() << " Added.";
@@ -1599,30 +1600,60 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 #ifdef GWA
 						CGWA med;
 #endif
+						
 						if (list[i].contains(QString("%1 ANS").arg(experiment)))
 						{
-							med.ANS = CBTCSet(fullFilename(list[i].take(QString("%1 ANS").arg(experiment)).toString(), path).toStdString(), true);
+							if (newpath == "")
+								med.ANS = CBTCSet(fullFilename(list[i].take(QString("%1 ANS").arg(experiment)).toString(), path).toStdString(), true);
+							else
+								med.ANS = CBTCSet(newpath.toStdString() + list[i].take(QString("%1 ANS").arg(experiment)).toString().toStdString(),true);
 							if (!med.ANS.nvars)
-								hasResults = false;
+							{															
+								QMessageBox msgBox;
+								msgBox.setText("Output file was not found!");
+								msgBox.setInformativeText("Do you want to provide the location for the hydraulics output file?");
+								msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+								msgBox.setDefaultButton(QMessageBox::Yes);
+								int ret = msgBox.exec();
+								if (ret==QMessageBox::Yes)
+								{
+									QString fileName = QFileDialog::getOpenFileName(this,
+									tr("Open ").append(mainWindow->applicationName), modelPathname(),
+									tr("*.txt"));
+
+									QFileInfo fileInfo(fileName);
+									QString filename_only(fileInfo.fileName());
+									newpath = fileInfo.absolutePath() + "/" ;
+									med.ANS = CBTCSet((newpath + filename_only).toStdString(), true);
+									if (!med.ANS.nvars)
+										hasResults = false;
+								}
+							}
 						}
 #ifdef GIFMOD
 						if (list[i].contains(QString("%1 ANS_colloids").arg(experiment)))
 						{
-							med.ANS_colloids = CBTCSet(fullFilename(list[i].take(QString("%1 ANS_colloids").arg(experiment)).toString(), path).toStdString(), true);
-							if (!med.ANS_colloids.nvars)
-								hasResults = false;
+							if (newpath == "")
+								med.ANS_colloids = CBTCSet(fullFilename(list[i].take(QString("%1 ANS_colloids").arg(experiment)).toString(), path).toStdString(), true);
+							else
+								med.ANS_colloids = CBTCSet(newpath.toStdString() + list[i].take(QString("%1 ANS_colloids").arg(experiment)).toString().toStdString(), true);
+							//if (!med.ANS_colloids.nvars)
+								//hasResults = false;
 						}
 						if (list[i].contains(QString("%1 ANS_constituents").arg(experiment)))
 						{
-							med.ANS_constituents = CBTCSet(fullFilename(list[i].take(QString("%1 ANS_constituents").arg(experiment)).toString(), path).toStdString(), true);
-							if (!med.ANS_constituents.nvars)
-								hasResults = false;
+							if (newpath == "")
+								med.ANS_constituents = CBTCSet(fullFilename(list[i].take(QString("%1 ANS_constituents").arg(experiment)).toString(), path).toStdString(), true);
+							else
+								med.ANS_colloids = CBTCSet(newpath.toStdString() + list[i].take(QString("%1 ANS_constituents").arg(experiment)).toString().toStdString(), true);
+							//if (!med.ANS_constituents.nvars)
+								//hasResults = false;
 						}
 						if (list[i].contains(QString("%1 ANS_MB").arg(experiment)))
 						{
 							med.ANS_MB = CBTCSet(fullFilename(list[i].take(QString("%1 ANS_MB").arg(experiment)).toString(), path).toStdString(), true);
-							if (!med.ANS_MB.nvars)
-								hasResults = false;
+							//if (!med.ANS_MB.nvars)
+								//hasResults = false;
 						}
 						med.parent = modelSet;
 #endif
@@ -1632,9 +1663,13 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 			if (list[i].contains("ANS_obs"))
 #ifdef GIFMOD
 			{
-				modelSet->ANS_obs = CBTCSet(fullFilename(list[i].take("ANS_obs").toString(), path).toStdString(), true);
-				if (!modelSet->ANS_obs.nvars)
-					hasResults = false;
+				if (newpath == "")
+					modelSet->ANS_obs = CBTCSet(fullFilename(list[i].take("ANS_obs").toString(), path).toStdString(), true);
+				else
+					modelSet->ANS_obs = CBTCSet(newpath.toStdString() + list[i].take("ANS_obs").toString().toStdString(), true);
+
+				//if (!modelSet->ANS_obs.nvars)
+					//hasResults = false;
 			}
 #endif
 #ifdef GWA
@@ -2261,7 +2296,11 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 			menu->addAction("Plot Atmospheric Concentration Record");
 		}
 	}
-	model = (experimentID() == 0 || modelSet->Medium.size()==0) ? 0 : &(modelSet->Medium[experimentID() - 1]);
+	if (modelSet != NULL)
+		model = (experimentID() == 0 || modelSet->Medium.size() == 0) ? 0 : &(modelSet->Medium[experimentID() - 1]);
+	else
+		model = 0; 
+
 
 	if (model == 0)
 		if (modelSet)
