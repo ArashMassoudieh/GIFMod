@@ -15,6 +15,60 @@
 #include "Medium.h"
 
 
+void CMediumSet::load(GraphWidget* gw, runtimeWindow *rtw)
+{
+	this->gw = gw;
+	QString savedExperiment = gw->experiments->currentText();
+	gw->experiments->setCurrentText("All experiments");
+	set_default();
+	g_get_environmental_params();
+	g_get_params();
+	g_get_observed();
+	g_get_particle_types();
+	g_get_constituents();
+	g_get_sensors();
+	g_get_controllers();
+	g_get_reactions();
+	g_get_buildup();
+	g_get_external_flux();
+	g_get_evapotranspiration();
+
+
+	for (int i = 0; i<parameters.size(); i++)
+		set_param(i, parameters[i].value);
+
+
+	Medium.resize(gw->experiments->count() - 1);
+	for (int i = 1; i < gw->experiments->count(); i++)
+	{
+		gw->experiments->setCurrentIndex(i);
+		Medium[i - 1].parent = this;
+		Medium[i - 1].name = gw->experimentName().toStdString();
+		Medium[i - 1].gw = gw;
+		Medium[i - 1].Blocks.clear();
+		Medium[i - 1].Connector.clear();
+		Medium[i - 1].g_get_environmental_params();
+		Medium[i - 1].g_get_model_configuration(rtw); // load model structure (blocks, connectors)
+		Medium[i - 1].g_set_default_connector_expressions();
+		Medium[i - 1].g_set_default_block_expressions();
+		Medium[i - 1].g_load_inflows();
+		Medium[i - 1].get_funcs();
+		//		Medium[i - 1].set_default_params();
+		Medium[i - 1].log_file_name() = "log.txt";
+	}
+	for (int i = 0; i < parameters.size(); i++)
+	{
+		set_param(i, parameters[i].value);
+	}
+	for (int i = 1; i < gw->experiments->count(); i++)
+	{
+		Medium[i - 1].set_default_params();
+	}
+
+	gw->experiments->setCurrentText(savedExperiment);
+
+}
+
 CMediumSet::CMediumSet(GraphWidget* gw, runtimeWindow *rtw)
 {
 //	omp_set_num_threads(16);	//progress->setValue(0);

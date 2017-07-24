@@ -1637,8 +1637,8 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 								med.ANS_colloids = CBTCSet(fullFilename(list[i].take(QString("%1 ANS_colloids").arg(experiment)).toString(), path).toStdString(), true);
 							else
 								med.ANS_colloids = CBTCSet(newpath.toStdString() + list[i].take(QString("%1 ANS_colloids").arg(experiment)).toString().toStdString(), true);
-							//if (!med.ANS_colloids.nvars)
-								//hasResults = false;
+							if (med.ANS_colloids.nvars)
+								modelSet->SP.colloid_transport = true;
 						}
 						if (list[i].contains(QString("%1 ANS_constituents").arg(experiment)))
 						{
@@ -1646,8 +1646,8 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 								med.ANS_constituents = CBTCSet(fullFilename(list[i].take(QString("%1 ANS_constituents").arg(experiment)).toString(), path).toStdString(), true);
 							else
 								med.ANS_colloids = CBTCSet(newpath.toStdString() + list[i].take(QString("%1 ANS_constituents").arg(experiment)).toString().toStdString(), true);
-							//if (!med.ANS_constituents.nvars)
-								//hasResults = false;
+							if (med.ANS_constituents.nvars)
+								modelSet->SP.constituent_transport = true;
 						}
 						if (list[i].contains(QString("%1 ANS_MB").arg(experiment)))
 						{
@@ -2333,11 +2333,13 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 			}
 
 		}
+		
+		qDebug() << "Model->constituent_transport: " << model->constituent_transport() << entitiesByType("Constituent");
 		if ((model->colloid_transport() && entitiesByType("Particle").count()) ||
 			(model->constituent_transport() && entitiesByType("Constituent").count()))
 		{
-			QMenu *waterQualitySubMenu = menu->addMenu("Plot Water Quality Results");
-
+			QMenu *waterQualitySubMenu = menu->addMenu("Plot Constituent Concentrations");
+			
 			if (model->colloid_transport() && entitiesByType("Particle").count())
 			{
 				for each (Entity *p in entitiesByType("Particle"))
@@ -2390,6 +2392,9 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 					}
 				}
 			}
+			
+			QMenu *massesSubMenu = menu->addMenu("Plot Constituent Masses");
+			
 			if (model->constituent_transport() && entitiesByType("Constituent").count())
 			{
 				if (model->colloid_transport() && entitiesByType("Particle").count())
@@ -2463,6 +2468,91 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 						}
 					}
 				}
+
+				// Mass menues:
+
+				for each (Entity *e in entitiesByType("Constituent"))
+				{
+					//QMenu *constituentSubMenu = waterQualitySubMenu->addMenu(e->Name());
+					QStringList list;
+					list.append("Constituent Mass");
+					int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()), -2, 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
+					list.append(QString::number(BTCid));
+					BTCid = model->getblocksq(n->Name().toStdString());
+					list.append(QString::number(BTCid));
+					menuKey[massesSubMenu->addAction(e->Name())] = list;
+				}
+				QMenu *sorbedmassSubMenu = massesSubMenu->addMenu("Sorbed/Particle associated");
+				QMenu *constituentSorbedmassSubMenu;
+				for each (Entity *e in entitiesByType("Constituent"))
+				{
+					constituentSorbedmassSubMenu = sorbedmassSubMenu->addMenu(e->Name());
+					QStringList list;
+					list.append("Constituent Mass");
+					int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()), -1, 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
+					list.append(QString::number(BTCid));
+					BTCid = model->getblocksq(n->Name().toStdString());
+					list.append(QString::number(BTCid));
+					menuKey[constituentSorbedSubMenu->addAction("Soil")] = list;
+					for each (Entity *p in entitiesByType("Particle"))
+					{
+						QMenu *particlemassSubMenu = constituentSorbedmassSubMenu->addMenu(p->Name());
+						if (p->getValue("Model").contains("Single"))
+						{
+							QStringList list;
+							list.append("Constituent Mass");
+							int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+								model->lookup_particle_type(p->Name().toStdString()), 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
+							list.append(QString::number(BTCid));
+							BTCid = model->getblocksq(n->Name().toStdString());
+							list.append(QString::number(BTCid));
+							menuKey[particlemassSubMenu->addAction("Mobile")] = list;
+						}
+						if (p->getValue("Model").contains("Dual"))
+						{
+							QStringList list;
+							list.append("Constituent Mass");
+							int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+								model->lookup_particle_type(p->Name().toStdString()), 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
+							list.append(QString::number(BTCid));
+							menuKey[particlemassSubMenu->addAction("Mobile")] = list;
+							list.clear();
+							list.append("Constituent Mass");
+							BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+								model->lookup_particle_type(p->Name().toStdString()), 1, model->RXN().look_up_constituent_no(e->Name().toStdString()));
+							list.append(QString::number(BTCid));
+							BTCid = model->getblocksq(n->Name().toStdString());
+							list.append(QString::number(BTCid));
+							menuKey[particlemassSubMenu->addAction("Attached")] = list;
+						}
+						if (p->getValue("Model").contains("Triple"))
+						{
+							QStringList list;
+							list.append("Constituent Mass");
+							int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+								model->lookup_particle_type(p->Name().toStdString()), 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
+							list.append(QString::number(BTCid));
+							menuKey[particlemassSubMenu->addAction("Mobile")] = list;
+							list.clear();
+							list.append("Constituent Mass");
+							BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+								model->lookup_particle_type(p->Name().toStdString()), 1, model->RXN().look_up_constituent_no(e->Name().toStdString()));
+							list.append(QString::number(BTCid));
+							BTCid = model->getblocksq(n->Name().toStdString());
+							list.append(QString::number(BTCid));
+							menuKey[particlemassSubMenu->addAction("Reversible attached")] = list;
+							list.clear();
+							list.append("Constituent Mass");
+							BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+								model->lookup_particle_type(p->Name().toStdString()), 2, model->RXN().look_up_constituent_no(e->Name().toStdString()));
+							list.append(QString::number(BTCid));
+							BTCid = model->getblocksq(n->Name().toStdString());
+							list.append(QString::number(BTCid));
+							menuKey[particlemassSubMenu->addAction("Irreversible attached")] = list;
+						}
+					}
+				}
+
 			}
 		}
 #endif
@@ -3032,6 +3122,14 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 				plot->addScatterPlot(model->ANS_constituents, menuKey[selectedAction][1].toInt(), "", 1, 0, format);
 				plot->show();
 			}
+
+			if (menuKey[selectedAction][0] == "Constituent Mass")
+			{
+				plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
+				plot->addScatterPlot(model->ANS_constituents, menuKey[selectedAction][1].toInt(), model->ANS, menuKey[selectedAction][2].toInt(), "", 1, 0, format);
+				plot->show();
+			}
+
 			if (menuKey[selectedAction][0] == "Particle")
 			{
 				plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));

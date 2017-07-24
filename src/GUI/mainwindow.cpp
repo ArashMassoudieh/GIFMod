@@ -490,7 +490,9 @@ void MainWindow::on_action_Open_triggered()
 	QString fileName = QFileDialog::getOpenFileName(this,
 		tr("Open ").append(applicationName), mainGraphWidget->modelPathname(),
 		tr("Model (*.").append(fileExtension).append(");;All Files (*)"));
+	mainGraphWidget->clear();
 	loadModel(fileName);
+	mainGraphWidget->modelSet->load(mainGraphWidget, rtw);
 	on_actionZoom_All_triggered();
 	mainGraphWidget->updateNodeCoordinates();
 	addToRecentFiles(fileName);

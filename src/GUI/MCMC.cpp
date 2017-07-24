@@ -464,7 +464,7 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
 		omp_set_num_threads(numberOfThreads);
 #pragma omp parallel
 		{
-			srand(int(time(NULL)) ^ omp_get_thread_num()+kk);
+			srand(int(time(NULL)) ^ omp_get_thread_num() + kk);
 #pragma omp for
 
 			for (int jj = kk; jj < min(kk + n_chains, nsamples); jj++)
@@ -479,42 +479,46 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
 				else
 					stuckcounter[jj - kk] = 0;
 
-#pragma omp critical
-				if (jj%writeinterval == 0)
-				{
-					QCoreApplication::processEvents();
-					file = fopen(filename.c_str(), "a");
-					fprintf(file, "%i, ", jj);
-					for (int i = 0; i < n; i++)
-						fprintf(file, "%le, ", Params[jj][i]);
-					fprintf(file, "%le, %le, %f,", logp[jj], logp1[jj], stuckcounter[jj - kk]);
-					for (int j = 0; j < pertcoeff.size(); j++) fprintf(file, "%le,", pertcoeff[j]);
-					//fprintf(file, "%le", u[jj]);
-					// plot pertcoeff of each param vs jj
-					// plot acceptance_count/jj
-					fprintf(file, "\n");
-					fclose(file);
-				}
-				QCoreApplication::processEvents();
-				cout << jj << "," << pertcoeff[0] << "," << stuckcounter.max() << "," << stuckcounter.min() << endl;
-				qDebug() << jj << "," << pertcoeff[0] << "," << stuckcounter.max() << "," << stuckcounter.min();
-				//if (jj<n_burnout)
-				if (jj % 500 == 0)
-				{
-					if (double(accepted_count) / double(total_count)>acceptance_rate) 
-						for (int i = 0; i < nActParams; i++) pertcoeff[i] /= purtscale;
-					else
-						for (int i = 0; i < nActParams; i++) pertcoeff[i] *= purtscale;
-					accepted_count = 0;
-					total_count = 0;
+			}
+			QCoreApplication::processEvents();
 
-				}
-				//double error = double(accepted_count) / double(total_count) - acceptance_rate;
-				//for (int i = 0; i < nActParams; i++) pertcoeff[i] /= pow(purtscale, error);
+			if (kk % (50 * n_chains) == 0 || kk == k + nsamps + n_chains - 1)
+			{
+				file = fopen(filename.c_str(), "a");
+				for (int jj = max(min(kk + n_chains, nsamples) - 50 * n_chains, 0); jj < min(kk + n_chains, nsamples); jj++)
+				{
+					if (jj%writeinterval == 0)
+					{
+						QCoreApplication::processEvents();
 
-				QCoreApplication::processEvents();
+						fprintf(file, "%i, ", jj);
+						for (int i = 0; i < n; i++)
+							fprintf(file, "%le, ", Params[jj][i]);
+						fprintf(file, "%le, %le, %f,", logp[jj], logp1[jj], stuckcounter[jj%n_chains]);
+						for (int j = 0; j < pertcoeff.size(); j++) fprintf(file, "%le,", pertcoeff[j]);
+						fprintf(file, "\n");
+						
+					}
+
+					cout << jj << "," << pertcoeff[0] << "," << stuckcounter.max() << "," << stuckcounter.min() << endl;
+					qDebug() << jj << "," << pertcoeff[0] << "," << stuckcounter.max() << "," << stuckcounter.min();
+					//if (jj<n_burnout)
+				}
+				fclose(file);
+			}
+			if (kk % (50*n_chains) == 0)
+			{
+				if (double(accepted_count) / double(total_count)>acceptance_rate)
+					for (int i = 0; i < nActParams; i++) pertcoeff[i] /= purtscale;
+				else
+					for (int i = 0; i < nActParams; i++) pertcoeff[i] *= purtscale;
+				accepted_count = 0;
+				total_count = 0;
 
 			}
+			//double error = double(accepted_count) / double(total_count) - acceptance_rate;
+			//for (int i = 0; i < nActParams; i++) pertcoeff[i] /= pow(purtscale, error);
+
 		}
 		if (rtw)
 		{
