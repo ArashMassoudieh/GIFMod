@@ -1615,52 +1615,57 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 								msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
 								msgBox.setDefaultButton(QMessageBox::Yes);
 								int ret = msgBox.exec();
-								if (ret==QMessageBox::Yes)
+								if (ret == QMessageBox::Yes)
 								{
 									QString fileName = QFileDialog::getOpenFileName(this,
-									tr("Open ").append(mainWindow->applicationName), modelPathname(),
-									tr("*.txt"));
+										tr("Open ").append(mainWindow->applicationName), modelPathname(),
+										tr("*.txt"));
 
 									QFileInfo fileInfo(fileName);
 									QString filename_only(fileInfo.fileName());
-									newpath = fileInfo.absolutePath() + "/" ;
+									newpath = fileInfo.absolutePath() + "/";
 									med.ANS = CBTCSet((newpath + filename_only).toStdString(), true);
 									if (!med.ANS.nvars)
 										hasResults = false;
 								}
+								else
+									hasResults = false;
 							}
 						}
 #ifdef GIFMOD
-						if (list[i].contains(QString("%1 ANS_colloids").arg(experiment)))
+						if (hasResults)
 						{
-							if (newpath == "")
-								med.ANS_colloids = CBTCSet(fullFilename(list[i].take(QString("%1 ANS_colloids").arg(experiment)).toString(), path).toStdString(), true);
-							else
-								med.ANS_colloids = CBTCSet(newpath.toStdString() + list[i].take(QString("%1 ANS_colloids").arg(experiment)).toString().toStdString(), true);
-							if (med.ANS_colloids.nvars)
-								modelSet->SP.colloid_transport = true;
-						}
-						if (list[i].contains(QString("%1 ANS_constituents").arg(experiment)))
-						{
-							if (newpath == "")
-								med.ANS_constituents = CBTCSet(fullFilename(list[i].take(QString("%1 ANS_constituents").arg(experiment)).toString(), path).toStdString(), true);
-							else
-								med.ANS_colloids = CBTCSet(newpath.toStdString() + list[i].take(QString("%1 ANS_constituents").arg(experiment)).toString().toStdString(), true);
-							if (med.ANS_constituents.nvars)
-								modelSet->SP.constituent_transport = true;
-						}
-						if (list[i].contains(QString("%1 ANS_MB").arg(experiment)))
-						{
-							med.ANS_MB = CBTCSet(fullFilename(list[i].take(QString("%1 ANS_MB").arg(experiment)).toString(), path).toStdString(), true);
-							//if (!med.ANS_MB.nvars)
-								//hasResults = false;
+							if (list[i].contains(QString("%1 ANS_colloids").arg(experiment)))
+							{
+								if (newpath == "")
+									med.ANS_colloids = CBTCSet(fullFilename(list[i].take(QString("%1 ANS_colloids").arg(experiment)).toString(), path).toStdString(), true);
+								else
+									med.ANS_colloids = CBTCSet(newpath.toStdString() + list[i].take(QString("%1 ANS_colloids").arg(experiment)).toString().toStdString(), true);
+								if (med.ANS_colloids.nvars)
+									modelSet->SP.colloid_transport = true;
+							}
+							if (list[i].contains(QString("%1 ANS_constituents").arg(experiment)))
+							{
+								if (newpath == "")
+									med.ANS_constituents = CBTCSet(fullFilename(list[i].take(QString("%1 ANS_constituents").arg(experiment)).toString(), path).toStdString(), true);
+								else
+									med.ANS_colloids = CBTCSet(newpath.toStdString() + list[i].take(QString("%1 ANS_constituents").arg(experiment)).toString().toStdString(), true);
+								if (med.ANS_constituents.nvars)
+									modelSet->SP.constituent_transport = true;
+							}
+							if (list[i].contains(QString("%1 ANS_MB").arg(experiment)))
+							{
+								med.ANS_MB = CBTCSet(fullFilename(list[i].take(QString("%1 ANS_MB").arg(experiment)).toString(), path).toStdString(), true);
+								//if (!med.ANS_MB.nvars)
+									//hasResults = false;
+							}
 						}
 						med.parent = modelSet;
 #endif
 						modelSet->Medium.push_back(med);
 					}
 				}
-			if (list[i].contains("ANS_obs"))
+			if (list[i].contains("ANS_obs") && hasResults)
 #ifdef GIFMOD
 			{
 				if (newpath == "")

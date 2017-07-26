@@ -2299,7 +2299,10 @@ void CMedium::g_load_inflows()
 	for (int j = 0; j < Precipitation_filename.size(); j++)
 	{
 		CPrecipitation P = CPrecipitation(Precipitation_filename[j]);
-		if (P.n>0) Precipitation.push_back(P);
+		if (P.n>0) 
+			Precipitation.push_back(P);
+		else
+			warning(QString("Precipitation file:%1 is not valid.").arg(QString::fromStdString(Precipitation_filename[j])));
 	}
 //	for (int j = 0; j < Evaporation_filename.size(); j++)
 //	{
@@ -2318,10 +2321,10 @@ void CMedium::g_load_inflows()
 				Blocks[i].inflow.push_back(inflow);
 		}
 
-//		if ((Blocks[i].indicator == Pond) || (Blocks[i].indicator == Catchment) || (Blocks[i].indicator == Stream))
+		
 		{
 			if (Blocks[i].precipitation_swch == true)
-				for (int j = 0; j<Precipitation_filename.size(); j++)
+				for (int j = 0; j<Precipitation.size(); j++)
 					Blocks[i].inflow.push_back(Precipitation[j].getflow(Blocks[i].A,1.0/24.0/4));
 		}
 	}
