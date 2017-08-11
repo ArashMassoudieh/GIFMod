@@ -33,6 +33,7 @@ Node::Node(GraphWidget *gwidget, QString _type, QString _name, int _ID, int x, i
 	itemType = Object_Types::Block;
 	setX(x);
 	setY(y);
+	
 	width = max(minW, _width);
 	height = max(minH, _height);
 	objectType = parent->ModelSpace;//'*';
@@ -55,7 +56,8 @@ Node::Node(GraphWidget *gwidget, QString _type, QString _name, int _ID, int x, i
 	objectType.SubType = (*parent->mList).filter(filter).SubTypes()[0];
 //	props = new PropList<Node>(this);
 	props.parent = this;
-	
+	setProp("x", x);
+	setProp("y", y);
 	parent->MainGraphicsScene->addItem(this);
 	setName (newNodeName( (_name == "No Name") ? ObjectType().SubType : _name, parent->Nodes()));
 	if (_type == "Tracer")
@@ -343,7 +345,9 @@ bool Node::setProp(const QString &propName, const QVariant &Value, const int rol
 		valallUnits.append(Value.toString());
 		valallUnits.append(getProp(propName, allUnitsRole).toStringList());
 		
-		return setValue(propName, Value.toStringList());
+		return setValue(propName, valallUnits);
+		setX(getProp(variableName("x")).toInt());
+		setY(getProp(variableName("y")).toInt());
 	}
 
 	return false;
@@ -357,6 +361,7 @@ bool Node::setValue(const QString &propName, const XString &Value)
 	{
 		update();
 		changed();
+		
 	}
 	return r;
 }

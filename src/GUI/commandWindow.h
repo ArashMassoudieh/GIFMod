@@ -19,7 +19,7 @@ class commandWindow : public QDialog
   Q_OBJECT
   
 public:
-	commandWindow(GraphWidget *parent);
+  commandWindow(GraphWidget *parent);
   commandWindow() {};
   ~commandWindow() {};
   QCompleter *completer;
@@ -28,7 +28,7 @@ public:
   QStringList extract_units_for_prop(QString type, QString property);
   QStringList extract_nodes(QString type = "");
   QList<CCommand> *commands;
-  
+  void append(QString s);
 //  void append(QString text);
 //  void append(QStringList text);
 //  void append(vector<string> text);

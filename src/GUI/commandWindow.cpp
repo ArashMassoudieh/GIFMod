@@ -119,6 +119,11 @@ QStringList commandWindow::extract_nodes(QString type)
 	}
 }
 
+void commandWindow::append(QString s)
+{
+	ui->textEdit->append(s);
+}
+
 
 void commandWindow::commandDotRelease(QKeyEvent *e)
 {

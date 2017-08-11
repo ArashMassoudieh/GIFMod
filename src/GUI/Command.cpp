@@ -26,7 +26,10 @@ CCommand::CCommand(QString s) //create command from script
 			if (param_list[i].split("=").size() != 2)
 				Validate_text = "Syntax error";
 			else
-				parameters[param_list[i].split("=")[0].trimmed().toLower()] = param_list[i].split("=")[1].trimmed().toLower();
+			{
+				parameters[param_list[i].split("=")[0].trimmed().toLower()] = param_list[i].split("=")[1].trimmed().split("[")[0];
+				parameters[param_list[i].split("=")[0].trimmed().toLower()].unit = extract_in_between(param_list[i].split("=")[1].trimmed().toLower(), "[", "]");
+			}
 		}
 	}
 }
@@ -59,15 +62,21 @@ QString CCommand::toQString()
 		S.append("'" + values[i] +"'");
 		S.append(" ");
 	}
-	for (int i = 0; i < parameters.size(); i++)
+	S.append(":");
+	int i = 0;
+	for (QString key : parameters.keys())
 	{
-		S.append(parameters.key(i));
+		S.append(key);
 		S.append("=");
-		S.append(parameters.value(parameters.key(i)).toQString());
-		S.append("[");
-		S.append(parameters.value(parameters.key(i)).unit);
-		S.append("]");
+		S.append(parameters[key].toQString());
+		if (parameters[key].unit != "")
+		{
+			S.append("[");
+			S.append(parameters[key].unit);
+			S.append("]");
+		}
 		if (i < parameters.size() - 1) S.append(",");
+		i++;
 	}
 	return S;
 }

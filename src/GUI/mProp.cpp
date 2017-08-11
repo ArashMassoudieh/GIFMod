@@ -77,6 +77,30 @@ mProp mProp::operator & (const mProp &mP) const
 	return mProp(r);
 }
 
+void mProp::setstar()
+{
+	Model = "*";
+	GuiObject = "*";
+	ObjectType = "*";
+	SubType = "*";
+	Description = "*";
+	VariableName = "*";
+	VariableCode = "*";
+	VariableUnit = "*";
+	DefaultUnit = "*";
+	VariableType = "*";
+	DefaultValues = "*";
+	Delegate = "*";
+	Category = "*";
+	inputMethod = "*";
+	ExperimentDependent = "*";
+	DescriptionCode = "*";
+	Condition.append("*");
+	error.append("*");
+	errorDesc.append("*");
+
+}
+
 void mProp::setValue(const QStringList &QL)
 {
 	if (QL.size() != getList().size())

@@ -62,6 +62,8 @@
 #include "mainwindow.h"
 #include "entity.h"
 #include "folders.h"
+#include "wizard_dialog.h"
+#include "wizard_select_dialog.h"
 
 
 void MainWindow::on_actionAdd_Well_triggered()
@@ -276,6 +278,7 @@ MainWindow::MainWindow(QWidget *parent, QString applicationName, QString shortNa
 #ifdef GIFMOD
 	connect(ui->menuWaterQuality->menuAction(), SIGNAL(hovered()), this, SLOT(menuWaterQuality_hovered()));
 	connect(ui->menuWaterQuality, SIGNAL(triggered()), this, SLOT(menuWaterQuality_triggered()));	
+	connect(ui->actionNew_from_template, SIGNAL(triggered()), this, SLOT(newfromtemplate()));
 #endif
 
 
@@ -491,6 +494,7 @@ void MainWindow::on_action_Open_triggered()
 		tr("Open ").append(applicationName), mainGraphWidget->modelPathname(),
 		tr("Model (*.").append(fileExtension).append(");;All Files (*)"));
 	mainGraphWidget->clear();
+	if (fileName == "") return; 
 	loadModel(fileName);
 	mainGraphWidget->modelSet->load(mainGraphWidget, rtw);
 	on_actionZoom_All_triggered();
@@ -2064,6 +2068,21 @@ QString MainWindow::on_actionAdd_plant_triggered()
 	return n->Name();
 }
 
+void MainWindow::newfromtemplate()
+{
+	QString *template_name = new QString();
+	Wizard_select_dialog *wd = new Wizard_select_dialog (template_name, this);
+	wd->exec();
+	if (*template_name != "")
+	{
+		qDebug() << "before wizard dialog created" << endl;
+		qDebug() << "template_name: " << *template_name; 
+		Wizard_Dialog *wiz_window = new Wizard_Dialog(template_name, this);
+		qDebug() << "now showing" << endl;
+		wiz_window->show();
+	}
+}
+
 void MainWindow::on_actionAdd_Connector_triggered(bool checked)
 {
 	//Add Connector
@@ -2412,22 +2431,52 @@ void MainWindow::on_actionRun_Model_triggered()
 
 void MainWindow::on_actionRun_Model_from_Script_triggered()
 {
-	if (!mainGraphWidget->allowRun)
-	{
-		statusBar()->showMessage("Unable to run Model.");
-		mainGraphWidget->log(QString("Unable to run Model, the value of [%1] in property dialog has not been confirmed.").arg(mainGraphWidget->allowRunVariableName));
-		return;
-	}
-
+	
 #ifdef GIFMOD
 	QString fileName = QFileDialog::getOpenFileName(this,
 		tr("Open Green InfraStructure Script Text"), "",
-		tr("Script Text (*.txt);;All Files (*)"));
+		tr("Script Text (*.scr);;All Files (*)"));
 	if (fileName == "") return;
-	mainGraphWidget->modelSet = new CMediumSet(fileName.toStdString());
-	//CMedium *model2 = new CMedium(mainGraphWidget);
+	
+	QFile scriptfile(fileName);
+	if (!scriptfile.open(QIODevice::ReadOnly)) {
+		QMessageBox msgBox;
+		msgBox.setText("File '" + fileName + "' was not found");
+		msgBox.setStandardButtons(QMessageBox::Ok);
+		msgBox.setDefaultButton(QMessageBox::Ok);
+		int ret = msgBox.exec();
+	}
 
-	forwardRun(mainGraphWidget->modelSet, new runtimeWindow);
+	QTextStream script_stream(&scriptfile);
+	QList<CCommand> commands;
+	commandWindow *cwindow = new commandWindow(mainGraphWidget);
+	while (!script_stream.atEnd())
+	{
+		QString s = script_stream.readLine();
+		commands.append(CCommand(s));
+		cwindow->append(s);
+	}
+	cwindow->show();
+	
+	QVariantList output = mainGraphWidget->runCommands(commands);
+	QString outputfilename = fileName.replace(".scr", ".log");
+	QFile outputfile(outputfilename);
+	if (!outputfile.open(QIODevice::WriteOnly)) {
+		QMessageBox msgBox;
+		msgBox.setText("Not able to open file '" + fileName + "'");
+		msgBox.setStandardButtons(QMessageBox::Ok);
+		msgBox.setDefaultButton(QMessageBox::Ok);
+		int ret = msgBox.exec();
+	}
+	QTextStream output_stream(&outputfile);
+	for (int i = 0; i < output.size(); i++)
+		output_stream << output[i].toString() << endl;
+	
+	scriptfile.close();
+	outputfile.close(); 
+
+		
+	
 #endif
 }
 void MainWindow::on_actionRun_Inverse_Model_triggered()

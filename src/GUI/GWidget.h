@@ -197,7 +197,8 @@ public:
 	vector<Results *> resultsSet;
 	bool wizard(QList<command>&commands);
 	QVariant runCommand(CCommand & command); //runs the commands submitted into script window
-	//QVariant runCommand(QString command);
+	QList<QVariant> runCommands(QList<CCommand> &command); //run commands sequentially
+											 //QVariant runCommand(QString command);
 	//QVariant runCommand(QString command, QList<XString> arguments);// = QList<XString>());
 #endif
 #ifdef GWA

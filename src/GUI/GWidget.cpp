@@ -781,6 +781,8 @@ void GraphWidget::mouseReleaseEvent(QMouseEvent *event)
 			specs[n->Name()]["y"] = QString::number(n->y());
 			specs[n->Name()]["w"] = QString::number(n->Width());
 			specs[n->Name()]["h"] = QString::number(n->Height());
+			n->setProp("x",n->x());
+			n->setProp("y", n->y());
 		}
 	}
 	if (changed) 
@@ -3804,6 +3806,15 @@ QMap<QString, QString> GraphWidget::find_objects(QString name)
 }
 
 
+QList<QVariant> GraphWidget::runCommands(QList<CCommand> &commands)
+{
+	QList<QVariant> results;
+	for (int i = 0; i < commands.size(); i++)
+		results.append(runCommand(commands[i]));
+
+	return results; 
+}
+
 QVariant GraphWidget::runCommand(CCommand &command)
 {
 	//settings
@@ -3938,9 +3949,13 @@ QVariant GraphWidget::runCommand(CCommand &command)
 	if (command.command == "add")
 	{
 		if (command.values[0] == "")
+		{
 			output = "Syntax error.";
+			return output;
+		}
 		else
 		{
+			bool failed = true;
 			QString e = command.values[0].toLower();
 			QStringList addfromMainWindow;
 			addfromMainWindow << "soil" << "pond" << "catchment" << "darcy" << "storage" << "stream" << "plant";
@@ -3949,9 +3964,9 @@ QVariant GraphWidget::runCommand(CCommand &command)
 				Node* n = mainWindow->add(e);
 				foreach(QString key, command.parameters.keys())
 					output += setprop(n, key, command.parameters[key], experiment);
-
-
+				failed = false;
 			}
+			
 			QStringList entityTypes, exactType;
 
 			entityTypes << "sensor" << "objective function" << "controller" << "constituent" << "particle" << "build-up" << "external flux" << "reaction parameter" << "parameter" << "observation" << "evapotranspiration" << "wells" << "tracers";
@@ -3963,8 +3978,13 @@ QVariant GraphWidget::runCommand(CCommand &command)
 
 				foreach(QString key, command.parameters.keys())
 					output += setprop(en, key, command.parameters[key], experiment);
+				failed = false;
 			}
-
+			if (failed)
+			{
+				output = e + " is not a recognized object!";
+				return output;
+			}
 		}
 	}
 	if (command.command == "connect")
@@ -3972,6 +3992,7 @@ QVariant GraphWidget::runCommand(CCommand &command)
 		if (command.values.count() != 2)
 		{
 			output = "Two arguments are needed";
+			return output;
 		}
 		else
 		{
@@ -3980,9 +4001,15 @@ QVariant GraphWidget::runCommand(CCommand &command)
 			if (!n1 || !n2)
 			{
 				if (!n1)
+				{
 					output.append(QString("%1 is not accessible").arg(command.values[0]));
+					return output;
+				}
 				if (!n2)
+				{
 					output.append(QString("%1 is not accessible").arg(command.values[1]));
+					return output;
+				}
 			}
 			else
 			{
@@ -3994,11 +4021,14 @@ QVariant GraphWidget::runCommand(CCommand &command)
 	}
 		
 	if (writeOutput)
-		//		logW->append(output);
+	{
+		logW->append(output);
+		output += command.toQString() + ", Ok";
 		return output;
+	}
 
 
-	return QVariant();
+	return QVariant(command.toQString()+", Ok");
 }
 
 QString  GraphWidget::setprop(Node *n, QString &propname, XString &value, QString &experiment)
@@ -4019,6 +4049,8 @@ QString  GraphWidget::setprop(Node *n, QString &propname, XString &value, QStrin
 		value.setUnitsList(unitsList);
 		value.defaultUnit = defaultUnit;
 		n->props.setProp(propname, value, experiment); n->changed();// update();
+		n->setX(n->getProp("x").toInt());
+		n->setY(n->getProp("y").toInt());
 	}
 	return output;
 }

@@ -115,6 +115,8 @@ private slots:
 
 	QString on_actionAdd_plant_triggered();
 	
+	void newfromtemplate(); 
+
 	void on_actionAdd_Connector_triggered(bool checked);
 
 	void on_action_Select_triggered(bool checked);

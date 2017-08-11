@@ -54,6 +54,8 @@
 //1,Block,Stream,Stream,!,Saturated moisture content (~thetas),theta_s,!,!,float+Estimate,1,TextBox,Material,Input,Yes,100051,(0:1],E,Saturation moisure content must be between zero and one
 1,Block,Darcy,Darcy,!,Saturated moisture content (~thetas),theta_s,!,!,float+Estimate,!,TextBox,Material,Input,Yes,100328,(0:1],E,Saturation moisure content must be between zero and one
 1,Block,Storage,Storage,!,Saturated moisture content (~thetas),theta_s,!,!,float+Estimate,0.4,TextBox,Material,Input,Yes,100334,(0:1],E,Saturation moisure content must be between zero and one
+1,Block,*,*,x location,x,x,!,!,integer,0,TextBox,Geometry,Input,No,100514,,,
+1,Block,*,*,y location,y,y,!,!,integer,0,TextBox,Geometry,Input,No,100515,,,
 1,Block,*,*,!,Vapor diffusion coefficient,vapor_diffusion,m~^2/day; m~^2/s; cm~^2/s; cm~^2/day ,m~^2/day,float+Estimate,0,UnitBox,Material,Input,Yes,100059,>=0,E,Vapor Diffusion Coefficient must be non-negative
 1,Connector,Default,non-Porous,!,Flow exponent,exponent,!,!,float+Estimate,!,TextBox,Geometry,Input,Yes,100061,,,
 1,Connector,Default,non-Porous,!,Manning's roughness coefficient,nmanning,s/~^3~radicm,day/~^3~radicm,float+Estimate,!,UnitBox,Material,Input,Yes,100062,>0,E,Manning's roughness coefficient must be positive

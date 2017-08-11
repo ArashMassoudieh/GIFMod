@@ -4,6 +4,7 @@
 #include "qlistview.h"
 #include "XString.h"
 #include <QDoubleValidator>
+#include <qlayout.h>
 class UnitTextBox :
 	public QWidget
 {	
@@ -11,10 +12,17 @@ public:
 	UnitTextBox() {};
 	UnitTextBox(const XString &X, QWidget * parent = 0) :QWidget(parent)
 	{
+		setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+		QHBoxLayout *layout = new QHBoxLayout(this);
+		layout->setMargin(0);
+		layout->setSizeConstraint(QLayout::SetMaximumSize);
 		textBox = new QLineEdit(this);
 		unitBox = new QComboBox(textBox);
 		validator = new QDoubleValidator(this);
+		textBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 		textBox->setValidator(validator);
+		layout->addWidget(textBox);
+		layout->addWidget(unitBox);
 //		Rect = option.rect;
 
 		setXString(X);

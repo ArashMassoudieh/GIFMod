@@ -186,12 +186,26 @@ QStringList extract_by_space_quote(QString s)
 	return out; 
 }
 
-vector<int> find_indexes_of(QString &s, QString &s1)
+QString extract_in_between(const QString &s,QString s1, QString s2)
+{
+	QString out;
+	if (!s.contains(s1) && !s.contains(s2)) return out;
+	int start = s.indexOf(s1,0);
+	int end = s.indexOf(s2, 0);
+	if (start == -1) return out; 
+	out = s.mid(start+1, end - start-1);
+	return out;
+}
+
+vector<int> find_indexes_of(const QString &s, QString &s1)
 {
 	vector<int> out;
 	int i = 0;
 	while (s.indexOf(s1, i) != -1)
+	{
 		out.push_back(s.indexOf(s1, i));
+		i++; 
+	}
 
 	return out; 
 

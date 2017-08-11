@@ -27,6 +27,8 @@ public:
 	mProp operator = (const char &);
 	mProp operator & (const mProp &) const;
 
+	void setstar();
+
 	bool mProp::operator==(const mProp &mP) const;
 	bool mProp::operator %=(const mProp &mP) const; // exact comparison of to filter variable wo considering wildcards *
 	static bool mProp::areTheSame(const QList<mProp>a, const QList<mProp>b);
