@@ -500,6 +500,7 @@ void MainWindow::on_action_Open_triggered()
 	on_actionZoom_All_triggered();
 	mainGraphWidget->updateNodeCoordinates();
 	addToRecentFiles(fileName);
+	
 }
 bool MainWindow::loadModel(QString modelfilename)
 {
@@ -558,6 +559,12 @@ bool MainWindow::loadModel(QString modelfilename)
 		}
 		
 		
+	}
+
+	for each (Node *n in mainGraphWidget->Nodes())
+	{
+		n->setProp("x", n->x());
+		n->setProp("y", n->y());
 	}
 
 	//	updateInterface(NavigationMode);
@@ -2637,12 +2644,34 @@ void MainWindow::on_actionExport_to_Script_Language_triggered()
 	logMsg.append(QString("====   %1 Errors, %2 Warnings   ====").arg(result[0]).arg(result[1]));
 	mainGraphWidget->log(logMsg);
 
+	QList<CCommand> commands = mainGraphWidget->script();
+
 	logWindow *scriptW = new logWindow(this, "Generated Script", "Script (*.txt)");
-	scriptW->append(mainGraphWidget->script());
-	scriptW->show();
+	QString fileName = QFileDialog::getSaveFileName(this,
+		tr("Save Green InfraStructure Script Text"), "",
+		tr("Script Text (*.scr);;All Files (*)"));
+	if (fileName == "") return;
+
+	QFile scriptfile(fileName);
+	if (!scriptfile.open(QIODevice::WriteOnly)) {
+		QMessageBox msgBox;
+		msgBox.setText("File '" + fileName + "' was not found");
+		msgBox.setStandardButtons(QMessageBox::Ok);
+		msgBox.setDefaultButton(QMessageBox::Ok);
+		int ret = msgBox.exec();
+	}
+
+	QTextStream output_stream(&scriptfile);
+	for (int i = 0; i < commands.size(); i++)
+		output_stream << commands[i].toQString() << endl;
+
+
+
+
 	mainGraphWidget->log("Script Generated.");
 	mainGraphWidget->log(logMsg);
 	setCursor(Qt::ArrowCursor);
+	scriptfile.close(); 
 
 }
 

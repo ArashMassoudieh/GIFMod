@@ -17,6 +17,11 @@ public:
 		unitsList = X.unitsList; 
 //		if (defaultUnit == ""  && unitsList.size()) defaultUnit = unitsList.first();
 	};
+	XString(const double &X);
+	XString(const int &X);
+	XString& XString::operator+=(const XString x);
+	XString operator=(const double x);
+	XString operator=(const int x);
 	XString(const QString &X) : QString(reform(X)) {};
 	XString(const QStringList &XU) : QString(reform(XU[0])) {
 		QStringList QL = XU;
@@ -311,6 +316,26 @@ static	QString XString::reformBack(QString R)
 			XString X(reform(QL[i]), unit, unitsList, defaultUnit);
 			R.append(X);}
 		return R;	};
+
+	static	QStringList XString::reform(const QStringList &X)
+	{
+		QStringList out; 
+		for (int i = 0; i < X.size(); i++)
+			out.append(XString::reform(X[i]));
+
+		return out; 
+	}
+	static	QStringList XString::reformBack(QStringList R)
+	{
+		QStringList out;
+		for (int i = 0; i < R.size(); i++)
+			out.append(XString::reformBack(R[i]));
+
+		return out;
+	}
+
 private:
 	
+
+
 };

@@ -983,7 +983,12 @@ XString Node::val(const QString & code) const
 					if (r.toDouble() == 0)
 						return r;
 					else
-						return r.convertToDefaultUnit();
+					{
+						QString unit = r.unit;
+						XString out = r.convertToDefaultUnit();
+						out.unit = unit; 
+						return out; 
+					}
 				}
 			return r;
 		}

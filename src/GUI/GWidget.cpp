@@ -1568,6 +1568,13 @@ void GraphWidget::clearRXN()
 
 GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool oldVersion) //, QWidget *parent)
 {
+#ifdef GIFMOD
+	modelSet = new CMediumSet;
+#endif
+#ifdef GWA
+	modelSet = new CGWASet;
+#endif
+	
 	for (int i = 0; i<list.size(); i++)
 	{
 		QString newpath = "";
@@ -1579,12 +1586,7 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 			ModelSpace.Model = list[i].value("Model Space").toString();
 			inflowFileNames = list[i].value("Inflow Filenames").toStringList();
 			hasResults = list[i].value("hasResults").toBool();
-#ifdef GIFMOD
-			modelSet = new CMediumSet;
-#endif
-#ifdef GWA
-			modelSet = new CGWASet;
-#endif
+
 			//if (hasResults)			//				{
 			experimentsComboClear(false);
 			QString path = modelPathname();
@@ -3964,6 +3966,12 @@ QVariant GraphWidget::runCommand(CCommand &command)
 				Node* n = mainWindow->add(e);
 				foreach(QString key, command.parameters.keys())
 					output += setprop(n, key, command.parameters[key], experiment);
+
+				qDebug() << int(n->getProp("x").toDouble());
+				n->setProp("x", int(n->getProp("x").toDouble()));
+				n->setProp("y", int(n->getProp("y").toDouble()));
+				n->setX(int(n->getProp("x").toDouble()));
+				n->setY(int(n->getProp("y").toDouble()));
 				failed = false;
 			}
 			
@@ -4034,7 +4042,7 @@ QVariant GraphWidget::runCommand(CCommand &command)
 QString  GraphWidget::setprop(Node *n, QString &propname, XString &value, QString &experiment)
 {
 	QString output;
-	if (!mList->extract_props_for_type(n->objectType.ObjectType).contains(propname))
+	if (!mList->extract_props_for_type(n->objectType.ObjectType).contains(propname.toLower()))
 		output = QString(n->Name() + " does not have a property called " + propname);
 	else
 	{
@@ -4049,8 +4057,7 @@ QString  GraphWidget::setprop(Node *n, QString &propname, XString &value, QStrin
 		value.setUnitsList(unitsList);
 		value.defaultUnit = defaultUnit;
 		n->props.setProp(propname, value, experiment); n->changed();// update();
-		n->setX(n->getProp("x").toInt());
-		n->setY(n->getProp("y").toInt());
+		
 	}
 	return output;
 }
@@ -4058,7 +4065,7 @@ QString  GraphWidget::setprop(Node *n, QString &propname, XString &value, QStrin
 QString  GraphWidget::setprop(Edge *ed, QString &propname, XString &value, QString &experiment)
 {
 	QString output;
-	if (!mList->extract_props_for_type(ed->objectType.ObjectType).contains(propname))
+	if (!mList->extract_props_for_type(ed->objectType.ObjectType).contains(propname.toLower()))
 		output = QString(ed->Name() + " does not have a property called " + propname);
 	else
 	{
@@ -4069,7 +4076,7 @@ QString  GraphWidget::setprop(Edge *ed, QString &propname, XString &value, QStri
 		for (int i = 0; i < unitsList.count(); i++)
 		{
 			if (XString::reformBack(value.unit) == XString::reformBack(unitsList[i])
-				|| XString::coefficient(value.unit) == XString::coefficient(unitsList[i]))
+				|| XString::coefficient(XString::reformBack(value.unit)) == XString::coefficient(XString::reformBack(unitsList[i])))
 			{
 				unit = unitsList[i];
 				exit;
@@ -4086,7 +4093,7 @@ QString  GraphWidget::setprop(Edge *ed, QString &propname, XString &value, QStri
 QString  GraphWidget::setprop(Entity *en, QString &propname, XString &value, QString &experiment)
 {
 	QString output;
-	if (!mList->extract_props_for_type(en->objectType.ObjectType).contains(propname))
+	if (!mList->extract_props_for_type(en->objectType.ObjectType).contains(propname.toLower()))
 		output = QString(en->Name() + " does not have a property called " + propname);
 	else
 	{
@@ -4097,7 +4104,7 @@ QString  GraphWidget::setprop(Entity *en, QString &propname, XString &value, QSt
 		for (int i = 0; i < unitsList.count(); i++)
 		{
 			if (XString::reformBack(value.unit) == XString::reformBack(unitsList[i])
-				|| XString::coefficient(value.unit) == XString::coefficient(unitsList[i]))
+				|| XString::coefficient(XString::reformBack(value.unit)) == XString::coefficient(XString::reformBack(unitsList[i])))
 			{
 				unit = unitsList[i];
 				exit;

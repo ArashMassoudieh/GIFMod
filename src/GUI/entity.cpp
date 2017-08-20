@@ -488,6 +488,8 @@ Entity* Entity::unCompact10(QMap<QString, QVariant> n, GraphWidget *gwidget)
 		*/
 	return &Entity("","",gwidget);
 }
+
+
 QStringList Entity::variableNames() const
 {
 	QStringList r;
@@ -523,7 +525,6 @@ XString Entity::val(const QString & code) const
 		if (mP.VariableCode.toLower() == code.toLower())
 		{
 			XString r = getValue(mP.VariableName);
-//			if (r.unitsList.count() >1 ) return r.convertTo(r.unitsList[0]); 
 			if (!r.toQString().isEmpty())
 				if (!r.unit.isEmpty())
 				{

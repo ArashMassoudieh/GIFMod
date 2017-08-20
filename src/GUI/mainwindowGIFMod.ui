@@ -642,7 +642,10 @@
      <normaloff>Icons/runScript.png</normaloff>Icons/runScript.png</iconset>
    </property>
    <property name="text">
-    <string>Run Model from Script</string>
+    <string>Create Model from Script</string>
+   </property>
+   <property name="iconText">
+    <string>Create Model from Script</string>
    </property>
   </action>
   <action name="action_Hydraulic_Outputs">

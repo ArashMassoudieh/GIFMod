@@ -1099,9 +1099,15 @@ void CMediumSet::g_get_observed()
 		CBTC observed = CBTC();
 		if (file.size())
 		{
-			observed = CBTCSet(file, true)[0];
-			if (observed.file_not_found)
+			CBTCSet _observed(file, true);
+			if (_observed.file_not_found)
+			{
 				gw->newError(QString("Could not read observation data file %1 for %2").arg(QString::fromStdString(file)).arg(e->name));
+			}
+			else 
+				observed = _observed[0];
+			
+				
 		}
 		measured_data.append(observed, e->name.toStdString());
 	}
