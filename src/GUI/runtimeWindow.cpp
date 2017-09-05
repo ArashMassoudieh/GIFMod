@@ -86,7 +86,7 @@ void runtimeWindow::setMode(QString mode)
 		ui->label->show();
 		ui->progressBar2->hide();
 		ui->customPlot2->hide();
-		ui->customPlot->yAxis->setLabel("Timestep");
+		ui->customPlot->yAxis->setLabel("Time step");
 		ui->customPlot->yAxis->setScaleType(QCPAxis::stLinear);
 	}
 	else if (mode == "inverse")

@@ -3019,6 +3019,8 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 
 		if (selectedAction->text() == "Plot Storage")
 		{
+			format.yAxisLabel.append("Storage (m^3)");
+			format.xAxisLabel.append("Time (day)");
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
 			plot->addScatterPlot(model->ANS, model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Storage"), 1, 0, format);
 			plot->show();
@@ -3026,6 +3028,8 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 		if (selectedAction->text() == "Plot Head")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
+			format.yAxisLabel.append("Head (m)");
+			format.xAxisLabel.append("Time (day)");
 			plot->addScatterPlot(model->ANS, Edges().count() + Nodes().count() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Head"), 1, 0, format);
 			plot->show();
 		}
@@ -3033,6 +3037,8 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
 			double volume = n->val("a").convertToDefaultUnit().toDouble() * n->val("depth").convertToDefaultUnit().toDouble(); //model->Blocks[model->getblocksq(n->Name().toStdString())].V; //ask Arash
+			format.yAxisLabel.append("Moisture Content");
+			format.xAxisLabel.append("Time (day)");
 			if (n->objectType.ObjectType=="Plant")
 				plot->addScatterPlot(model->ANS, model->getblocksq(n->Name().toStdString()), model->getblocksq(n->Name().toStdString()) + 3 * Edges().count() + 3 * Nodes().count() ,  QString("%1: %2").arg(n->Name()).arg("Moisture Content"), format);
 			else
@@ -3042,6 +3048,8 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 		if (selectedAction->text() == "Water Depth")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
+			format.yAxisLabel.append("Depth (m)");
+			format.xAxisLabel.append("Time (day)");
 			double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
 			plot->addScatterPlot(model->ANS, Edges().count() + Nodes().count() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Water Depth"), 1, -z0, format);
 			plot->show();
@@ -3049,6 +3057,8 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 		if (selectedAction->text() == "Evapotranspiration Rate")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
+			format.yAxisLabel.append("Evaporation rate (m^3/day)");
+			format.xAxisLabel.append("Time (day)");
 			double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
 			plot->addScatterPlot(model->ANS, Edges().count() + 2 * Nodes().count() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Evapotranspiration Rate"), 1, 0, format);
 			plot->show();
@@ -3056,6 +3066,8 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 		if (selectedAction->text() == "Leaf Area Index")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
+			format.yAxisLabel.append("Leaf Area Index");
+			format.xAxisLabel.append("Time (day)");
 			double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
 			plot->addScatterPlot(model->ANS, 3* Edges().count() + 4 * Nodes().count() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Leaf Area Index"), 1, 0, format);
 			plot->show();
@@ -3064,6 +3076,8 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 		if (selectedAction->text() == "Bio-volume")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
+			format.yAxisLabel.append("Bio-volume (m^3)");
+			format.xAxisLabel.append("Time (day)");
 			double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
 			plot->addScatterPlot(model->ANS, 3 * Edges().count() + 3 * Nodes().count() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Bio-volume"), 1, 0, format);
 			plot->show();
@@ -3073,6 +3087,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 		if (selectedAction->text() == "Plot Atmospheric Concentration Record")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
+			format.xAxisLabel.append("Time (day)");
 			QString file = n->getValue("Atmospheric Record").toQString();
 			CBTC record = CBTC(file.replace("./", modelPathname().append('/')).toStdString());
 			plot->addScatterPlot(record, n->Name(), plotformat());
@@ -3152,6 +3167,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 					if (selectedAction->text().toStdString() == inflow.names[i])
 					{
 						plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
+						format.yAxisLabel.append("Flow (m^3/day)");
 						plot->addScatterDotPlot(inflow, i, "", format);
 						plot->show();
 					}
@@ -3934,13 +3950,13 @@ QVariant GraphWidget::runCommand(CCommand &command)
 				else
 				{
 					if (n) {
-						output += setprop(n, propName, value, experiment);
+						output += setprop(n, XString::reform(propName), value, experiment);
 					}
 					if (ed) {
-						output += setprop(ed, propName, value, experiment);
+						output += setprop(ed, XString::reform(propName), value, experiment);
 						}
 					if (en) {
-						output += setprop(en, propName, value, experiment);
+						output += setprop(en, XString::reform(propName), value, experiment);
 					}
 					mainWindow->tableProp->repaint();
 				}
@@ -3965,7 +3981,7 @@ QVariant GraphWidget::runCommand(CCommand &command)
 			{
 				Node* n = mainWindow->add(e);
 				foreach(QString key, command.parameters.keys())
-					output += setprop(n, key, command.parameters[key], experiment);
+					output += setprop(n, XString::reform(key), command.parameters[key], experiment);
 
 				qDebug() << int(n->getProp("x").toDouble());
 				n->setProp("x", int(n->getProp("x").toDouble()));
@@ -3985,7 +4001,7 @@ QVariant GraphWidget::runCommand(CCommand &command)
 				en = new Entity(exactType[entityTypes.indexOf(e)], "No Name", this);
 
 				foreach(QString key, command.parameters.keys())
-					output += setprop(en, key, command.parameters[key], experiment);
+					output += setprop(en, XString::reform(key), command.parameters[key], experiment);
 				failed = false;
 			}
 			if (failed)
@@ -4022,8 +4038,9 @@ QVariant GraphWidget::runCommand(CCommand &command)
 			else
 			{
 				Edge *e = new Edge(n1, n2, this);
-				foreach(QString key, command.parameters.keys())
-					output += setprop(e, key, command.parameters[key], experiment);
+				if (e!=NULL)
+					foreach(QString key, command.parameters.keys())
+						output += setprop(e, XString::reform(key), command.parameters[key], experiment);
 			}
 		}
 	}
@@ -4056,7 +4073,12 @@ QString  GraphWidget::setprop(Node *n, QString &propname, XString &value, QStrin
 		value.unit = (unit == "") ? defaultUnit : unit;
 		value.setUnitsList(unitsList);
 		value.defaultUnit = defaultUnit;
-		n->props.setProp(propname, value, experiment); n->changed();// update();
+		if (propname == "Name" && nodeNames().contains(value.toQString()))
+		{
+			log("Node '" + value.toQString() + "' already exist");
+		}
+		else
+			n->props.setProp(propname, value, experiment); n->changed();// update();
 		
 	}
 	return output;
@@ -4085,7 +4107,13 @@ QString  GraphWidget::setprop(Edge *ed, QString &propname, XString &value, QStri
 		value.unit = (unit == "") ? defaultUnit : unit;
 		value.setUnitsList(unitsList);
 		value.defaultUnit = defaultUnit;
-		ed->props.setProp(propname, value, experiment); ed->changed(); // update();
+		
+		if (propname == "Name" && nodeNames().contains(value.toQString()))
+		{
+			log("Connector '" + value.toQString() + "' already exist");
+		}
+		else
+			ed->props.setProp(propname, value, experiment); ed->changed(); // update();
 	}
 	return output;
 }
@@ -4113,7 +4141,12 @@ QString  GraphWidget::setprop(Entity *en, QString &propname, XString &value, QSt
 		value.unit = (unit == "") ? defaultUnit : unit;
 		value.setUnitsList(unitsList);
 		value.defaultUnit = defaultUnit;
-		en->props.setProp(propname, value, experiment);	en->changed();// update();
+		if (propname == "Name" && nodeNames().contains(value.toQString()))
+		{
+			log("Entity '" + value.toQString() + "' already exist");
+		}
+		else
+			en->props.setProp(propname, value, experiment);	en->changed();// update();
 	}
 	return output;
 }

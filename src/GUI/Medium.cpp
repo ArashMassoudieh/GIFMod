@@ -2122,6 +2122,7 @@ void CMedium::solve_fts_m2(double dt)
 					write_state(outputpathname() + "state.txt");
 					fprintf(FILEBTC, "failed count > 30");
 					fclose(FILEBTC);
+					write_flows(outputpathname() + "flows.txt");
 				}
 				// Sassan					
 					failed = true;
@@ -2129,7 +2130,7 @@ void CMedium::solve_fts_m2(double dt)
 					for (int i = 0; i < controllers().size(); i++)
 						ANS_control.BTC[i] = controllers()[i].output;
 					updateProgress();
-
+					write_flows(outputpathname() + "flows.txt");
 				return;
 			}
 			// Sassan					
@@ -2139,7 +2140,7 @@ void CMedium::solve_fts_m2(double dt)
 				fail_reason = "Simulation was stopped by user";
 				for (int i = 0; i < controllers().size(); i++)
 					ANS_control.BTC[i] = controllers()[i].output;
-
+				write_flows(outputpathname() + "flows.txt");
 				if (write_details())
 				{
 					//runtimewindow->parent->logW->append("failed, trying to write to solution_details.");
@@ -2158,7 +2159,7 @@ void CMedium::solve_fts_m2(double dt)
 				fail_reason = "Simulation time exceeded the maximum simulation time";
 				for (int i = 0; i < controllers().size(); i++)
 					ANS_control.BTC[i] = controllers()[i].output;
-				
+				write_flows(outputpathname() + "flows.txt");
 				if (write_details())
 				{
 					//runtimewindow->parent->logW->append("failed, trying to write to solution_details.");
@@ -2183,6 +2184,7 @@ void CMedium::solve_fts_m2(double dt)
 				}
 				fail_reason = "dt too small, epoch = " + numbertostring(epoch_count) + ", average_dt = " + numbertostring((t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii);
 				failed = true;
+				write_flows(outputpathname() + "flows.txt");
 				for (int i = 0; i < controllers().size(); i++)
 					ANS_control.BTC[i] = controllers()[i].output;
 
@@ -5576,6 +5578,16 @@ void CMedium::set_G_star(CVector_arma & X)
 		for (int p = 0; p<Blocks[i].Solid_phase.size(); p++)
 			for (int l = 0; l<Blocks[i].Solid_phase[p]->n_phases; l++)
 				Blocks[i].G_star[p][l] = X[get_member_no(i, p, l)];
+}
+
+void CMedium::write_flows(string filename)
+{
+	std::ofstream outfile(filename);
+	for (int i = 0; i < Connector.size(); i++)
+		outfile << Connector[i].ID << ", " << Connector[i].Q << ", " << Connector[i].Q_star <<endl;
+
+	outfile.close();
+
 }
 
 #endif

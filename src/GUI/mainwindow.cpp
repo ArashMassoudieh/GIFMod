@@ -1,5 +1,5 @@
 #ifndef GIFMOD_VERSION
-#define GIFMOD_VERSION "0.1.22"
+#define GIFMOD_VERSION "0.1.23"
 #endif
 #ifndef GWA_VERSION
 #define GWA_VERSION "0.0.1"
@@ -495,11 +495,20 @@ void MainWindow::on_action_Open_triggered()
 		tr("Model (*.").append(fileExtension).append(");;All Files (*)"));
 	mainGraphWidget->clear();
 	if (fileName == "") return; 
-	loadModel(fileName);
-	mainGraphWidget->modelSet->load(mainGraphWidget, rtw);
-	on_actionZoom_All_triggered();
-	mainGraphWidget->updateNodeCoordinates();
-	addToRecentFiles(fileName);
+	if (loadModel(fileName))
+	{
+		mainGraphWidget->modelSet->load(mainGraphWidget, rtw);
+		on_actionZoom_All_triggered();
+		mainGraphWidget->updateNodeCoordinates();
+		addToRecentFiles(fileName);
+	}
+	else
+	{
+		QMessageBox::StandardButton reply;
+		reply = QMessageBox::information(this, "File Corrupted!", "The model file is corrupted.",
+			QMessageBox::Ok);
+	}
+
 	
 }
 bool MainWindow::loadModel(QString modelfilename)

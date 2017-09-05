@@ -357,6 +357,7 @@ double CMBBlock::get_val(string SS)
 		if (tolower(trim(s[0]))=="h*") return H_star;
 		if (tolower(trim(s[0]))=="v") return V_star;
 		if (tolower(trim(s[0]))=="s*") return S_star;     
+		if (tolower(trim(s[0])) == "e") return get_evaporation(parent->t);
 		if (tolower(trim(s[0]))=="se*") 
 		{
 			if ((indicator != Soil) && (indicator != Darcy))

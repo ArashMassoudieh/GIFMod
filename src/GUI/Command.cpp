@@ -171,7 +171,7 @@ bool CCommand::add_command(Edge * e)
 bool CCommand::add_command(Entity * en)
 {
 	command = "add";
-	values.append("Particle");
+	values.append(en->objectType.ObjectType);
 	for each (mProp prop in en->getmList(en->objectType).List)
 	{
 		if (!en->val(prop.VariableCode).isEmpty() && en->val(prop.VariableCode) != "Default")

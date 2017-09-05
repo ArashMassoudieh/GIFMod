@@ -652,8 +652,18 @@ bool isnumber(char S)
 		return true;
 	else
 		return false;
-
 }
+
+bool isnumber(string S)
+{
+	bool res = true; 
+	for (int i = 0; i < S.size(); i++)
+		if (!isnumber(S[i]))
+			res = false; 
+
+	return res; 
+}
+
 
 bool isintegernumber(string S)
 {

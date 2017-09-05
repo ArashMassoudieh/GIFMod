@@ -28,21 +28,10 @@ QList<CCommand> GraphWidget::s_get_params() const
 	QList<CCommand> commands;
 	commands.append(QString("//Parameters"));
 
-	for each (Entity *e in entitiesByType("Parameters"))
+	for each (Entity *e in entitiesByType("Parameter"))
 	{
 		CCommand command;
-		command.command = "add";
-		command.command = "Parameter";
-		for each (mProp prop in e->getmList(e->objectType).List)
-		{
-			if (!e->val(prop.VariableCode).isEmpty() && e->val(prop.VariableCode) != "Default")
-				if (e->getValue(prop.VariableCode).replace("...", "").trimmed() != "")
-				{
-					XString val = e->getValue(prop.VariableName);
-					command.parameters[prop.VariableName] = val.replace("...", "");
-					command.parameters[prop.VariableName].unit = val.unit;
-				}
-		}
+		command.add_command(e);
 		log(command.toQString());
 		commands.append(command);
 	}
@@ -54,21 +43,10 @@ QList<CCommand> GraphWidget::s_get_observed() const
 	QList<CCommand> commands;
 	commands.append(QString("//Observations"));
 	
-	for each (Entity *e in entitiesByType("Observed"))
+	for each (Entity *e in entitiesByType("Observation"))
 	{
 		CCommand command;
-		command.command = "add";
-		command.command = "Observed";
-		for each (mProp prop in e->getmList(e->objectType).List)
-		{
-			if (!e->val(prop.VariableCode).isEmpty() && e->val(prop.VariableCode) != "Default")
-				if (e->val(prop.VariableCode).replace("...", "").trimmed() != "")
-				{
-					XString val = e->getValue(prop.VariableName);
-					command.parameters[prop.VariableName] = val.replace("...", "");
-					command.parameters[prop.VariableName].unit = val.unit;
-				}
-		}
+		command.add_command(e);
 		log(command.toQString());
 		commands.append(command);
 	}

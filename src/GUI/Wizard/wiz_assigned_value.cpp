@@ -40,7 +40,7 @@ wiz_assigned_value::wiz_assigned_value(QString s)
 		else if (s.split("=")[1].split("[")[0].toLower().trimmed() == "expression")
 		{
 			value_param_expression = "expression";
-			value = extract_between(s.split("=")[1].toLower().trimmed(), '[', ']').trimmed();
+			value = extract_between(s.split("=")[1].trimmed(), '[', ']').trimmed();
 		}
 	}
 	else

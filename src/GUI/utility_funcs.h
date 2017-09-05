@@ -40,3 +40,4 @@ QStringList specialSplit(QString s);
 QStringList extract_by_space_quote(QString s);
 vector<int> find_indexes_of(const QString &s, QString &s1);
 QString extract_in_between(const QString &s, QString s1, QString s2);
+bool isnumber(string S);

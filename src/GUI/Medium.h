@@ -142,6 +142,8 @@ public:
 	void CMedium::set_CG(CVector_arma &X);
 	void CMedium::set_G(CVector_arma &X);
 	void CMedium::set_G_star(CVector_arma &X);
+
+	void write_flows(string filename);
 	
 	void CMedium::onestepsolve_flow_ar(double dt);
 	void CMedium::onestepsolve_colloid_ar(double dt);
