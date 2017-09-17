@@ -1,9 +1,14 @@
 #ifndef GIFMOD_VERSION
-#define GIFMOD_VERSION "0.1.23"
+#define GIFMOD_VERSION "0.1.24"
 #endif
 #ifndef GWA_VERSION
 #define GWA_VERSION "0.0.1"
 #endif
+
+#ifndef max_num_recent_files
+#define max_num_recent_files 15
+#endif
+
 
 #ifdef DEBUG
 #define WIZARD
@@ -292,21 +297,35 @@ void MainWindow::readRecentFilesList()
 //	qDebug() << localAppFolderAddress();
 //	QString add = localAppFolderAddress();
 	ifstream file(localAppFolderAddress().toStdString()+RECENT);
+	int count = 0; 
 	if (file.good())
 	{
 		string line;
 		while (!file.eof())
 		{
 			getline(file, line);
-			QString fileName = QString::fromStdString(line);
-			qDebug() << fileName; QString::fromStdString(line);
-			addToRecentFiles(fileName, false);
-			//QAction * a= new QAction()
+			count++;
 		}
 		file.close();
-//		QAction * selected = ui->menuRecent->exec();
-//		if (selected)
-//			qDebug() << selected->text();
+	}
+
+	file.open(localAppFolderAddress().toStdString() + RECENT);
+	int n = 0;
+	if (file.good())
+	{
+		string line;
+		while (!file.eof())
+		{
+			getline(file, line);
+			n++;
+			QString fileName = QString::fromStdString(line);
+			qDebug() << fileName; QString::fromStdString(line);
+			if (n>count-max_num_recent_files)
+				addToRecentFiles(fileName, false);
+			
+		}
+		file.close();
+
 	}
 }
 void MainWindow::addToRecentFiles(QString fileName, bool addToFile) 

@@ -569,7 +569,7 @@ double CConnection::get_val(int i, int ii)
 			{
 				vector<int> jj;
 				jj.push_back(ii);
-				return 0.5*(Block1->get_val(9,jj)+Block2->get_val(9,jj));
+				return max(Block1->get_val(9,jj),Block2->get_val(9,jj));
 			}
 			else 
 			{
@@ -662,7 +662,7 @@ double CConnection::get_val_star(int i, int ii)
 		{
 			if ((Block2->indicator==Soil) || (Block2->indicator == Plant) || (Block2->indicator == Darcy))
 			{
-				return 0.5*(Block1->get_val_star(9)+Block2->get_val_star(9));
+				return max(Block1->get_val_star(9),Block2->get_val_star(9));
 			}
 			else 
 			{
