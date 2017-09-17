@@ -315,6 +315,9 @@ public:
 //	QStringList s_set_default_connector_expressions() const;
 //	QStringList s_set_default_block_expressions() const;
 	QList<CCommand> s_get_buildup() const;
+	QList<CCommand> s_get_evapotranspiration() const;
+	QList<CCommand> s_get_MCMC() const;
+	QList<CCommand> s_get_genetic_algorithm() const;
 	QList<CCommand> s_get_external_flux() const;
 //	QStringList s_load_inflows() const;
 	double minX() const;

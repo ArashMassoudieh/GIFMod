@@ -5,6 +5,7 @@
 #include <qdatetime.h>
 #include <utility_funcs.h>
 #include <qstringlist.h>
+#include <qdebug.h>
 
 double min(double x, double y)
 {
@@ -163,6 +164,13 @@ QStringList specialSplit(QString s)
 	}
 	r.removeAll("");
 	return r;
+}
+
+double QDate2Xldate(QDateTime &x)
+{
+	QDateTime base_time1 = QDateTime::fromString("1-1-1900 00:00", "M-d-yyyy hh:mm");
+	double xxx = (x.toMSecsSinceEpoch() - base_time1.toMSecsSinceEpoch())/(1000.00*24.0*60.0*60.0)+2; 
+	return xxx; 
 }
 
 QStringList extract_by_space_quote(QString s)

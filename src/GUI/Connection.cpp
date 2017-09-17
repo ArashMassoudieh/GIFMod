@@ -17,7 +17,7 @@ CConnection::CConnection(void)
 	flow_factor=1;
 	Q_v=0;
 	Q_v_star=0;
-	flow_params.resize(30);
+	flow_params.resize(n_flow_params);
 	flow_params[z1] = -1000000;
 	flow_params[z2] = -1000000;
 	flow_params[flow_exponent] = 0.6667;

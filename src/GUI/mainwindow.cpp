@@ -856,14 +856,17 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 		}
 		if (type == "Parameter" && mainGraphWidget->results)
 		{
-			if (mainGraphWidget->results->globalSensitivityMatrix.getnumrows())
-				menu->addAction(QString("Show global sensitivity matrix"), this, SLOT(showGlobalSensitivityMatrix()));
-			if (mainGraphWidget->results->localSensitivityMatrix.getnumrows())
-				menu->addAction(QString("Show local sensitivity matrix"), this, SLOT(showLocalSensitivityMatrix()));
-			if (mainGraphWidget->results->correlationMatrix.getnumrows())
-				menu->addAction(QString("Show correlation matrix"), this, SLOT(showCorrelationMatrix()));
-			if (mainGraphWidget->results->localSensitivityMatrix.getnumrows() || mainGraphWidget->results->globalSensitivityMatrix.getnumrows() || mainGraphWidget->results->correlationMatrix.getnumrows())
-				menu->addSeparator();
+			if (mainGraphWidget->results)
+			{
+				if (mainGraphWidget->results->globalSensitivityMatrix.getnumrows())
+					menu->addAction(QString("Show global sensitivity matrix"), this, SLOT(showGlobalSensitivityMatrix()));
+				if (mainGraphWidget->results->localSensitivityMatrix.getnumrows())
+					menu->addAction(QString("Show local sensitivity matrix"), this, SLOT(showLocalSensitivityMatrix()));
+				if (mainGraphWidget->results->correlationMatrix.getnumrows())
+					menu->addAction(QString("Show correlation matrix"), this, SLOT(showCorrelationMatrix()));
+				if (mainGraphWidget->results->localSensitivityMatrix.getnumrows() || mainGraphWidget->results->globalSensitivityMatrix.getnumrows() || mainGraphWidget->results->correlationMatrix.getnumrows())
+					menu->addSeparator();
+			}
 		}
 #ifdef GIFMOD
 /*		if (type == "Observation" && mainGraphWidget->results)
@@ -987,14 +990,17 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 		TreeItem *item = model->itemFromIndex(projectExplorer->indexAt(pos));
 		if (item->Name() == "Markov chain Monte Carlo")
 		{
-			if (mainGraphWidget->results->globalSensitivityMatrix.getnumrows())
-				menu->addAction(QString("Show global sensitivity matrix"), this, SLOT(showGlobalSensitivityMatrix()));
-			if (mainGraphWidget->results->localSensitivityMatrix.getnumrows())
-				menu->addAction(QString("Show local sensitivity matrix"), this, SLOT(showLocalSensitivityMatrix()));
-			if (mainGraphWidget->results->correlationMatrix.getnumrows())
-				menu->addAction(QString("Show correlation matrix"), this, SLOT(showCorrelationMatrix()));
-			if (mainGraphWidget->results->localSensitivityMatrix.getnumrows() || mainGraphWidget->results->globalSensitivityMatrix.getnumrows() || mainGraphWidget->results->correlationMatrix.getnumrows())
-				menu->exec(projectExplorer->mapToGlobal(pos));
+			if (mainGraphWidget->results)
+			{
+				if (mainGraphWidget->results->globalSensitivityMatrix.getnumrows())
+					menu->addAction(QString("Show global sensitivity matrix"), this, SLOT(showGlobalSensitivityMatrix()));
+				if (mainGraphWidget->results->localSensitivityMatrix.getnumrows())
+					menu->addAction(QString("Show local sensitivity matrix"), this, SLOT(showLocalSensitivityMatrix()));
+				if (mainGraphWidget->results->correlationMatrix.getnumrows())
+					menu->addAction(QString("Show correlation matrix"), this, SLOT(showCorrelationMatrix()));
+				if (mainGraphWidget->results->localSensitivityMatrix.getnumrows() || mainGraphWidget->results->globalSensitivityMatrix.getnumrows() || mainGraphWidget->results->correlationMatrix.getnumrows())
+					menu->exec(projectExplorer->mapToGlobal(pos));
+			}
 		}
 	}
 	if (projectExplorer->indexAt(pos).data(Role::TreeItemType) == TreeItem::Type::EntityItem)
@@ -1987,7 +1993,7 @@ MainWindow::~MainWindow()
 //	delete projModel;
 	std::exit(0);
 	delete ui;
-
+	return;
 }
 
 void MainWindow::paintEvent(QPaintEvent *e)
@@ -2474,7 +2480,7 @@ void MainWindow::on_actionRun_Model_from_Script_triggered()
 	}
 	cwindow->show();
 	
-	QVariantList output = mainGraphWidget->runCommands(commands);
+	QVariantList output = mainGraphWidget->runCommands(commands); //run the script
 	QString outputfilename = fileName.replace(".scr", ".log");
 	QFile outputfile(outputfilename);
 	if (!outputfile.open(QIODevice::WriteOnly)) {

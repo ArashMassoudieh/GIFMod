@@ -862,7 +862,7 @@ void MainWindow::inverseRun(CMediumSet *modelSet, runtimeWindow* rtw)
 	qDebug() << 1000;
 	CMCMC MCMC(GA);
 	int mcmcstart = MCMC.n_chains;
-	if (GA.justreadmcmc == false)
+	if (GA.justreadmcmc == false && rtw->stopTriggered == false)
 	{
 		//Form1.label1->Text=L"MCMC Initialization";
 		//	Form1.Refresh();
@@ -897,7 +897,7 @@ void MainWindow::inverseRun(CMediumSet *modelSet, runtimeWindow* rtw)
 	}
 	qDebug() << 1007;
 	//**************************************** MCMC ****************************************
-	if (GA.mcmc_run == true)	//Switch for MCMC Section
+	if (GA.mcmc_run == true && rtw->stopTriggered == false)	//Switch for MCMC Section
 	{
 		qDebug() << 1008;
 		if (GA.justreadmcmc == false)
@@ -1234,6 +1234,8 @@ void CMediumSet::g_get_environmental_params()
 				if (!e->val(key).isEmpty()) SP.w = e->val(key).toFloat();
 			if (key == "tol")
 				if (!e->val(key).isEmpty()) SP.tol = e->val(key).toFloat();
+			if (key == "max_dt")
+				if (!e->val(key).isEmpty()) SP.max_dt = e->val(key).toFloat();
 			if (key == "uniformoutput")
 				FI.uniformoutput = e->val(key).toBool();
 			if (key == "nr_iteration_treshold_max")
@@ -1478,7 +1480,7 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 	{
 		Edge *e = edges[gw->edgeNames().indexOf(edgenames_sorted[i])];
 		CConnection C;
-		C.flow_params.resize(20);
+		C.flow_params.resize(n_flow_params);
 		C.ID = e->Name().toStdString();
 
 		QString type = e->objectType.ObjectType;//connector type 

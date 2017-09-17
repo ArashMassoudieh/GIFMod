@@ -417,7 +417,7 @@ void CMedium::f_get_model_configuration()
 			
 			for (int j=0; j<lid_config.param_names[i].size(); j++)
 			{
-				C.flow_params.resize(30);
+				C.flow_params.resize(n_flow_params);
 				
 				if (tolower(lid_config.value[i]) == "darcy") C.flow_expression = CStringOP(formulas()[Darcy]);
 				if (tolower(lid_config.value[i]) == "pipe1") C.flow_expression = CStringOP(formulas()[Pipe1]);
@@ -830,7 +830,7 @@ void CMedium::add_Richards_medium(int n, double dz,  int id)
 		//B.H_S_expression = CStringOP("f[5]-((1/f[53])*((f[9]^(f[54]/(1-f[54])))-1)^(1/f[54]))");   //z0+h=Total Head for botom of block
 		B.H_S_expression = CStringOP(formulasH()[Soil]);   
 		B.H_S_expression_txt = formulasH()[Soil];
-		B.fs_params.resize(30);
+		B.fs_params.resize(n_flow_params);
 		B.ID=to_string(id+i);
 		Blocks.push_back(B);
 	}
@@ -844,7 +844,7 @@ void CMedium::add_Richards_medium(int n, double dz,  int id)
 		C.Block1 = &(Blocks[getblocksq(to_string(i+id))]);
 		C.Block2 = &(Blocks[getblocksq(to_string(i+id+1))]);
 		C.d = dz;
-		C.flow_params.resize(30);  //0=Ks, 1=theta_s, 2=theta_r, 3=VG_alpha, 4=VG_n, 5=VG_m, 6=lambda
+		C.flow_params.resize(n_flow_params);  //0=Ks, 1=theta_s, 2=theta_r, 3=VG_alpha, 4=VG_n, 5=VG_m, 6=lambda
 		C.flow_expression = CStringOP(formulasQ()[Soil][Soil]); 
 		C.flow_expression_strng = formulasQ()[Soil][Soil];
 		C.flow_expression_v = CStringOP(formulas()[Vapor]); 
@@ -874,7 +874,7 @@ void CMedium::add_Darcy_medium(int n, double dz,  int id)
 		B.indicator = 5;
 		B.H_S_expression = CStringOP(formulasH()[Darcy]);   
 		B.H_S_expression_txt = formulasH()[Darcy];
-		B.fs_params.resize(8);
+		B.fs_params.resize(n_flow_params);
 		B.ID=id+i;
 		Blocks.push_back(B);
 	}
@@ -888,7 +888,7 @@ void CMedium::add_Darcy_medium(int n, double dz,  int id)
 		C.Block1 = &(Blocks[getblocksq(to_string(i+id))]);
 		C.Block2 = &(Blocks[getblocksq(to_string(i+id+1))]);
 		C.d = dz;
-		C.flow_params.resize(30);  //0=Ks, 1=theta_s, 2=theta_r, 3=VG_alpha, 4=VG_n, 5=VG_m, 6=lambda
+		C.flow_params.resize(n_flow_params);  //0=Ks, 1=theta_s, 2=theta_r, 3=VG_alpha, 4=VG_n, 5=VG_m, 6=lambda
 		C.flow_expression = CStringOP(formulasQ()[Darcy][Darcy]); 
 		C.flow_expression_strng = formulasQ()[Darcy][Darcy];
 		Connector.push_back(C);
@@ -916,7 +916,7 @@ void CMedium::add_stream_medium(int n, double z0, double slope, double length, i
 		B.indicator = 5;
 		B.H_S_expression = CStringOP(formulasH()[Stream]);
 		B.H_S_expression_txt = formulasH()[Stream];
-		B.fs_params.resize(8);
+		B.fs_params.resize(n_flow_params);
 		B.ID = id + i;
 		B.z0 = z0 + length / double(n)*slope;
 		Blocks.push_back(B);
@@ -931,7 +931,7 @@ void CMedium::add_stream_medium(int n, double z0, double slope, double length, i
 		C.Block1 = &(Blocks[getblocksq(to_string(i + id))]);
 		C.Block2 = &(Blocks[getblocksq(to_string(i + id + 1))]);
 		C.d = length/double(n);
-		C.flow_params.resize(30);  //0=Ks, 1=theta_s, 2=theta_r, 3=VG_alpha, 4=VG_n, 5=VG_m, 6=lambda
+		C.flow_params.resize(n_flow_params);  //0=Ks, 1=theta_s, 2=theta_r, 3=VG_alpha, 4=VG_n, 5=VG_m, 6=lambda
 		C.flow_expression = CStringOP(formulasQ()[Stream][Stream]);
 		C.flow_expression_strng = formulasQ()[Stream][Stream];
 		Connector.push_back(C);
@@ -959,7 +959,7 @@ void CMedium::add_catchment_medium(int n, double z0, double slope, double length
 		B.indicator = 5;
 		B.H_S_expression = CStringOP(formulasH()[Catchment]);
 		B.H_S_expression_txt = formulasH()[Catchment];
-		B.fs_params.resize(8);
+		B.fs_params.resize(n_flow_params);
 		B.ID = id + i;
 		B.z0 = z0 + length / double(n)*slope;
 		Blocks.push_back(B);
@@ -974,7 +974,7 @@ void CMedium::add_catchment_medium(int n, double z0, double slope, double length
 		C.Block1 = &(Blocks[getblocksq(to_string(i + id))]);
 		C.Block2 = &(Blocks[getblocksq(to_string(i + id + 1))]);
 		C.d = length / double(n);
-		C.flow_params.resize(30);  //0=Ks, 1=theta_s, 2=theta_r, 3=VG_alpha, 4=VG_n, 5=VG_m, 6=lambda
+		C.flow_params.resize(n_flow_params);  //0=Ks, 1=theta_s, 2=theta_r, 3=VG_alpha, 4=VG_n, 5=VG_m, 6=lambda
 		C.flow_expression = CStringOP(formulasQ()[Catchment][Catchment]);
 		C.flow_expression_strng = formulasQ()[Catchment][Catchment];
 		Connector.push_back(C);
@@ -2245,7 +2245,7 @@ void CMedium::solve_fts_m2(double dt)
 			if (controllers().size())
 				dtt = min(dtt, get_nextcontrolinterval(t) - t);
 
-
+			dtt = min(dtt, max_dt());
 
 		}
 		if (iii%max_J_interval() == 0)
@@ -4783,6 +4783,11 @@ bool& CMedium::negative_concentration_allowed()
 bool& CMedium::steady_state_hydro()
 {
 	return parent->SP.steady_state_hydro;
+}
+
+double& CMedium::max_dt()
+{
+	return parent->SP.max_dt;
 }
 
 vector<measured_chrc>& CMedium::measured_quan()

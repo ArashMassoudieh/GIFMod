@@ -16,7 +16,7 @@ CMBBlock::CMBBlock(void)
 	setzero=0;
 	outflow_corr_factor = 1;
 	q = 0;
-	fs_params.resize(40);
+	fs_params.resize(n_flow_params);
 	fs_params[storativity] = 0.01;
 	fs_params[theta_s] = 1;
 

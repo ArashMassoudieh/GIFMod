@@ -29,8 +29,8 @@ CCommand::CCommand(QString s) //create command from script
 				Validate_text = "Syntax error";
 			else
 			{
-				parameters[XString::reform(param_list[i].split("=")[0].trimmed().toLower())] = XString::reform(param_list[i].split("=")[1].trimmed().split("[")[0]);
-				parameters[XString::reform(param_list[i].split("=")[0].trimmed().toLower())].unit = XString::reform(extract_in_between(param_list[i].split("=")[1].trimmed().toLower(), "[", "]"));
+				parameters[XString::reform(param_list[i].split("=")[0].trimmed())] = XString::reform(param_list[i].split("=")[1].trimmed().split("[")[0]);
+				parameters[XString::reform(param_list[i].split("=")[0].trimmed())].unit = XString::reform(extract_in_between(param_list[i].split("=")[1].trimmed().toLower(), "[", "]"));
 			}
 		}
 	}

@@ -323,6 +323,7 @@
 1,Entity,Solver settings,Solver settings,!,Initial time step size,dt,day;hr;min;s,day,float,0.01,UnitBox,Global,Input,No,100115,>0,E,Initial time step must be greater than zero
 1,Entity,Solver settings,Solver settings,!,Jackobian update interval,max_j_update_interval,!,!,integer,40,TextBox,Global,Input,No,100117,>=0,E,Jackobian matrix update interval must be non-negative
 1,Entity,Solver settings,Solver settings,!,Newton-Raphson acceptance tolerance,tol,!,!,float,0.001,TextBox,Global,Input,No,100125,>0,E,Newton-Raphson acceptance tolerance must be positive
+1,Entity,Solver settings,Solver settings,!,Maximum time step size,max_dt,!,!,float,1,TextBox,Global,Input,No,100515,>0,E,Maximum time step size must be positive
 1,Entity,Project settings,Project settings,!,Simulation end time,time_max,!,!,datetime+getnumber,1,DateTime,Global,Input,Yes,100145,>{time_min},E,Simulation End time must be greater than simulation start time
 1,Entity,Project settings,Project settings,!,Perform mass balance check,mass_balance_check,!,!,string,Yes;No,ComboBox,Global,Select,No,100129,,,
 1,Entity,Project settings,Project settings,!,Perform particle transport simulation,colloid_transport,!,!,string,Yes;No,ComboBox,Global,Select,No,100130,,,

@@ -4004,6 +4004,19 @@ QVariant GraphWidget::runCommand(CCommand &command)
 					output += setprop(en, XString::reform(key), command.parameters[key], experiment);
 				failed = false;
 			}
+			if (e.toLower()=="reaction")
+			{ 
+				Process *p = new Process(command.get_name(), this);
+				p->rate = command.parameters["rate"].toQString();
+				foreach(QString X,  command.parameters.keys())
+				{
+					if (X.split('[')[0].trimmed().toLower() == "stch")
+					{
+						p->stoichiometries[X.split('[')[1].split(']')[0]] = command.parameters[X];
+					}
+				}
+			
+			}
 			if (failed)
 			{
 				output = e + " is not a recognized object!";

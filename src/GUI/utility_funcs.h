@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include "qdatetime.h"
 using namespace std;
 #ifdef GIFMOD
 struct range //properties of unknown parameters
@@ -27,7 +28,7 @@ qint64 xldate2julian(const qint64 xldate);
 qint64 julian2xldate(const qint64 juliandate);
 int dayOfYear(const qint64 xldate);
 double dayOfYear(const double xldate);
-
+double QDate2Xldate(QDateTime &x);
 
 double xldate2julian(const double xldate);
 

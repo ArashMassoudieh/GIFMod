@@ -19,6 +19,9 @@ QList<CCommand> GraphWidget::script() const
 	commands.append(sort_by_name(s_get_reactions())); // load reaction network
 	commands.append(sort_by_name(s_get_buildup())); // load buildup properties *
 	commands.append(sort_by_name(s_get_external_flux())); // load External fluxes *
+	commands.append(sort_by_name(s_get_genetic_algorithm())); // load genetic algorithm parameters *
+	commands.append(sort_by_name(s_get_MCMC())); // load MCMC parameters *
+	commands.append(sort_by_name(s_get_evapotranspiration())); // load evaportranspiration parameters *
 	
 	return commands; 
 }
@@ -73,8 +76,8 @@ QList<CCommand> GraphWidget::s_get_environmental_params() const
 				if (e->val(prop.VariableCode).replace("...", "").trimmed()!="")
 				{
 					XString val = e->getValue(prop.VariableName);
-					command.parameters[prop.VariableName] = val.replace("...", "");
-					command.parameters[prop.VariableName].unit = val.unit;
+					command.parameters[XString::reformBack(prop.VariableName)] = val.replace("...", "");
+					command.parameters[XString::reformBack(prop.VariableName)].unit = val.unit;
 				}
 		}
 		log(command.toQString());
@@ -140,6 +143,50 @@ QList<CCommand> GraphWidget::s_get_buildup() const
 	}
 	return commands;
 }
+
+QList<CCommand> GraphWidget::s_get_evapotranspiration() const
+{
+	QList<CCommand> commands;
+	for each (Entity *n in entitiesByType("Evapotranspiration"))
+	{
+
+		CCommand command;
+		command.add_command(n);
+		log(command.toQString());
+		commands.append(command);
+	}
+	return commands;
+}
+
+QList<CCommand> GraphWidget::s_get_MCMC() const
+{
+	QList<CCommand> commands;
+	for each (Entity *n in entitiesByType("Markov chain Monte Carlo"))
+	{
+
+		CCommand command;
+		command.add_command(n);
+		log(command.toQString());
+		commands.append(command);
+	}
+	return commands;
+}
+
+QList<CCommand> GraphWidget::s_get_genetic_algorithm() const
+{
+	QList<CCommand> commands;
+	for each (Entity *n in entitiesByType("Genetic algorithm"))
+	{
+
+		CCommand command;
+		command.add_command(n);
+		log(command.toQString());
+		commands.append(command);
+	}
+	return commands;
+}
+
+
 
 QList<CCommand> GraphWidget::s_get_external_flux() const
 {

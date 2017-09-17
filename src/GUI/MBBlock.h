@@ -12,6 +12,9 @@
 #include "EnvExchange.h"
 #include "Evaporation.h"
 
+#ifndef n_flow_params
+#define n_flow_params 40
+#endif
 
 using namespace std;
 
