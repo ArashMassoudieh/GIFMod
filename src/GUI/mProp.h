@@ -30,6 +30,7 @@ public:
 	void setstar();
 
 	bool mProp::operator==(const mProp &mP) const;
+	bool operator/=(const mProp & mP) const; // comparison considering abbreviations
 	bool mProp::operator %=(const mProp &mP) const; // exact comparison of to filter variable wo considering wildcards *
 	static bool mProp::areTheSame(const QList<mProp>a, const QList<mProp>b);
 
@@ -59,6 +60,7 @@ public:
 	QString Category;
 	QString inputMethod;
 	QString DescriptionCode;
+	QStringList Abbreviations; 
 	QStringList Condition, error, errorDesc;
 	void setDefaultValues(const QString &value, const QString &units, const QString &defaultUnit);
 //	XString Value;

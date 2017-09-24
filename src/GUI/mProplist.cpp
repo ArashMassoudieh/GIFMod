@@ -50,7 +50,7 @@ mListReadStatus mPropList::getconfigfromfile(QString filename)
 //			QStringList s = QSplit(QString::fromStdString(line), ',');
 			XString XS = QString::fromStdString(line);
 			QStringList s = XS.toQString().split(',');
-			if (s.size() >= 17)
+			if (s.size() >= 18)
 			{
 				QString QS;
 				QStringList QSL;
@@ -83,10 +83,11 @@ mListReadStatus mPropList::getconfigfromfile(QString filename)
 //				mP.Value = mP.DefaultValuesList()[0];
 //				mP.parent = this;
 				mP.DescriptionCode = s[15];
-				if (s[16] != "") {
-					mP.Condition = s[16].split(';');
-					mP.error = s[17].split(';');
-					mP.errorDesc = s[18].split(';');
+				mP.Abbreviations = s[16].split(';');
+				if (s[17] != "") {
+					mP.Condition = s[17].split(';');
+					mP.error = s[18].split(';');
+					mP.errorDesc = s[19].split(';');
 					if ((mP.Condition.size() != mP.error.size()) || (mP.Condition.size() != mP.error.size())) 
 						return (mListReadStatus::errorInContents);
 				}
@@ -156,6 +157,17 @@ QStringList mPropList::VariableNames(const mProp& mP)const
 		if (List[i] == mP) r << List[i].VariableName;
 	}
 	 return(uniques(r));
+}
+
+QStringList mPropList::VariableNames_w_abv(const mProp& mP)const
+{
+	QStringList r;
+	for (int i = 0; i < List.size(); i++)
+	{
+		if (List[i] /= mP) { r << List[i].VariableName; r << List[i].Abbreviations; }
+		
+	}
+	return(uniques(r));
 }
 /*QStringList mPropList::VariableNames(const QList<mProp> objectTypes)const
 {
@@ -258,6 +270,23 @@ mPropList mPropList::filter(const mProp &mP) const
 	return(r);
 }
 
+mPropList mPropList::filter_abv(const mProp &mP) const
+{
+	static int counter = 0;
+	static mProp filter;
+	static mPropList r;
+	if (filter %= mP) return r;
+	filter = mP;
+	r = mPropList();
+	int n = List.size();
+	for (int i = 0; i < n; i++)
+	{
+		if (List[i] /= mP) r.List.append(List[i]);
+	}
+	//	qDebug() << "filter:" << counter++;
+	return(r);
+}
+
 QStringList mPropList::extract_props_for_type(QString s)
 {
 	
@@ -265,10 +294,34 @@ QStringList mPropList::extract_props_for_type(QString s)
 	
 	for (int i = 0; i < List.size(); i++)
 	{
-		if (List[i].ObjectType.toLower() == s.toLower() || List[i].ObjectType == "*") outlist.append(List[i].VariableName.toLower());
+		if (List[i].ObjectType.toLower() == s.toLower() || List[i].ObjectType == "*")
+		{
+			outlist.append(List[i].VariableName.toLower());
+			outlist.append(List[i].Abbreviations);
+		}
 	}
 	//	qDebug() << "filter:" << counter++;
 	return(outlist);
+}
+
+QString mPropList::get_proper_property(QString s, QString propname)
+{
+
+	QStringList outlist;
+
+	for (int i = 0; i < List.size(); i++)
+	{
+		if (List[i].ObjectType.toLower() == s.toLower() || List[i].ObjectType == "*")
+		{
+			if (List[i].VariableName.toLower() == propname.toLower())
+				return List[i].VariableName;
+			
+			if (List[i].Abbreviations.contains(propname))
+				return List[i].VariableName;
+		}
+	}
+	//	qDebug() << "filter:" << counter++;
+	return QString();
 }
 
 QStringList mPropList::extract_units_for_prop(QString type, QString property)

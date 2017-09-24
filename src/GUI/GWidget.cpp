@@ -1558,9 +1558,18 @@ void GraphWidget::clearRXN()
 	for each (Entity *e in entitiesCopy)
 		if (e->objectType.ObjectType == "Reaction parameter" || e->objectType.ObjectType == "Reaction Network" || e->objectType.ObjectType == "Constituent")
 		{
-			delete e;
-			Entities.removeOne(e);
+			treeModel->deleteEntity(e);
+			//delete e;
+			//Entities.removeOne(e);
 		}
+	QList<Process*> processesCopy = Processes;
+	for each (Process *p in processesCopy)
+	{
+		delete p;
+		Processes.removeOne(p);
+	}
+	
+
 	treeModel->refresh();
 	tableProp->setModel(0);
 }
@@ -3259,14 +3268,22 @@ void GraphWidget::edgeContextMenuRequested(Edge* e, QPointF pos, QMenu *menu)
 			treeModel->deleteEdge(e);
 		if (selectedAction->text() == "Plot Flow")
 		{
+			plotformat format;
+			format.xAxisTimeFormat = true;
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
-			plot->addScatterPlot(model->ANS, Nodes().count() + model->getconnectorsq(e->Name().toStdString()), QString("%1: %2").arg(e->Name()).arg("Flow"));
+			format.yAxisLabel.append(XString::reform(QString("Flow (m~^3/day)")));
+			format.xAxisLabel.append("Time (day)");
+			plot->addScatterPlot(model->ANS, Nodes().count() + model->getconnectorsq(e->Name().toStdString()), QString("%1: %2").arg(e->Name()).arg("Flow"),1,0,format);
 			plot->show();
 		}
 		if (selectedAction->text() == "Velocity")
 		{
+			plotformat format;
+			format.xAxisTimeFormat = true;
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
 			CBTC flow, area, velocity;
+			format.yAxisLabel.append(XString::reform(QString("Velocity (m/day)")));
+			format.xAxisLabel.append("Time (day)");
 			flow = model->ANS.BTC[Nodes().count() + model->getconnectorsq(e->Name().toStdString())];
 			area = model->ANS.BTC[Nodes().count() * 3 + Edges().count() + model->getconnectorsq(e->Name().toStdString())];
 			velocity = flow % area;
@@ -3276,13 +3293,21 @@ void GraphWidget::edgeContextMenuRequested(Edge* e, QPointF pos, QMenu *menu)
 		}
 		if (selectedAction->text() == "Area")
 		{
+			plotformat format;
+			format.xAxisTimeFormat = true;
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
+			format.yAxisLabel.append(XString::reform(QString("Flow (m~^2")));
+			format.xAxisLabel.append("Time (day)");
 			plot->addScatterPlot(model->ANS, Nodes().count() * 3 + Edges().size() + model->getconnectorsq(e->Name().toStdString()), QString("%1: %2").arg(e->Name()).arg("Area"));
 			plot->show();
 		}
 		if (selectedAction->text() == "Vapor exchange rate")
 		{
+			plotformat format;
+			format.xAxisTimeFormat = true;
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
+			format.yAxisLabel.append(XString::reform(QString("Flow (m~^3/day)")));
+			format.xAxisLabel.append("Time (day)");
 			plot->addScatterPlot(model->ANS, Nodes().count() * 3 + 2 * Edges().size() + model->getconnectorsq(e->Name().toStdString()), QString("%1: %2").arg(e->Name()).arg("Vapor exchange rate"));
 			plot->show();
 		}
@@ -4076,8 +4101,9 @@ QString  GraphWidget::setprop(Node *n, QString &propname, XString &value, QStrin
 		output = QString(n->Name() + " does not have a property called " + propname);
 	else
 	{
-		QStringList unitsList = n->getProp(propname, UnitsListRole).toStringList();
-		QString defaultUnit = n->getProp(propname, defaultUnitRole).toString();
+		QString full_propname = mList->get_proper_property(n->objectType.ObjectType, propname);
+		QStringList unitsList = n->getProp(full_propname, UnitsListRole).toStringList();
+		QString defaultUnit = n->getProp(full_propname, defaultUnitRole).toString();
 		QString unit = "";
 		if (value.unit == "") value.unit = defaultUnit;
 		for (int i = 0; i < unitsList.count(); i++)
@@ -4086,12 +4112,12 @@ QString  GraphWidget::setprop(Node *n, QString &propname, XString &value, QStrin
 		value.unit = (unit == "") ? defaultUnit : unit;
 		value.setUnitsList(unitsList);
 		value.defaultUnit = defaultUnit;
-		if (propname == "Name" && nodeNames().contains(value.toQString()))
+		if (full_propname == "Name" && nodeNames().contains(value.toQString()))
 		{
 			log("Node '" + value.toQString() + "' already exist");
 		}
 		else
-			n->props.setProp(propname, value, experiment); n->changed();// update();
+			n->props.setProp(full_propname, value, experiment); n->changed();// update();
 		
 	}
 	return output;
@@ -4104,8 +4130,9 @@ QString  GraphWidget::setprop(Edge *ed, QString &propname, XString &value, QStri
 		output = QString(ed->Name() + " does not have a property called " + propname);
 	else
 	{
-		QStringList unitsList = ed->getProp(propname, UnitsListRole).toStringList();
-		QString defaultUnit = ed->getProp(propname, defaultUnitRole).toString();
+		QString full_propname = mList->get_proper_property(ed->objectType.ObjectType, propname);
+		QStringList unitsList = ed->getProp(full_propname, UnitsListRole).toStringList();
+		QString defaultUnit = ed->getProp(full_propname, defaultUnitRole).toString();
 		if (value.unit == "") value.unit = defaultUnit;
 		QString unit = "";
 		for (int i = 0; i < unitsList.count(); i++)
@@ -4121,12 +4148,12 @@ QString  GraphWidget::setprop(Edge *ed, QString &propname, XString &value, QStri
 		value.setUnitsList(unitsList);
 		value.defaultUnit = defaultUnit;
 		
-		if (propname == "Name" && nodeNames().contains(value.toQString()))
+		if (full_propname == "Name" && nodeNames().contains(value.toQString()))
 		{
 			log("Connector '" + value.toQString() + "' already exist");
 		}
 		else
-			ed->props.setProp(propname, value, experiment); ed->changed(); // update();
+			ed->props.setProp(full_propname, value, experiment); ed->changed(); // update();
 	}
 	return output;
 }
@@ -4138,8 +4165,9 @@ QString  GraphWidget::setprop(Entity *en, QString &propname, XString &value, QSt
 		output = QString(en->Name() + " does not have a property called " + propname);
 	else
 	{
-		QStringList unitsList = en->getProp(propname, UnitsListRole).toStringList();
-		QString defaultUnit = en->getProp(propname, defaultUnitRole).toString();
+		QString full_propname = mList->get_proper_property(en->objectType.ObjectType, propname);
+		QStringList unitsList = en->getProp(full_propname, UnitsListRole).toStringList();
+		QString defaultUnit = en->getProp(full_propname, defaultUnitRole).toString();
 		if (value.unit == "") value.unit = defaultUnit;
 		QString unit = "";
 		for (int i = 0; i < unitsList.count(); i++)
@@ -4154,12 +4182,12 @@ QString  GraphWidget::setprop(Entity *en, QString &propname, XString &value, QSt
 		value.unit = (unit == "") ? defaultUnit : unit;
 		value.setUnitsList(unitsList);
 		value.defaultUnit = defaultUnit;
-		if (propname == "Name" && nodeNames().contains(value.toQString()))
+		if (full_propname == "Name" && nodeNames().contains(value.toQString()))
 		{
 			log("Entity '" + value.toQString() + "' already exist");
 		}
 		else
-			en->props.setProp(propname, value, experiment);	en->changed();// update();
+			en->props.setProp(full_propname, value, experiment);	en->changed();// update();
 	}
 	return output;
 }

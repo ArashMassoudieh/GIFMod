@@ -21,6 +21,7 @@ mProp::mProp(const mProp &mP)
 	Category = mP.Category;
 	inputMethod = mP.inputMethod;
 	DescriptionCode = mP.DescriptionCode;
+	Abbreviations = mP.Abbreviations;
 	Condition = mP.Condition;
 	error = mP.error;
 	errorDesc = mP.errorDesc;
@@ -54,6 +55,29 @@ bool mProp::operator==(const mProp &mP) const
 			return false;
 	return r;
 }
+
+bool mProp::operator/=(const mProp &mP) const
+{
+	bool r = true;
+	QStringList QL = getList(), mPQL = mP.getList();
+	if (QL.size() != mPQL.size())
+		return false;
+	for (int i = 0; i < QL.size(); ++i)
+	{
+		if (i != 5 && i != 16)
+		{
+			if ((QL[i] != "*") && (mPQL[i] != "*") && (QL[i].toLower() != mPQL[i].toLower()))
+				return false;
+		}
+		
+	}
+	
+	if (!(QL[16].contains(mPQL[5]) || mPQL[16].contains(QL[5]) || QL[5]==mPQL[5] || QL[5] == "*" || mPQL[5]== "*"))
+		return false;
+	
+	return r;
+}
+
 bool mProp::operator%=(const mProp &mP) const
 {
 	bool r = true;
@@ -95,6 +119,7 @@ void mProp::setstar()
 	inputMethod = "*";
 	ExperimentDependent = "*";
 	DescriptionCode = "*";
+	Abbreviations.append("*");
 	Condition.append("*");
 	error.append("*");
 	errorDesc.append("*");
@@ -122,9 +147,10 @@ void mProp::setValue(const QStringList &QL)
 	inputMethod = QL[13];
 	ExperimentDependent = QL[14];
 	DescriptionCode = QL[15];
-	Condition = QL[16].split(';');
-	error = QL[17].split(';');
-	errorDesc = QL[18].split(';');
+	Abbreviations = QL[16].split(';');
+	Condition = QL[17].split(';');
+	error = QL[18].split(';');
+	errorDesc = QL[19].split(';');
 
 }
 void mProp::setValue(const QString &QS)
@@ -141,7 +167,7 @@ QStringList mProp::getList() const
 
 	QStringList r;
 	r << Model << GuiObject << ObjectType << SubType << Description << VariableName << VariableCode << VariableUnit << DefaultUnit << VariableType << DefaultValues
-		<< Delegate << Category << inputMethod << ExperimentDependent << DescriptionCode << Condition.join(':') << error.join(':') << errorDesc.join(':');
+		<< Delegate << Category << inputMethod << ExperimentDependent << DescriptionCode << Abbreviations.join(':') << Condition.join(':') << error.join(':') << errorDesc.join(':');
 	return(r);
 }
 

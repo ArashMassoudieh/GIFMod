@@ -325,7 +325,7 @@
     <ROW File="zoom_out.png" Component_="png" FileName="zoom_out.png" Attributes="0" SourcePath="..\src\resources\Icons\zoom_out.png" SelfReg="false" NextFile="DDarcy.GIFM"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
-    <ROW BuildKey="x64_Release" BuildName="x64_Release" BuildOrder="1" BuildType="0" PackageFolder="..\Setup" Languages="en" InstallationType="4" UseLargeSchema="true"/>
+    <ROW BuildKey="x64_Release" BuildName="x64_Release" BuildOrder="1" BuildType="0" PackageFolder="." Languages="en" InstallationType="4" UseLargeSchema="true"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
     <ROW Path="&lt;AI_DICTS&gt;ui.ail"/>

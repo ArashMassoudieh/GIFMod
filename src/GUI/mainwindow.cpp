@@ -93,6 +93,8 @@ MainWindow::MainWindow(QWidget *parent, QString applicationName, QString shortNa
 	this->fileExtension = extension;
 	this->applicationShortName = shortName;
 	log = new logWindow(this);
+	
+	
 	//	QDesktopWidget *d = QApplication::desktop();
 	/*	if (d->screenCount() > 1)
 		{
