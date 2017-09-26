@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Expression.h"
 #include "utility_funcs.h"
-#include "Wizard_Script_Reader.h"
+#include "Wizard/Wizard_Script_Reader.h"
 #include "qlist.h"
 
 
