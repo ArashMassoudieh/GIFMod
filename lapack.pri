@@ -8,19 +8,19 @@ win32 {
         #debug
         CONFIG(debug, debug|release) {
             LAPACK_LIB_DIR = $$PWD/libs/lapack-blas_lib_win64/debug
-            LIBS += -llapack_win64_MTd \
+            LIBS +=  -L$${LAPACK_LIB_DIR} -llapack_win64_MTd \
                     -lblas_win64_MTd
         }
         #release
         CONFIG(release, debug|release) {
             LAPACK_LIB_DIR = $$PWD/libs/lapack-blas_lib_win64/release
-            LIBS += -llapack_win64_MT \
+            LIBS +=  -L$${LAPACK_LIB_DIR} -llapack_win64_MT \
                     -lblas_win64_MT
         }
     }
 
     INCLUDEPATH += $${LAPACK_INCLUDE}   
-    LIBS += -L$${LAPACK_LIB_DIR}
+
     DEFINES += ARMA_USE_LAPACK ARMA_USE_BLAS
 
 }
