@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <qdialog.h>
 #include "ui_wizard_dialog.h"
-#include "Wizard_Script_Reader.h"
+#include "Wizard/Wizard_Script_Reader.h"
 #include "qlabel.h"
 #include "qcombobox.h"
 #include "qdatetimeedit.h"

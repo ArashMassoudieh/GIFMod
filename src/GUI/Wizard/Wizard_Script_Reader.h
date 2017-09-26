@@ -2,9 +2,9 @@
 
 #include <qstring.h>
 #include <qmap.h>
-#include <wiz_entity.h>
-#include <wiz_parameter.h>
-#include <wiz_parameter_group.h>
+#include "Wizard/wiz_entity.h"
+#include "Wizard/wiz_parameter.h"
+#include "Wizard/wiz_parameter_group.h"
 #include "Command.h"
 #include "mProplist.h"
 

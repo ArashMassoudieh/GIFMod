@@ -1,5 +1,10 @@
 
 HEADERS += ./src/GUI/Command.h \
+    ./src/GUI/Wizard/Wizard_Script_Reader.h \
+    ./src/GUI/Wizard/wiz_assigned_value.h \
+    ./src/GUI/Wizard/wiz_entity.h \
+    ./src/GUI/Wizard/wiz_parameter.h \
+    ./src/GUI/Wizard/wiz_parameter_group.h \
     ./src/GUI/BTC.h \
     ./src/GUI/BTCSet.h \
     ./src/GUI/Binary.h \
@@ -129,9 +134,14 @@ HEADERS += ./src/GUI/Command.h \
     ./src/core/typednames.h \
     ./src/GUI/utility_funcs.h \
     ./src/core/utility_funcs.h \
-    ./src/GUI/variant.h
-
-SOURCES += ./src/GUI/BTC.cpp \
+    ./src/GUI/variant.h \
+    ./src/GUI/imageviewer.h \
+    ./src/GUI/filebutton.h \
+    ./src/GUI/dictionary.h \
+    ./src/GUI/wizard_select_dialog.h \
+    ./src/GUI/wizard_dialog.h
+SOURCES += ./src/GUI/XString.cpp \
+    ./src/GUI/BTC.cpp \
     ./src/GUI/BTCSet.cpp \
     ./src/GUI/Binary.cpp \
     ./src/GUI/Buildup.cpp \
@@ -149,6 +159,7 @@ SOURCES += ./src/GUI/BTC.cpp \
     ./src/GUI/Copula_GWA.cpp \
     ./src/GUI/Crxtterm.cpp \
     ./src/GUI/CustomPlotZoom.cpp \
+    ./src/GUI/dictionary.cpp \
     ./src/GUI/Distribution.cpp \
     ./src/GUI/DistributionNUnif.cpp \
     ./src/GUI/EnvExchange.cpp \
@@ -156,11 +167,20 @@ SOURCES += ./src/GUI/BTC.cpp \
     ./src/GUI/ExchangeParametersTableModel.cpp \
     ./src/GUI/ExchangeParametersWindow.cpp \
     ./src/GUI/Expression.cpp \
+    ./src/GUI/filebutton.cpp \
     ./src/GUI/Function.cpp \
     ./src/GUI/GA.cpp \
     ./src/GUI/GWA.cpp \
     ./src/GUI/GWidget.cpp \
+    ./src/GUI/imageviewer.cpp \
     ./src/GUI/Individual.cpp \
+    ./src/GUI/Wizard/Wizard_Script_Reader.cpp \
+    ./src/GUI/Wizard/wiz_assigned_value.cpp \
+    ./src/GUI/Wizard/wiz_entity.cpp \
+    ./src/GUI/Wizard/wiz_parameter.cpp \
+    ./src/GUI/Wizard/wiz_parameter_group.cpp \
+    ./src/GUI/wizard_dialog.cpp \
+    ./src/GUI/wizard_select_dialog.cpp \
     ./src/scripting/JSMainWindow.cpp \
     ./src/GUI/LIDconfig.cpp \
     ./src/GUI/MBBlock.cpp \
@@ -233,7 +253,6 @@ SOURCES += ./src/GUI/BTC.cpp \
     ./src/GUI/treemodel.cpp \
     ./src/GUI/tth_source.c \
     ./src/GUI/utility_funcs.cpp
-
 FORMS += ./src/GUI/ConstituentWindow.ui \
     ./src/GUI/ConstituentWindowPlant.ui \
     ./src/GUI/ExchangeParametersWindow.ui \
@@ -248,4 +267,6 @@ FORMS += ./src/GUI/ConstituentWindow.ui \
     ./src/GUI/mainwindowGIFMod.ui \
     ./src/GUI/plotwindow.ui \
     ./src/GUI/reactionwindow.ui \
-    ./src/GUI/runtimeWindow.ui
+    ./src/GUI/runtimeWindow.ui \
+    ./src/GUI/wizard_dialog.ui \
+    ./src/GUI/wizard_select_dialog.ui
