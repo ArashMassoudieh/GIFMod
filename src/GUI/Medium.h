@@ -142,6 +142,8 @@ public:
 	void CMedium::set_CG(CVector_arma &X);
 	void CMedium::set_G(CVector_arma &X);
 	void CMedium::set_G_star(CVector_arma &X);
+
+	void write_flows(string filename);
 	
 	void CMedium::onestepsolve_flow_ar(double dt);
 	void CMedium::onestepsolve_colloid_ar(double dt);
@@ -409,6 +411,7 @@ public:
 	double CMedium::getflow(int connector_ID);
 	vector<int> CMedium::get_num_block_unpres_inflows(int connector_ID);
 	bool& steady_state_hydro();
+	double& max_dt();
 	void false_connector_flow_calc();
 	CMatrix hydro_steady_matrix_inv;
 	string create_hydro_steady_matrix_inv();

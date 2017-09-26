@@ -15,6 +15,60 @@
 #include "Medium.h"
 
 
+void CMediumSet::load(GraphWidget* gw, runtimeWindow *rtw)
+{
+	this->gw = gw;
+	QString savedExperiment = gw->experiments->currentText();
+	gw->experiments->setCurrentText("All experiments");
+	set_default();
+	g_get_environmental_params();
+	g_get_params();
+	g_get_observed();
+	g_get_particle_types();
+	g_get_constituents();
+	g_get_sensors();
+	g_get_controllers();
+	g_get_reactions();
+	g_get_buildup();
+	g_get_external_flux();
+	g_get_evapotranspiration();
+
+
+	for (int i = 0; i<parameters.size(); i++)
+		set_param(i, parameters[i].value);
+
+
+	Medium.resize(gw->experiments->count() - 1);
+	for (int i = 1; i < gw->experiments->count(); i++)
+	{
+		gw->experiments->setCurrentIndex(i);
+		Medium[i - 1].parent = this;
+		Medium[i - 1].name = gw->experimentName().toStdString();
+		Medium[i - 1].gw = gw;
+		Medium[i - 1].Blocks.clear();
+		Medium[i - 1].Connector.clear();
+		Medium[i - 1].g_get_environmental_params();
+		Medium[i - 1].g_get_model_configuration(rtw); // load model structure (blocks, connectors)
+		Medium[i - 1].g_set_default_connector_expressions();
+		Medium[i - 1].g_set_default_block_expressions();
+		Medium[i - 1].g_load_inflows();
+		Medium[i - 1].get_funcs();
+		//		Medium[i - 1].set_default_params();
+		Medium[i - 1].log_file_name() = "log.txt";
+	}
+	for (int i = 0; i < parameters.size(); i++)
+	{
+		set_param(i, parameters[i].value);
+	}
+	for (int i = 1; i < gw->experiments->count(); i++)
+	{
+		Medium[i - 1].set_default_params();
+	}
+
+	gw->experiments->setCurrentText(savedExperiment);
+
+}
+
 CMediumSet::CMediumSet(GraphWidget* gw, runtimeWindow *rtw)
 {
 //	omp_set_num_threads(16);	//progress->setValue(0);
@@ -808,7 +862,7 @@ void MainWindow::inverseRun(CMediumSet *modelSet, runtimeWindow* rtw)
 	qDebug() << 1000;
 	CMCMC MCMC(GA);
 	int mcmcstart = MCMC.n_chains;
-	if (GA.justreadmcmc == false)
+	if (GA.justreadmcmc == false && rtw->stopTriggered == false)
 	{
 		//Form1.label1->Text=L"MCMC Initialization";
 		//	Form1.Refresh();
@@ -843,7 +897,7 @@ void MainWindow::inverseRun(CMediumSet *modelSet, runtimeWindow* rtw)
 	}
 	qDebug() << 1007;
 	//**************************************** MCMC ****************************************
-	if (GA.mcmc_run == true)	//Switch for MCMC Section
+	if (GA.mcmc_run == true && rtw->stopTriggered == false)	//Switch for MCMC Section
 	{
 		qDebug() << 1008;
 		if (GA.justreadmcmc == false)
@@ -1045,9 +1099,15 @@ void CMediumSet::g_get_observed()
 		CBTC observed = CBTC();
 		if (file.size())
 		{
-			observed = CBTCSet(file, true)[0];
-			if (observed.file_not_found)
+			CBTCSet _observed(file, true);
+			if (_observed.file_not_found)
+			{
 				gw->newError(QString("Could not read observation data file %1 for %2").arg(QString::fromStdString(file)).arg(e->name));
+			}
+			else 
+				observed = _observed[0];
+			
+				
 		}
 		measured_data.append(observed, e->name.toStdString());
 	}
@@ -1174,6 +1234,8 @@ void CMediumSet::g_get_environmental_params()
 				if (!e->val(key).isEmpty()) SP.w = e->val(key).toFloat();
 			if (key == "tol")
 				if (!e->val(key).isEmpty()) SP.tol = e->val(key).toFloat();
+			if (key == "max_dt")
+				if (!e->val(key).isEmpty()) SP.max_dt = e->val(key).toFloat();
 			if (key == "uniformoutput")
 				FI.uniformoutput = e->val(key).toBool();
 			if (key == "nr_iteration_treshold_max")
@@ -1418,7 +1480,7 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 	{
 		Edge *e = edges[gw->edgeNames().indexOf(edgenames_sorted[i])];
 		CConnection C;
-		C.flow_params.resize(20);
+		C.flow_params.resize(n_flow_params);
 		C.ID = e->Name().toStdString();
 
 		QString type = e->objectType.ObjectType;//connector type 
@@ -2245,7 +2307,10 @@ void CMedium::g_load_inflows()
 	for (int j = 0; j < Precipitation_filename.size(); j++)
 	{
 		CPrecipitation P = CPrecipitation(Precipitation_filename[j]);
-		if (P.n>0) Precipitation.push_back(P);
+		if (P.n>0) 
+			Precipitation.push_back(P);
+		else
+			warning(QString("Precipitation file:%1 is not valid.").arg(QString::fromStdString(Precipitation_filename[j])));
 	}
 //	for (int j = 0; j < Evaporation_filename.size(); j++)
 //	{
@@ -2264,10 +2329,10 @@ void CMedium::g_load_inflows()
 				Blocks[i].inflow.push_back(inflow);
 		}
 
-//		if ((Blocks[i].indicator == Pond) || (Blocks[i].indicator == Catchment) || (Blocks[i].indicator == Stream))
+		
 		{
 			if (Blocks[i].precipitation_swch == true)
-				for (int j = 0; j<Precipitation_filename.size(); j++)
+				for (int j = 0; j<Precipitation.size(); j++)
 					Blocks[i].inflow.push_back(Precipitation[j].getflow(Blocks[i].A,1.0/24.0/4));
 		}
 	}

@@ -55,6 +55,7 @@ public:
 	QMap<QString, QVariant> compact() const;
 	static Entity* unCompact(QMap<QString, QVariant>, GraphWidget *gwidget, bool oldVersionLoad = false);
 	static Entity* unCompact10(QMap<QString, QVariant>, GraphWidget *gwidget);
+	QList<mProp> get_props();
 	QStringList codes() const;
 	QMap<QString, condition> variableNameConditions() const;
 	void update(bool fast = false);

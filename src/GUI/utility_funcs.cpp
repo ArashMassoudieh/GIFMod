@@ -5,6 +5,7 @@
 #include <qdatetime.h>
 #include <utility_funcs.h>
 #include <qstringlist.h>
+#include <qdebug.h>
 
 double min(double x, double y)
 {
@@ -165,6 +166,13 @@ QStringList specialSplit(QString s)
 	return r;
 }
 
+double QDate2Xldate(QDateTime &x)
+{
+	QDateTime base_time1 = QDateTime::fromString("1-1-1900 00:00", "M-d-yyyy hh:mm");
+	double xxx = (x.toMSecsSinceEpoch() - base_time1.toMSecsSinceEpoch())/(1000.00*24.0*60.0*60.0)+2; 
+	return xxx; 
+}
+
 QStringList extract_by_space_quote(QString s)
 {
 	QString del1 = "'";
@@ -186,12 +194,28 @@ QStringList extract_by_space_quote(QString s)
 	return out; 
 }
 
-vector<int> find_indexes_of(QString &s, QString &s1)
+
+
+QString extract_in_between(const QString &s,QString s1, QString s2)
+{
+	QString out;
+	if (!s.contains(s1) && !s.contains(s2)) return out;
+	int start = s.indexOf(s1,0);
+	int end = s.indexOf(s2, 0);
+	if (start == -1) return out; 
+	out = s.mid(start+1, end - start-1);
+	return out;
+}
+
+vector<int> find_indexes_of(const QString &s, QString &s1)
 {
 	vector<int> out;
 	int i = 0;
 	while (s.indexOf(s1, i) != -1)
+	{
 		out.push_back(s.indexOf(s1, i));
+		i++; 
+	}
 
 	return out; 
 

@@ -31,7 +31,7 @@
 #include "qvariant.h"
 #include "colorScheme.h"
 //#include "utility_funcs.h"
-
+#include "qfiledialog.h"
 #ifdef GIFMOD
 #include "medium.h"
 #include "mainwindow.h"
@@ -781,6 +781,8 @@ void GraphWidget::mouseReleaseEvent(QMouseEvent *event)
 			specs[n->Name()]["y"] = QString::number(n->y());
 			specs[n->Name()]["w"] = QString::number(n->Width());
 			specs[n->Name()]["h"] = QString::number(n->Height());
+			n->setProp("x",n->x());
+			n->setProp("y", n->y());
 		}
 	}
 	if (changed) 
@@ -1556,9 +1558,18 @@ void GraphWidget::clearRXN()
 	for each (Entity *e in entitiesCopy)
 		if (e->objectType.ObjectType == "Reaction parameter" || e->objectType.ObjectType == "Reaction Network" || e->objectType.ObjectType == "Constituent")
 		{
-			delete e;
-			Entities.removeOne(e);
+			treeModel->deleteEntity(e);
+			//delete e;
+			//Entities.removeOne(e);
 		}
+	QList<Process*> processesCopy = Processes;
+	for each (Process *p in processesCopy)
+	{
+		delete p;
+		Processes.removeOne(p);
+	}
+	
+
 	treeModel->refresh();
 	tableProp->setModel(0);
 }
@@ -1566,8 +1577,16 @@ void GraphWidget::clearRXN()
 
 GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool oldVersion) //, QWidget *parent)
 {
+#ifdef GIFMOD
+	modelSet = new CMediumSet;
+#endif
+#ifdef GWA
+	modelSet = new CGWASet;
+#endif
+	
 	for (int i = 0; i<list.size(); i++)
 	{
+		QString newpath = "";
 		if (list[i].value("GUI").toString() == "Graphic Widget")
 		{
 			qDebug() << list[i].value("GUI").toString() << " Added.";
@@ -1576,12 +1595,7 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 			ModelSpace.Model = list[i].value("Model Space").toString();
 			inflowFileNames = list[i].value("Inflow Filenames").toStringList();
 			hasResults = list[i].value("hasResults").toBool();
-#ifdef GIFMOD
-			modelSet = new CMediumSet;
-#endif
-#ifdef GWA
-			modelSet = new CGWASet;
-#endif
+
 			//if (hasResults)			//				{
 			experimentsComboClear(false);
 			QString path = modelPathname();
@@ -1599,42 +1613,81 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 #ifdef GWA
 						CGWA med;
 #endif
+						
 						if (list[i].contains(QString("%1 ANS").arg(experiment)))
 						{
-							med.ANS = CBTCSet(fullFilename(list[i].take(QString("%1 ANS").arg(experiment)).toString(), path).toStdString(), true);
+							if (newpath == "")
+								med.ANS = CBTCSet(fullFilename(list[i].take(QString("%1 ANS").arg(experiment)).toString(), path).toStdString(), true);
+							else
+								med.ANS = CBTCSet(newpath.toStdString() + list[i].take(QString("%1 ANS").arg(experiment)).toString().toStdString(),true);
 							if (!med.ANS.nvars)
-								hasResults = false;
+							{															
+								QMessageBox msgBox;
+								msgBox.setText("Output file was not found!");
+								msgBox.setInformativeText("Do you want to provide the location for the hydraulics output file?");
+								msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+								msgBox.setDefaultButton(QMessageBox::Yes);
+								int ret = msgBox.exec();
+								if (ret == QMessageBox::Yes)
+								{
+									QString fileName = QFileDialog::getOpenFileName(this,
+										tr("Open ").append(mainWindow->applicationName), modelPathname(),
+										tr("*.txt"));
+
+									QFileInfo fileInfo(fileName);
+									QString filename_only(fileInfo.fileName());
+									newpath = fileInfo.absolutePath() + "/";
+									med.ANS = CBTCSet((newpath + filename_only).toStdString(), true);
+									if (!med.ANS.nvars)
+										hasResults = false;
+								}
+								else
+									hasResults = false;
+							}
 						}
 #ifdef GIFMOD
-						if (list[i].contains(QString("%1 ANS_colloids").arg(experiment)))
+						if (hasResults)
 						{
-							med.ANS_colloids = CBTCSet(fullFilename(list[i].take(QString("%1 ANS_colloids").arg(experiment)).toString(), path).toStdString(), true);
-							if (!med.ANS_colloids.nvars)
-								hasResults = false;
-						}
-						if (list[i].contains(QString("%1 ANS_constituents").arg(experiment)))
-						{
-							med.ANS_constituents = CBTCSet(fullFilename(list[i].take(QString("%1 ANS_constituents").arg(experiment)).toString(), path).toStdString(), true);
-							if (!med.ANS_constituents.nvars)
-								hasResults = false;
-						}
-						if (list[i].contains(QString("%1 ANS_MB").arg(experiment)))
-						{
-							med.ANS_MB = CBTCSet(fullFilename(list[i].take(QString("%1 ANS_MB").arg(experiment)).toString(), path).toStdString(), true);
-							if (!med.ANS_MB.nvars)
-								hasResults = false;
+							if (list[i].contains(QString("%1 ANS_colloids").arg(experiment)))
+							{
+								if (newpath == "")
+									med.ANS_colloids = CBTCSet(fullFilename(list[i].take(QString("%1 ANS_colloids").arg(experiment)).toString(), path).toStdString(), true);
+								else
+									med.ANS_colloids = CBTCSet(newpath.toStdString() + list[i].take(QString("%1 ANS_colloids").arg(experiment)).toString().toStdString(), true);
+								if (med.ANS_colloids.nvars)
+									modelSet->SP.colloid_transport = true;
+							}
+							if (list[i].contains(QString("%1 ANS_constituents").arg(experiment)))
+							{
+								if (newpath == "")
+									med.ANS_constituents = CBTCSet(fullFilename(list[i].take(QString("%1 ANS_constituents").arg(experiment)).toString(), path).toStdString(), true);
+								else
+									med.ANS_colloids = CBTCSet(newpath.toStdString() + list[i].take(QString("%1 ANS_constituents").arg(experiment)).toString().toStdString(), true);
+								if (med.ANS_constituents.nvars)
+									modelSet->SP.constituent_transport = true;
+							}
+							if (list[i].contains(QString("%1 ANS_MB").arg(experiment)))
+							{
+								med.ANS_MB = CBTCSet(fullFilename(list[i].take(QString("%1 ANS_MB").arg(experiment)).toString(), path).toStdString(), true);
+								//if (!med.ANS_MB.nvars)
+									//hasResults = false;
+							}
 						}
 						med.parent = modelSet;
 #endif
 						modelSet->Medium.push_back(med);
 					}
 				}
-			if (list[i].contains("ANS_obs"))
+			if (list[i].contains("ANS_obs") && hasResults)
 #ifdef GIFMOD
 			{
-				modelSet->ANS_obs = CBTCSet(fullFilename(list[i].take("ANS_obs").toString(), path).toStdString(), true);
-				if (!modelSet->ANS_obs.nvars)
-					hasResults = false;
+				if (newpath == "")
+					modelSet->ANS_obs = CBTCSet(fullFilename(list[i].take("ANS_obs").toString(), path).toStdString(), true);
+				else
+					modelSet->ANS_obs = CBTCSet(newpath.toStdString() + list[i].take("ANS_obs").toString().toStdString(), true);
+
+				//if (!modelSet->ANS_obs.nvars)
+					//hasResults = false;
 			}
 #endif
 #ifdef GWA
@@ -2261,7 +2314,11 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 			menu->addAction("Plot Atmospheric Concentration Record");
 		}
 	}
-	model = (experimentID() == 0 || modelSet->Medium.size()==0) ? 0 : &(modelSet->Medium[experimentID() - 1]);
+	if (modelSet != NULL)
+		model = (experimentID() == 0 || modelSet->Medium.size() == 0) ? 0 : &(modelSet->Medium[experimentID() - 1]);
+	else
+		model = 0; 
+
 
 	if (model == 0)
 		if (modelSet)
@@ -2294,11 +2351,13 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 			}
 
 		}
+		
+		qDebug() << "Model->constituent_transport: " << model->constituent_transport() << entitiesByType("Constituent");
 		if ((model->colloid_transport() && entitiesByType("Particle").count()) ||
 			(model->constituent_transport() && entitiesByType("Constituent").count()))
 		{
-			QMenu *waterQualitySubMenu = menu->addMenu("Plot Water Quality Results");
-
+			QMenu *waterQualitySubMenu = menu->addMenu("Plot Constituent Concentrations");
+			
 			if (model->colloid_transport() && entitiesByType("Particle").count())
 			{
 				for each (Entity *p in entitiesByType("Particle"))
@@ -2351,6 +2410,9 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 					}
 				}
 			}
+			
+			QMenu *massesSubMenu = menu->addMenu("Plot Constituent Masses");
+			
 			if (model->constituent_transport() && entitiesByType("Constituent").count())
 			{
 				if (model->colloid_transport() && entitiesByType("Particle").count())
@@ -2424,6 +2486,91 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 						}
 					}
 				}
+
+				// Mass menues:
+
+				for each (Entity *e in entitiesByType("Constituent"))
+				{
+					//QMenu *constituentSubMenu = waterQualitySubMenu->addMenu(e->Name());
+					QStringList list;
+					list.append("Constituent Mass");
+					int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()), -2, 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
+					list.append(QString::number(BTCid));
+					BTCid = model->getblocksq(n->Name().toStdString());
+					list.append(QString::number(BTCid));
+					menuKey[massesSubMenu->addAction(e->Name())] = list;
+				}
+				QMenu *sorbedmassSubMenu = massesSubMenu->addMenu("Sorbed/Particle associated");
+				QMenu *constituentSorbedmassSubMenu;
+				for each (Entity *e in entitiesByType("Constituent"))
+				{
+					constituentSorbedmassSubMenu = sorbedmassSubMenu->addMenu(e->Name());
+					QStringList list;
+					list.append("Constituent Mass");
+					int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()), -1, 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
+					list.append(QString::number(BTCid));
+					BTCid = model->getblocksq(n->Name().toStdString());
+					list.append(QString::number(BTCid));
+					menuKey[constituentSorbedSubMenu->addAction("Soil")] = list;
+					for each (Entity *p in entitiesByType("Particle"))
+					{
+						QMenu *particlemassSubMenu = constituentSorbedmassSubMenu->addMenu(p->Name());
+						if (p->getValue("Model").contains("Single"))
+						{
+							QStringList list;
+							list.append("Constituent Mass");
+							int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+								model->lookup_particle_type(p->Name().toStdString()), 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
+							list.append(QString::number(BTCid));
+							BTCid = model->getblocksq(n->Name().toStdString());
+							list.append(QString::number(BTCid));
+							menuKey[particlemassSubMenu->addAction("Mobile")] = list;
+						}
+						if (p->getValue("Model").contains("Dual"))
+						{
+							QStringList list;
+							list.append("Constituent Mass");
+							int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+								model->lookup_particle_type(p->Name().toStdString()), 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
+							list.append(QString::number(BTCid));
+							menuKey[particlemassSubMenu->addAction("Mobile")] = list;
+							list.clear();
+							list.append("Constituent Mass");
+							BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+								model->lookup_particle_type(p->Name().toStdString()), 1, model->RXN().look_up_constituent_no(e->Name().toStdString()));
+							list.append(QString::number(BTCid));
+							BTCid = model->getblocksq(n->Name().toStdString());
+							list.append(QString::number(BTCid));
+							menuKey[particlemassSubMenu->addAction("Attached")] = list;
+						}
+						if (p->getValue("Model").contains("Triple"))
+						{
+							QStringList list;
+							list.append("Constituent Mass");
+							int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+								model->lookup_particle_type(p->Name().toStdString()), 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
+							list.append(QString::number(BTCid));
+							menuKey[particlemassSubMenu->addAction("Mobile")] = list;
+							list.clear();
+							list.append("Constituent Mass");
+							BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+								model->lookup_particle_type(p->Name().toStdString()), 1, model->RXN().look_up_constituent_no(e->Name().toStdString()));
+							list.append(QString::number(BTCid));
+							BTCid = model->getblocksq(n->Name().toStdString());
+							list.append(QString::number(BTCid));
+							menuKey[particlemassSubMenu->addAction("Reversible attached")] = list;
+							list.clear();
+							list.append("Constituent Mass");
+							BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+								model->lookup_particle_type(p->Name().toStdString()), 2, model->RXN().look_up_constituent_no(e->Name().toStdString()));
+							list.append(QString::number(BTCid));
+							BTCid = model->getblocksq(n->Name().toStdString());
+							list.append(QString::number(BTCid));
+							menuKey[particlemassSubMenu->addAction("Irreversible attached")] = list;
+						}
+					}
+				}
+
 			}
 		}
 #endif
@@ -2881,6 +3028,8 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 
 		if (selectedAction->text() == "Plot Storage")
 		{
+			format.yAxisLabel.append("Storage (m^3)");
+			format.xAxisLabel.append("Time (day)");
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
 			plot->addScatterPlot(model->ANS, model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Storage"), 1, 0, format);
 			plot->show();
@@ -2888,6 +3037,8 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 		if (selectedAction->text() == "Plot Head")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
+			format.yAxisLabel.append("Head (m)");
+			format.xAxisLabel.append("Time (day)");
 			plot->addScatterPlot(model->ANS, Edges().count() + Nodes().count() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Head"), 1, 0, format);
 			plot->show();
 		}
@@ -2895,6 +3046,8 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
 			double volume = n->val("a").convertToDefaultUnit().toDouble() * n->val("depth").convertToDefaultUnit().toDouble(); //model->Blocks[model->getblocksq(n->Name().toStdString())].V; //ask Arash
+			format.yAxisLabel.append("Moisture Content");
+			format.xAxisLabel.append("Time (day)");
 			if (n->objectType.ObjectType=="Plant")
 				plot->addScatterPlot(model->ANS, model->getblocksq(n->Name().toStdString()), model->getblocksq(n->Name().toStdString()) + 3 * Edges().count() + 3 * Nodes().count() ,  QString("%1: %2").arg(n->Name()).arg("Moisture Content"), format);
 			else
@@ -2904,6 +3057,8 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 		if (selectedAction->text() == "Water Depth")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
+			format.yAxisLabel.append("Depth (m)");
+			format.xAxisLabel.append("Time (day)");
 			double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
 			plot->addScatterPlot(model->ANS, Edges().count() + Nodes().count() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Water Depth"), 1, -z0, format);
 			plot->show();
@@ -2911,6 +3066,8 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 		if (selectedAction->text() == "Evapotranspiration Rate")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
+			format.yAxisLabel.append("Evaporation rate (m^3/day)");
+			format.xAxisLabel.append("Time (day)");
 			double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
 			plot->addScatterPlot(model->ANS, Edges().count() + 2 * Nodes().count() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Evapotranspiration Rate"), 1, 0, format);
 			plot->show();
@@ -2918,6 +3075,8 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 		if (selectedAction->text() == "Leaf Area Index")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
+			format.yAxisLabel.append("Leaf Area Index");
+			format.xAxisLabel.append("Time (day)");
 			double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
 			plot->addScatterPlot(model->ANS, 3* Edges().count() + 4 * Nodes().count() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Leaf Area Index"), 1, 0, format);
 			plot->show();
@@ -2926,6 +3085,8 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 		if (selectedAction->text() == "Bio-volume")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
+			format.yAxisLabel.append("Bio-volume (m^3)");
+			format.xAxisLabel.append("Time (day)");
 			double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
 			plot->addScatterPlot(model->ANS, 3 * Edges().count() + 3 * Nodes().count() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Bio-volume"), 1, 0, format);
 			plot->show();
@@ -2935,6 +3096,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 		if (selectedAction->text() == "Plot Atmospheric Concentration Record")
 		{
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
+			format.xAxisLabel.append("Time (day)");
 			QString file = n->getValue("Atmospheric Record").toQString();
 			CBTC record = CBTC(file.replace("./", modelPathname().append('/')).toStdString());
 			plot->addScatterPlot(record, n->Name(), plotformat());
@@ -2993,6 +3155,14 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 				plot->addScatterPlot(model->ANS_constituents, menuKey[selectedAction][1].toInt(), "", 1, 0, format);
 				plot->show();
 			}
+
+			if (menuKey[selectedAction][0] == "Constituent Mass")
+			{
+				plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
+				plot->addScatterPlot(model->ANS_constituents, menuKey[selectedAction][1].toInt(), model->ANS, menuKey[selectedAction][2].toInt(), "", 1, 0, format);
+				plot->show();
+			}
+
 			if (menuKey[selectedAction][0] == "Particle")
 			{
 				plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
@@ -3006,6 +3176,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 					if (selectedAction->text().toStdString() == inflow.names[i])
 					{
 						plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
+						format.yAxisLabel.append("Flow (m^3/day)");
 						plot->addScatterDotPlot(inflow, i, "", format);
 						plot->show();
 					}
@@ -3097,14 +3268,22 @@ void GraphWidget::edgeContextMenuRequested(Edge* e, QPointF pos, QMenu *menu)
 			treeModel->deleteEdge(e);
 		if (selectedAction->text() == "Plot Flow")
 		{
+			plotformat format;
+			format.xAxisTimeFormat = true;
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
-			plot->addScatterPlot(model->ANS, Nodes().count() + model->getconnectorsq(e->Name().toStdString()), QString("%1: %2").arg(e->Name()).arg("Flow"));
+			format.yAxisLabel.append(XString::reform(QString("Flow (m~^3/day)")));
+			format.xAxisLabel.append("Time (day)");
+			plot->addScatterPlot(model->ANS, Nodes().count() + model->getconnectorsq(e->Name().toStdString()), QString("%1: %2").arg(e->Name()).arg("Flow"),1,0,format);
 			plot->show();
 		}
 		if (selectedAction->text() == "Velocity")
 		{
+			plotformat format;
+			format.xAxisTimeFormat = true;
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
 			CBTC flow, area, velocity;
+			format.yAxisLabel.append(XString::reform(QString("Velocity (m/day)")));
+			format.xAxisLabel.append("Time (day)");
 			flow = model->ANS.BTC[Nodes().count() + model->getconnectorsq(e->Name().toStdString())];
 			area = model->ANS.BTC[Nodes().count() * 3 + Edges().count() + model->getconnectorsq(e->Name().toStdString())];
 			velocity = flow % area;
@@ -3114,13 +3293,21 @@ void GraphWidget::edgeContextMenuRequested(Edge* e, QPointF pos, QMenu *menu)
 		}
 		if (selectedAction->text() == "Area")
 		{
+			plotformat format;
+			format.xAxisTimeFormat = true;
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
+			format.yAxisLabel.append(XString::reform(QString("Flow (m~^2")));
+			format.xAxisLabel.append("Time (day)");
 			plot->addScatterPlot(model->ANS, Nodes().count() * 3 + Edges().size() + model->getconnectorsq(e->Name().toStdString()), QString("%1: %2").arg(e->Name()).arg("Area"));
 			plot->show();
 		}
 		if (selectedAction->text() == "Vapor exchange rate")
 		{
+			plotformat format;
+			format.xAxisTimeFormat = true;
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
+			format.yAxisLabel.append(XString::reform(QString("Flow (m~^3/day)")));
+			format.xAxisLabel.append("Time (day)");
 			plot->addScatterPlot(model->ANS, Nodes().count() * 3 + 2 * Edges().size() + model->getconnectorsq(e->Name().toStdString()), QString("%1: %2").arg(e->Name()).arg("Vapor exchange rate"));
 			plot->show();
 		}
@@ -3662,6 +3849,15 @@ QMap<QString, QString> GraphWidget::find_objects(QString name)
 }
 
 
+QList<QVariant> GraphWidget::runCommands(QList<CCommand> &commands)
+{
+	QList<QVariant> results;
+	for (int i = 0; i < commands.size(); i++)
+		results.append(runCommand(commands[i]));
+
+	return results; 
+}
+
 QVariant GraphWidget::runCommand(CCommand &command)
 {
 	//settings
@@ -3779,13 +3975,13 @@ QVariant GraphWidget::runCommand(CCommand &command)
 				else
 				{
 					if (n) {
-						output += setprop(n, propName, value, experiment);
+						output += setprop(n, XString::reform(propName), value, experiment);
 					}
 					if (ed) {
-						output += setprop(ed, propName, value, experiment);
+						output += setprop(ed, XString::reform(propName), value, experiment);
 						}
 					if (en) {
-						output += setprop(en, propName, value, experiment);
+						output += setprop(en, XString::reform(propName), value, experiment);
 					}
 					mainWindow->tableProp->repaint();
 				}
@@ -3796,9 +3992,13 @@ QVariant GraphWidget::runCommand(CCommand &command)
 	if (command.command == "add")
 	{
 		if (command.values[0] == "")
+		{
 			output = "Syntax error.";
+			return output;
+		}
 		else
 		{
+			bool failed = true;
 			QString e = command.values[0].toLower();
 			QStringList addfromMainWindow;
 			addfromMainWindow << "soil" << "pond" << "catchment" << "darcy" << "storage" << "stream" << "plant";
@@ -3806,10 +4006,16 @@ QVariant GraphWidget::runCommand(CCommand &command)
 			{
 				Node* n = mainWindow->add(e);
 				foreach(QString key, command.parameters.keys())
-					output += setprop(n, key, command.parameters[key], experiment);
+					output += setprop(n, XString::reform(key), command.parameters[key], experiment);
 
-
+				qDebug() << int(n->getProp("x").toDouble());
+				n->setProp("x", int(n->getProp("x").toDouble()));
+				n->setProp("y", int(n->getProp("y").toDouble()));
+				n->setX(int(n->getProp("x").toDouble()));
+				n->setY(int(n->getProp("y").toDouble()));
+				failed = false;
 			}
+			
 			QStringList entityTypes, exactType;
 
 			entityTypes << "sensor" << "objective function" << "controller" << "constituent" << "particle" << "build-up" << "external flux" << "reaction parameter" << "parameter" << "observation" << "evapotranspiration" << "wells" << "tracers";
@@ -3820,9 +4026,27 @@ QVariant GraphWidget::runCommand(CCommand &command)
 				en = new Entity(exactType[entityTypes.indexOf(e)], "No Name", this);
 
 				foreach(QString key, command.parameters.keys())
-					output += setprop(en, key, command.parameters[key], experiment);
+					output += setprop(en, XString::reform(key), command.parameters[key], experiment);
+				failed = false;
 			}
-
+			if (e.toLower()=="reaction")
+			{ 
+				Process *p = new Process(command.get_name(), this);
+				p->rate = command.parameters["rate"].toQString();
+				foreach(QString X,  command.parameters.keys())
+				{
+					if (X.split('[')[0].trimmed().toLower() == "stch")
+					{
+						p->stoichiometries[X.split('[')[1].split(']')[0]] = command.parameters[X];
+					}
+				}
+			
+			}
+			if (failed)
+			{
+				output = e + " is not a recognized object!";
+				return output;
+			}
 		}
 	}
 	if (command.command == "connect")
@@ -3830,6 +4054,7 @@ QVariant GraphWidget::runCommand(CCommand &command)
 		if (command.values.count() != 2)
 		{
 			output = "Two arguments are needed";
+			return output;
 		}
 		else
 		{
@@ -3838,36 +4063,47 @@ QVariant GraphWidget::runCommand(CCommand &command)
 			if (!n1 || !n2)
 			{
 				if (!n1)
+				{
 					output.append(QString("%1 is not accessible").arg(command.values[0]));
+					return output;
+				}
 				if (!n2)
+				{
 					output.append(QString("%1 is not accessible").arg(command.values[1]));
+					return output;
+				}
 			}
 			else
 			{
 				Edge *e = new Edge(n1, n2, this);
-				foreach(QString key, command.parameters.keys())
-					output += setprop(e, key, command.parameters[key], experiment);
+				if (e!=NULL)
+					foreach(QString key, command.parameters.keys())
+						output += setprop(e, XString::reform(key), command.parameters[key], experiment);
 			}
 		}
 	}
 		
 	if (writeOutput)
-		//		logW->append(output);
+	{
+		logW->append(output);
+		output += command.toQString() + ", Ok";
 		return output;
+	}
 
 
-	return QVariant();
+	return QVariant(command.toQString()+", Ok");
 }
 
 QString  GraphWidget::setprop(Node *n, QString &propname, XString &value, QString &experiment)
 {
 	QString output;
-	if (!mList->extract_props_for_type(n->objectType.ObjectType).contains(propname))
+	if (!mList->extract_props_for_type(n->objectType.ObjectType).contains(propname.toLower()))
 		output = QString(n->Name() + " does not have a property called " + propname);
 	else
 	{
-		QStringList unitsList = n->getProp(propname, UnitsListRole).toStringList();
-		QString defaultUnit = n->getProp(propname, defaultUnitRole).toString();
+		QString full_propname = mList->get_proper_property(n->objectType.ObjectType, propname);
+		QStringList unitsList = n->getProp(full_propname, UnitsListRole).toStringList();
+		QString defaultUnit = n->getProp(full_propname, defaultUnitRole).toString();
 		QString unit = "";
 		if (value.unit == "") value.unit = defaultUnit;
 		for (int i = 0; i < unitsList.count(); i++)
@@ -3876,7 +4112,13 @@ QString  GraphWidget::setprop(Node *n, QString &propname, XString &value, QStrin
 		value.unit = (unit == "") ? defaultUnit : unit;
 		value.setUnitsList(unitsList);
 		value.defaultUnit = defaultUnit;
-		n->props.setProp(propname, value, experiment); n->changed();// update();
+		if (full_propname == "Name" && nodeNames().contains(value.toQString()))
+		{
+			log("Node '" + value.toQString() + "' already exist");
+		}
+		else
+			n->props.setProp(full_propname, value, experiment); n->changed();// update();
+		
 	}
 	return output;
 }
@@ -3884,18 +4126,19 @@ QString  GraphWidget::setprop(Node *n, QString &propname, XString &value, QStrin
 QString  GraphWidget::setprop(Edge *ed, QString &propname, XString &value, QString &experiment)
 {
 	QString output;
-	if (!mList->extract_props_for_type(ed->objectType.ObjectType).contains(propname))
+	if (!mList->extract_props_for_type(ed->objectType.ObjectType).contains(propname.toLower()))
 		output = QString(ed->Name() + " does not have a property called " + propname);
 	else
 	{
-		QStringList unitsList = ed->getProp(propname, UnitsListRole).toStringList();
-		QString defaultUnit = ed->getProp(propname, defaultUnitRole).toString();
+		QString full_propname = mList->get_proper_property(ed->objectType.ObjectType, propname);
+		QStringList unitsList = ed->getProp(full_propname, UnitsListRole).toStringList();
+		QString defaultUnit = ed->getProp(full_propname, defaultUnitRole).toString();
 		if (value.unit == "") value.unit = defaultUnit;
 		QString unit = "";
 		for (int i = 0; i < unitsList.count(); i++)
 		{
 			if (XString::reformBack(value.unit) == XString::reformBack(unitsList[i])
-				|| XString::coefficient(value.unit) == XString::coefficient(unitsList[i]))
+				|| XString::coefficient(XString::reformBack(value.unit)) == XString::coefficient(XString::reformBack(unitsList[i])))
 			{
 				unit = unitsList[i];
 				exit;
@@ -3904,7 +4147,13 @@ QString  GraphWidget::setprop(Edge *ed, QString &propname, XString &value, QStri
 		value.unit = (unit == "") ? defaultUnit : unit;
 		value.setUnitsList(unitsList);
 		value.defaultUnit = defaultUnit;
-		ed->props.setProp(propname, value, experiment); ed->changed(); // update();
+		
+		if (full_propname == "Name" && nodeNames().contains(value.toQString()))
+		{
+			log("Connector '" + value.toQString() + "' already exist");
+		}
+		else
+			ed->props.setProp(full_propname, value, experiment); ed->changed(); // update();
 	}
 	return output;
 }
@@ -3912,18 +4161,19 @@ QString  GraphWidget::setprop(Edge *ed, QString &propname, XString &value, QStri
 QString  GraphWidget::setprop(Entity *en, QString &propname, XString &value, QString &experiment)
 {
 	QString output;
-	if (!mList->extract_props_for_type(en->objectType.ObjectType).contains(propname))
+	if (!mList->extract_props_for_type(en->objectType.ObjectType).contains(propname.toLower()))
 		output = QString(en->Name() + " does not have a property called " + propname);
 	else
 	{
-		QStringList unitsList = en->getProp(propname, UnitsListRole).toStringList();
-		QString defaultUnit = en->getProp(propname, defaultUnitRole).toString();
+		QString full_propname = mList->get_proper_property(en->objectType.ObjectType, propname);
+		QStringList unitsList = en->getProp(full_propname, UnitsListRole).toStringList();
+		QString defaultUnit = en->getProp(full_propname, defaultUnitRole).toString();
 		if (value.unit == "") value.unit = defaultUnit;
 		QString unit = "";
 		for (int i = 0; i < unitsList.count(); i++)
 		{
 			if (XString::reformBack(value.unit) == XString::reformBack(unitsList[i])
-				|| XString::coefficient(value.unit) == XString::coefficient(unitsList[i]))
+				|| XString::coefficient(XString::reformBack(value.unit)) == XString::coefficient(XString::reformBack(unitsList[i])))
 			{
 				unit = unitsList[i];
 				exit;
@@ -3932,7 +4182,12 @@ QString  GraphWidget::setprop(Entity *en, QString &propname, XString &value, QSt
 		value.unit = (unit == "") ? defaultUnit : unit;
 		value.setUnitsList(unitsList);
 		value.defaultUnit = defaultUnit;
-		en->props.setProp(propname, value, experiment);	en->changed();// update();
+		if (full_propname == "Name" && nodeNames().contains(value.toQString()))
+		{
+			log("Entity '" + value.toQString() + "' already exist");
+		}
+		else
+			en->props.setProp(full_propname, value, experiment);	en->changed();// update();
 	}
 	return output;
 }

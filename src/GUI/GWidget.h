@@ -197,7 +197,8 @@ public:
 	vector<Results *> resultsSet;
 	bool wizard(QList<command>&commands);
 	QVariant runCommand(CCommand & command); //runs the commands submitted into script window
-	//QVariant runCommand(QString command);
+	QList<QVariant> runCommands(QList<CCommand> &command); //run commands sequentially
+											 //QVariant runCommand(QString command);
 	//QVariant runCommand(QString command, QList<XString> arguments);// = QList<XString>());
 #endif
 #ifdef GWA
@@ -302,18 +303,22 @@ public:
 	void nodeContextMenuRequested(Node* ,QPointF pos, QMenu *menu=NULL);
 	void edgeContextMenuRequested(Edge*, QPointF pos, QMenu *menu=NULL);
 	void warning(QString){};
-	QStringList script() const;
-	QStringList s_get_params() const;
-	QStringList s_get_observed() const;
-	QStringList s_get_environmental_params() const;
-	QStringList s_get_model_configuration() const;
-	QStringList s_get_particle_types() const;
-	QStringList s_get_constituents() const;
-	QStringList s_get_reactions() const;
+	QList<CCommand> script() const;
+	QList<CCommand> s_get_params() const;
+	QList<CCommand> s_get_observed() const;
+	QList<CCommand> s_get_environmental_params() const;
+	QList<CCommand> s_get_model_blocks() const;
+	QList<CCommand> s_get_model_connectors() const;
+	QList<CCommand> s_get_particle_types() const;
+	QList<CCommand> s_get_constituents() const;
+	QList<CCommand> s_get_reactions() const;
 //	QStringList s_set_default_connector_expressions() const;
 //	QStringList s_set_default_block_expressions() const;
-	QStringList s_get_buildup() const;
-	QStringList s_get_external_flux() const;
+	QList<CCommand> s_get_buildup() const;
+	QList<CCommand> s_get_evapotranspiration() const;
+	QList<CCommand> s_get_MCMC() const;
+	QList<CCommand> s_get_genetic_algorithm() const;
+	QList<CCommand> s_get_external_flux() const;
 //	QStringList s_load_inflows() const;
 	double minX() const;
 	double minY() const;

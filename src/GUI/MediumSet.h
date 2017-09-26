@@ -32,12 +32,13 @@ struct  Solver_parameters
 	int epoch_limit;
 	double avg_dt_limit;
 	int restore_interval;
-	bool pos_def_limit;
-	bool negative_concentration_allowed;
-	bool steady_state_hydro = false;
-	bool check_oscillation=true;
-	double maximum_run_time=30*86400; 
+	bool pos_def_limit; 
+	bool negative_concentration_allowed; //if set equal to true the calculated concentrations will be prevented from becomming negative
+	bool steady_state_hydro = false; // the hydro will be solved assuming a steady-state condition
+	bool check_oscillation=true; //whether oscillation in the solution is limited by the solver
+	double maximum_run_time=30*86400; //This is the maximum time that a single simulation should take. The solver gives up when this time limit is reached and "failed" will be returned. 
 	double minimum_acceptable_negative_conc = 1e-13; //this parameter determines the absolute value of a negative concentration to be accepted. If a negative concentration with absolute value smaller than this criteria is calculated the program will replace it with a zero concentration. 
+	double max_dt; // maximum allowable time step
 };
 
 struct  file_info
@@ -153,6 +154,7 @@ public:
 //GUI
 	GraphWidget *gw = 0;
 	void g_get_controllers();
+	void load(GraphWidget * gw, runtimeWindow * rtw);
 	CMediumSet(GraphWidget* gw, runtimeWindow* rtw);
 	void g_get_environmental_params();
 	void g_get_params();

@@ -17,7 +17,7 @@ CConnection::CConnection(void)
 	flow_factor=1;
 	Q_v=0;
 	Q_v_star=0;
-	flow_params.resize(30);
+	flow_params.resize(n_flow_params);
 	flow_params[z1] = -1000000;
 	flow_params[z2] = -1000000;
 	flow_params[flow_exponent] = 0.6667;
@@ -569,7 +569,7 @@ double CConnection::get_val(int i, int ii)
 			{
 				vector<int> jj;
 				jj.push_back(ii);
-				return 0.5*(Block1->get_val(9,jj)+Block2->get_val(9,jj));
+				return max(Block1->get_val(9,jj),Block2->get_val(9,jj));
 			}
 			else 
 			{
@@ -662,7 +662,7 @@ double CConnection::get_val_star(int i, int ii)
 		{
 			if ((Block2->indicator==Soil) || (Block2->indicator == Plant) || (Block2->indicator == Darcy))
 			{
-				return 0.5*(Block1->get_val_star(9)+Block2->get_val_star(9));
+				return max(Block1->get_val_star(9),Block2->get_val_star(9));
 			}
 			else 
 			{

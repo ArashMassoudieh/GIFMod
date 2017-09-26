@@ -358,7 +358,8 @@ QCPGraph* plotWindow::addScatterPlot(QString name, QVector<double> t, QVector<do
 		graph->setChannelFillGraph(format.fillGraph);
 	this->format.push_back(format);
 	customPlot->rescaleAxes();
-
+	customPlot->yAxis->setLabel(format.yAxisLabel);
+	customPlot->xAxis->setLabel(format.xAxisLabel);
 	return graph;
 }
 

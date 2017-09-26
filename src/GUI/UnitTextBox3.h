@@ -22,11 +22,12 @@ public:
 		
 		unitBox = new QComboBox(textBox);
 		layout->addWidget(unitBox);
+		layout->setSizeConstraint(QLayout::SetMaximumSize);
 		setLayout(layout);
 		validator = new QDoubleValidator(this);
 		textBox->setValidator(validator);
 //		Rect = option.rect;
-		Rect = QRect(0, 0, 100, 20);
+		Rect = QRect(0, 0, 300, 20);
 		setXString(X);
 		setFocusProxy(textBox);
 /*		unitBox->show();

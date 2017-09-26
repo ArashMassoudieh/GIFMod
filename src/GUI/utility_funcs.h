@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include "qdatetime.h"
 using namespace std;
 #ifdef GIFMOD
 struct range //properties of unknown parameters
@@ -27,7 +28,7 @@ qint64 xldate2julian(const qint64 xldate);
 qint64 julian2xldate(const qint64 juliandate);
 int dayOfYear(const qint64 xldate);
 double dayOfYear(const double xldate);
-
+double QDate2Xldate(QDateTime &x);
 
 double xldate2julian(const double xldate);
 
@@ -38,4 +39,6 @@ QList<int> dayfractiontotime(double dayFraction = 0);
 QString float2datetime(const double d, QString format = "MM/dd/yyyy hh:mm:ss", bool ignorefirst50years = true);
 QStringList specialSplit(QString s);
 QStringList extract_by_space_quote(QString s);
-vector<int> find_indexes_of(QString &s, QString &s1);
+vector<int> find_indexes_of(const QString &s, QString &s1);
+QString extract_in_between(const QString &s, QString s1, QString s2);
+bool isnumber(string S);

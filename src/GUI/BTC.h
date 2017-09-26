@@ -36,49 +36,49 @@ public:
 	//MM
 	vector<double> D;
 
-	double CBTC::interpol(double x);
-	double CBTC::interpol_D(double x);
-	CBTC CBTC::interpol(vector<double> x);
-	CBTC CBTC::interpol(CBTC &x);
-	CBTC(const CBTC &C);
-	CBTC::CBTC(string Filename);
+	double CBTC::interpol(double x); //interpolate at location x
+	double CBTC::interpol_D(double x); //interpolate the distance to the next non-zero data point
+	CBTC CBTC::interpol(vector<double> x); //interpolate at each value in vector x
+	CBTC CBTC::interpol(CBTC &x); //interpolate at times in the time axis of x
+	CBTC(const CBTC &C); 
+	CBTC::CBTC(string Filename); //create BTC based on the filename
 	CBTC& CBTC::operator = (const CBTC &C);
-	void CBTC::readfile(string);
-	void CBTC::writefile(string Filename);
-	double CBTC::maxC();
-	double CBTC::minC();
-	void CBTC::setnumpoints(int);
-	CBTC CBTC::Log();
-	CBTC CBTC::Log(double min);
-	double CBTC::std();
-	double CBTC::mean();
-	double CBTC::percentile(double x);
-	double CBTC::percentile(double x, int limit);
-	double CBTC::mean(int limit);
-	double CBTC::std(int nlimit);
-	double CBTC::mean_log(int limit);
-	double CBTC::integrate();
-	double CBTC::integrate(double t);
-	double CBTC::integrate(double t1, double t2);
-	int CBTC::lookupt(double t);
-	double CBTC::average();
-	double CBTC::average(double t);
-	double CBTC::slope(double tt);
-	CBTC CBTC::distribution(int n_bins, int limit);
-	void CBTC::append(double x);
-	void CBTC::append(double tt, double xx);
-	void CBTC::append(CBTC &CC);
-	CBTC& CBTC::operator+=(CBTC &v);
-	CBTC& CBTC::operator%=(CBTC &v);
-	CBTC CBTC::make_uniform(double increment);
-	CBTC CBTC::extract(double t1, double t2);
-	vector<double> CBTC::trend();
-	double CBTC::mean_t();
-	CBTC CBTC::add_noise(double std, bool);
-	void CBTC::assign_D();
-	void CBTC::clear();
-	double CBTC::wiggle();
-	double CBTC::wiggle_corr(int _n=10);
+	void CBTC::readfile(string); //read the values from a text file
+	void CBTC::writefile(string Filename); //writes the BTC contets into a fild
+	double CBTC::maxC(); //returns the maximum value
+	double CBTC::minC(); //returns the minimum value
+	void CBTC::setnumpoints(int); //resize the timeseries
+	CBTC CBTC::Log(); //take the log of all the data points
+	CBTC CBTC::Log(double min); //log(min(min,C))
+	double CBTC::std(); //standard deviation of C
+	double CBTC::mean(); //mean of C
+	double CBTC::percentile(double x); //x^th percentile of C
+	double CBTC::percentile(double x, int limit); //x^th percentile with the exception of the first "limit" data points
+	double CBTC::mean(int limit); // mean of the data after excluding "limit" data points
+	double CBTC::std(int nlimit); // standard deviation of the data after excluding "limit" data points
+	double CBTC::mean_log(int limit); //mean of log transformed data after excluding "limit" data points
+	double CBTC::integrate(); // integral of the time series
+	double CBTC::integrate(double t); //integral from the begining to time t
+	double CBTC::integrate(double t1, double t2); //integral between time t1 and t2
+	int CBTC::lookupt(double t); // finds the index of the datapoint with time t
+	double CBTC::average(); //integral of time-series devided by the domail length
+	double CBTC::average(double t); // integral to time t devided by domain length
+	double CBTC::slope(double tt); //slope of time-series at time tt
+	CBTC CBTC::distribution(int n_bins, int limit); //extract the histogram of values
+	void CBTC::append(double x); //appends a data point with value x
+	void CBTC::append(double tt, double xx); //appends a datapoint with value xx at time tt
+	void CBTC::append(CBTC &CC);// appends a time-series to the time-series
+	CBTC& CBTC::operator+=(CBTC &v); //adds another time-series to the existing one
+	CBTC& CBTC::operator%=(CBTC &v); //adds another time-series by corresponding indexes
+	CBTC CBTC::make_uniform(double increment); //create a new time-series with uniformly distributed time-axis
+	CBTC CBTC::extract(double t1, double t2); //extracts a sub time-series from t1 to t2.
+	vector<double> CBTC::trend(); //calculate the slope based on regression
+	double CBTC::mean_t(); //mean of t values of data point
+	CBTC CBTC::add_noise(double std, bool); //adds Gaussian noise to values 
+	void CBTC::assign_D(); //Assign distances to the next non-zero values
+	void CBTC::clear(); // clears the time-series
+	double CBTC::wiggle(); //calculate oscillation
+	double CBTC::wiggle_corr(int _n=10); 
 	bool CBTC::wiggle_sl(double tol);
 	double CBTC::maxfabs();
 	double max_fabs;

@@ -59,6 +59,18 @@ bool PropList<Node>::setProp(const QString& propName, const XString& Value, cons
 		parent->setObjectSubType(Value);
 		return true;
 	}
+	if (propName == "x")
+	{
+		if (Value.toFloat() != parent->x())
+			parent->setX(Value.toDouble());
+	}
+
+	if (propName == "y")
+	{
+		if (Value.toFloat() != parent->y())
+			parent->setY(Value.toDouble());
+	}
+
 	if (experimentName == "All experiments")
 	{
 		bool r = list[experimentName].setProp(propName, Value, parent);

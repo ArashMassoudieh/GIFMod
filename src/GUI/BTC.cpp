@@ -62,15 +62,20 @@ CBTC::~CBTC()
 CBTC::CBTC(const CBTC &CC)
 {
 	n=CC.n;
-	t = CC.t;
-	D = CC.D;
-	C = CC.C;
+	if (n > 0)
+	{
+		t = CC.t;
+		D = CC.D;
+		C = CC.C;
+	}
 	structured = CC.structured;
 	name = CC.name;
 	unit = CC.unit;
 	defaultUnit = CC.defaultUnit;
 	unitsList = CC.unitsList;
 	error = CC.error;
+	file_not_found = CC.file_not_found;
+	
 }
 
 CBTC::CBTC(string Filename)
@@ -131,16 +136,19 @@ CBTC::CBTC(string Filename)
 CBTC& CBTC::operator = (const CBTC &CC)
 {
 	n=CC.n;
-	t = CC.t;
-	D = CC.D;
-	C = CC.C;
+	if (n > 0)
+	{
+		t = CC.t;
+		D = CC.D;
+		C = CC.C;
+	}
 	structured = CC.structured;
 	name = CC.name;
 	unit = CC.unit;
 	defaultUnit = CC.defaultUnit;
 	unitsList = CC.unitsList;
 	error = CC.error;
-
+	file_not_found = CC.file_not_found;
 	return *this;
 }
 

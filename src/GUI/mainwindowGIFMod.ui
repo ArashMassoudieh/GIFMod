@@ -642,7 +642,10 @@
      <normaloff>Icons/runScript.png</normaloff>Icons/runScript.png</iconset>
    </property>
    <property name="text">
-    <string>Run Model from Script</string>
+    <string>Create Model from Script</string>
+   </property>
+   <property name="iconText">
+    <string>Create Model from Script</string>
    </property>
   </action>
   <action name="action_Hydraulic_Outputs">
@@ -823,7 +826,7 @@
   <action name="actionNew_from_template">
    <property name="icon">
     <iconset>
-     <normaloff>../Icons/wizard blue.png</normaloff>../Icons/wizard blue.png</iconset>
+     <normaloff>Icons/wizard blue.png</normaloff>Icons/wizard blue.png</iconset>
    </property>
    <property name="text">
     <string>New from &amp;template...</string>
@@ -832,7 +835,7 @@
   <action name="actionCommandLine">
    <property name="icon">
     <iconset>
-     <normaloff>Icons/command-line-icon-18607-16x16.ico</normaloff>Icons/command-line-icon-18607-16x16.ico</iconset>
+     <normaloff>Icons/commad.png</normaloff>Icons/commad.png</iconset>
    </property>
    <property name="text">
     <string>commandLine</string>

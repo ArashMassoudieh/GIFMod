@@ -1,9 +1,14 @@
 #ifndef GIFMOD_VERSION
-#define GIFMOD_VERSION "0.1.21"
+#define GIFMOD_VERSION "0.1.24"
 #endif
 #ifndef GWA_VERSION
 #define GWA_VERSION "0.0.1"
 #endif
+
+#ifndef max_num_recent_files
+#define max_num_recent_files 15
+#endif
+
 
 #ifdef DEBUG
 #define WIZARD
@@ -62,6 +67,8 @@
 #include "mainwindow.h"
 #include "entity.h"
 #include "folders.h"
+#include "wizard_dialog.h"
+#include "wizard_select_dialog.h"
 
 
 void MainWindow::on_actionAdd_Well_triggered()
@@ -86,6 +93,8 @@ MainWindow::MainWindow(QWidget *parent, QString applicationName, QString shortNa
 	this->fileExtension = extension;
 	this->applicationShortName = shortName;
 	log = new logWindow(this);
+	
+	
 	//	QDesktopWidget *d = QApplication::desktop();
 	/*	if (d->screenCount() > 1)
 		{
@@ -276,6 +285,7 @@ MainWindow::MainWindow(QWidget *parent, QString applicationName, QString shortNa
 #ifdef GIFMOD
 	connect(ui->menuWaterQuality->menuAction(), SIGNAL(hovered()), this, SLOT(menuWaterQuality_hovered()));
 	connect(ui->menuWaterQuality, SIGNAL(triggered()), this, SLOT(menuWaterQuality_triggered()));	
+	connect(ui->actionNew_from_template, SIGNAL(triggered()), this, SLOT(newfromtemplate()));
 #endif
 
 
@@ -289,21 +299,35 @@ void MainWindow::readRecentFilesList()
 //	qDebug() << localAppFolderAddress();
 //	QString add = localAppFolderAddress();
 	ifstream file(localAppFolderAddress().toStdString()+RECENT);
+	int count = 0; 
 	if (file.good())
 	{
 		string line;
 		while (!file.eof())
 		{
 			getline(file, line);
-			QString fileName = QString::fromStdString(line);
-			qDebug() << fileName; QString::fromStdString(line);
-			addToRecentFiles(fileName, false);
-			//QAction * a= new QAction()
+			count++;
 		}
 		file.close();
-//		QAction * selected = ui->menuRecent->exec();
-//		if (selected)
-//			qDebug() << selected->text();
+	}
+
+	file.open(localAppFolderAddress().toStdString() + RECENT);
+	int n = 0;
+	if (file.good())
+	{
+		string line;
+		while (!file.eof())
+		{
+			getline(file, line);
+			n++;
+			QString fileName = QString::fromStdString(line);
+			qDebug() << fileName; QString::fromStdString(line);
+			if (n>count-max_num_recent_files)
+				addToRecentFiles(fileName, false);
+			
+		}
+		file.close();
+
 	}
 }
 void MainWindow::addToRecentFiles(QString fileName, bool addToFile) 
@@ -490,10 +514,23 @@ void MainWindow::on_action_Open_triggered()
 	QString fileName = QFileDialog::getOpenFileName(this,
 		tr("Open ").append(applicationName), mainGraphWidget->modelPathname(),
 		tr("Model (*.").append(fileExtension).append(");;All Files (*)"));
-	loadModel(fileName);
-	on_actionZoom_All_triggered();
-	mainGraphWidget->updateNodeCoordinates();
-	addToRecentFiles(fileName);
+	mainGraphWidget->clear();
+	if (fileName == "") return; 
+	if (loadModel(fileName))
+	{
+		mainGraphWidget->modelSet->load(mainGraphWidget, rtw);
+		on_actionZoom_All_triggered();
+		mainGraphWidget->updateNodeCoordinates();
+		addToRecentFiles(fileName);
+	}
+	else
+	{
+		QMessageBox::StandardButton reply;
+		reply = QMessageBox::information(this, "File Corrupted!", "The model file is corrupted.",
+			QMessageBox::Ok);
+	}
+
+	
 }
 bool MainWindow::loadModel(QString modelfilename)
 {
@@ -552,6 +589,12 @@ bool MainWindow::loadModel(QString modelfilename)
 		}
 		
 		
+	}
+
+	for each (Node *n in mainGraphWidget->Nodes())
+	{
+		n->setProp("x", n->x());
+		n->setProp("y", n->y());
 	}
 
 	//	updateInterface(NavigationMode);
@@ -834,14 +877,17 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 		}
 		if (type == "Parameter" && mainGraphWidget->results)
 		{
-			if (mainGraphWidget->results->globalSensitivityMatrix.getnumrows())
-				menu->addAction(QString("Show global sensitivity matrix"), this, SLOT(showGlobalSensitivityMatrix()));
-			if (mainGraphWidget->results->localSensitivityMatrix.getnumrows())
-				menu->addAction(QString("Show local sensitivity matrix"), this, SLOT(showLocalSensitivityMatrix()));
-			if (mainGraphWidget->results->correlationMatrix.getnumrows())
-				menu->addAction(QString("Show correlation matrix"), this, SLOT(showCorrelationMatrix()));
-			if (mainGraphWidget->results->localSensitivityMatrix.getnumrows() || mainGraphWidget->results->globalSensitivityMatrix.getnumrows() || mainGraphWidget->results->correlationMatrix.getnumrows())
-				menu->addSeparator();
+			if (mainGraphWidget->results)
+			{
+				if (mainGraphWidget->results->globalSensitivityMatrix.getnumrows())
+					menu->addAction(QString("Show global sensitivity matrix"), this, SLOT(showGlobalSensitivityMatrix()));
+				if (mainGraphWidget->results->localSensitivityMatrix.getnumrows())
+					menu->addAction(QString("Show local sensitivity matrix"), this, SLOT(showLocalSensitivityMatrix()));
+				if (mainGraphWidget->results->correlationMatrix.getnumrows())
+					menu->addAction(QString("Show correlation matrix"), this, SLOT(showCorrelationMatrix()));
+				if (mainGraphWidget->results->localSensitivityMatrix.getnumrows() || mainGraphWidget->results->globalSensitivityMatrix.getnumrows() || mainGraphWidget->results->correlationMatrix.getnumrows())
+					menu->addSeparator();
+			}
 		}
 #ifdef GIFMOD
 /*		if (type == "Observation" && mainGraphWidget->results)
@@ -965,14 +1011,17 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 		TreeItem *item = model->itemFromIndex(projectExplorer->indexAt(pos));
 		if (item->Name() == "Markov chain Monte Carlo")
 		{
-			if (mainGraphWidget->results->globalSensitivityMatrix.getnumrows())
-				menu->addAction(QString("Show global sensitivity matrix"), this, SLOT(showGlobalSensitivityMatrix()));
-			if (mainGraphWidget->results->localSensitivityMatrix.getnumrows())
-				menu->addAction(QString("Show local sensitivity matrix"), this, SLOT(showLocalSensitivityMatrix()));
-			if (mainGraphWidget->results->correlationMatrix.getnumrows())
-				menu->addAction(QString("Show correlation matrix"), this, SLOT(showCorrelationMatrix()));
-			if (mainGraphWidget->results->localSensitivityMatrix.getnumrows() || mainGraphWidget->results->globalSensitivityMatrix.getnumrows() || mainGraphWidget->results->correlationMatrix.getnumrows())
-				menu->exec(projectExplorer->mapToGlobal(pos));
+			if (mainGraphWidget->results)
+			{
+				if (mainGraphWidget->results->globalSensitivityMatrix.getnumrows())
+					menu->addAction(QString("Show global sensitivity matrix"), this, SLOT(showGlobalSensitivityMatrix()));
+				if (mainGraphWidget->results->localSensitivityMatrix.getnumrows())
+					menu->addAction(QString("Show local sensitivity matrix"), this, SLOT(showLocalSensitivityMatrix()));
+				if (mainGraphWidget->results->correlationMatrix.getnumrows())
+					menu->addAction(QString("Show correlation matrix"), this, SLOT(showCorrelationMatrix()));
+				if (mainGraphWidget->results->localSensitivityMatrix.getnumrows() || mainGraphWidget->results->globalSensitivityMatrix.getnumrows() || mainGraphWidget->results->correlationMatrix.getnumrows())
+					menu->exec(projectExplorer->mapToGlobal(pos));
+			}
 		}
 	}
 	if (projectExplorer->indexAt(pos).data(Role::TreeItemType) == TreeItem::Type::EntityItem)
@@ -1965,7 +2014,7 @@ MainWindow::~MainWindow()
 //	delete projModel;
 	std::exit(0);
 	delete ui;
-
+	return;
 }
 
 void MainWindow::paintEvent(QPaintEvent *e)
@@ -2060,6 +2109,21 @@ QString MainWindow::on_actionAdd_plant_triggered()
 
 	Node* n = new Node(mainGraphWidget, "Plant", QString("Plant (%1)").arg(Plant_Blocks++), -1, newBlockX(), newBlockY());
 	return n->Name();
+}
+
+void MainWindow::newfromtemplate()
+{
+	QString *template_name = new QString();
+	Wizard_select_dialog *wd = new Wizard_select_dialog (template_name, this);
+	wd->exec();
+	if (*template_name != "")
+	{
+		qDebug() << "before wizard dialog created" << endl;
+		qDebug() << "template_name: " << *template_name; 
+		Wizard_Dialog *wiz_window = new Wizard_Dialog(template_name, this);
+		qDebug() << "now showing" << endl;
+		wiz_window->show();
+	}
 }
 
 void MainWindow::on_actionAdd_Connector_triggered(bool checked)
@@ -2410,22 +2474,52 @@ void MainWindow::on_actionRun_Model_triggered()
 
 void MainWindow::on_actionRun_Model_from_Script_triggered()
 {
-	if (!mainGraphWidget->allowRun)
-	{
-		statusBar()->showMessage("Unable to run Model.");
-		mainGraphWidget->log(QString("Unable to run Model, the value of [%1] in property dialog has not been confirmed.").arg(mainGraphWidget->allowRunVariableName));
-		return;
-	}
-
+	
 #ifdef GIFMOD
 	QString fileName = QFileDialog::getOpenFileName(this,
 		tr("Open Green InfraStructure Script Text"), "",
-		tr("Script Text (*.txt);;All Files (*)"));
+		tr("Script Text (*.scr);;All Files (*)"));
 	if (fileName == "") return;
-	mainGraphWidget->modelSet = new CMediumSet(fileName.toStdString());
-	//CMedium *model2 = new CMedium(mainGraphWidget);
+	
+	QFile scriptfile(fileName);
+	if (!scriptfile.open(QIODevice::ReadOnly)) {
+		QMessageBox msgBox;
+		msgBox.setText("File '" + fileName + "' was not found");
+		msgBox.setStandardButtons(QMessageBox::Ok);
+		msgBox.setDefaultButton(QMessageBox::Ok);
+		int ret = msgBox.exec();
+	}
 
-	forwardRun(mainGraphWidget->modelSet, new runtimeWindow);
+	QTextStream script_stream(&scriptfile);
+	QList<CCommand> commands;
+	commandWindow *cwindow = new commandWindow(mainGraphWidget);
+	while (!script_stream.atEnd())
+	{
+		QString s = script_stream.readLine();
+		commands.append(CCommand(s));
+		cwindow->append(s);
+	}
+	cwindow->show();
+	
+	QVariantList output = mainGraphWidget->runCommands(commands); //run the script
+	QString outputfilename = fileName.replace(".scr", ".log");
+	QFile outputfile(outputfilename);
+	if (!outputfile.open(QIODevice::WriteOnly)) {
+		QMessageBox msgBox;
+		msgBox.setText("Not able to open file '" + fileName + "'");
+		msgBox.setStandardButtons(QMessageBox::Ok);
+		msgBox.setDefaultButton(QMessageBox::Ok);
+		int ret = msgBox.exec();
+	}
+	QTextStream output_stream(&outputfile);
+	for (int i = 0; i < output.size(); i++)
+		output_stream << output[i].toString() << endl;
+	
+	scriptfile.close();
+	outputfile.close(); 
+
+		
+	
 #endif
 }
 void MainWindow::on_actionRun_Inverse_Model_triggered()
@@ -2586,12 +2680,34 @@ void MainWindow::on_actionExport_to_Script_Language_triggered()
 	logMsg.append(QString("====   %1 Errors, %2 Warnings   ====").arg(result[0]).arg(result[1]));
 	mainGraphWidget->log(logMsg);
 
+	QList<CCommand> commands = mainGraphWidget->script();
+
 	logWindow *scriptW = new logWindow(this, "Generated Script", "Script (*.txt)");
-	scriptW->append(mainGraphWidget->script());
-	scriptW->show();
+	QString fileName = QFileDialog::getSaveFileName(this,
+		tr("Save Green InfraStructure Script Text"), "",
+		tr("Script Text (*.scr);;All Files (*)"));
+	if (fileName == "") return;
+
+	QFile scriptfile(fileName);
+	if (!scriptfile.open(QIODevice::WriteOnly)) {
+		QMessageBox msgBox;
+		msgBox.setText("File '" + fileName + "' was not found");
+		msgBox.setStandardButtons(QMessageBox::Ok);
+		msgBox.setDefaultButton(QMessageBox::Ok);
+		int ret = msgBox.exec();
+	}
+
+	QTextStream output_stream(&scriptfile);
+	for (int i = 0; i < commands.size(); i++)
+		output_stream << commands[i].toQString() << endl;
+
+
+
+
 	mainGraphWidget->log("Script Generated.");
 	mainGraphWidget->log(logMsg);
 	setCursor(Qt::ArrowCursor);
+	scriptfile.close(); 
 
 }
 
