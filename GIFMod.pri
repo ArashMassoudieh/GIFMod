@@ -137,8 +137,8 @@ HEADERS += ./src/GUI/Command.h \
     ./src/core/typednames.h \
     ./src/GUI/utility_funcs.h \
     ./src/core/utility_funcs.h \
-    ./src/GUI/variant.h \
-    ./src/GUI/wizard.h
+    ./src/GUI/variant.h
+
 SOURCES += ./src/GUI/BTC.cpp \
     ./src/GUI/BTCSet.cpp \
     ./src/GUI/Binary.cpp \
@@ -240,8 +240,8 @@ SOURCES += ./src/GUI/BTC.cpp \
     ./src/GUI/treeitem.cpp \
     ./src/GUI/treemodel.cpp \
     ./src/GUI/tth_source.c \
-    ./src/GUI/utility_funcs.cpp \
-    ./src/GUI/wizard.cpp
+    ./src/GUI/utility_funcs.cpp
+
 FORMS += ./src/GUI/ConstituentWindow.ui \
     ./src/GUI/ConstituentWindowPlant.ui \
     ./src/GUI/ExchangeParametersWindow.ui \
@@ -256,5 +256,4 @@ FORMS += ./src/GUI/ConstituentWindow.ui \
     ./src/GUI/mainwindowGIFMod.ui \
     ./src/GUI/plotwindow.ui \
     ./src/GUI/reactionwindow.ui \
-    ./src/GUI/runtimeWindow.ui \
-    ./src/GUI/wizard.ui
+    ./src/GUI/runtimeWindow.ui
