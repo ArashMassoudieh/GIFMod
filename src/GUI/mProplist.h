@@ -43,8 +43,8 @@ public:
 
 	mPropList filter(const mProp &mP) const;
 	mPropList filter_abv(const mProp & mP) const;
-	QStringList extract_props_for_type(QString s);
-	QString get_proper_property(QString s, QString propname);
+	QStringList extract_props_for_type(QString s); // lists all the properties for a specific type
+	QString get_proper_property(QString s, QString propname); // get the proper name of a property
 	QStringList extract_units_for_prop(QString type, QString property);
 	mPropList filter(const QList<mProp> mP) const;
 	int setProp(const QString _PropertyName, const XString _Value = "", const mProp _Filter = '*');

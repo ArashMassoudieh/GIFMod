@@ -230,7 +230,7 @@ void Wizard_Dialog::setup_form()
 					xstr = wiz.get_parameters()[p].get_parameter("default").value;
 				if (m.size())
 				{
-					xstr.setString(m.DefaultValueLists()[0][0]);
+					//xstr.setString(m.DefaultValueLists()[0][0]);
 					xstr.unitsList = m.VariableUnits()[0].split(";");
 					xstr.defaultUnit = m.VariableUnits()[0].split(";").first();
 		
