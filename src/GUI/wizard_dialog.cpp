@@ -5,6 +5,7 @@
 #include "qmessagebox.h"
 #include "commandwindow.h"
 #include "filebutton.h"
+#include "imageviewer_window.h"
 
 Wizard_Dialog::Wizard_Dialog(QString *template_selected, MainWindow *parent)
 	: QDialog(parent)
@@ -20,7 +21,10 @@ Wizard_Dialog::Wizard_Dialog(QString *template_selected, MainWindow *parent)
 	connect(ui.Button_create_script, SIGNAL(clicked()), this, SLOT(on_create_script_clicked()));
 	connect(ui.Button_Cancel, SIGNAL(clicked()), this, SLOT(on_cancel_clicked()));
 	connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(on_tab_changed()));
+	connect(image, SIGNAL(clicked()), this, SLOT(on_image_double_click()));
 	_template_selected = *template_selected;
+
+	
 }
 
 void Wizard_Dialog::on_next_clicked()
@@ -148,6 +152,13 @@ void Wizard_Dialog::on_cancel_clicked()
 	this->close(); 
 }
 
+void Wizard_Dialog::on_image_double_click()
+{
+	imageviewer_window *w = new imageviewer_window();
+	w->setimage(QApplication::applicationDirPath() + "/templates/" + wiz.get_script_icon());
+	w->show(); 
+}
+
 
 
 Wizard_Dialog::~Wizard_Dialog()
@@ -164,7 +175,7 @@ void Wizard_Dialog::setup_form()
 	ui.verticalLayout_2->addWidget(tabWidget);
 	QString icon = wiz.get_script_icon();
 	
-	ImageViewer *image = new ImageViewer();
+	image = new ImageViewer();
 	image->setObjectName(QStringLiteral("graphicsView"));
 	image->loadFile(QApplication::applicationDirPath() + "/templates/" + wiz.get_script_icon());
 	ui.horizontalLayout_2->addWidget(image);

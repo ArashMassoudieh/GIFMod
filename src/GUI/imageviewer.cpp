@@ -230,6 +230,11 @@ void ImageViewer::about()
 			"shows how to use QPainter to print an image.</p>"));
 }
 
+void ImageViewer::closed()
+{
+	emit close();
+}
+
 void ImageViewer::createActions()
 {
 	QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
@@ -245,9 +250,6 @@ void ImageViewer::createActions()
 	printAct->setEnabled(false);
 
 	fileMenu->addSeparator();
-
-	QAction *exitAct = fileMenu->addAction(tr("E&xit"), this, &QWidget::close);
-	exitAct->setShortcut(tr("Ctrl+Q"));
 
 	QMenu *editMenu = menuBar()->addMenu(tr("&Edit"));
 
@@ -311,4 +313,9 @@ void ImageViewer::adjustScrollBar(QScrollBar *scrollBar, double factor)
 {
 	scrollBar->setValue(int(factor * scrollBar->value()
 		+ ((factor - 1) * scrollBar->pageStep() / 2)));
+}
+
+void ImageViewer::mousePressEvent(QMouseEvent * event)
+{
+	emit clicked();
 }

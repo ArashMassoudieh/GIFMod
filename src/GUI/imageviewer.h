@@ -22,6 +22,7 @@ public:
 	bool loadFile(const QString &);
 	bool menu;
 
+	
 private slots:
 	void open();
 	void saveAs();
@@ -33,6 +34,11 @@ private slots:
 	void normalSize();
 	void fitToWindow();
 	void about();
+	void closed(); 
+
+signals:
+	void clicked();
+	void close(); 
 
 private:
 	void createActions();
@@ -59,6 +65,9 @@ private:
 	QAction *zoomOutAct;
 	QAction *normalSizeAct;
 	QAction *fitToWindowAct;
+
+protected:
+	void mousePressEvent(QMouseEvent* event);
 };
 
 #endif

@@ -16,6 +16,7 @@
 #include "qspinbox.h"
 #include "command.h"
 #include "filebutton.h"
+#include "imageviewer.h"
 
 class MainWindow; 
 
@@ -35,6 +36,7 @@ private:
 	Ui::Wizard_Dialog ui;
 	Wizard_Script_Reader wiz;
 	QTabWidget *tabWidget;
+	ImageViewer *image;
 	QMap<QString, QLabel*> labels;
 	QMap<QString, QLineEdit*> textedits;
 	QMap<QString, UnitTextBox3*> unittextedits;
@@ -54,6 +56,7 @@ private slots:
 	void on_create_script_clicked();
 	void on_tab_changed();
 	void on_cancel_clicked();
+	void on_image_double_click();
 	
 };
 
