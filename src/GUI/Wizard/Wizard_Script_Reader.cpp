@@ -675,3 +675,147 @@ QList<CCommand> Wizard_Script_Reader::do_2dv(QString configuration, wiz_entity *
 	return commands;
 	
 }
+
+QList<CCommand> Wizard_Script_Reader::do_2dh(QString configuration, wiz_entity *wiz_ent, int &x, int &y)
+{
+	QList<CCommand> commands;
+	QString direction = wiz_ent->get_direction();
+
+	int nx = wiz_ent->get_value(wiz_ent->get_parameter("nx")).toInt();
+	int ny = wiz_ent->get_value(wiz_ent->get_parameter("ny")).toInt();
+
+	double z0 = 0;
+	double Depth;
+	double length = wiz_ent->get_value(wiz_ent->get_parameter("Length")).toDouble();
+	double Width = wiz_ent->get_value(wiz_ent->get_parameter("Width")).toDouble();
+	double slope_x = wiz_ent->get_value(wiz_ent->get_parameter("X_Slope")).toDouble();
+	double slope_y = wiz_ent->get_value(wiz_ent->get_parameter("Y_Slope")).toDouble();
+	bool has_z0 = false;
+	bool has_depth = false;
+	if (wiz_ent->has_parameter("Bottom elevation"))
+	{
+		z0 = wiz_ent->get_value(wiz_ent->get_parameter("Bottom elevation")).toDouble();
+		has_z0 = true;
+	}
+	if (wiz_ent->has_parameter("Depth"))
+	{
+		Depth = wiz_ent->get_value(wiz_ent->get_parameter("Depth")).toDouble();
+		has_depth = true;
+	}
+
+	mProp _filter;
+	_filter.setstar();
+	_filter.GuiObject = "Block";
+	_filter.ObjectType = wiz_ent->type();
+	mPropList m = mproplist->filter(_filter);
+
+	for (int i = 0; i < nx; i++)
+	{
+		for (int j = 0; j < ny; j++)
+		{
+			CCommand command;
+			command.command = "add";
+			command.values.append(wiz_ent->type());
+
+			command.parameters["Name"] = XString(wiz_ent->name() + " (" + QString::number(i + 1) + "," + QString::number(j + 1) + ")");
+
+
+			command.parameters["x"] = x;
+			command.parameters["y"] = y;
+
+			if (direction == "up")
+				y -= v_interval;
+			else
+				y += v_interval;
+
+
+			for (wiz_assigned_value item : wiz_ent->get_parameters())
+			{
+				if (!script_specific_params.contains(item.entity))
+				{
+					if (m.VariableNames_w_abv().contains(XString::reform(item.entity)))
+						command.parameters[item.entity] = wiz_ent->get_value(item);
+				}
+			}
+			
+			command.parameters["Bottom elevation"] = z0 - i*slope_x - j*slope_y;
+			
+			commands.append(command);
+		}
+						
+		x += h_interval;
+		y = y_base;
+		
+	}
+
+	for (int i = 0; i < nx - 1; i++)
+	{
+		for (int j = 0; j < ny; j++)
+		{
+			CCommand command;
+			command.command = "connect";
+			command.values.append(wiz_ent->name() + " (" + QString::number(i + 1) + "," + QString::number(j + 1) + ")");
+			command.values.append(wiz_ent->name() + " (" + QString::number(i + 2) + "," + QString::number(j + 1) + ")");
+			mProp _filter;
+			_filter.setstar();
+			_filter.GuiObject = "Connector";
+			mPropList m = mproplist->filter(_filter);
+
+			command.parameters["Name"] = XString(wiz_ent->name() + " (" + QString::number(i + 1) + "," + QString::number(j + 1) + ") - " + wiz_ent->name() + " (" + QString::number(i + 2) + "," + QString::number(j + 1) + ")");
+
+
+			for (wiz_assigned_value item : wiz_ent->get_parameters())
+			{
+				if (!script_specific_params.contains(item.entity))
+				{
+					if (m.VariableNames_w_abv().contains(item.entity))
+						command.parameters[item.entity] = wiz_ent->get_value(item);
+				}
+			}
+
+			command.parameters["Length"] = length;
+			command.parameters["Width"] = Width;
+			command.parameters["Interface/cross sectional area"] = Width*Depth;
+
+			commands.append(command);
+
+		}
+	}
+
+	for (int i = 0; i < nx; i++)
+	{
+		for (int j = 0; j < ny - 1; j++)
+		{
+			CCommand command;
+			command.command = "connect";
+			command.values.append(wiz_ent->name() + " (" + QString::number(i + 1) + "," + QString::number(j + 1) + ")");
+			command.values.append(wiz_ent->name() + " (" + QString::number(i + 1) + "," + QString::number(j + 2) + ")");
+			mProp _filter;
+			_filter.setstar();
+			_filter.GuiObject = "Connector";
+			mPropList m = mproplist->filter(_filter);
+
+			command.parameters["Name"] = XString(wiz_ent->name() + " (" + QString::number(i + 1) + "," + QString::number(j + 1) + ") - " + wiz_ent->name() + " (" + QString::number(i + 1) + "," + QString::number(j + 2) + ")");
+
+			for (wiz_assigned_value item : wiz_ent->get_parameters())
+			{
+				if (!script_specific_params.contains(item.entity))
+				{
+					if (m.VariableNames_w_abv().contains(item.entity))
+						command.parameters[item.entity] = wiz_ent->get_value(item);
+				}
+			}
+			command.parameters["Length"] = Width;
+			command.parameters["Width"] = length;
+			command.parameters["Interface/cross sectional area"] = length*Depth;
+			commands.append(command);
+
+		}
+	}
+
+	y = y_base;
+	x += h_big_interval;
+
+	return commands;
+
+}

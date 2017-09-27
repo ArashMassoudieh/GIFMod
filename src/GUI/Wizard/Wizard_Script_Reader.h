@@ -63,7 +63,8 @@ public:
 	QList<CCommand> get_script_commands_major_connections(wiz_entity * wiz_ent, int & x, int & y);
 	XString get_parameter_value(QString & parameter_name);
 	QList<CCommand> do_1dvh(QString configuration, wiz_entity * wiz_ent, int & x, int & y); //creates commands for a 1d grid object
-	QList<CCommand> do_2dv(QString configuration, wiz_entity * wiz_ent, int & x, int & y); //creates commands for a 2d grid object
+	QList<CCommand> do_2dv(QString configuration, wiz_entity * wiz_ent, int & x, int & y); //creates commands for a 2d-vertical grid object
+	QList<CCommand> do_2dh(QString configuration, wiz_entity * wiz_ent, int & x, int & y); //creates commands for a 2d-horizontal grid object
 	private:
 	QMap<QString, wiz_entity> major_blocks;
 	QMap<QString, wiz_entity> major_connections;
