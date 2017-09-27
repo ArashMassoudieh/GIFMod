@@ -1,6 +1,6 @@
 #include "wiz_parameter.h"
 #include "qstring.h"
-#include "qstringlist.h"
+#include <QStringList>
 #include "wiz_assigned_value.h"
 
 

@@ -2,7 +2,7 @@
 
 #include <QMainWindow>
 #include <QTimer>
-#include "customplotzoom.h"
+#include "CustomPlotZoom.h"
 #include "qvector.h"
 #include "BTCSet.h"
 #include "qstring.h"

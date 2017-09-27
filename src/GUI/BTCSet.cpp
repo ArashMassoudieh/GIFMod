@@ -590,9 +590,11 @@ CBTCSet CBTCSet::distribution(int n_bins, int n_columns, int limit)
 CVector norm2dif(CBTCSet &A, CBTCSet &B)
 {
 	CVector res;
-	for (int i=0; i<min(A.nvars,B.nvars); i++)		
-		res.append(diff_abs(A.BTC[i].Log(1e-5),B.BTC[i].Log(1e-5))/B.BTC[i].n);	    
-	
+    for (int i=0; i<min(A.nvars,B.nvars); i++)	{
+        auto a = A.BTC[i].Log(1e-5);
+        auto b = B.BTC[i].Log(1e-5)/B.BTC[i].n;
+        res.append(diff_abs(a,b));
+    }
 	return res;
 
 }
@@ -633,11 +635,15 @@ CBTC CBTCSet::add_mult(vector<int> ii, vector<double> mult)
 		A.structured = BTC[ii[0]].structured;
 		for (int i=1; i<ii.size(); i++)
 		if (unif==false)	
-		{	A+=mult[i]*BTC[ii[i]];
+        {
+            auto m = mult[i]*BTC[ii[i]];
+            A+= m;
 			A.structured = (A.structured && BTC[ii[i]].structured);
 		}
 		else
-		{	A%=mult[i]*BTC[ii[i]];
+        {
+            auto temp = mult[i]*BTC[ii[i]];
+            A%=temp;
 			A.structured = (A.structured && BTC[ii[i]].structured);
 		}
 	}
@@ -658,11 +664,15 @@ CBTC CBTCSet::add_mult(vector<int> ii, CBTCSet &mult)
 		A.structured = BTC[ii[0]].structured;
 		for (int i=1; i<ii.size(); i++)
 		if (unif==false)	
-		{	A+=BTC[ii[i]]*mult.BTC[i];
+        {
+            auto temp = BTC[ii[i]]*mult.BTC[i];
+            A+= temp;
 			A.structured = (A.structured && BTC[ii[i]].structured && mult.BTC[i].structured);
 		}
 		else
-		{	A%=BTC[ii[i]]*mult.BTC[i];
+        {
+            auto temp = BTC[ii[i]]*mult.BTC[i];
+            A%= temp;
 			A.structured = (A.structured && BTC[ii[i]].structured && mult.BTC[i].structured);
 		}
 	}
@@ -934,7 +944,7 @@ CBTC &CBTCSet::operator[](string BTCName)
 	if (lookup(BTCName) != -1)
 		return BTC[lookup(BTCName)];
 	else
-		return CBTC();
+        return _emptyReference;
 }
 
 void CBTCSet::pushBackName(string name)

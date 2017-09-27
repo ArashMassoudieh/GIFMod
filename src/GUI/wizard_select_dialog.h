@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <qdialog.h>
 #include "ui_wizard_select_dialog.h"
-#include "qstringlist.h"
+#include <QStringList>
 #include "qmap.h"
 #include "mPropList.h"
 

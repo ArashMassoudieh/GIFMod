@@ -3,7 +3,7 @@
 
 #include <QDialog>
 #include "qabstractbutton.h"
-#include "vector.h"
+#include <vector>
 
 class MainWindow;
 

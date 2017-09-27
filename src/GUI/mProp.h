@@ -7,40 +7,40 @@ class GraphWidget;
 class mProp
 {
 public:
-	mProp(){};
+    mProp(){}
 	mProp(const QString &QS){ 
 		//parent = _parent;  
-		setValue(QS); };
+        setValue(QS); }
 	mProp(const char &ch){
 		//parent = _parent;  
 		setValue(QString::fromUtf8(&ch, 1));
 	};
 	mProp(const QStringList &QL){
 		//parent = _parent;  
-		setValue(QL); };
+        setValue(QL); }
 //	mProp(const vector<string> &);
 //	mProp(const vector<QString> &);
 	mProp(const mProp &);
 //	mProp(const GProperty &GP);
-	mProp mProp::operator = (const mProp &mP);
-	mProp mProp::operator = (const QString &QS);
+    mProp operator = (const mProp &mP);
+    mProp operator = (const QString &QS);
 	mProp operator = (const char &);
 	mProp operator & (const mProp &) const;
 
 	void setstar();
 
-	bool mProp::operator==(const mProp &mP) const;
+    bool operator==(const mProp &mP) const;
 	bool operator/=(const mProp & mP) const; // comparison considering abbreviations
-	bool mProp::operator %=(const mProp &mP) const; // exact comparison of to filter variable wo considering wildcards *
-	static bool mProp::areTheSame(const QList<mProp>a, const QList<mProp>b);
+    bool operator %=(const mProp &mP) const; // exact comparison of to filter variable wo considering wildcards *
+    static bool areTheSame(const QList<mProp>a, const QList<mProp>b);
 
 	void setValue(const QStringList &);
 	void setValue(const QString &QS);
 	QStringList getList() const;
 
-	~mProp(void){};
+    ~mProp(void){}
 
-	int mProp::size() const{ return(getList().size()); };
+    int size() const{ return(getList().size()); }
 	QString Model;
 	QString GuiObject;
 	QString ObjectType;

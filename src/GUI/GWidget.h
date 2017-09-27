@@ -1,6 +1,6 @@
 #pragma once
 
-#include "QGraphicsView.h"
+#include <QGraphicsView>
 #include <enums.h>
 //#include "modelconfig.h"
 #include "mProp.h"
@@ -13,7 +13,7 @@
 #include "PropModel.h"
 #include "XString.h"
 //#include "helpWindow.h"
-#include "colorscheme.h"
+#include "colorScheme.h"
 #include "Command.h"
 
 //class MainWindow;

@@ -1,6 +1,6 @@
 #pragma once
-#include "QString.h"
-#include "qstringlist.h"
+#include <QString>
+#include <QStringList>
 #include "qmath.h"
 #include "qdebug.h"
 #include "enums.h"
@@ -16,10 +16,10 @@ public:
 		defaultUnit = X.defaultUnit;
 		unitsList = X.unitsList; 
 //		if (defaultUnit == ""  && unitsList.size()) defaultUnit = unitsList.first();
-	};
+    }
 	XString(const double &X);
 	XString(const int &X);
-	XString& XString::operator+=(const XString x);
+    XString& operator+=(const XString x);
 	XString operator=(const double x);
 	XString operator=(const int x);
 	XString(const QString &X) : QString(reform(X)) {};
@@ -57,22 +57,22 @@ public:
 
 	QStringList unitsList;
 	QString unit, defaultUnit;
-	QStringList XString::valUnit() const { QStringList R; R << *this << unit; return R; };
+    QStringList valUnit() const { QStringList R; R << *this << unit; return R; }
 //	QString value() const { return *this; };
 	QString convertToDefaultUnit() const {
 		return convertTo(defaultUnit);
 	};
-	void setString(const QString &Q) { *this = Q;};
+    void setString(const QString &Q) { *this = Q;}
 	
-	QString toQString() const { return *this; };
-	std::string toStdString() const { return toQString().toStdString(); };
-	QString toFileName(QString path) const { return fullFilename(*this,path); };
+    QString toQString() const { return *this; }
+    std::string toStdString() const { return toQString().toStdString(); }
+    QString toFileName(QString path) const { return fullFilename(*this,path); }
 	double toDouble(QString unit = "") const {
 		if (unit =="") return toQString().toDouble();
 		else return convertTo(reform(unit)).toDouble();
-	};
-	double toFloat(QString unit = "") const {return toDouble(unit);};
-	double toFloatDefaultUnit() const { return convertToDefaultUnit().toDouble(); };
+    }
+    double toFloat(QString unit = "") const {return toDouble(unit);}
+    double toFloatDefaultUnit() const { return convertToDefaultUnit().toDouble(); }
 	bool toBool() const {
 		QStringList trueList, falseList;
 		trueList << "true" << "yes" << "on" << "1";
@@ -87,7 +87,7 @@ public:
 		return 0;
 		}
 
-	QString toStringUnit() const { return (unit != "") ? QString("%1 (%2)").arg(*this).arg(unit) : *this;	}
+    QString toStringUnit() { return (unit != "") ? QString("%1 (%2)").arg(*this).arg(unit) : *this;	}
 	QStringList list() const { 
 		QStringList R, R1; 
 		R << toQString() << unit;
@@ -108,11 +108,11 @@ public:
 		QString r = "%compacted%";
 		r.append(QString("%1;").arg(*this));
 		r.append(QString("%1;").arg(unit));
-		for each (QString u in unitsList)
+        foreach (QString u, unitsList)
 			r.append(QString("%1;").arg(u));
 		r.append(QString("%1;").arg(defaultUnit));
 		return r;
-	};
+    }
 	static XString unCompact(const QString &c) {
 		QString q = c;
 		if (!c.contains("%compacted%")) return XString(c);
@@ -258,8 +258,8 @@ public:
 		rightOperand = leftOperand.right(leftOperand.size() - pos - Operator.size());
 		leftOperand = (pos) ? leftOperand.left(pos) : "1";
 		return true;
-	};
-static	QString XString::reform(const QString &X) 
+    }
+static	QString reform(const QString &X)
 	{
 		if (!X.contains("~")) return X;
 		ushort alpha = 945;	ushort beta = 946;	ushort gamma = 947;	ushort delta = 948;	ushort epsilon = 949;	ushort zeta = 950;	ushort eta = 951;	ushort theta = 952;	ushort iota = 953;	ushort kappa = 954;	ushort lambda = 955;
@@ -276,7 +276,7 @@ static	QString XString::reform(const QString &X)
 		R.replace("~1/2", QString::fromUtf16(&frac12, 1));	R.replace("~3/4", QString::fromUtf16(&frac34, 1));	R.replace("~radic", QString::fromUtf16(&radic, 1));	R.replace("~degree", QString::fromUtf16(&degree, 1));	return R;
 		/*	https://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references	*/
 	}
-static	QString XString::reformBack(QString R) 
+static	QString reformBack(QString R)
 	{
 		ushort alpha = 945;	ushort beta = 946;	ushort gamma = 947;	ushort delta = 948;	ushort epsilon = 949;	ushort zeta = 950;	ushort eta = 951;	ushort theta = 952;	ushort iota = 953;	ushort kappa = 954;	ushort lambda = 955;
 		ushort mu = 956;	ushort nu = 957;	ushort xi = 958;	ushort omicron = 959;	ushort pi = 960;	ushort rho = 961;	ushort sigmaf = 962;	ushort sigma = 963;	ushort tau = 964;	ushort upsilon = 965;	ushort phi = 966;
@@ -292,7 +292,7 @@ static	QString XString::reformBack(QString R)
 		R.replace(QString::fromUtf16(&frac12, 1), "~1/2");	R.replace(QString::fromUtf16(&frac34, 1), "~3/4");	R.replace(QString::fromUtf16(&radic, 1), "~radic");	R.replace(QString::fromUtf16(&degree, 1), "~degree");	return R;
 		/*	https://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references	*/
 	}
-	QString XString::reformBack() const
+    QString reformBack() const
 	{
 		ushort alpha = 945;	ushort beta = 946;	ushort gamma = 947;	ushort delta = 948;	ushort epsilon = 949;	ushort zeta = 950;	ushort eta = 951;	ushort theta = 952;	ushort iota = 953;	ushort kappa = 954;	ushort lambda = 955;
 		ushort mu = 956;	ushort nu = 957;	ushort xi = 958;	ushort omicron = 959;	ushort pi = 960;	ushort rho = 961;	ushort sigmaf = 962;	ushort sigma = 963;	ushort tau = 964;	ushort upsilon = 965;	ushort phi = 966;
@@ -309,7 +309,7 @@ static	QString XString::reformBack(QString R)
 		/*	https://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references	*/
 	}
 
-	QList<XString> XString::split(QChar sep, SplitBehavior behavior = KeepEmptyParts, Qt::CaseSensitivity cs = Qt::CaseSensitive) const{
+    QList<XString> split(QChar sep, SplitBehavior behavior = KeepEmptyParts, Qt::CaseSensitivity cs = Qt::CaseSensitive) const{
 		QList<XString> R;
 		QStringList QL = (*this).QString::split(sep, behavior, cs);
 		for (int i = 0; i < QL.size(); i++)	{
@@ -317,7 +317,7 @@ static	QString XString::reformBack(QString R)
 			R.append(X);}
 		return R;	};
 
-	static	QStringList XString::reform(const QStringList &X)
+    static	QStringList reform(const QStringList &X)
 	{
 		QStringList out; 
 		for (int i = 0; i < X.size(); i++)
@@ -325,7 +325,7 @@ static	QString XString::reformBack(QString R)
 
 		return out; 
 	}
-	static	QStringList XString::reformBack(QStringList R)
+    static	QStringList reformBack(QStringList R)
 	{
 		QStringList out;
 		for (int i = 0; i < R.size(); i++)

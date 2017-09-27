@@ -1,7 +1,7 @@
 #pragma once
 #include <QList>
 #include "mProplist.h"
-#include "Proplist.h"
+#include "mProplist.h"
 #include "PropModel.h"
 #include "GWidget.h"
 //class mPropList;

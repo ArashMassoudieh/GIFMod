@@ -5,12 +5,12 @@
 #include <QtCore>
 #include <QVBoxLayout>
 #include <QDockWidget>
-#include <QTreeView.h>
+#include <QTreeView>
 #include "treemodel.h"
-#include <qprogressbar>
+#include <QProgressBar>
 #include "qtableview.h"
 #include "runtimeWindow.h"
-#include "btc.h"
+#include "BTC.h"
 #include "results.h"
 #include <QDesktopWidget>
 #include "ioc.h"

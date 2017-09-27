@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "vector_arma.h"
+#include <Vector_arma.h>
 #include <iostream>
-#include "math.h"
+#include <math.h>
 #define ARMA_DONT_PRINT_ERRORS
 #include "armadillo"
 class QVariant;
@@ -30,16 +30,16 @@ public:
 	CMatrix_arma(const CMatrix_arma&);
 	CMatrix_arma(const CVector_arma&);
 	//CVector_arma operator[](int);
-	double& CMatrix_arma::get(int i, int j);
+    double& get(int i, int j);
 	double& operator()(int i, int j);
-	vector<double*> CMatrix_arma::get(int i);
-	int CMatrix_arma::getnumrows() const;
-	int CMatrix_arma::getnumcols() const;
+    vector<double*> get(int i);
+    int getnumrows() const;
+    int getnumcols() const;
 	virtual ~CMatrix_arma();
-	CMatrix_arma& CMatrix_arma::operator=(const CMatrix_arma&);
-	CMatrix_arma& CMatrix_arma::operator+=(const CMatrix_arma&);
-	CMatrix_arma& CMatrix_arma::operator-=(const CMatrix_arma &);	
-	CMatrix_arma& CMatrix_arma::operator=(mat&);
+    CMatrix_arma& operator=(const CMatrix_arma&);
+    CMatrix_arma& operator+=(const CMatrix_arma&);
+    CMatrix_arma& operator-=(const CMatrix_arma &);
+    CMatrix_arma& operator=(mat&);
 	friend CMatrix_arma mult(CMatrix_arma&, CMatrix_arma&);
 	friend CVector_arma mult(CMatrix_arma&, CVector_arma&);
 	friend CVector_arma mult(CVector_arma&, CMatrix_arma&);
@@ -49,29 +49,29 @@ public:
 	friend CVector_arma diag(CMatrix_arma);
 	friend CMatrix_arma Cholesky_factor(CMatrix_arma &M);
 	friend CMatrix_arma LU_decomposition(CMatrix_arma &M);
-	CMatrix_arma CMatrix_arma::LU_decomposition();
-	CMatrix_arma CMatrix_arma::Cholesky_factor();	
-	double CMatrix_arma::det();
-	void CMatrix_arma::Print(FILE *FIL);
-	void CMatrix_arma::print(string s);
-	void CMatrix_arma::setval(double a);
-	void CMatrix_arma::setvaldiag(double a);
-	void CMatrix_arma::writetofile(FILE *f);
-	void CMatrix_arma::writetofile(string filename);
-	void CMatrix_arma::writetofile_app(string filename);
+    CMatrix_arma LU_decomposition();
+    CMatrix_arma Cholesky_factor();
+    double det();
+    void Print(FILE *FIL);
+    void print(string s);
+    void setval(double a);
+    void setvaldiag(double a);
+    void writetofile(FILE *f);
+    void writetofile(string filename);
+    void writetofile_app(string filename);
 	friend void write_to_file(vector<CMatrix_arma> M, string filename);
 	friend CMatrix_arma Average(vector<CMatrix_arma> M);
-	CVector_arma CMatrix_arma::diag_ratio();
-	vector<vector<bool>> CMatrix_arma::non_posdef_elems(double tol = 1);
-	CMatrix_arma CMatrix_arma::non_posdef_elems_m(double tol = 1);
-	CMatrix_arma CMatrix_arma::Preconditioner(double tol = 1);
+    CVector_arma diag_ratio();
+    vector<vector<bool>> non_posdef_elems(double tol = 1);
+    CMatrix_arma non_posdef_elems_m(double tol = 1);
+    CMatrix_arma Preconditioner(double tol = 1);
 	vector<string> toString(string format = "", vector<string> columnHeaders = vector<string>(), vector<string> rowHeaders = vector<string>());
 	vector<string> toHtml(string format = "", vector<string> columnHeaders = vector<string>(), vector<string> rowHeaders = vector<string>());
-	void CMatrix_arma::setnumcolrows();
-	void CMatrix_arma::setrow(int i, CVector_arma &V);
-	void CMatrix_arma::setrow(int i, CVector &V);
-	void CMatrix_arma::setcol(int i, CVector_arma &V);
-	void CMatrix_arma::setcol(int i, CVector &V);
+    void setnumcolrows();
+    void setrow(int i, CVector_arma &V);
+    void setrow(int i, CVector &V);
+    void setcol(int i, CVector_arma &V);
+    void setcol(int i, CVector &V);
 
 	
 };

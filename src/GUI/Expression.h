@@ -3,7 +3,7 @@
 #include <qstring.h>
 #include <vector>
 #include "qlist.h"
-#include "qstringlist.h"
+#include <QStringList>
 
 class Wizard_Script_Reader; 
 

@@ -46,8 +46,8 @@
 #include <qmath.h>
 #include <limits>
 #include <qnumeric.h>
-#include <qtprintsupport/QPrinter>
-#include <qtprintsupport/QPrintEngine>
+#include <QPrinter>
+#include <QPrintEngine>
 
 class QCPPainter;
 class QCustomPlot;

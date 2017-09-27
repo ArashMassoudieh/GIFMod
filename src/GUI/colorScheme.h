@@ -1,9 +1,9 @@
 #pragma once
-#include "qstringlist.h"
+#include <QStringList>
 #include <vector>
 #include "qcolor.h"
 #include "qrgb.h"
-#include "btc.h"
+#include "BTC.h"
 //#include "Medium.h"
 #include "qgraphicsview.h"
 #include "qgraphicsscene.h"

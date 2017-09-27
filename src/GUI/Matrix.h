@@ -4,15 +4,15 @@
 
 #pragma once
 
-#include "vector.h"
+#include <vector>
 #include <iostream>
-#include "math.h"
+#include <math.h>
 #define ARMA_DONT_PRINT_ERRORS
 #include "armadillo"
 class QVariant;
 //class QString;
 //class QList;
-#include "QMap"
+#include <QMap>
 #include "Matrix_arma.h"
 #include "Vector_arma.h"
 
@@ -34,13 +34,13 @@ public:
 	CMatrix(CMatrix_arma&);
 	CMatrix(const CVector&);
 	CVector& operator[](int);
-	int CMatrix::getnumrows() const;
-	int CMatrix::getnumcols() const;
+    int Cgetnumrows() const;
+    int Cgetnumcols() const;
 	virtual ~CMatrix();
-	CMatrix& CMatrix::operator=(const CMatrix&);
-	CMatrix& CMatrix::operator+=(const CMatrix&);
-	CMatrix& CMatrix::operator-=(const CMatrix &);	
-	CMatrix& CMatrix::operator=(mat&);
+    CMatrix& operator=(const CMatrix&);
+    CMatrix& operator+=(const CMatrix&);
+    CMatrix& operator-=(const CMatrix &);
+    CMatrix& operator=(mat&);
 	friend CMatrix mult(CMatrix&, CMatrix&);
 	friend CVector mult(CMatrix&, CVector&);
 	friend CVector mult(CVector&, CMatrix&);
@@ -50,28 +50,28 @@ public:
 	friend CVector diag(CMatrix);
 	friend CMatrix Cholesky_factor(CMatrix &M);
 	friend CMatrix LU_decomposition(CMatrix &M);
-	CMatrix CMatrix::LU_decomposition();
-	CMatrix CMatrix::Cholesky_factor();	
-	double CMatrix::det();
-	void CMatrix::Print(FILE *FIL);
-	void CMatrix::print(string s);
-	void CMatrix::setval(double a);
-	void CMatrix::setvaldiag(double a);
-	void CMatrix::writetofile(FILE *f);
-	void CMatrix::writetofile(string filename);
-	void CMatrix::writetofile_app(string filename);
+    CMatrix CLU_decomposition();
+    CMatrix CCholesky_factor();
+    double Cdet();
+    void CPrint(FILE *FIL);
+    void Cprint(string s);
+    void Csetval(double a);
+    void Csetvaldiag(double a);
+    void Cwritetofile(FILE *f);
+    void Cwritetofile(string filename);
+    void Cwritetofile_app(string filename);
 	friend void write_to_file(vector<CMatrix> M, string filename);
 	friend CMatrix Average(vector<CMatrix> M);
-	CVector CMatrix::diag_ratio();
-	vector<vector<bool>> CMatrix::non_posdef_elems(double tol = 1);
-	CMatrix CMatrix::non_posdef_elems_m(double tol = 1);
-	CMatrix CMatrix::Preconditioner(double tol = 1);
+    CVector Cdiag_ratio();
+    vector<vector<bool>> Cnon_posdef_elems(double tol = 1);
+    CMatrix Cnon_posdef_elems_m(double tol = 1);
+    CMatrix CPreconditioner(double tol = 1);
 	vector<string> toString(string format = "", vector<string> columnHeaders = vector<string>(), vector<string> rowHeaders = vector<string>());
 	vector<string> toHtml(string format = "", vector<string> columnHeaders = vector<string>(), vector<string> rowHeaders = vector<string>());
-	void CMatrix::setnumcolrows();
+    void Csetnumcolrows();
 
-	QMap<QString, QVariant> CMatrix::compact() const;
-	static CMatrix CMatrix::unCompact(QMap<QString, QVariant>);
+    QMap<QString, QVariant> Ccompact() const;
+    static CMatrix CunCompact(QMap<QString, QVariant>);
 
 };
 	
