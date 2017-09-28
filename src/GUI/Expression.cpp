@@ -30,7 +30,7 @@ CExpression::CExpression(QString S)
 		{
 			_errors.append("Parantheses do not match in" + S);
 		}
-		else
+		else if (!S.mid(1,S.size()-2).contains("(") && !S.mid(1, S.size() - 2).contains(")"))
 		{
 			S.remove(0, 1);
 			S.remove(S.size() - 1, 1);
@@ -90,6 +90,7 @@ CExpression::CExpression(QString S)
 
 CExpression::CExpression(const CExpression & S)
 {
+	operators = S.operators;
 	constant = S.constant;
 	terms = S.terms; 
 	funcs = S.funcs;
@@ -103,6 +104,7 @@ CExpression::CExpression(const CExpression & S)
 
 CExpression & CExpression::operator=(const CExpression &S)
 {
+	operators = S.operators;
 	constant = S.constant;
 	terms = S.terms;
 	funcs = S.funcs;

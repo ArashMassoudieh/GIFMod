@@ -260,6 +260,12 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_blocks(wiz_entit
 	{
 		commands.append(do_2dv(configuration, wiz_ent, x, y));
 	}
+	if (configuration == "2dh")
+	{
+		commands.append(do_2dh(configuration, wiz_ent, x, y));
+	}
+
+
 
 	return commands; 
 }
