@@ -40,13 +40,13 @@ public:
 		return parameters;
 	}
 
-	QString &pg_name()
+    QString pg_name()
 	{
 		name = items["name"].value.trimmed();
 		return items["name"].value.trimmed();
 	}
 
-	QString &get_description()
+    QString get_description()
 	{
 		if (items["description"].value.trimmed()=="") 
 			 items["description"].value = items["name"].value;

@@ -30,7 +30,7 @@ public:
     void updateEditorGeometry(QWidget *editor,
         const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
 
-	void ParticleDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
+    void paint(QPainter *painter, const QStyleOptionViewItem &option,
 		const QModelIndex &index) const;
 	
 	GraphWidget* parent;

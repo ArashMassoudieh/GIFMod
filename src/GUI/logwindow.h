@@ -5,6 +5,7 @@
 #include "qabstractbutton.h"
 #include <vector>
 
+using namespace std;
 class MainWindow;
 
 namespace Ui {

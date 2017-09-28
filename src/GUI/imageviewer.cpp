@@ -1,9 +1,7 @@
 #include <QtWidgets>
 #if defined(QT_PRINTSUPPORT_LIB)
 #include <QtPrintSupport/qtprintsupportglobal.h>
-#if QT_CONFIG(printdialog)
 #include <QPrintDialog>
-#endif
 #endif
 
 #include "imageviewer.h"
@@ -135,7 +133,7 @@ void ImageViewer::saveAs()
 void ImageViewer::print()
 {
 	Q_ASSERT(imageLabel->pixmap());
-#if QT_CONFIG(printdialog)
+#ifdef QT_PRINTSUPPORT_LIB
 	QPrintDialog dialog(&printer, this);
 	if (dialog.exec()) {
 		QPainter painter(&printer);
@@ -234,55 +232,54 @@ void ImageViewer::createActions()
 {
 	QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
 
-	QAction *openAct = fileMenu->addAction(tr("&Open..."), this, &ImageViewer::open);
+    QAction *openAct = fileMenu->addAction(tr("&Open..."), this, SLOT(open()));
 	openAct->setShortcut(QKeySequence::Open);
 
-	saveAsAct = fileMenu->addAction(tr("&Save As..."), this, &ImageViewer::saveAs);
+    saveAsAct = fileMenu->addAction(tr("&Save As..."), this, SLOT(saveAs()));
 	saveAsAct->setEnabled(false);
 
-	printAct = fileMenu->addAction(tr("&Print..."), this, &ImageViewer::print);
+    printAct = fileMenu->addAction(tr("&Print..."), this, SLOT(print()));
 	printAct->setShortcut(QKeySequence::Print);
 	printAct->setEnabled(false);
 
 	fileMenu->addSeparator();
 
-	QAction *exitAct = fileMenu->addAction(tr("E&xit"), this, &QWidget::close);
+    QAction *exitAct = fileMenu->addAction(tr("E&xit"), this, SLOT(close()));
 	exitAct->setShortcut(tr("Ctrl+Q"));
 
 	QMenu *editMenu = menuBar()->addMenu(tr("&Edit"));
 
-	copyAct = editMenu->addAction(tr("&Copy"), this, &ImageViewer::copy);
+    copyAct = editMenu->addAction(tr("&Copy"), this, SLOT(copy()));
 	copyAct->setShortcut(QKeySequence::Copy);
 	copyAct->setEnabled(false);
 
-	QAction *pasteAct = editMenu->addAction(tr("&Paste"), this, &ImageViewer::paste);
+    QAction *pasteAct = editMenu->addAction(tr("&Paste"), this, SLOT(paste()));
 	pasteAct->setShortcut(QKeySequence::Paste);
 
 	QMenu *viewMenu = menuBar()->addMenu(tr("&View"));
 
-	zoomInAct = viewMenu->addAction(tr("Zoom &In (25%)"), this, &ImageViewer::zoomIn);
+    zoomInAct = viewMenu->addAction(tr("Zoom &In (25%)"), this, SLOT(zoomIn()));
 	zoomInAct->setShortcut(QKeySequence::ZoomIn);
 	zoomInAct->setEnabled(false);
 
-	zoomOutAct = viewMenu->addAction(tr("Zoom &Out (25%)"), this, &ImageViewer::zoomOut);
+    zoomOutAct = viewMenu->addAction(tr("Zoom &Out (25%)"), this, SLOT(zoomOut()));
 	zoomOutAct->setShortcut(QKeySequence::ZoomOut);
 	zoomOutAct->setEnabled(false);
 
-	normalSizeAct = viewMenu->addAction(tr("&Normal Size"), this, &ImageViewer::normalSize);
+    normalSizeAct = viewMenu->addAction(tr("&Normal Size"), this,  SLOT(normalSize()));
 	normalSizeAct->setShortcut(tr("Ctrl+S"));
 	normalSizeAct->setEnabled(false);
 
 	viewMenu->addSeparator();
 
-	fitToWindowAct = viewMenu->addAction(tr("&Fit to Window"), this, &ImageViewer::fitToWindow);
+    fitToWindowAct = viewMenu->addAction(tr("&Fit to Window"), this,  SLOT(fitToWindow()));
 	fitToWindowAct->setEnabled(false);
 	fitToWindowAct->setCheckable(true);
 	fitToWindowAct->setShortcut(tr("Ctrl+F"));
 
 	QMenu *helpMenu = menuBar()->addMenu(tr("&Help"));
 
-	helpMenu->addAction(tr("&About"), this, &ImageViewer::about);
-	helpMenu->addAction(tr("About &Qt"), &QApplication::aboutQt);
+    helpMenu->addAction(tr("&About"), this, SLOT(about()));
 }
 
 void ImageViewer::updateActions()

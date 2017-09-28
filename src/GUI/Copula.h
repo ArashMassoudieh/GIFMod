@@ -15,7 +15,7 @@ public:
 	vector<string> distribution_name; //normal, lognormal, inverse_gaussian, levy, gamma, uniform
 	double evaluate(vector<double> x);
 	vector<vector<double>> params;
-	double CCopula::evaluate_marginal(double x, int i);
+    double evaluate_marginal(double x, int i);
 	vector<CDistribution> marginals;
 
 };

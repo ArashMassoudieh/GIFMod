@@ -23,7 +23,7 @@ class CConnection
 public:
 	CConnection(void);
 	CConnection(const CConnection &CC); // copy constructor (Creating a new Object as a copy of an existing object)//should be CConnection(const CConnection& CC); however, both are the same
-	CConnection& CConnection::operator=(const CConnection &CC);//equal operator
+    CConnection& operator=(const CConnection &CC);//equal operator
 	~CConnection(void);
 	string Block1ID, Block2ID;
 	CMBBlock *Block1, *Block2; //The blocks connected via this connection AM
@@ -89,25 +89,25 @@ public:
 	CStringOP area_expression;
 	string area_expression_strng;
 	bool const_area;
-	double CConnection::calc(CStringOP &C, int ii=-1); //The function to calculate any expression
-	double CConnection::calc_star(CStringOP &term, int ii=-1); //The function to calculate any for star values
-	double CConnection::get_val(int i, int ii=0); // get the value of physical properties, variables and parameters
-	double CConnection::get_val_star(int i,int ii=0); //get the value of physical properties, variables and parameters based on star values
-	double CConnection::get_val(string S);
-	double CConnection::set_val(int i, double val);// set the value of physical properties, variables and parameters
-	double CConnection::set_val_star(int i, double val); //set the value of physical properties, variables and parameters based on star values
-	void CConnection::set_val(string SS, double val); //set the values of physical parameters
+    double calc(CStringOP &C, int ii=-1); //The function to calculate any expression
+    double calc_star(CStringOP &term, int ii=-1); //The function to calculate any for star values
+    double get_val(int i, int ii=0); // get the value of physical properties, variables and parameters
+    double get_val_star(int i,int ii=0); //get the value of physical properties, variables and parameters based on star values
+    double get_val(string S);
+    double set_val(int i, double val);// set the value of physical properties, variables and parameters
+    double set_val_star(int i, double val); //set the value of physical properties, variables and parameters based on star values
+    void set_val(string SS, double val); //set the values of physical parameters
 	
 	vector<CFunction> funcs;
-	void CConnection::get_funcs(CStringOP &term);
-	void CConnection::evaluate_functions(int i);
-	void CConnection::evaluate_functions();
-	void CConnection::evaluate_dispersion();
-	void CConnection::evaluate_dispersion_star();
+    void get_funcs(CStringOP &term);
+    void evaluate_functions(int i);
+    void evaluate_functions();
+    void evaluate_dispersion();
+    void evaluate_dispersion_star();
 	double flow_factor;
 	CRxnNetwork *RXN;
-	void CConnection::evaluate_const_dispersion();
-	void CConnection::evaluate_const_dispersion_star();
+    void evaluate_const_dispersion();
+    void evaluate_const_dispersion_star();
 	string ID;
 	CBTC presc_flowrate;
 	string pre_flow_filename;

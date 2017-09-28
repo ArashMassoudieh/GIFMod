@@ -25,5 +25,5 @@ public:
 
 double Gammapdf(double x, double r, double lambda);
 double NormalStdpdf(double x);
-double gamma(double x);
+double calcGamma(double x);
 double GetRndUniF(double xmin, double xmax);

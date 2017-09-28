@@ -114,7 +114,7 @@ void CDistributionNUnif::initializeNormal(double dx0, double dxmult,int nint)
 
 double Gammapdf(double x, double r, double lambda)
 {
-	return pow(lambda, r)*pow(x, r-1)*exp(-lambda*x)/gamma(r);
+    return pow(lambda, r)*pow(x, r-1)*exp(-lambda*x)/calcGamma(r);
 }
 
 double NormalStdpdf(double x)
@@ -124,11 +124,11 @@ double NormalStdpdf(double x)
 }
 
 
-double gamma(double x)
+double calcGamma(double x)
 {
     int i,k,m;
     double ga,gr,r,z;
-	double M_PI = atan(1.0)*4;
+    double m_PI = atan(1.0)*4;
     static double g[] = {
         1.0,
         0.5772156649015329,
@@ -187,7 +187,7 @@ double gamma(double x)
         if (fabs(x) > 1.0) {
             ga *= r;
             if (x < 0.0) {
-                ga = -M_PI/(x*ga*sin(M_PI*x));
+                ga = -m_PI/(x*ga*sin(m_PI*x));
             }
         }
     }

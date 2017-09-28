@@ -15,10 +15,10 @@ public:
 	QString get_configuration();
 	QString get_direction();
 	XString get_value(wiz_assigned_value & x);
-	XString get_value(QString & x);
+    XString get_value(const QString & x);
 	~wiz_entity();
 	Wizard_Script_Reader *parent; 
-	QString wiz_entity::toQString();
+    QString toQString();
 	QString& entity()
 	{
 		return _entity;

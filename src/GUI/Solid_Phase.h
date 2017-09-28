@@ -25,11 +25,11 @@ public:
 	CSolid_Phase(int n=3);
 	~CSolid_Phase(void);
 	CSolid_Phase(const CSolid_Phase& BB);
-	CSolid_Phase::CSolid_Phase(string model);
-	CSolid_Phase& CSolid_Phase::operator=(const CSolid_Phase &BB);
-	void CSolid_Phase::set_val(int i, double val);
-	double CSolid_Phase::get_val(int i);
-	void CSolid_Phase::set_val(string SS, double val);
+    CSolid_Phase(string model);
+    CSolid_Phase& operator=(const CSolid_Phase &BB);
+    void set_val(int i, double val);
+    double get_val(int i);
+    void set_val(string SS, double val);
 	int indicator;
 	string model;
 	string name;
@@ -39,8 +39,8 @@ public:
 	CStringOP vs_coefficient;
 	string settling_model;
 	vector<double> settling_parameters;
-	void CSolid_Phase::set_settling_model(string _settling_model);
-	int CSolid_Phase::lookup_phase(string S);
+    void set_settling_model(string _settling_model);
+    int lookup_phase(string S);
 
 };
 

@@ -9,7 +9,7 @@ public:
 	CController();
 	~CController();
 	CController(const CController &M);
-	CController& CController::operator=(const CController &BB);
+    CController& operator=(const CController &BB);
 	string name; 
 	CBTC output;
 	string type;
@@ -21,7 +21,7 @@ public:
 	double P(double t, int experiment_id);
 	double I(double t, int experiment_id);
 	double D(double t, int experiment_id);
-	void CController::set_val(string S, double val);
+    void set_val(string S, double val);
 	double value;
 	double interval;
 	double min_val = 0;

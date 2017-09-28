@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "Vector.h"
-#include "Math.h"
+#include "math.h"
 #include "Matrix.h"
 #include <cfloat>
 #include "Vector_arma.h"
@@ -340,7 +340,7 @@ double CVector::abs_max()
 	return a;
 }
 
-double abs_max(CVector &V)
+double abs_max(CVector V)
 {	
 	return V.abs_max();
 }
@@ -382,7 +382,7 @@ CVector CVector::Log()
 	return x;
 }
 
-CVector Log(CVector &V)
+CVector Log(CVector V)
 {
 	return V.Log();
 
@@ -418,13 +418,13 @@ CVector CVector::abs()
 }
 
 
-CVector Exp(CVector &V)
+CVector Exp(CVector V)
 {
 	return V.Exp();
 
 }
 
-CVector abs(CVector &V)
+CVector abs(CVector V)
 {
 	return V.abs();
 }

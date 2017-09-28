@@ -25,7 +25,7 @@ Edge::Edge(Node *sourceNode, Node *destNode, GraphWidget *_parent)
     dest = destNode;
 	model = new PropModel<Edge>(this);
 	QList<Node*> list;
-	for each (Edge *e in source->edgeList)
+    foreach (Edge *e , source->edgeList)
 	{
 		if (e->sourceNode() == source) list.append(e->destNode());
 		if (e->destNode() == source) list.append(e->sourceNode());
@@ -469,7 +469,7 @@ QMap<QString, QVariant> Edge::compact() const
 	r["SubType"] = objectType.SubType;
 	r["Arrow Size"] = arrowSize;
 	r["Properties"] = props.compact();
-	/*for each (QString key in props.list.keys())
+    /*foreach (QString key , props.list.keys())
 		if (!key.contains("Node")) r[key] = props.list[key].compact();*/
 	return r;
 }
@@ -505,7 +505,7 @@ Edge* Edge::unCompact(QMap<QString, QVariant> n, GraphWidget *gwidget, bool oldV
 	edge->props.list = PropList<Edge>::unCompact(n.value("Properties").toString());
 
 	if (!edge->props.list.size() && oldVersion)
-		for each(QString key in n.keys())
+        foreach(QString key , n.keys())
 		{
 			QString propName = key;
 			if (key == "Interface Area")
@@ -513,7 +513,7 @@ Edge* Edge::unCompact(QMap<QString, QVariant> n, GraphWidget *gwidget, bool oldV
 			edge->props.setProp(propName.toLower(), XString::unCompact(n[key].toString()), "experiment1");
 		}
 
-	/*for each (QString key in n.keys())
+    /*foreach (QString key , n.keys())
 	edge->props.list[key] = XString::unCompact(n[key].toString());*/
 	return edge;
 }
@@ -547,7 +547,7 @@ Edge* Edge::unCompact10(QMap<QString, QVariant> n, GraphWidget *gwidget)
 	n.remove("SubType");
 	n.remove("Arrow Size");
 
-	for each (QString key in n.keys())
+    foreach (QString key , n.keys())
 		edge->props.list[key] = XString::unCompactOld(n[key].toString());*/
 	return &Edge(0,0,0);
 }
@@ -555,14 +555,14 @@ Edge* Edge::unCompact10(QMap<QString, QVariant> n, GraphWidget *gwidget)
 QStringList Edge::codes() const
 {
 	QStringList r;
-	for each (mProp mP in getmList(objectType).List)
+    foreach (mProp mP , getmList(objectType).List)
 		if (mP.VariableCode != "") r.append(mP.VariableCode);
 	return r;
 }
 QMap<QString, condition> Edge::variableNameConditions() const
 {
 	QMap<QString, condition> r;
-	for each (mProp mP in getmList(objectType).List)
+    foreach (mProp mP , getmList(objectType).List)
 		if (mP.VariableCode != "")
 		{
 			condition c;
@@ -576,7 +576,7 @@ QMap<QString, condition> Edge::variableNameConditions() const
 XString Edge::val(const QString & code) const
 {
 	qDebug() << code;
-	for each (mProp mP in getmList(objectType).List)
+    foreach (mProp mP , getmList(objectType).List)
 		if (mP.VariableCode.toLower() == code.toLower())
 		{
 			XString r = getValue(mP.VariableName);
@@ -603,13 +603,13 @@ void Edge::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 QStringList Edge::variableNames() const
 {
 	QStringList r;
-	for each (mProp mP in getmList(objectType).List)
+    foreach (mProp mP , getmList(objectType).List)
 		if (mP.VariableName != "") r.append(mP.VariableName);
 	return r;
 }
 QString Edge::variableName(QString code) const
 {
-	for each (mProp mP in getmList(objectType).List)
+    foreach (mProp mP , getmList(objectType).List)
 		if (mP.VariableCode.toLower() == code.toLower()) return mP.VariableName;
 	return QString("Error: code (%1) not found.").arg(code);
 }
@@ -632,7 +632,7 @@ void Edge::copyProps(Node *node, QString arrayDirection, QString connectorDirect
     if (!copyLength)
         exceptionList << "d";
     
-    for each (QString code in node->codes())
+    foreach (QString code , node->codes())
 	{
 		if (!exceptionList.contains(code.toLower()) && codes().contains(code) &&
             node->getValue(node->variableName(code))!="")

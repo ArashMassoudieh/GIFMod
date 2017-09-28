@@ -121,7 +121,7 @@ public:
 	colorCodeData colorCode;
 	Operation_Modes setMode(Operation_Modes OMode = Operation_Modes::NormalMode, bool back = false);
 	Operation_Modes setMode(int i);
-	Operation_Modes GraphWidget::setModeCursor(void);
+    Operation_Modes setModeCursor(void);
 	QList<Node *> Nodes() const;
 	QList<Edge *> Edges() const;
 	QList<Entity *> Entities;
@@ -179,9 +179,9 @@ public:
 	void expandNode(const QModelIndex &parentIndex, bool expand);
 	QMap<QString, QString> find_objects(QString name);
 	
-	QString setprop(Node * n, QString & propname, XString & value, QString &experiment);
-	QString setprop(Edge * ed, QString & propname, XString & value, QString &experiment);
-	QString setprop(Entity * en, QString & propname, XString & value, QString &experiment);
+    QString setprop(Node * n, QString & propname, XString & value, QString &experiment);
+    QString setprop(Edge * ed, QString & propname, XString & value, QString &experiment);
+    QString setprop(Entity * en, QString & propname, XString & value, QString &experiment);
 	/*	QString getInflowFileName(){
 		return QFileDialog::getOpenFileName(
 			qApp->activeWindow(),
@@ -272,8 +272,8 @@ public:
 	}
 	QComboBox *experiments;
 	bool hasResults = false;
-	void GraphWidget::experimentsComboClear(bool addExperiment1 = true);
-	void GraphWidget::updateNodeCoordinates();
+    void experimentsComboClear(bool addExperiment1 = true);
+    void updateNodeCoordinates();
 	QMap<QString, QMap<QString, QString>> specs;
 	QSlider *legendSliderTime = 0;
 	colorlegend colors;
@@ -295,7 +295,7 @@ public:
 	void shuffle();
 	void zoomIn();
 	void zoomOut();
-	void add_to_undo_list(QList<QMap<QString, QVariant>> &state = QList<QMap<QString, QVariant>>());
+    void add_to_undo_list(QList<QMap<QString, QVariant>> state = QList<QMap<QString, QVariant>>());
 	void settableProp(QTableView*_tableProp);
 	//void setpropModel(PropModel *_propModel);
 	void scaleView(qreal scaleFactor); 

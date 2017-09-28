@@ -79,10 +79,10 @@ public:
 
 };
 
-CVector Log(CVector &);
-CVector Exp(CVector &);
-CVector abs(CVector &);  //works w/o reference. if const included means read only
-double abs_max(CVector &);
+CVector Log(CVector );
+CVector Exp(CVector );
+CVector abs(CVector );  //works w/o reference. if const included means read only
+double abs_max(CVector );
 double min(CVector &);
 double max(CVector &);
 CVector H(CVector &);

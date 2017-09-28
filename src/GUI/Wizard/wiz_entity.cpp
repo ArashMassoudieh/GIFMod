@@ -97,7 +97,7 @@ XString wiz_entity::get_value(wiz_assigned_value &x)
 
 }
 
-XString wiz_entity::get_value(QString &x)
+XString wiz_entity::get_value(const QString &x)
 {
 	if (parameters.count(x) > 0)
 		return get_value(parameters[x]);

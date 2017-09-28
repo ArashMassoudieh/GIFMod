@@ -1,4 +1,4 @@
-#include "StdAfx.h"
+//#include "StdAfx.h"
 #include "Vector.h"
 #include "Matrix.h"
 #include "NormalDist.h"
@@ -132,11 +132,12 @@ double getpdfnormal(CVector &X, CVector &mu, CMatrix &std)
 
 }
 
-double getpdflognormal(CVector &X, CVector &mu, CMatrix &std)
+double getpdflognormal(CVector X, CVector mu, CMatrix std)
 {
 	int k = X.num;
 	double pi = atan(1.0)*4;
-	CMatrix exparg = 0.5*(Log(X.T())-mu.T())*Invert(std)*(Log(X)-mu);
+    // ARASH: LOOK HERE
+    CMatrix exparg = 0.5*(Log(X)-mu.T())*Invert(std)*(Log(X)-mu);
 
 	double pdf = 1/pow(2*pi,k)/sqrt(fabs(std.det()))*exp(-exparg[0][0]);
 	return pdf;

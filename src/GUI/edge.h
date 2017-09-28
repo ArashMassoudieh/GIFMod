@@ -13,7 +13,7 @@ class Edge : public QGraphicsItem
 public:
     Edge(Node *sourceNode, Node *destNode, GraphWidget *_parent = 0);
 	Edge(const Edge &);
-	Edge Edge::operator=(const Edge &);
+    Edge operator=(const Edge &);
 	~Edge() {
 		delete model;
 	}
@@ -65,7 +65,7 @@ public:
 
 	QMap<QString, QString> warnings, errors;
 	bool errorDetected() const { return (errors.count()) ? true : false; }
-	QStringList Edge::variableNames() const;
+    QStringList variableNames() const;
 	QString variableName(QString code) const;
 	void copyProps(Node *node, QString arrayDirection, QString connectorDirection, bool copyLength = true);
 	bool avoidCrossObjects = true;// false;

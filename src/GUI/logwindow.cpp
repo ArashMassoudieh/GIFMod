@@ -47,7 +47,7 @@ void logWindow::setHtml(vector<string> text)
 }
 void logWindow::append(QStringList text)
 {
-	for each (QString line in text)
+    foreach (QString line , text)
 		ui->textEdit->append(line);
 }
 

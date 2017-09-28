@@ -165,7 +165,7 @@ CMatrix mult(CMatrix &m1, CMatrix &m2)
 	return mt;
 }
 
-CMatrix operator*(CMatrix &m1, CMatrix &m2)
+CMatrix operator*(CMatrix m1, CMatrix m2)
 {
 	CMatrix a= mult(m1,m2);
 	return a;
@@ -251,7 +251,7 @@ CMatrix operator/(double d, CMatrix m1)
 }
 
 
-CVector operator*(CMatrix &m, CVector &v)
+CVector operator*(CMatrix m, CVector v)
 {
 	return mult(m,v);
 }
@@ -588,7 +588,8 @@ CVector diag(CMatrix m)
 
 CMatrix operator*(CVector v, CMatrix m)
 {
-	CMatrix a = CMatrix(v)*m;
+    auto tempMap = CMatrix(v);
+    CMatrix a = tempMap*m;
 	return a;
 }
 

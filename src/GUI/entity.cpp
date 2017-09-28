@@ -30,15 +30,15 @@ Entity::Entity(const QString _type, QString _name, GraphWidget *_parent)
 	if (_type == "Reaction parameter" || _type == "Constituent" || _type=="External flux" || _type=="Build-up" || _type=="Particle")
 	{
 		QStringList existingNames;
-		for each (Entity *e in parent->entitiesByType("Constituent"))
+        foreach (Entity *e , parent->entitiesByType("Constituent"))
 			existingNames.append(e->Name());
-		for each (Entity *e in parent->entitiesByType("Particles"))
+        foreach (Entity *e , parent->entitiesByType("Particles"))
 			existingNames.append(e->Name());
-		for each (Entity *e in parent->entitiesByType("Reaction parameter"))
+        foreach (Entity *e , parent->entitiesByType("Reaction parameter"))
 			existingNames.append(e->Name());
-		for each (Entity *e in parent->entitiesByType("External flux"))
+        foreach (Entity *e , parent->entitiesByType("External flux"))
 			existingNames.append(e->Name());
-		for each (Entity *e in parent->entitiesByType("Build-up"))
+        foreach (Entity *e , parent->entitiesByType("Build-up"))
 			existingNames.append(e->Name());
 		name = newEntityName(_name, existingNames);
 	}
@@ -60,7 +60,7 @@ void Entity::setName(const QString _name)
 QString Entity::newEntityName(const QString &type, const QString name, QList<Entity*> *entities) const
 {
 	QStringList existingNames;
-	for each(Entity *e in *entities)
+    foreach(Entity *e , *entities)
 		if (e->objectType.ObjectType == type)
 			existingNames.append(e->Name());
 	return newEntityName(name, existingNames);
@@ -68,7 +68,7 @@ QString Entity::newEntityName(const QString &type, const QString name, QList<Ent
 QString Entity::newEntityName(const QString name, QStringList &existingNames) const
 {
 	bool repeated = false;
-	for each(QString existingName in existingNames)
+    foreach(QString existingName , existingNames)
 		if (existingName == name)
 			repeated = true;
 	if (!repeated)
@@ -89,7 +89,7 @@ QString Entity::newEntityName(const QString name, QStringList &existingNames) co
 		{
 			repeated = false;
 			QString testName = QString("%1 (%2)").arg(r).arg(i++);
-			for each(QString existingName in existingNames)
+            foreach(QString existingName , existingNames)
 				if (existingName == testName)
 					repeated = true;
 			if (!repeated)
@@ -334,11 +334,11 @@ QMap<QString, QVariant> Entity::compact() const
 	r["Properties"] = props.compact();
 
 	QStringList xChangeList;
-	for each (SolidAqueousExchangeParameterItem i in solidAqueousExchangeParameters)
+    foreach (SolidAqueousExchangeParameterItem i , solidAqueousExchangeParameters)
 		xChangeList.append(QString("%1;%2;%3").arg(i.Particle).arg(i.ExchangeRate).arg(i.PartitioningCoefficient));
 	r["Solid exchange parameters"] = xChangeList;
 
-	/*for each (QString key in props.keys())
+    /*foreach (QString key , props.keys())
 	{
 		if (key == "Working Path" && props.list[key].toQString() == OnlyPath(parent->modelFilename))
 			r[key] = XString('.').compact();
@@ -449,12 +449,12 @@ Entity* Entity::unCompact(QMap<QString, QVariant> n, GraphWidget *gwidget, bool 
 
 	entity->props.list = PropList<Entity>::unCompact(n.value("Properties").toString());
 
-	/*for each (QString key in n.keys())
+    /*foreach (QString key , n.keys())
 	entity->props.list[key] = XString::unCompact(n[key].toString());*/
 
 	QStringList xChangeList;
 	xChangeList = n["Solid exchange parameters"].toStringList();
-	for each (QString i in xChangeList)
+    foreach (QString i , xChangeList)
 	{
 		SolidAqueousExchangeParameterItem item;
 		item.Particle = i.split(";")[0];
@@ -464,7 +464,7 @@ Entity* Entity::unCompact(QMap<QString, QVariant> n, GraphWidget *gwidget, bool 
 	}
 	n.remove("Solid exchange parameters");
 	if (!entity->props.list.size() && oldVersion)
-		for each(QString key in n.keys())
+        foreach(QString key , n.keys())
 			entity->props.setProp(key.toLower(), XString::unCompact(n[key].toString()), "experiment1");
 
 	return entity;
@@ -483,7 +483,7 @@ Entity* Entity::unCompact10(QMap<QString, QVariant> n, GraphWidget *gwidget)
 	n.remove("Type");
 	n.remove("SubType");
 
-	for each (QString key in n.keys())
+    foreach (QString key , n.keys())
 		entity->props.list[key] = XString::unCompactOld(n[key].toString());
 		*/
 	return &Entity("","",gwidget);
@@ -493,21 +493,21 @@ Entity* Entity::unCompact10(QMap<QString, QVariant> n, GraphWidget *gwidget)
 QStringList Entity::variableNames() const
 {
 	QStringList r;
-	for each (mProp mP in getmList(objectType).List)
+    foreach (mProp mP , getmList(objectType).List)
 		if (mP.VariableName != "") r.append(mP.VariableName);
 	return r;
 }
 QStringList Entity::codes() const
 {
 	QStringList r;
-	for each (mProp mP in getmList(objectType).List)
+    foreach (mProp mP , getmList(objectType).List)
 		if (mP.VariableCode != "") r.append(mP.VariableCode);
 	return r;
 }
 QMap<QString, condition> Entity::variableNameConditions() const
 {
 	QMap<QString, condition> r;
-	for each (mProp mP in getmList(objectType).List)
+    foreach (mProp mP , getmList(objectType).List)
 		if (mP.VariableCode != "")
 		{
 			condition c;
@@ -521,7 +521,7 @@ QMap<QString, condition> Entity::variableNameConditions() const
 
 XString Entity::val(const QString & code) const
 {
-	for each (mProp mP in getmList(objectType).List)
+    foreach (mProp mP , getmList(objectType).List)
 		if (mP.VariableCode.toLower() == code.toLower())
 		{
 			XString r = getValue(mP.VariableName);

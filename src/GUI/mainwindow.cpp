@@ -38,12 +38,12 @@
 #include <enums.h>
 #include <qgraphicsitem.h>
 #include <mProplist.h>
-#include <qtableWidget.h>
+#include <QTableWidget>
 #include <delegate.h>
 #include <qfiledialog.h>
 #include "qlistview.h"
 #include "qapplication.h"
-#include "QFileSystemModel.h"
+#include <QFileSystemModel>
 #include "treemodel.h"
 #include "reactionwindow.h"
 #include "helpWindow.h"
@@ -591,7 +591,7 @@ bool MainWindow::loadModel(QString modelfilename)
 		
 	}
 
-	for each (Node *n in mainGraphWidget->Nodes())
+    foreach (Node *n , mainGraphWidget->Nodes())
 	{
 		n->setProp("x", n->x());
 		n->setProp("y", n->y());
@@ -1261,7 +1261,7 @@ void MainWindow::tablePropShowContextMenu(const QPoint&pos)
 		estimatesMenu->setEnabled(false);
 		if (i2.data(VariableTypeRole).toString().toLower().contains("estimate"))
 		{
-			for each (QString item in mainGraphWidget->EntityNames("Parameter"))
+            foreach (QString item , mainGraphWidget->EntityNames("Parameter"))
 				estimatesMenu->addAction(QString("%1").arg(item));// , this, SLOT(addParameter()));
 			addParameterIndex(i1); // tableProp->indexAt(pos));
 			connect(estimatesMenu, SIGNAL(triggered(QAction*)), this, SLOT(addParameter(QAction*)));
@@ -1272,7 +1272,7 @@ void MainWindow::tablePropShowContextMenu(const QPoint&pos)
 		controlsMenu->setEnabled(false);
 		if (i2.data(VariableTypeRole).toString().toLower().contains("control"))
 		{
-			for each (QString item in mainGraphWidget->EntityNames("Controller"))
+            foreach (QString item , mainGraphWidget->EntityNames("Controller"))
 				controlsMenu->addAction(QString("%1").arg(item));// , this, SLOT(addParameter()));
 			addParameterIndex(i1); // tableProp->indexAt(pos));
 			connect(controlsMenu, SIGNAL(triggered(QAction*)), this, SLOT(addParameter(QAction*)));
@@ -1283,7 +1283,7 @@ void MainWindow::tablePropShowContextMenu(const QPoint&pos)
 		objectiveFunctionsMenu->setEnabled(false);
 		if (i2.data(VariableTypeRole).toString().toLower().contains("control"))
 		{
-			for each (QString item in mainGraphWidget->EntityNames("Controller"))
+            foreach (QString item , mainGraphWidget->EntityNames("Controller"))
 				controlsMenu->addAction(QString("%1").arg(item));// , this, SLOT(addParameter()));
 			addParameterIndex(i1); // tableProp->indexAt(pos));
 			connect(controlsMenu, SIGNAL(triggered(QAction*)), this, SLOT(addParameter(QAction*)));
@@ -1306,7 +1306,7 @@ void MainWindow::tablePropShowContextMenu(const QPoint&pos)
 #endif
 			data = CBTCSet(fullfile.toStdString(), 1);
 
-		for each (string name in data.names)
+        foreach (string name , data.names)
 		{
 			if (!graphNames.contains(QString::fromStdString(name)))
 				graphNames.append(QString::fromStdString(name));
@@ -1320,7 +1320,7 @@ void MainWindow::tablePropShowContextMenu(const QPoint&pos)
 			if (i1.data(TypeRole).toString().toLower().contains("age"))
 				convertXtoTime = false;
 			plotTimeSeries(0, CBTC(), "", true, true);
-			for each (QString subTitle in graphNames)
+            foreach (QString subTitle , graphNames)
 			{
 				QAction* action = menu->addAction(subTitle);
 				plotTimeSeries(action, data[subTitle.toStdString()], subTitle, convertXtoTime);
@@ -2190,7 +2190,7 @@ bool MainWindow::saveModel(QString &fileName)
 					tmp[i].clear();
 				else
 				{
-					for each (QString key in tmp[i].keys())
+                    foreach (QString key , tmp[i].keys())
 					{
 						qDebug() << "is going to remove " << key << getTime();
 						tmp[i].remove(key);
@@ -2322,7 +2322,7 @@ void MainWindow::addExperiment(QString sourceExperiment)
 		mainGraphWidget->log(QString("All properties and settings copied from %1 to %2").arg(sourceExperiment).arg(name));
 	}
 	else
-		for each (Entity *e in mainGraphWidget->Entities)
+        foreach (Entity *e , mainGraphWidget->Entities)
 			e->copyProps(mainGraphWidget->experimentsList()[0], name);
 
 	mainGraphWidget->experiments->setCurrentText(name);
@@ -2757,7 +2757,7 @@ void MainWindow::menuWaterQuality_hovered()
 
 		if (mainGraphWidget->model->colloid_transport() && mainGraphWidget->entitiesByType("Particle").count())
 		{
-			for each (Entity *p in mainGraphWidget->entitiesByType("Particle"))
+            foreach (Entity *p , mainGraphWidget->entitiesByType("Particle"))
 			{
 				QMenu *particleSubMenu = waterQualitySubMenu->addMenu(p->Name());
 				
@@ -2788,19 +2788,19 @@ void MainWindow::menuWaterQuality_hovered()
 		{
 			if (mainGraphWidget->model->colloid_transport() && mainGraphWidget->entitiesByType("Particle").count())
 				ui->menuWaterQuality->addSeparator();
-			for each (Entity *e in mainGraphWidget->entitiesByType("Constituent"))
+            foreach (Entity *e , mainGraphWidget->entitiesByType("Constituent"))
 			{
 				a=waterQualitySubMenu->addAction(e->Name());
 				updateAction(a, "Constituent", "", e->Name(), "");
 			}
 			QMenu *sorbedSubMenu = waterQualitySubMenu->addMenu("Sorbed/Particle associated");
 			QMenu *constituentSorbedSubMenu;
-			for each (Entity *e in mainGraphWidget->entitiesByType("Constituent"))
+            foreach (Entity *e , mainGraphWidget->entitiesByType("Constituent"))
 			{
 				constituentSorbedSubMenu = sorbedSubMenu->addMenu(e->Name());
 				a=constituentSorbedSubMenu->addAction("Soil");
 				updateAction(a, "Constituent", "Soil", e->Name(), "");
-				for each (Entity *p in mainGraphWidget->entitiesByType("Particle"))
+                foreach (Entity *p , mainGraphWidget->entitiesByType("Particle"))
 				{
 					QMenu *particleSubMenu = constituentSorbedSubMenu->addMenu(p->Name());
 					if (p->getValue("Model").contains("Single"))
@@ -2879,7 +2879,7 @@ void MainWindow::writeRecentFilesList()
 	if (file.good())
 	{
 		int i = recentFiles.removeDuplicates();
-		for each (QString fileName in recentFiles)
+        foreach (QString fileName , recentFiles)
 			file << fileName.toStdString() << endl;
 	}
 	file.close();

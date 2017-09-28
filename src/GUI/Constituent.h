@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "btc.h"
+#include "BTC.h"
 #include "StringOP.h"
 #include "Solid_Phase.h"
 
@@ -15,8 +15,8 @@ public:
 	CConstituent(void);
 	CConstituent(string _settling_model);
 	~CConstituent(void);
-	CConstituent& CConstituent::operator==(const CConstituent& CC);
-	CConstituent::CConstituent(const CConstituent &C);
+    CConstituent& operator==(const CConstituent& CC);
+    CConstituent(const CConstituent &C);
 	string name;
 	int solid;
 	double conc;
@@ -40,17 +40,17 @@ public:
 	double diffusion;
 	vector<string> capacity_ptr;
 	vector<double> capacity;
-	double CConstituent::get_capacity(string &i) const;
-	double CConstituent::get_exchange_rate(string &i) const;
-	void CConstituent::set_val(int i, double val);
-	void CConstituent::set_val(string S, double val);
+    double get_capacity(string &i) const;
+    double get_exchange_rate(string &i) const;
+    void set_val(int i, double val);
+    void set_val(string S, double val);
 	CStringOP exchange_rate_scale_factor;
 	vector<double> exchange_params;
 	double vs=0; 
 	CStringOP vs_coefficient; 
 	string settling_model;
 	vector<double> settling_parameters;
-	double CConstituent::get_val(int i);
+    double get_val(int i);
 	bool mobile = true; 
 };
 

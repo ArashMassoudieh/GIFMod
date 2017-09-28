@@ -141,11 +141,11 @@ public:
 	  return addScatterPlot(name, x, y, format);
   };
 
-  QCPGraph* plotWindow::addHistogramPlot(QString name, QVector<double> t, QVector<double> y, plotformat format = plotformat());
-  QCPGraph* plotWindow::addHistogramPlot(QString name, vector<double> t, vector<double> y, plotformat format = plotformat()){
+  QCPGraph* addHistogramPlot(QString name, QVector<double> t, QVector<double> y, plotformat format = plotformat());
+  QCPGraph* addHistogramPlot(QString name, vector<double> t, vector<double> y, plotformat format = plotformat()){
 	  return addHistogramPlot(name, vec(t), vec(y), format);
   }
-  QCPGraph* plotWindow::addPercentilePlot(QString name, QMap<QString, double> data, plotformat format = plotformat());
+  QCPGraph* addPercentilePlot(QString name, QMap<QString, double> data, plotformat format = plotformat());
   QCPGraph* addScatterPlot(CBTC data, QString name, double coefficient = 1, double offset = 0, bool convertXtoTime = true, plotformat format = plotformat()) {
 	  QVector<double> x(data.n), y(data.n);
 //	  if (convertXtoTime)

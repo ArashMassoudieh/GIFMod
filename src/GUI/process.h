@@ -26,7 +26,7 @@ public:
 
 	GraphWidget *parent;
 
-	QString Process::newProcessName(const QString name, QList<Process*> *precesses) const;
+    QString newProcessName(const QString name, QList<Process*> *precesses) const;
 	QString name;
 	QString rate;
 	QMap<QString, QString> stoichiometries;

@@ -65,7 +65,7 @@ QWidget *Delegate::createEditor(QWidget *parent,
 	{
 		QListWidget *editor = new QListWidget(parent);
 		QStringList allItems = index.data(DefaultValuesListRole).toStringList();
-		for each (QString item in allItems)
+        foreach (QString item , allItems)
 		{
 			QListWidgetItem* wi = new QListWidgetItem(item);
 			//wi.setText(item);
@@ -135,7 +135,7 @@ QWidget *Delegate::createEditor(QWidget *parent,
 	if (delegateType.contains("expressionEditor"))
 	{
 		QStringList words = index.data(allowableWordsRole).toStringList();
-		//adding possible terms in expressions
+        //adding possible terms in expressions
 		words << this->parent->EntityNames("Constituent");
 		words << this->parent->EntityNames("Reaction parameter");
 		words << this->parent->PhysicalCharacteristicsList;
@@ -354,13 +354,13 @@ void Delegate::setModelData(QWidget *editor, QAbstractItemModel *model,
 	{
 		if (index.data(DefaultValuesListRole).toStringList()[1].contains("Particle")){
 			return;
-			for each(Node *n in parent->Nodes())
+            foreach(Node *n , parent->Nodes())
 				if (n->isSelected())
 					model->setData(index, n->g(), Qt::EditRole);
 		}
 		if (index.data(DefaultValuesListRole).toStringList()[1].contains("Constituent"))
 			return;
-		for each(Node *n in parent->Nodes())
+        foreach(Node *n , parent->Nodes())
 			if (n->isSelected())
 				model->setData(index, n->cg(), Qt::EditRole);
 		return;
@@ -500,7 +500,7 @@ void Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
 void Delegate::openParticleInitialCondition()
 {
 #ifdef GIFMOD
-	for each(Node *n in parent->Nodes())
+    foreach(Node *n , parent->Nodes())
 		if (n->isSelected())
 		{
 			QString experimentName = n->parent->experimentName();
@@ -528,7 +528,7 @@ void Delegate::openParticleInitialCondition()
 				msg.setWindowTitle("Particle initial condition");
 				QList <QAbstractButton *> buttons;
 				QAbstractButton * emptybtn = msg.addButton("Empty initial condition", QMessageBox::AcceptRole);
-				for each (QString experiment in n->parent->experimentsList())
+                foreach (QString experiment , n->parent->experimentsList())
 					buttons.push_back(msg.addButton(QString("Copy from %1").arg(experiment), QMessageBox::AcceptRole));
 				QPushButton * cancel = msg.addButton("Cancel", QMessageBox::RejectRole);
 				msg.setDefaultButton(cancel);
@@ -545,7 +545,7 @@ void Delegate::openParticleInitialCondition()
 					QStringList lst = n->parent->experimentsList();
 					copyFrom = n->particleInitialCondition(n->parent->experimentsList()[index]);
 				}
-				for each (QString experiment in n->parent->experimentsList())
+                foreach (QString experiment , n->parent->experimentsList())
 					n->particleInitialConditions->operator[](experiment) = copyFrom;
 
 				new ParticleWindow(parent->parent, parent, n, experimentName);
@@ -558,7 +558,7 @@ void Delegate::openParticleInitialCondition()
 void Delegate::openHalfSaturationConstantsPlant()
 {
 #ifdef GIFMOD
-	for each(Node *n in parent->Nodes())
+    foreach(Node *n , parent->Nodes())
 		if (n->isSelected())
 		{
 			QString experimentName = n->parent->experimentName();
@@ -586,7 +586,7 @@ void Delegate::openHalfSaturationConstantsPlant()
 				msg.setWindowTitle("Limiting nutrient half saturation constants");
 				QList <QAbstractButton *> buttons;
 				QAbstractButton * emptybtn = msg.addButton("Empty initial condition", QMessageBox::AcceptRole);
-				for each (QString experiment in n->parent->experimentsList())
+                foreach (QString experiment , n->parent->experimentsList())
 					buttons.push_back(msg.addButton(QString("Copy from %1").arg(experiment), QMessageBox::AcceptRole));
 				QPushButton * cancel = msg.addButton("Cancel", QMessageBox::RejectRole);
 				msg.setDefaultButton(cancel);
@@ -603,7 +603,7 @@ void Delegate::openHalfSaturationConstantsPlant()
 					QStringList lst = n->parent->experimentsList();
 					copyFrom = n->NutrientHalfSaturationConstant(n->parent->experimentsList()[index]);
 				}
-				for each (QString experiment in n->parent->experimentsList())
+                foreach (QString experiment , n->parent->experimentsList())
 					n->NutrientHalfSaturationConstants->operator[](experiment) = copyFrom;
 
 				new ConstituentWindowPlant(parent->parent, parent, n, experimentName);
@@ -615,7 +615,7 @@ void Delegate::openHalfSaturationConstantsPlant()
 void Delegate::openConstituentInitialCondition()
 {
 #ifdef GIFMOD
-	for each(Node *n in parent->Nodes())
+    foreach(Node *n , parent->Nodes())
 		if (n->isSelected())
 		{
 			QString experimentName = n->parent->experimentName();
@@ -643,7 +643,7 @@ void Delegate::openConstituentInitialCondition()
 				msg.setWindowTitle("Constituent initial condition");
 				QList <QAbstractButton *> buttons;
 				QAbstractButton * emptybtn = msg.addButton("Empty initial condition", QMessageBox::AcceptRole);
-				for each (QString experiment in n->parent->experimentsList())
+                foreach (QString experiment , n->parent->experimentsList())
 					buttons.push_back(msg.addButton(QString("Copy from %1").arg(experiment), QMessageBox::AcceptRole));
 				QPushButton * cancel = msg.addButton("Cancel", QMessageBox::RejectRole);
 				msg.setDefaultButton(cancel);
@@ -660,7 +660,7 @@ void Delegate::openConstituentInitialCondition()
 					QStringList lst = n->parent->experimentsList();
 					copyFrom = n->constituentInitialCondition(n->parent->experimentsList()[index]);
 				}
-				for each (QString experiment in n->parent->experimentsList())
+                foreach (QString experiment , n->parent->experimentsList())
 					n->constituentInitialConditions->operator[](experiment) = copyFrom;
 
 				new ConstituentWindow(parent->parent, parent, n, experimentName);
@@ -672,7 +672,7 @@ void Delegate::openConstituentInitialCondition()
 void Delegate::openAqueousExchangeParameters()
 {
 #ifdef GIFMOD
-	for each(Entity *e in parent->entitiesByType("Constituent"))
+    foreach(Entity *e , parent->entitiesByType("Constituent"))
 		if (e->isSelected())
 		{
 			new ExchangeParametersWindow(parent->parent, parent, e);

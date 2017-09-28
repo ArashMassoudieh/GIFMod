@@ -68,10 +68,10 @@ public:
 	vector<string> toString(string format = "", vector<string> columnHeaders = vector<string>(), vector<string> rowHeaders = vector<string>());
 	vector<string> toHtml(string format = "", vector<string> columnHeaders = vector<string>(), vector<string> rowHeaders = vector<string>());
     void setnumcolrows();
-    void setrow(int i, CVector_arma &V);
-    void setrow(int i, CVector &V);
-    void setcol(int i, CVector_arma &V);
-    void setcol(int i, CVector &V);
+    void setrow(int i, CVector_arma V);
+    void setrow(int i, CVector V);
+    void setcol(int i, CVector_arma V);
+    void setcol(int i, CVector V);
 
 	
 };
@@ -89,8 +89,8 @@ CMatrix_arma operator-(CMatrix_arma m1,double d);
 CMatrix_arma operator/(CMatrix_arma m1,double d);
 CMatrix_arma operator/(double d, CMatrix_arma m1);
 CMatrix_arma operator-(const CMatrix_arma&, const CMatrix_arma&);
-CMatrix_arma operator*(CMatrix_arma&, CMatrix_arma&);
-CVector_arma operator*(CMatrix_arma&, CVector_arma&);
+CMatrix_arma operator*(CMatrix_arma, CMatrix_arma);
+CVector_arma operator*(CMatrix_arma, CVector_arma);
 CMatrix_arma operator*(CVector_arma, CMatrix_arma);
 CMatrix_arma operator*(double, CMatrix_arma);
 CVector_arma operator/(CVector_arma&, CMatrix_arma&);
@@ -100,8 +100,8 @@ CVector_arma SpareSolve(CMatrix_arma, CVector_arma);
 CMatrix_arma oneoneprod(CMatrix_arma &m1, CMatrix_arma &m2);
 CVector_arma solve_ar(CMatrix_arma&, CVector_arma&);
 CMatrix_arma inv(CMatrix_arma&);
-CMatrix_arma normalize_diag(CMatrix_arma&, CMatrix_arma&);
-CVector_arma normalize_diag(CVector_arma&, CMatrix_arma&);
+CMatrix_arma normalize_diag( CMatrix_arma,  CMatrix_arma);
+CVector_arma normalize_diag( CVector_arma,  CMatrix_arma);
 CMatrix_arma Identity_ar(int rows);
 
 

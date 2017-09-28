@@ -26,7 +26,7 @@ public:
 		return _last_error;
 	}
 
-	QString &get_role()
+    QString get_role()
 	{
 		return parameters["delegate"].value.trimmed(); 
 	}
@@ -40,13 +40,13 @@ public:
 		return parameters;
 	}
 
-	QString &param_name()
+    QString param_name()
 	{
 		name = parameters["name"].value.trimmed();
 		return parameters["name"].value.trimmed();
 	}
 
-	QString &get_question()
+    QString get_question()
 	{
 		if (parameters["question"].value.trimmed() == "")
 			parameters["question"].value = parameters["name"].value;

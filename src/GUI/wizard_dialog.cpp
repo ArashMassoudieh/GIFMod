@@ -3,7 +3,7 @@
 #include "mainwindow.h"
 #include "imageviewer.h"
 #include "qmessagebox.h"
-#include "commandwindow.h"
+#include "commandWindow.h"
 #include "filebutton.h"
 
 Wizard_Dialog::Wizard_Dialog(QString *template_selected, MainWindow *parent)

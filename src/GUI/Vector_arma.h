@@ -4,13 +4,12 @@
 #include <iostream>
 #include <vector>
 #include "armadillo"
-
+#include "Vector.h"
 
 using namespace arma;
 using namespace std;
 
 class CMatrix_arma;
-class CVector;
 class SizeDist;
 class CVector_arma
 {
@@ -24,8 +23,8 @@ public:
 	CVector_arma(const vector<double>, int);
 	CVector_arma(const vector<double> &v);
 	CVector_arma(const vec &v);
-	CVector_arma(CVector &v);
-	CVector_arma(const vector<int> &v);
+    CVector_arma( CVector v);
+    CVector_arma(const vector<int> &v);
 	CVector_arma(const double x, int n);
     CVector_arma(const double x_min, const double x_max, int n);  // is redundant. However, works fine here.
 	CVector_arma(const CVector_arma&);

@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "Vector_arma.h"
-#include "Math.h"
+#include "math.h"
 #include "Matrix_arma.h"
 #include <cfloat>
 #include "Vector.h"
@@ -63,7 +63,7 @@ CVector_arma::CVector_arma(const vec & v)
 	num = v.size();
 }
 
-CVector_arma::CVector_arma(CVector & v)
+CVector_arma::CVector_arma(CVector  v)
 {
 	num = v.num;
 	vect.set_size(num);

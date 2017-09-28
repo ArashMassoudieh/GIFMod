@@ -57,13 +57,13 @@ bool ConstituentTableModelPlant::setData(const QModelIndex & index, const QVaria
 
 		if (col == 0)
 		{
-			for each (QString experiment in experimentstobeUpdated)
+            foreach (QString experiment , experimentstobeUpdated)
 				node->NutrientHalfSaturationConstant(experiment)[row].Constituent = value.toString();
 			
 		}
 		
 		if (col == 1)
-			for each (QString experiment in experimentstobeUpdated)
+            foreach (QString experiment , experimentstobeUpdated)
 				node->NutrientHalfSaturationConstant(experiment)[row].Value = value.toString();
 
 		return true;
@@ -82,7 +82,7 @@ bool ConstituentTableModelPlant::setData(const QModelIndex & index, const QVaria
 		gWidget->log(QString("Nutrient Half Saturation constant (%1, %2) added to block: %3 for experiment %6.").arg(item.Constituent).arg(item.Value).arg(node->Name()).arg(node->experimentName()));
 		return true;
 	}
-	for each(QString experiment in node->parent->experimentsList())
+    foreach(QString experiment , node->parent->experimentsList())
 		node->NutrientHalfSaturationConstant(experiment).append(item);
 	gWidget->log(QString("Nutrient Half Saturation Constant (%1, %2) added to block: %5 for all experiments.").arg(item.Value).arg(node->Name()));
 	return true;
@@ -98,7 +98,7 @@ bool ConstituentTableModelPlant::removeRows(int firstRow, int lastRow, const QMo
 	if (firstRow == -1 || lastRow == -1) return false;
 	beginRemoveRows(parent, firstRow, lastRow);
 	if (node->experimentName() == "All experiments")
-		for each(QString experiment in node->parent->experimentsList())
+        foreach(QString experiment , node->parent->experimentsList())
 			node->NutrientHalfSaturationConstant(experiment).removeAt(firstRow);
 	else
 		node->NutrientHalfSaturationConstant().removeAt(firstRow);

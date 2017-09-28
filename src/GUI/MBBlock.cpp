@@ -1357,7 +1357,8 @@ CVector CMBBlock::get_rxn_change(bool star)
 {
 	CVector R = get_reaction_rates(star);
 	CMatrix M = Eval_Stoichiometry(star);
-	return Transpose(M)*R;
+    auto tmp = Transpose(M);
+    return tmp*R;
 }
 
 CVector CMBBlock::get_rxn_change(CVector &X, bool star)

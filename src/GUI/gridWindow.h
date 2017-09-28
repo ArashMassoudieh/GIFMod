@@ -24,10 +24,10 @@
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QSpinBox>
-#include <unittextbox.h>
+#include "UnitTextBox.h"
 
 #include "ui_gridWindow.h"
-#include "xstring.h"
+#include "XString.h"
 #include <QDoubleValidator>
 
 namespace Ui

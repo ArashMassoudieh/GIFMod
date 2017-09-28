@@ -96,7 +96,7 @@ public:
 	CMediumSet(string filename);
 	~CMediumSet();
 	CMediumSet(const CMediumSet &M);
-	CMediumSet& CMediumSet::operator=(const CMediumSet &BB);
+    CMediumSet& operator=(const CMediumSet &BB);
 	vector<CMedium> Medium;
 	Solver_parameters SP; //current time weight for CN solution
 	vector<CSolid_Phase> Solid_phase;
@@ -116,39 +116,39 @@ public:
 	vector <CBTCSet*> ANS_colloids;
 	vector <CBTCSet*> ANS_constituents;
 	void solve();
-	void CMediumSet::set_default();
-	void CMediumSet::f_get_environmental_params(CLIDconfig &lidconfig);
-	void CMediumSet::f_get_params(CLIDconfig &lid_config);
-	void CMediumSet::f_get_observed(CLIDconfig &lid_config);
-	void CMediumSet::f_get_particle_types(CLIDconfig &lid_config);
-	void CMediumSet::f_get_constituents(CLIDconfig &lid_config);
-	void CMediumSet::f_get_reactions(CLIDconfig &lid_config);
-	void CMediumSet::f_get_buildup(CLIDconfig &lid_config);
-	void CMediumSet::f_get_external_flux(CLIDconfig &lid_config);
-	void CMediumSet::f_get_evaporation_model(CLIDconfig &lid_config);
-	void CMediumSet::f_get_sensors(CLIDconfig &lid_config);
-	void CMediumSet::f_get_controller(CLIDconfig &lid_config);
+    void set_default();
+    void f_get_environmental_params(CLIDconfig &lidconfig);
+    void f_get_params(CLIDconfig &lid_config);
+    void f_get_observed(CLIDconfig &lid_config);
+    void f_get_particle_types(CLIDconfig &lid_config);
+    void f_get_constituents(CLIDconfig &lid_config);
+    void f_get_reactions(CLIDconfig &lid_config);
+    void f_get_buildup(CLIDconfig &lid_config);
+    void f_get_external_flux(CLIDconfig &lid_config);
+    void f_get_evaporation_model(CLIDconfig &lid_config);
+    void f_get_sensors(CLIDconfig &lid_config);
+    void f_get_controller(CLIDconfig &lid_config);
 	_set_features set_features;
-	void CMediumSet::writetolog(string S);
-	int CMediumSet::lookup_parameters(string S);
-	int CMediumSet::lookup_controllers(string S);
-	//	int CMediumSet::lookup_external_flux(string S);
-//	int CMediumSet::lookup_particle_type(string S);
-//	int CMediumSet::lookup_buildup(string S);
-//	int CMediumSet::lookup_evaporation(string S);
-	int CMediumSet::lookup_observation(string S) const;
+    void writetolog(string S);
+    int lookup_parameters(string S);
+    int lookup_controllers(string S);
+    //	int lookup_external_flux(string S);
+//	int lookup_particle_type(string S);
+//	int lookup_buildup(string S);
+//	int lookup_evaporation(string S);
+    int lookup_observation(string S) const;
 
 	vector<CBuildup> buildup;
 	vector<CEnvExchange> externalflux;
 	vector<CEvaporation> evaporation_model;
-	void CMediumSet::set_param(int param_no, double _value);
-	void CMediumSet::set_control_param(int controller_no, int experiment_id); //setting control parameters
-	int CMediumSet::lookup_medium(string S);
-	double CMediumSet::calc_log_likelihood(); //calculate sum log likelihood for time series data ts
-	double CMediumSet::calc_log_likelihood(int i); //calculate sum log likelihood for observed quantity i
+    void set_param(int param_no, double _value);
+    void set_control_param(int controller_no, int experiment_id); //setting control parameters
+    int lookup_medium(string S);
+    double calc_log_likelihood(); //calculate sum log likelihood for time series data ts
+    double calc_log_likelihood(int i); //calculate sum log likelihood for observed quantity i
 	bool failed;
-	void CMediumSet::finalize_set_param();
-	int CMediumSet::epoch_count();
+    void finalize_set_param();
+    int epoch_count();
 	void clear();
 	string ID; 
 //GUI

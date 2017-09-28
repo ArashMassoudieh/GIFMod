@@ -1,6 +1,6 @@
 #pragma once
 #include "qmap.h"
-#include "proplistitem.h"
+#include "PropListItem.h"
 #include "multiValues.h"
 
 class Node;
@@ -25,10 +25,10 @@ public:
 
 	QString compact() const{
 		QStringList r;
-		for each (QString experiment in list.keys())
+        foreach (QString experiment, list.keys())
 		{
 			QMap<QString, QString> experimentProps = list.value(experiment).compact();
-			for each (QString propertyName in experimentProps.keys())
+            foreach (QString propertyName , experimentProps.keys())
 			{
 				QString val = experimentProps.value(propertyName);
 				if (val == OnlyPath(parent->parent->modelFilename))
@@ -64,7 +64,7 @@ public:
 		experiments.removeDuplicates();
 
 		for (int i = 0; i < experiments.count(); i++)
-			for each (QString line in l)
+            foreach (QString line , l)
 			{
 				QString experiment = experiments[i];
 				QStringList list = line.split("$$$");
@@ -86,11 +86,11 @@ public:
 		experiments = compacted.keys();
 		experiments.removeDuplicates();
 
-		for each (QString experiment in experiments)
+        foreach (QString experiment , experiments)
 		{
 			QList<QStringList> experimentProps = compacted.values(experiment);
 			QMap<QString, QVariant> compactedPropListItem;
-			for each(QStringList propVal in experimentProps)
+            foreach(QStringList propVal , experimentProps)
 				compactedPropListItem[propVal[0]] = propVal[1];
 			PropListItem<T> propListItem;
 			propListItem.list = PropListItem<T>::unCompact(compactedPropListItem);
@@ -104,14 +104,14 @@ public:
 		return r;
 	}
 
-	XString getProp(const QString& propName, const QString& experimentName, T* parentSub = 0) const; // add a default value for experiment name
-	XString getProp(const QString& propName, QList<T*>, const QString& experimentName) const; // add a default value for experiment name
-	bool setProp(const QString& propName, const XString& Value, const QString& experimentName);
+    XString getProp(const QString& propName, const QString& experimentName, T* parentSub = 0) const; // add a default value for experiment name
+    XString getProp(const QString& propName, QList<T*>, const QString& experimentName) const; // add a default value for experiment name
+    bool setProp(const QString& propName, const XString& Value, const QString& experimentName);
 	multiValues<> getPropMultiValues(const QString& propName, const QStringList &experimentsList) const{
 		vector<QVariant> values;
 		for (int i = 0;i<experimentsList.count();i++)
 			values.push_back(getProp(propName, experimentsList[i]));
 		return multiValues<>(values);
 	}
-	multiValues<> getPropMultiValues(const QString& propName, const QList<Node*> nodes, const QStringList &experimentsList) const;
+    multiValues<> getPropMultiValues(const QString& propName, const QList<Node*> nodes, const QStringList &experimentsList) const;
 };

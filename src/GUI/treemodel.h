@@ -65,7 +65,7 @@ public:
 		*observed, *wells, *tracers;
 #endif
 
-	QString TreeModel::singularform(QString name) const;
+    QString singularform(QString name) const;
 	TreeItem * entityParentItemfromType(QString type) const;
 public slots:
 

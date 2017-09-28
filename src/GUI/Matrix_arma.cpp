@@ -151,7 +151,7 @@ CMatrix_arma mult(CMatrix_arma &m1, CMatrix_arma &m2)
 	return M;
 }
 
-CMatrix_arma operator*(CMatrix_arma &m1, CMatrix_arma &m2)
+CMatrix_arma operator*(CMatrix_arma m1, CMatrix_arma m2)
 {
 	CMatrix_arma a= mult(m1,m2);
 	return a;
@@ -317,7 +317,8 @@ CVector_arma diag(CMatrix_arma m)
 
 CMatrix_arma operator*(CVector_arma v, CMatrix_arma m)
 {
-	CMatrix_arma a = CMatrix_arma(v)*m;
+    auto tmpMat = CMatrix_arma(v);
+    CMatrix_arma a = tmpMat*m;
 	return a;
 }
 
@@ -577,29 +578,29 @@ void CMatrix_arma::setnumcolrows()
 	numrows = matr.n_rows;
 }
 
-void CMatrix_arma::setrow(int i, CVector_arma &V)
+void CMatrix_arma::setrow(int i, CVector_arma V)
 {
 	for (int j = 0; j < getnumcols(); j++)
 		matr(i, j) = V[j];
 
 }
-void CMatrix_arma::setrow(int i, CVector &V)
+void CMatrix_arma::setrow(int i, CVector V)
 {
 	for (int j = 0; j < getnumcols(); j++)
 		matr(i, j) = V[j];
 }
-void CMatrix_arma::setcol(int i, CVector_arma &V)
+void CMatrix_arma::setcol(int i,  CVector_arma V)
 {
 	for (int j = 0; j < getnumrows(); j++)
 		matr(j, i) = V[j];
 }
-void CMatrix_arma::setcol(int i, CVector &V)
+void CMatrix_arma::setcol(int i,  CVector V)
 {
 	for (int j = 0; j < getnumrows(); j++)
 		matr(j, i) = V[j];
 }
 
-CMatrix_arma normalize_diag(CMatrix_arma &M1, CMatrix_arma &M2)
+CMatrix_arma normalize_diag( CMatrix_arma M1, const CMatrix_arma M2)
 {
 	CMatrix_arma M(M1);
 	CVector_arma D = diag(M2);
@@ -612,7 +613,7 @@ CMatrix_arma normalize_diag(CMatrix_arma &M1, CMatrix_arma &M2)
 
 }
 
-CVector_arma normalize_diag(CVector_arma &V, CMatrix_arma &M2)
+CVector_arma normalize_diag( CVector_arma V, CMatrix_arma M2)
 {
 	CVector_arma M(V);
 	CVector_arma D = diag(M2);

@@ -649,7 +649,7 @@ bool Node::setObjectType(const QString &type)
 		objectType.ObjectType = type;
 		objectType.SubType = '*';
 		objectType.SubType = (*parent->mList).filter(Filter()).SubTypes()[0];
-		for each (Edge * edge in edgeList)
+        foreach (Edge * edge , edgeList)
 			edge->updateSubType();
 		//update();
 		changed();
@@ -756,7 +756,7 @@ Node Node::operator=(const Node &E)
 
 bool Node::setName(const QString &Name){
 	if (Name == "") return false;
-	for each (Node *N in parent->Nodes())
+    foreach (Node *N , parent->Nodes())
 		if (N->Name() == Name) return false;
 	name = Name;
 	changed();
@@ -768,7 +768,7 @@ QString Node::g(QString experimentName) const
 	QString g;
 	if (experimentName == "")
 		experimentName = parent->experimentName();
-	for each (ParticleInitialConditionItem i in particleInitialCondition(experimentName)){
+    foreach (ParticleInitialConditionItem i , particleInitialCondition(experimentName)){
 		if (g != "") g.append("; ");
 		g.append("g[");
 		g.append(i.Particle);
@@ -787,7 +787,7 @@ QString Node::cg(QString experimentName) const
 	QString cg;
 	if (experimentName == "")
 		experimentName = parent->experimentName();
-	for each (ConstituentInitialConditionItem i in constituentInitialCondition(experimentName)){
+    foreach (ConstituentInitialConditionItem i , constituentInitialCondition(experimentName)){
 		if (cg != "") cg.append("; ");
 		cg.append("cg[");
 		cg.append(i.Constituent);
@@ -810,7 +810,7 @@ QString Node::planthsc(QString experimentName) const
 	QString cg;
 	if (experimentName == "")
 		experimentName = parent->experimentName();
-	for each (NutrientHalfSaturationConstantItem i in NutrientHalfSaturationConstant(experimentName)) {
+    foreach (NutrientHalfSaturationConstantItem i , NutrientHalfSaturationConstant(experimentName)) {
 		if (cg != "") cg.append("; ");
 		cg.append("hsc[");
 		cg.append(i.Constituent);
@@ -950,7 +950,7 @@ QList<NutrientHalfSaturationConstantItem> &Node::NutrientHalfSaturationConstant(
 QStringList Node::codes() const
 {
 	QStringList r;
-	for each (mProp mP in getmList(objectType).List)
+    foreach (mProp mP , getmList(objectType).List)
 		if (mP.VariableCode != "") r.append(mP.VariableCode);
 	return r;
 }
@@ -958,7 +958,7 @@ QStringList Node::codes() const
 QMap<QString, condition> Node::variableNameConditions() const
 {
 	QMap<QString, condition> r;
-	for each (mProp mP in getmList(objectType).List)
+    foreach (mProp mP , getmList(objectType).List)
 		if (mP.VariableCode != "")
 		{
 			condition c;
@@ -971,7 +971,7 @@ QMap<QString, condition> Node::variableNameConditions() const
 }
 XString Node::val(const QString & code) const
 {
-	for each (mProp mP in getmList(objectType).List)
+    foreach (mProp mP , getmList(objectType).List)
 		if (mP.VariableCode.toLower() == code.toLower())
 		{
 			XString r = getValue(mP.VariableName);
@@ -1000,21 +1000,21 @@ QMap<QString, QVariant> Node::compact() const
 //	qDebug() << "Compacting: " << name;
 	QMap<QString, QVariant> r;
 	QStringList connectorNames;
-	for each (Edge * e in edgeList)
+    foreach (Edge * e , edgeList)
 		connectorNames.append(e->Name());
 
 	QStringList PICList;
-	for each (QString experiment in parent->experimentsList())
-		for each (ParticleInitialConditionItem i in particleInitialCondition(experiment))
+    foreach (QString experiment , parent->experimentsList())
+        foreach (ParticleInitialConditionItem i , particleInitialCondition(experiment))
 			PICList.append(QString("%1;%2;%3;%4").arg(experiment).arg(i.Particle).arg(i.Model).arg(i.Value));
 	QStringList CICList;
-	for each (QString experiment in parent->experimentsList())
-		for each (ConstituentInitialConditionItem i in constituentInitialCondition(experiment))
+    foreach (QString experiment , parent->experimentsList())
+        foreach (ConstituentInitialConditionItem i , constituentInitialCondition(experiment))
 			CICList.append(QString("%1;%2;%3;%4;%5").arg(experiment).arg(i.Constituent).arg(i.Particle).arg(i.Model).arg(i.Value));
 
 	QStringList HSCList;
-	for each (QString experiment in parent->experimentsList())
-		for each (NutrientHalfSaturationConstantItem i in NutrientHalfSaturationConstant(experiment))
+    foreach (QString experiment , parent->experimentsList())
+        foreach (NutrientHalfSaturationConstantItem i , NutrientHalfSaturationConstant(experiment))
 			HSCList.append(QString("%1;%2;%3").arg(experiment).arg(i.Constituent).arg(i.Value));
 
 	r["GUI"] = GUI;
@@ -1027,7 +1027,7 @@ QMap<QString, QVariant> Node::compact() const
 	r["Height"] = Height();
 	r["Connector Names"] = connectorNames;
 	r["Properties"] = props.compact();
-	/*for each (QString key in props.list.keys())
+    /*foreach (QString key , props.list.keys())
 		r[key] = props.list[key].compact();*/
 	r["Particle Initial Conditions"] = PICList;
 	r["Constituent Initial Conditions"] = CICList;
@@ -1053,7 +1053,7 @@ Node* Node::unCompact(QMap<QString, QVariant> n, GraphWidget *gwidget, bool oldV
 
 	QStringList PICList;
 	PICList = n["Particle Initial Conditions"].toStringList();
-	for each (QString i in PICList)
+    foreach (QString i , PICList)
 	{
 		if (i.split(";").size() == 3)
 			i.push_front("All experiments;");
@@ -1067,7 +1067,7 @@ Node* Node::unCompact(QMap<QString, QVariant> n, GraphWidget *gwidget, bool oldV
 
 	QStringList CICList;
 	CICList = n["Constituent Initial Conditions"].toStringList();
-	for each (QString i in CICList)
+    foreach (QString i , CICList)
 	{
 		if (i.split(";").size() == 4)
 			i.push_front("All experiments;");
@@ -1082,7 +1082,7 @@ Node* Node::unCompact(QMap<QString, QVariant> n, GraphWidget *gwidget, bool oldV
 
 	QStringList HSCList;
 	HSCList = n["Nutrient Half Saturation Constants"].toStringList();
-	for each (QString i in HSCList)
+    foreach (QString i , HSCList)
 	{
 		if (i.split(";").size() == 2)
 			i.push_front("All experiments;");
@@ -1095,7 +1095,7 @@ Node* Node::unCompact(QMap<QString, QVariant> n, GraphWidget *gwidget, bool oldV
 
 	node->props.list = PropList<Node>::unCompact(n.value("Properties").toString());
 	if (!node->props.list.size() && oldVersion)
-		for each(QString key in n.keys())
+        foreach(QString key , n.keys())
 			node->props.setProp(key.toLower(), XString::unCompact(n[key].toString()), "experiment1");
 
 	return node;
@@ -1122,7 +1122,7 @@ Node* Node::unCompact10(QMap<QString, QVariant> n, GraphWidget *gwidget)
 
 	QStringList PICList;
 	PICList = n["Particle Initial Conditions"].toStringList();
-	for each (QString i in PICList)
+    foreach (QString i , PICList)
 	{
 		ParticleInitialConditionItem item;
 		item.Particle = i.split(";")[0];
@@ -1134,7 +1134,7 @@ Node* Node::unCompact10(QMap<QString, QVariant> n, GraphWidget *gwidget)
 
 	QStringList CICList;
 	CICList = n["Constituent Initial Conditions"].toStringList();
-	for each (QString i in CICList)
+    foreach (QString i , CICList)
 	{
 		ConstituentInitialConditionItem item;
 		item.Constituent = i.split(";")[0];
@@ -1146,7 +1146,7 @@ Node* Node::unCompact10(QMap<QString, QVariant> n, GraphWidget *gwidget)
 	n.remove("Constituent Initial Conditions");
 
 	node->props.list = PropList<Node>::unCompact10(n);
-/*	for each (QString key in n.keys()){
+/*	foreach (QString key , n.keys()){
 		XString r = XString::unCompactOld(n[key].toString());
 		node->props.list.[key] = r;
 	}*/
@@ -1159,10 +1159,10 @@ void Node::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 	parent->nodeContextMenuRequested(this, p);
 
 }
-QString Node::newNodeName(const QString name, QList<Node*> &nodes) const
+QString Node::newNodeName(const QString name, const QList<Node*> &nodes) const
 {
 	bool repeated = false;
-	for each(Node *n in nodes)
+    foreach(Node *n , nodes)
 		if (n->Name() == name)
 			repeated = true;
 	if (!repeated)
@@ -1183,7 +1183,7 @@ QString Node::newNodeName(const QString name, QList<Node*> &nodes) const
 		{
 			repeated = false;
 			QString testName = QString("%1 (%2)").arg(r).arg(i++);
-			for each(Node *n in nodes)
+            foreach(Node *n , nodes)
 				if (n->Name() == testName)
 					repeated = true;
 			if (!repeated)
@@ -1195,13 +1195,13 @@ QString Node::newNodeName(const QString name, QList<Node*> &nodes) const
 QStringList Node::variableNames() const
 {
 	QStringList r;
-	for each (mProp mP in getmList(objectType).List)
+    foreach (mProp mP , getmList(objectType).List)
 		if (mP.VariableName != "") r.append(mP.VariableName);
 	return r;
 }
 QString Node::variableName(QString code) const
 {
-	for each (mProp mP in getmList(objectType).List)
+    foreach (mProp mP , getmList(objectType).List)
 		if (mP.VariableCode.toLower() == code.toLower()) return mP.VariableName;
 	return QString("Error: code (%1) not found.").arg(code);
 }

@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "MCMC.h"
 #include <vector>
-#include "normaldist.h"
+#include "NormalDist.h"
 #include <string>
 #include <omp.h>
 //Sassan
@@ -448,7 +448,7 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
 			for (int i=0; i<n; i++)
 				fprintf(file, "%s, ", paramname[i].c_str());
 		fprintf(file,"%s, %s, %s,", "logp", "logp_1", "stuck_counter");
-		for (int j=0; j<pertcoeff.size(); j++) fprintf(file,"%s,", string("purt_coeff_" + string(_itoa(j,buffer,10))).c_str());
+        for (int j=0; j<pertcoeff.size(); j++) fprintf(file,"%s,", string("purt_coeff_" + QString("%1").arg(j).toStdString()).c_str());
 		fprintf(file, "\n");
 		fclose(file);
 	}

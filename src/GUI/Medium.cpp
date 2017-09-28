@@ -1272,7 +1272,8 @@ void CMedium::setQ0()
 		}
 	else
 	{
-		CVector Q = hydro_steady_matrix_inv*get_steady_hydro_RHS();
+        auto tmpVec = get_steady_hydro_RHS();
+        CVector Q = hydro_steady_matrix_inv*tmpVec;
 		for (int i = 0; i < Connector.size(); i++)
 			Connector[i].Q = Q[i];
 	}
@@ -1637,13 +1638,15 @@ void CMedium::onestepsolve_flow(double dtt)
 			
 			CVector dx; 
 			if (fixed_connect)
-			{
-				dx = (InvJ2*normalize_diag(F, M));
+            {
+                auto ttt = normalize_diag(F, M);
+                dx = (InvJ2*ttt);
 				X -= lambda*((dtt / dtt_J_h2)*dx);
 			}
 			else
 			{
-				dx = (InvJ1*normalize_diag(F, M));
+                auto ttt = normalize_diag(F, M);
+                dx = (InvJ1*ttt);
 				X -= lambda*((dtt / dtt_J_h1)*dx);
 			}
 			
@@ -1906,7 +1909,7 @@ void CMedium::solve_fts_m2(double dt)
 	if (write_details())
 	{
 		FILEBTC = fopen((outputpathname() + "Solution_details_" + parent->ID + ".txt").c_str(), "a");
-		fprintf(FILEBTC, "Experiment %s: ", name);
+        fprintf(FILEBTC, "Experiment %s: ", name.c_str());
 		fclose(FILEBTC);
 	}
 	setH();
@@ -2888,7 +2891,8 @@ void CMedium::onestepsolve_colloid(double dtt)
 			dtt_J_c = dtt;
 		}
 					
-		CVector dx = (dtt / dtt_J_c)*(InvJ_C*normalize_diag(F, M_C));
+        auto ttt = normalize_diag(F, M_C);
+        CVector dx = (dtt / dtt_J_c)*(InvJ_C*ttt);
 
 		X -= lambda*dx;
 		
@@ -2982,7 +2986,8 @@ void CMedium::onestepsolve_const(double dtt)
 						
 			}
 			
-			InvJ_Q = inv(Preconditioner_Q*M1);
+            auto ttt = Preconditioner_Q*M1;
+            InvJ_Q = inv(ttt);
 			if (InvJ_Q.getnumcols() == 0)
 			{
 				set_CG_star(X_old);
@@ -2994,7 +2999,9 @@ void CMedium::onestepsolve_const(double dtt)
 			dtt_J_q = dtt;
 		}
 				
-		CVector dx = dtt / dtt_J_q*(InvJ_Q*Preconditioner_Q*normalize_diag(F, M_Q));
+        auto ttt = normalize_diag(F, M_Q);
+        auto tttt = Preconditioner_Q*ttt;
+        CVector dx = dtt / dtt_J_q*(InvJ_Q*tttt);
 		
 		X -= lambda*dx;
 
@@ -4957,12 +4964,14 @@ void CMedium::onestepsolve_flow_ar(double dt)
 			CVector_arma dx;
 			if (fixed_connect)
 			{
-				dx = (InvJ2_arma*normalize_diag(F, M_arma));
+                auto ttt = normalize_diag(F, M_arma);
+                dx = (InvJ2_arma*ttt);
 				X -= lambda*((dtt / dtt_J_h2)*dx);
 			}
 			else
 			{
-				dx = (InvJ1_arma*normalize_diag(F, M_arma));
+                auto ttt = normalize_diag(F, M_arma);
+                dx = (InvJ1_arma*ttt);
 				X -= lambda*((dtt / dtt_J_h1)*dx);
 			}
 
@@ -5221,7 +5230,9 @@ void CMedium::onestepsolve_const_ar(double dtt)
 		
 		if (InvJ_Q_arma.getnumcols() != 0)
 		{
-			dx = dtt / dtt_J_q*(InvJ_Q_arma*normalize_diag(F, M_Q_arma));
+            auto ttt = normalize_diag(F, M_Q_arma);
+            auto tttt = InvJ_Q_arma*ttt;
+            dx = dtt / dtt_J_q * tttt;
 		}
 		else if (M_Q_arma.getnumcols() > 0 || (dx==dx)!=true)
 		{
