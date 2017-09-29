@@ -3356,8 +3356,9 @@ QString GraphWidget::updateRelativePaths(QString oldPath, QString newPath)
 }
 QString GraphWidget::defaultDir() const
 { 
+    // ARASH: LOOK HERE
     //return QString::fromStdString(getenv("USERPROFILE")).append("/Documents/").append(applicationShortName).append(" Projects");
-    return QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation).append(applicationShortName);
+    return QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation).append("/").append(applicationShortName);
 }
 QString GraphWidget::modelPathname() const
 {
