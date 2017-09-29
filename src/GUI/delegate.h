@@ -34,7 +34,7 @@ public:
     void updateEditorGeometry(QWidget *editor,
         const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
 
-	void Delegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
+    void paint(QPainter *painter, const QStyleOptionViewItem &option,
 		const QModelIndex &index) const;
 	GraphWidget* parent;
 

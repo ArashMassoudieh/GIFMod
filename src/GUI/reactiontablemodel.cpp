@@ -3,7 +3,7 @@
 #include "GWidget.h"
 #include "process.h"
 #include "qvariant.h"
-#include <Qcolor>
+#include <QColor>
 
 struct ReactionTableModelPri{
     ReactionTableModel* This;

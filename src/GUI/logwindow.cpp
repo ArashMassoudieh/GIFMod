@@ -1,4 +1,4 @@
-#include "logWindow.h"
+#include "logwindow.h"
 #include "ui_logwindow.h"
 #include "qdatetime.h"
 #include "qfiledialog.h"

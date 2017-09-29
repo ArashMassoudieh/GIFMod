@@ -1,4 +1,4 @@
-#include "Ray.h"
+#include "ray.h"
 #include "node.h"
 #include <QPainter>
 #include <math.h>

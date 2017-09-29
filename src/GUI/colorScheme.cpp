@@ -1,5 +1,5 @@
 #pragma once
-#include "colorscheme.h"
+#include "colorScheme.h"
 #include "qgraphicsitem.h"
 #include "GWidget.h"
 #include "Medium.h"

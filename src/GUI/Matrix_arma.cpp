@@ -234,7 +234,7 @@ CMatrix_arma operator/(double d, CMatrix_arma m1)
 }
 
 
-CVector_arma operator*(CMatrix_arma &m, CVector_arma &v)
+CVector_arma operator*(CMatrix_arma m, CVector_arma v)
 {
 	return mult(m,v);
 }

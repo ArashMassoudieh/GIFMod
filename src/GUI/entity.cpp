@@ -5,7 +5,7 @@
 //#include "qtimezone.h"
 //#include "PropModel.h"
 #include "treemodel.h"
-#include "Proplist.h"
+#include "PropList.h"
 #include "utility_funcs.h"
 
 Entity::Entity(const QString _type, QString _name, GraphWidget *_parent)
@@ -154,7 +154,7 @@ QVariant Entity::getProp(const QString &propName, const int role) const
 	mProp mValue = mList()->filter(filter)[0];
 	if (role == TypeRole) return mValue.Delegate;
 	if (role == InputMethodRole) return mValue.inputMethod;
-	if (role == DefaultValuesListRole) return mValue.DefaultValuesStringList(mList(), &Filter(), parent);
+    if (role == DefaultValuesListRole) return mValue.DefaultValuesStringList(mList(), &filter, parent);
 	if (role == VariableTypeRole) return mValue.VariableType;
 	if (role == UnitRole) return getValue(propName).unit;
 	if (role == defaultUnitRole) return getValue(propName).defaultUnit;
@@ -486,7 +486,7 @@ Entity* Entity::unCompact10(QMap<QString, QVariant> n, GraphWidget *gwidget)
     foreach (QString key , n.keys())
 		entity->props.list[key] = XString::unCompactOld(n[key].toString());
 		*/
-	return &Entity("","",gwidget);
+    return new Entity("","",gwidget);
 }
 
 

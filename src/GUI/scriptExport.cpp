@@ -1,4 +1,4 @@
-#include "gwidget.h"
+#include <QWidget>
 #include "entity.h"
 #include "process.h"
 #include "edge.h"

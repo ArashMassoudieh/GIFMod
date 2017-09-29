@@ -40,6 +40,7 @@
 #include "BTCSet.h"
 #include "reactionwindow.h"
 #include "reactiontablemodel.h"
+#include <QStandardPaths>
 #endif
 #ifdef GWA
 #include "gwa.h"
@@ -3355,7 +3356,8 @@ QString GraphWidget::updateRelativePaths(QString oldPath, QString newPath)
 }
 QString GraphWidget::defaultDir() const
 { 
-	return QString::fromStdString(getenv("USERPROFILE")).append("/Documents/").append(applicationShortName).append(" Projects");
+    //return QString::fromStdString(getenv("USERPROFILE")).append("/Documents/").append(applicationShortName).append(" Projects");
+    return QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation).append(applicationShortName);
 }
 QString GraphWidget::modelPathname() const
 {
@@ -3859,7 +3861,7 @@ QList<QVariant> GraphWidget::runCommands(QList<CCommand> &commands)
 	return results; 
 }
 
-QVariant GraphWidget::runCommand(CCommand &command)
+QVariant GraphWidget::runCommand(CCommand command)
 {
 	//settings
 	bool writeOutput = true, writeDetails = false, orderedOutput = false;
@@ -4104,7 +4106,7 @@ QVariant GraphWidget::runCommand(CCommand &command)
 	return QVariant(command.toQString()+", Ok");
 }
 
-QString  GraphWidget::setprop(Node *n, QString &propname, XString &value, QString &experiment)
+QString  GraphWidget::setprop(Node *n, QString propname, XString value, QString experiment)
 {
 	QString output;
 	if (!mList->extract_props_for_type(n->objectType.ObjectType).contains(propname.toLower()))
@@ -4133,7 +4135,7 @@ QString  GraphWidget::setprop(Node *n, QString &propname, XString &value, QStrin
 	return output;
 }
 
-QString  GraphWidget::setprop(Edge *ed, QString &propname, XString &value, QString &experiment)
+QString  GraphWidget::setprop(Edge *ed, QString propname, XString value, QString experiment)
 {
 	QString output;
 	if (!mList->extract_props_for_type(ed->objectType.ObjectType).contains(propname.toLower()))
@@ -4168,7 +4170,7 @@ QString  GraphWidget::setprop(Edge *ed, QString &propname, XString &value, QStri
 	return output;
 }
 
-QString  GraphWidget::setprop(Entity *en, QString &propname, XString &value, QString &experiment)
+QString  GraphWidget::setprop(Entity *en, QString propname, XString value, QString experiment)
 {
 	QString output;
 	if (!mList->extract_props_for_type(en->objectType.ObjectType).contains(propname.toLower()))

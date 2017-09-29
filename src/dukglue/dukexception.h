@@ -6,7 +6,7 @@
 class DukException : public std::exception
 {
 public:
-    virtual const char* what() const
+    virtual const char* what() const noexcept
 	{
 		return mMsg.c_str();
 	}

@@ -712,7 +712,7 @@ void plotWindow::showMenu(QMouseEvent *event)
 {
 	QPoint pos = event->pos();
 	if (event->button() == Qt::RightButton)
-		contextMenuEvent(&QContextMenuEvent(QContextMenuEvent::Mouse, pos));
+        contextMenuEvent(new QContextMenuEvent(QContextMenuEvent::Mouse, pos));
 	//ui->customPlot->mouseRelease(event);
 }
 void plotWindow::setupDemo(int demoIndex)

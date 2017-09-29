@@ -5,11 +5,11 @@
 
 #include <QDialog>
 #include "qabstractbutton.h"
-#include "vector.h"
+#include "Vector.h"
 
 #include "PropModel.h"
 #include "qtableview.h"
-#include "tablewidgetDateItem.h"
+#include "TableWidgetDateItem.h"
 
 class MainWindow;
 

@@ -1,5 +1,5 @@
 #include "helpWindow.h"
-#include "ui_helpwindow.h"
+#include "ui_helpWindow.h"
 #include "qdatetime.h"
 #include "qfiledialog.h"
 #include "mainwindow.h"

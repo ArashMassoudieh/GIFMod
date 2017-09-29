@@ -10,7 +10,7 @@
 #include "qtableview.h"
 #include <QGraphicsSceneContextMenuEvent>
 #include "treemodel.h"
-#include "Proplist.h"
+#include "PropList.h"
 //#include "multiValues.h"
 //#include "utility_Funcs.h"
 
@@ -99,6 +99,7 @@ mPropList Node::getmList(const QList<mProp> _filter) const
 
 QVariant Node::getProp(const QString &propName, const int role) const
 {
+    // ARASH: LOOK HERE
 	mProp filter = Filter();
 	filter.VariableName = propName;
 	mProp mValue = mList()->filter(filter)[0];
@@ -106,7 +107,7 @@ QVariant Node::getProp(const QString &propName, const int role) const
 	if (role == TypeRole) return mValue.Delegate;
 	if (role == InputMethodRole) return mValue.inputMethod;
 	if (role == DefaultValuesListRole) 
-		return mValue.DefaultValuesStringList(mList(), &Filter(), parent);
+        return mValue.DefaultValuesStringList(mList(), &filter, parent);
 	if (role == VariableTypeRole) return mValue.VariableType;
 	if (role == UnitRole) return getValue(propName).unit;
 	if (role == defaultUnitRole) return getValue(propName).defaultUnit;
@@ -1150,7 +1151,7 @@ Node* Node::unCompact10(QMap<QString, QVariant> n, GraphWidget *gwidget)
 		XString r = XString::unCompactOld(n[key].toString());
 		node->props.list.[key] = r;
 	}*/
-	return &Node(0);
+    return new Node(0);
 }
 
 void Node::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)

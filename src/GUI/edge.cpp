@@ -316,7 +316,7 @@ QVariant Edge::getProp(const QString &propName, const int role) const
 	mProp mValue = mList()->filter(filter)[0];
 	if (role == TypeRole) return mValue.Delegate;
 	if (role == InputMethodRole) return mValue.inputMethod;
-	if (role == DefaultValuesListRole) return mValue.DefaultValuesStringList(mList(), &Filter(), parent);
+    if (role == DefaultValuesListRole) return mValue.DefaultValuesStringList(mList(), &filter, parent);
 	if (role == VariableTypeRole) return mValue.VariableType;
 	if (role == UnitRole) return getValue(propName).unit;
 	if (role == defaultUnitRole) return getValue(propName).defaultUnit;
@@ -549,7 +549,7 @@ Edge* Edge::unCompact10(QMap<QString, QVariant> n, GraphWidget *gwidget)
 
     foreach (QString key , n.keys())
 		edge->props.list[key] = XString::unCompactOld(n[key].toString());*/
-	return &Edge(0,0,0);
+    return new Edge(0,0,0);
 }
 
 QStringList Edge::codes() const

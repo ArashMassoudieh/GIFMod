@@ -1,12 +1,12 @@
-#include "btc.h"
-#include "gwidget.h"
+#include "BTC.h"
+#include <QWidget>
 #include "entity.h"
 #include "process.h"
 #include "edge.h"
 #include "mainwindow.h"
 #include "runtimeWindow.h"
-#include "ga.h"
-#include "mcmc.h"
+#include "GA.h"
+#include "MCMC.h"
 #include "results.h"
 
 
@@ -727,7 +727,8 @@ void CGA::assignfitnesses(runtimeWindow* rtw)
 	vars["mode"] = "inverse";
 	int progress;
 */
-	omp_set_num_threads(numberOfThreads);
+    // ARASH: LOOK HERE
+    //omp_set_num_threads(numberOfThreads);
 #pragma omp parallel for //private(ts,l) ATTENTION
 	for (int k = 0; k<maxpop; k++)
 	{
