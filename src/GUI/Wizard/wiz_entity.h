@@ -43,10 +43,36 @@ public:
 		return parameters["name"].value;
 	}
 
+	QString x()
+	{
+		if (parameters.count("x") > 0)
+			return get_value(parameters["x"]);
+		else
+			return QString();
+	}
+
+	QString y()
+	{
+		if (parameters.count("y") > 0)
+			return get_value(parameters["y"]);
+		else
+			return QString();
+	}
+
+	QString first_index()
+	{
+		if (parameters.count("first_index") > 0)
+			return get_value(parameters["first_index"]);
+		else
+			return QString("1");
+	}
+
 	QString type()
 	{
 		if (parameters.count("type") > 0)
 			return parameters["type"].value;
+		if (parameters.count("Type") > 0)
+			return parameters["Type"].value;
 		else
 			return QString("*");
 	}

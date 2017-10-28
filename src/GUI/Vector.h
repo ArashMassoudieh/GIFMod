@@ -58,6 +58,7 @@ public:
 	double CVector::norm2();
 	double CVector::sum();
 	double CVector::abs_max();
+	int abs_max_elems();
 	CMatrix CVector::T();
 	CVector CVector::Log();
 	CVector CVector::abs();

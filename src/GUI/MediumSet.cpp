@@ -138,9 +138,9 @@ void CMediumSet::set_formulas()
 	formulas.formulasH.resize(10);
 
 
-	formulas.formulasH[Soil] = "_frs[(f[5]-(((1/f[53])*(((_max(_min(f[9]:1):0.00001)^(f[54]/(1-f[54])))-1)^(1/f[54])))*((1-f[9])/(0.01+1-f[9])))+(_pos(f[9]-1)*f[51]/f[57]))]";
+	formulas.formulasH[Soil] = "_frs[(f[5]-(((1/f[53])*(((_max(_min(f[9]:1):0.001)^(f[54]/(1-f[54])))-1)^(1/f[54])))*((1-_min(f[9]:1))/(0.01+1-_min(f[9]:1))))+(_mon((f[9]-1):0.05)*(_pos(f[9]-1)*f[51]/f[57])))]";
 	formulas.formulasH[Darcy] = "f[6]+f[5]+((f[10]-f[51])/f[57])";
-	formulas.formulasH[Storage] = "f[5]+(_pos(f[4])/(f[2]*f[51]))+(_mon((f[9]-1):0.001)*(f[9]-1)*f[51]/f[57])-(f[65]/(f[9]^f[66]))";
+	formulas.formulasH[Storage] = "f[5]+(_pos(f[4])/(f[2]*f[51]))+(_mon((f[9]-1):0.01)*(f[9]-1)*f[51]/f[57])-(f[65]/(f[9]^f[66]))";
 	formulas.formulasH[Pond] = "f[5]+(f[4]/f[2])";
 	formulas.formulasH[Catchment] = "f[5]+(f[4]/f[2])";
 	formulas.formulasH[Stream] = "f[5]+(f[4]/f[2])";
@@ -219,7 +219,7 @@ void CMediumSet::set_formulas()
 	formulas.const_area[Storage][Storage] = false;
 
 	
-	formulas.formulasQ[Soil][Storage] = "(_frs[((f[50])*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]*(_pos(s[1]-_max(e[1]:s[5]))-_pos(e[1]-s[1]))/f[6]*f[2])";
+	formulas.formulasQ[Soil][Storage] =   "(_frs[(f[50]*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]*(_pos(s[1]-_max(e[1]:s[5]))-_pos(e[1]-s[1]))/f[6]*f[2])";
 	formulas.formulasQ[Soil][Soil] =      "(_frs[(f[50]*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]*(s[1]-e[1])/f[6]*f[2])";
 	formulas.formulasQ[Soil][Pond] = "0";
 	formulas.formulasQ[Soil][Darcy] = "(_frs[(f[50]*(_max(_min(f[9]:1):0)^s[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/s[55])))^s[55]))^2))]*(s[1]-e[1])/f[6]*f[2])";
@@ -227,7 +227,7 @@ void CMediumSet::set_formulas()
 	formulas.formulasQ[Soil][Plant] = "f[3]*f[50]*(s[1]-e[1])";
 
 
-	formulas.formulasQ2[Soil][Soil] = "(_frs[(f[50]*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]*(s[1]-e[1])/f[6]*f[2])";
+	formulas.formulasQ2[Soil][Soil] =    "(_frs[(f[50]*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]*(s[1]-e[1])/f[6]*f[2])";
 	formulas.formulasQ2[Soil][Storage] = "(_frs[(f[50]*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]*(s[1]-e[1])/f[6]*f[2])";
 	formulas.formulasQ2[Soil][Pond] = "0.5*(_frs[(-f[50]*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]-(f[50]))*(e[1]-s[1])/f[6]*f[2]";// *(_mon((e[4] / e[2]) : 0.001))";
 	formulas.formulasQ2[Soil][Darcy] = "(_frs[(f[50]*(_max(_min(f[9]:1):0)^s[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/s[55])))^s[55]))^2))]*(s[1]-e[1])/f[6]*f[2])";
@@ -246,7 +246,7 @@ void CMediumSet::set_formulas()
 	formulas.formulasQ2[Pond][Darcy] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
 	formulas.formulasQ2[Pond][Storage] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
 	formulas.formulasQ2[Pond][Soil] = "0";
-	formulas.formulasQ2[Pond][Catchment] = "(-f[85])/f[56]*_sqs((e[1]-s[1])/f[6])*_mon(_abs(e[1]-s[1])/f[6]:0.001)*((_pos(e[1]-e[5]-e[62])^(1+f[58]))";
+	formulas.formulasQ2[Pond][Catchment] = "(-f[85])/f[56]*_sqs((e[1]-s[1])/f[6])*_mon((_abs(e[1]-s[1])/f[6]):0.0001)*((_pos(e[1]-e[5]-e[62])^(1+f[58]))";
 
 
 	formulas.formulasQ[Stream][Stream] = "f[85]/f[56]*((_sq2(_pos((s[1]-e[1])/f[6]):0.001)*_mon((s[1]-_max(s[5]:f[60])):0.01))-(_sq2(_pos((e[1]-s[1])/f[6]):0.001)*_mon((e[1]-_max(e[5]:f[60])):0.01)))*(((_pos(s[1]-_max(s[5]:f[60]))+_pos(e[1]-_max(e[5]:f[60])))/2)^1.66667)";
@@ -280,8 +280,8 @@ void CMediumSet::set_formulas()
 	formulas.formulasQ[Catchment][Storage] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
 	formulas.formulasQ[Catchment][Darcy] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
 	formulas.formulasQ[Catchment][Catchment] = "f[85]/f[56]*((_sq2(_pos((s[1]-e[1])/f[6]):0.001)*_mon((s[1]-s[5]):0.01))-(_sq2(_pos((e[1]-s[1])/f[6]):0.001)*_mon((e[1]-e[5]):0.01)))*(((_hsd(s[1]-e[1])*_pos(s[1]-s[5]-s[62]))+(_hsd(e[1]-s[1])*_pos(e[1]-e[5]-s[62])))^(1+f[58]))";
-	formulas.formulasQ[Catchment][Pond] = "f[85]/f[56]*_sqs((s[1]-e[1])/f[6])*_mon(_abs(s[1]-e[1])/f[6]:0.001)*((_pos(s[1]-s[5]-s[62])^(1+f[58]))";
-	formulas.formulasQ[Catchment][Stream] = "f[85]/f[56]*_sqs((s[1]-e[1])/f[6])*_mon(_abs(s[1]-e[1])/f[6]:0.001)*((_pos(s[1]-s[5]-s[62])^(1+f[58]))";
+	formulas.formulasQ[Catchment][Pond] = "f[85]/f[56]*_sqs((s[1]-e[1])/f[6])*_mon((_abs(s[1]-e[1])/f[6]):0.0001)*((_pos(s[1]-s[5]-s[62])^(1+f[58]))";
+	formulas.formulasQ[Catchment][Stream] = "f[85]/f[56]*_sqs((s[1]-e[1])/f[6])*_mon((_abs(s[1]-e[1])/f[6]):0.0001)*((_pos(s[1]-s[5]-s[62])^(1+f[58]))";
 	//formulas.formulasQ[Catchment][Storage] = "f[55]/f[56]*_sqs((s[1]-e[1])/f[6])*_mon(_abs(s[1]-e[1])/f[6]:0.001)*((_pos(s[1]-s[5]-s[12])^(1+f[58]))";
 	//formulas.formulasQ[Catchment][Soil] = "(_frs[(f[50]*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]*(s[1]-e[1])/f[6]*f[2]*(_mon((e[4]/e[2]):0.001)))";
 	formulas.formulasQ[Catchment][Soil] = "(f[50]*(s[1]-e[1])/f[6]*f[2])";
@@ -297,7 +297,7 @@ void CMediumSet::set_formulas()
 	formulas.formulasQ[Stream][Pond] = "f[85]/f[56]*((_sq2(_pos((s[1]-e[1])/f[6]):0.001)*_mon((s[1]-_max(s[5]:f[60])):0.01))-(_sq2(_pos((e[1]-s[1])/f[6]):0.001)*_mon((e[1]-_max(e[5]:f[60])):0.01)))*(((_pos(s[1]-_max(s[5]:f[60]))+_pos(e[1]-_max(e[5]:f[60])))/2)^1.66667)";
 	formulas.formulasQ[Stream][Catchment] = "0";
 
-	formulas.formulasQ2[Stream][Catchment] = "(-f[85])/f[56]*_sqs((e[1]-s[1])/f[6])*_mon(_abs(s[1]-e[1])/f[6]:0.001)*((_pos(e[1]-e[5]-e[62])^(1+f[58]))";
+	formulas.formulasQ2[Stream][Catchment] = "(-f[85])/f[56]*_sqs((e[1]-s[1])/f[6])*_mon((_abs(s[1]-e[1])/f[6]):0.0001)*((_pos(e[1]-e[5]-e[62])^(1+f[58]))";
 
 	formulas.formulasQ[Plant][Soil] = "f[3]*f[50]*(s[1]-e[1])*(_max(_min(f[9]:0)^s[54])*f[2]*s[3]";
 	formulas.formulasQ2[Soil][Plant] = "f[3]*f[50]*(s[1]-e[1])*(_max(_min(f[9]:0)^e[54])*f[2]*e[3]";

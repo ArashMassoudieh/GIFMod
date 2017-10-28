@@ -35,14 +35,26 @@ QString wiz_entity::toQString()
 
 wiz_entity::wiz_entity(QString &s, Wizard_Script_Reader *_parent)
 {
+	QStringList gofirst; gofirst << "name" << "type" << "subtype";
 	parent = _parent; 
 	_entity = s.split(":")[0].trimmed().toLower();
 	QStringList params = extract_between(s.split(":")[1],QString("{"),QString("}")).split(",");
+	
+	for (int i = 0; i < params.size(); i++)
+	{
+		wiz_assigned_value entty(params[i]);
+		if (gofirst.contains(entty.entity))
+			parameters[entty.entity] = entty;
+	}
+
 	for (int i = 0; i < params.size(); i++)
 	{
 		wiz_assigned_value entty(params[i]);
 		if (entty._last_error == "")
-			parameters[entty.entity] = entty;
+		{
+			if (!gofirst.contains(entty.entity))
+				parameters[entty.entity] = entty;
+		}
 		else
 		{
 			_last_error = _last_error + ";" + entty._last_error;

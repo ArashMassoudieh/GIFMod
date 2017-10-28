@@ -7,6 +7,7 @@
 #include "BTCSet.h"
 #include "qstring.h"
 #include "plotWindow.h"
+#include "slndetailswindow.h"
 class CMedium;
 class CGWA;
 class GraphWidget;
@@ -76,14 +77,19 @@ public:
 #endif
 
   Ui::runtimeWindow *ui;
+  bool sln_dtl_active = false;
+  void slndetails_append(QString s);
 private slots:
 	
 	void on_btnStop_clicked();
 	void on_button1_clicked(){
 		int i = 0;
 	};
+	void on_slndtls_clicked();
 
-  void realtimeDataSlot(double x, double y, bool secondPlot = false, QString chartName = "chart", bool commingBackX = false);
+	
+
+	void realtimeDataSlot(double x, double y, bool secondPlot = false, QString chartName = "chart", bool commingBackX = false);
   void bracketDataSlot();
   void screenShot();
   void allScreenShots();
@@ -97,5 +103,6 @@ private:
   int currentDemoIndex;
   QTime start;
   bool useStartFinishTimes = false;
+  slndetailswindow *slndtlwndw;
 };
 

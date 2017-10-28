@@ -18,9 +18,9 @@ public:
 	string phase;
 	string solid;
 	vector<double> parameters;
-	double CBuildup::buildup(double C, CMBBlock *Block);
-	void CBuildup::set_val(string S, double val);
-	void CBuildup::set_val(int i, double val);
+	double buildup(double C, CMBBlock *Block);
+	void set_val(string S, double val);
+	void set_val(int i, double val);
 	string name;
 
 };

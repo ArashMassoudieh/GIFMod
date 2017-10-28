@@ -10,8 +10,8 @@
 
 #define x_base 500
 #define y_base 500
-#define v_interval 120
-#define h_interval 220
+#define v_interval 150
+#define h_interval 250
 #define v_big_interval 180
 #define h_big_interval 280
 

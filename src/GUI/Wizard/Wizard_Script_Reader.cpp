@@ -64,7 +64,7 @@ QStringList  Wizard_Script_Reader::toQStingList()
 
 Wizard_Script_Reader::Wizard_Script_Reader(QString filename)
 {
-	script_specific_params << "configuration" << "type" << "name";
+	script_specific_params << "configuration" << "type" << "name" << "x" << "y" << "first_index";
 	QFile file(filename); 
 	if (!file.open(QIODevice::ReadOnly)) {
 		QMessageBox msgBox;
@@ -225,12 +225,22 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_blocks(wiz_entit
 	
 	QString configuration = wiz_ent->get_configuration().toLower();
 	QString direction = wiz_ent->get_direction();
+	
+	
+
+	if (wiz_ent->x() != "")
+		x = wiz_ent->x().toDouble();
+
+	if (wiz_ent->y() != "")
+		y = wiz_ent->y().toDouble();
+
 	if (configuration == "")
 	{
 		int n = 1;
 		CCommand command;
 		command.command = "add";
 		command.values.append(wiz_ent->type());
+		
 
 		mProp _filter;
 		_filter.setstar();
@@ -245,8 +255,9 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_blocks(wiz_entit
 			command.parameters["y"] = y;
 			if (!script_specific_params.contains(item.entity))
 			{
-				if (m.VariableNames_w_abv().contains(item.entity))
+				if (m.VariableNames_w_abv().contains(XString::reform(item.entity)))
 					command.parameters[item.entity] = wiz_ent->get_value(item);
+				
 			}
 		}
 		commands.append(command);
@@ -308,36 +319,65 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
 	QString configuration = wiz_ent->get_configuration();
 	wiz_entity *source = &major_blocks[wiz_ent->get_parameter("source").value];
 	wiz_entity *target = &major_blocks[wiz_ent->get_parameter("target").value];
+	if (configuration == "")
+	{
+		CCommand command;
+		command.command = "connect";
+		command.values.append(source->name());
+		command.values.append(target->name());
+		if (wiz_ent->type() != "*") command.parameters["Type"] = wiz_ent->type();
+		if (wiz_ent->name() != "*") command.parameters["Name"] = wiz_ent->name();
+		mProp _filter;
+		_filter.setstar();
+		_filter.GuiObject = "Connector";
+		_filter.ObjectType = wiz_ent->type();
+		mPropList m = mproplist->filter(_filter);
+
+		for (wiz_assigned_value item : wiz_ent->get_parameters())
+		{
+			if (!script_specific_params.contains(item.entity))
+			{
+				if (m.VariableNames_w_abv().contains(item.entity))
+					command.parameters[item.entity] = wiz_ent->get_value(item);
+				if (item.entity.toLower() == "area")
+					command.parameters["Interface/cross sectional area"] = wiz_ent->get_value(item);
+			}
+		}
+		commands.append(command);
+	}
 	if (configuration == "e2s" || configuration == "s2e" || configuration == "s2s" || configuration == "e2e")
 	{
 		CCommand command;
 		command.command = "connect";
-		
+		if (wiz_ent->type() != "*") command.parameters["Type"] = wiz_ent->type();
 		if (configuration.left(1)=="e")
 		{ 
 			if (source->get_value(source->get_parameter("n")).toInt() > 1)
-				command.values.append(source->name() + " (" + QString::number(source->get_value(source->get_parameter("n")).toInt()) + ")");
+				command.values.append(source->name() + " (" + QString::number(source->get_value(source->get_parameter("n")).toInt()+ source->first_index().toInt()-1) + ")");
 			else
 				command.values.append(source->name()); 
 		}
 		else if (configuration.left(1) == "s")
 		{
 			if (source->get_value(source->get_parameter("n")).toInt() > 1)
-				command.values.append(source->name() + " (1)");
+				command.values.append(source->name() + " (" + source->first_index() + ")");
 			else
 				command.values.append(source->name());
 		}
+
+
+
 		if (configuration.right(1) == "e")
 		{
 			if (target->get_value(target->get_parameter("n")).toInt() > 1)
-				command.values.append(target->name() + " (" + QString::number(target->get_value(target->get_parameter("n")).toInt()) + ")");
+				command.values.append(target->name() + " (" + QString::number(target->get_value(target->get_parameter("n")).toInt()+ source->first_index().toInt()-1) + ")");
 			else
 				command.values.append(target->name());
 		}
 		else
 		{
 			if (target->get_value(target->get_parameter("n")).toInt() > 1)
-				command.values.append(target->name() + " (1)");
+				command.values.append(target->name() + " (" + target->first_index() + ")");
 			else
 				command.values.append(target->name());
 
@@ -346,8 +386,9 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
 		mProp _filter;
 		_filter.setstar();
 		_filter.GuiObject = "Connector";
+		_filter.ObjectType = wiz_ent->type();
 		mPropList m = mproplist->filter(_filter);
-
+		
 		for (wiz_assigned_value item : wiz_ent->get_parameters())
 		{
 			if (!script_specific_params.contains(item.entity))
@@ -374,10 +415,12 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
 				command.command = "connect";
 				command.values.append(source->name() + " ("+ QString::number(i+1) + ")");
 				command.values.append(target->name() + " ("+ QString::number(i+1) + ")") ;
-				
+				if (wiz_ent->type() != "*") command.parameters["Type"] = wiz_ent->type();
+				if (wiz_ent->name() != "*") command.parameters["Name"] = wiz_ent->name();
 				mProp _filter;
 				_filter.setstar();
 				_filter.GuiObject = "Connector";
+				_filter.ObjectType = wiz_ent->type();
 				mPropList m = mproplist->filter(_filter);
 
 				for (wiz_assigned_value item : wiz_ent->get_parameters())
@@ -406,6 +449,12 @@ XString Wizard_Script_Reader::get_parameter_value(QString &parameter_name)
 
 QList<CCommand> Wizard_Script_Reader::do_1dvh(QString configuration, wiz_entity *wiz_ent, int &x, int &y)
 {
+	
+	int first_index;
+	if (wiz_ent->first_index() != "")
+		first_index = wiz_ent->first_index().toInt();
+	else
+		first_index = 1;
 	
 	QList<CCommand> commands;
 	QString direction = wiz_ent->get_direction();
@@ -442,7 +491,7 @@ QList<CCommand> Wizard_Script_Reader::do_1dvh(QString configuration, wiz_entity 
 		command.command = "add";
 		command.values.append(wiz_ent->type());
 		if (n > 1)
-			command.parameters["Name"] = XString(wiz_ent->name() + " (" + QString::number(i + 1) + ")");
+			command.parameters["Name"] = XString(wiz_ent->name() + " (" + QString::number(i + first_index) + ")");
 		else
 			command.parameters["Name"] = XString(wiz_ent->name());
 
@@ -491,14 +540,14 @@ QList<CCommand> Wizard_Script_Reader::do_1dvh(QString configuration, wiz_entity 
 	{
 		CCommand command;
 		command.command = "connect";
-		command.values.append(wiz_ent->name() + " (" + QString::number(i + 1) + ")");
-		command.values.append(wiz_ent->name() + " (" + QString::number(i + 2) + ")");
+		command.values.append(wiz_ent->name() + " (" + QString::number(i + first_index) + ")");
+		command.values.append(wiz_ent->name() + " (" + QString::number(i + first_index + 1) + ")");
 		mProp _filter;
 		_filter.setstar();
 		_filter.GuiObject = "Connector";
 		mPropList m = mproplist->filter(_filter);
 
-		command.parameters["Name"] = XString(wiz_ent->name() + " (" + QString::number(i + 1) + ") - " + wiz_ent->name() + " (" + QString::number(i + 2) + ")");
+		command.parameters["Name"] = XString(wiz_ent->name() + " (" + QString::number(i + first_index) + ") - " + wiz_ent->name() + " (" + QString::number(i + first_index+1) + ")");
 		if (has_depth && configuration == "1dv") command.parameters["Length"] = Depth;
 		if (has_depth && configuration == "1dh") command.parameters["Length"] = length;
 		for (wiz_assigned_value item : wiz_ent->get_parameters())

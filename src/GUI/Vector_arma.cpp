@@ -297,6 +297,17 @@ bool CVector_arma::is_finite()
 	return r;
 }
 
+vector<int> CVector_arma::get_nan_elements()
+{
+	vector<int> out;
+	for (int i = 0; i < num; i++)
+	{
+		if ((vect[i] == vect[i]) != true)
+			out.push_back(i);
+	}
+	return out; 
+}
+
 double CVector_arma::max()
 {
 	return vect.max();
@@ -325,6 +336,21 @@ double CVector_arma::abs_max()
 			a = fabs(vect(i));
 	}
 	return a;
+}
+
+int CVector_arma::abs_max_elems()
+{
+	double a = -1E14;
+	int ii; 
+	for (int i = 0; i<num; i++)
+	{
+		if (fabs(vect(i)) > a)
+		{
+			a = fabs(vect(i));
+			ii = i; 
+		}
+	}
+	return ii;
 }
 
 double abs_max(CVector_arma &V)

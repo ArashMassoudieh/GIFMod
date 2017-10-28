@@ -20,17 +20,22 @@ CExpression::CExpression(QString S)
 	bool inside_quote = false;
 	int paranthesis_level = 0;
 	int last_operator_location = -1; 
+	if (!parantheses_balance(S))
+	{
+		_errors.append("Parantheses do not match in" + S);
+		return;
+	}
 	if (funcs.contains(S.left(4)))
 	{
 		function = S.left(4).right(3);
 	}
 	if (S.left(1) == "(")
 	{
-		if (S.right(1) != ")")
+		if (corresponding_parenthesis(S,0) == -1 )
 		{
 			_errors.append("Parantheses do not match in" + S);
 		}
-		else if (!S.mid(1,S.size()-2).contains("(") && !S.mid(1, S.size() - 2).contains(")"))
+		else if (corresponding_parenthesis(S,0) == S.size()-1)
 		{
 			S.remove(0, 1);
 			S.remove(S.size() - 1, 1);
@@ -66,13 +71,30 @@ CExpression::CExpression(QString S)
 					{
 						operators.append(S.mid(i, 1));
 						CExpression sub_exp = CExpression(S.mid(last_operator_location+1, i -1- last_operator_location).trimmed());
-						terms.append(sub_exp);
+						if (sub_exp.text != "")
+						{
+							if (operators.size() > 1)
+								sub_exp.sign = operators[operators.size() - 2];
+							else
+								sub_exp.sign = "+";
+							terms.append(sub_exp);
+						}
+						else
+						{
+							sub_exp = CExpression("0");
+							sub_exp.sign = "+";
+							terms.append(sub_exp);
+						}
 						_errors.append(sub_exp._errors);
 						last_operator_location = i;
 					}
 			}
 				
 			CExpression sub_exp = CExpression(S.mid(last_operator_location+1, S.size() - last_operator_location).trimmed());
+			if (operators.size() > 0)
+				sub_exp.sign = operators[operators.size() - 1];
+			else
+				sub_exp.sign = "+";
 			terms.append(sub_exp);
 			_errors.append(sub_exp._errors);
 				
@@ -93,6 +115,7 @@ CExpression::CExpression(const CExpression & S)
 	operators = S.operators;
 	constant = S.constant;
 	terms = S.terms; 
+	sign = S.sign;
 	funcs = S.funcs;
 	opts = S.opts; 
 	function = S.function;
@@ -107,6 +130,7 @@ CExpression & CExpression::operator=(const CExpression &S)
 	operators = S.operators;
 	constant = S.constant;
 	terms = S.terms;
+	sign = S.sign;
 	funcs = S.funcs;
 	opts = S.opts;
 	function = S.function;
@@ -255,8 +279,8 @@ double CExpression::oprt(QString &f, double val1, double val2)
 {
 	if (f == "^") return pow(val1, val2);
 	if (f == "+") return val1 + val2;
-	if (f == "-") return val1 - val2;
-	if (f == "/") return val1 / val2;
+	if (f == "-") return val1 + val2;
+	if (f == "/") return val1 * val2;
 	if (f == "*") return val1*val2;
 }
 
@@ -265,10 +289,12 @@ double CExpression::oprt(QString &f, int i1, int i2, Wizard_Script_Reader *W)
 
 	for (int j = 0; j < sources[i1].size(); j++)
 	{
-		for (int k=0; k<sources[i2].size(); k++)
-			if (!sources[sources[i2][k]].contains(sources[i1][j])) sources[sources[i2][k]].append(sources[i1][j]);
+		if (sources.size() > i2)
+			for (int k=0; k<sources[i2].size(); k++)
+				if (!sources[sources[i2][k]].contains(sources[i1][j])) sources[sources[i2][k]].append(sources[i1][j]);
 		
 	}
+	if (sources.size() > i2)
 	for (int j = 0; j < sources[i2].size(); j++)
 	{
 		for (int k = 0; k<sources[i1].size(); k++)
@@ -279,7 +305,20 @@ double CExpression::oprt(QString &f, int i1, int i2, Wizard_Script_Reader *W)
 	double val1; 
 	double val2; 
 	if (terms_calculated[i1]) val1 = term_vals[i1]; else val1 = terms[i1].calc(W);
-	if (terms_calculated[i2]) val2 = term_vals[i2]; else val2 = terms[i2].calc(W);
+	if (terms[i1].sign == "/") val1 = 1/val1;
+	if (terms[i1].sign == "-") val1 = -val1;
+	if (sources.size() > i2)
+		if (terms_calculated[i2]) val2 = term_vals[i2]; else
+		{
+			val2 = terms[i2].calc(W);
+			if (terms[i2].sign == "/") val2 = 1 / val2;
+			if (terms[i2].sign == "-") val2 = -val2;
+		}
+	else
+	{
+		val1 = 0;
+		val2 = val1;
+	}
 
 	if (unit == "")
 	{
@@ -294,4 +333,49 @@ double CExpression::oprt(QString &f, int i1, int i2, Wizard_Script_Reader *W)
 	terms_calculated[i2] = true;
 
 	return term_vals[sources[i1][0]];
+}
+
+int corresponding_parenthesis(QString S, int i)
+{
+	string s = S.toStdString(); 
+	if (S.at(i) == "(")
+	{
+		int paranthesis_level = 1; 
+		for (int j = i+1; j < S.size(); j++)
+		{
+			if (S.at(j) == "(")
+				paranthesis_level++;
+			if (S.at(j) == ")")
+				paranthesis_level--;
+
+			if (paranthesis_level == 0)
+				return j;
+		}
+		return -1;
+	}
+	
+
+	if (S.at(i) == ")")
+	{
+		int paranthesis_level = 1;
+		for (int j = i-1; j > 0; j--)
+		{
+			if (S.at(j) == ")")
+				paranthesis_level++;
+			if (S.at(j) == "(")
+				paranthesis_level--;
+
+			if (paranthesis_level == 0)
+				return j;
+		}
+		return -1;
+	}
+}
+
+bool parantheses_balance(QString S)
+{
+	if (S.count("(") == S.count(")"))
+		return true;
+	else
+		return false;
 }

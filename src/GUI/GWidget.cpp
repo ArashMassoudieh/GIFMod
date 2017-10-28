@@ -3176,7 +3176,10 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 					if (selectedAction->text().toStdString() == inflow.names[i])
 					{
 						plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
-						format.yAxisLabel.append("Flow (m^3/day)");
+						if (tolower(inflow.names[i])=="flow")
+							format.yAxisLabel.append("Flow (m^3/day)");
+						else
+							format.yAxisLabel.append("Concentration");
 						plot->addScatterDotPlot(inflow, i, "", format);
 						plot->show();
 					}
@@ -3288,7 +3291,7 @@ void GraphWidget::edgeContextMenuRequested(Edge* e, QPointF pos, QMenu *menu)
 			area = model->ANS.BTC[Nodes().count() * 3 + Edges().count() + model->getconnectorsq(e->Name().toStdString())];
 			velocity = flow % area;
 
-			plot->addScatterPlot(velocity, QString("%1: %2").arg(e->Name()).arg("Velocity"), 1.0, 0.0);
+			plot->addScatterPlot(velocity, QString("%1: %2").arg(e->Name()).arg("Velocity"), 1, 0, false, format);
 			plot->show();
 		}
 		if (selectedAction->text() == "Area")
@@ -4076,9 +4079,12 @@ QVariant GraphWidget::runCommand(CCommand &command)
 			else
 			{
 				Edge *e = new Edge(n1, n2, this);
-				if (e!=NULL)
+				if (e != NULL)
+				{
+					if (command.parameters.count("Type")>0) setprop(e, XString::reform("Type"), command.parameters["Type"], experiment);
 					foreach(QString key, command.parameters.keys())
 						output += setprop(e, XString::reform(key), command.parameters[key], experiment);
+				}
 			}
 		}
 	}

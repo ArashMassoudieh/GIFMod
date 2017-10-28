@@ -76,7 +76,7 @@ void runtimeWindow::setMode(QString mode)
 	ui->setupUi(this);
 	ui->btnStop->setEnabled(true);
 	connect(ui->btnStop, SIGNAL(clicked()), this, SLOT(on_btnStop_clicked()));
-
+	connect(ui->btnSolutionDetails, SIGNAL(clicked()), this, SLOT(on_slndtls_clicked()));
 	if (mode == "forward")
 	{
 #ifdef GIFMOD
@@ -251,6 +251,17 @@ void runtimeWindow::on_btnStop_clicked()
 
 }
 
+void runtimeWindow::on_slndtls_clicked()
+{
+	slndtlwndw = new slndetailswindow(this);
+	slndtlwndw->show();
+	sln_dtl_active = true;
+}
+
+void runtimeWindow::slndetails_append(QString s)
+{
+	slndtlwndw->append(s);
+}
 void runtimeWindow::realtimeDataSlot(double x, double y, bool secondPlot, QString chartName, bool commingBackX)
 {
 	static map<QString, double> min, max;

@@ -340,6 +340,21 @@ double CVector::abs_max()
 	return a;
 }
 
+int CVector::abs_max_elems()
+{
+	double a = -1E14;
+	int ii;
+	for (int i = 0; i<num; i++)
+	{
+		if (fabs(vec[i]) > a)
+		{
+			a = fabs(vec[i]);
+			ii = i;
+		}
+	}
+	return ii;
+}
+
 double abs_max(CVector &V)
 {	
 	return V.abs_max();

@@ -26,7 +26,7 @@
    <bool>true</bool>
   </property>
   <property name="windowTitle">
-   <string>Plot Window</string>
+   <string>Simulation Status</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
@@ -126,6 +126,9 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="digitCount">
+               <number>6</number>
+              </property>
              </widget>
             </item>
             <item>
@@ -188,6 +191,19 @@
             </property>
             <property name="text">
              <string>Stop running</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="btnSolutionDetails">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Show Solution Details</string>
             </property>
            </widget>
           </item>

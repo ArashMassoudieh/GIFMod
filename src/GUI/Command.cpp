@@ -56,6 +56,8 @@ CCommand& CCommand::operator=(const CCommand & s)
 
 QString CCommand::toQString()
 {
+	QStringList gofirst; 
+	gofirst << "Name" << "Type" << "SubType";
 	QString S; 
 	S.append(command);
 	S.append(" ");
@@ -68,17 +70,38 @@ QString CCommand::toQString()
 	int i = 0;
 	for (QString key : parameters.keys())
 	{
-		S.append(XString::reformBack(key));
-		S.append("=");
-		S.append(XString::reformBack(parameters[key].toQString()));
-		if (parameters[key].unit != "")
+		if (gofirst.contains(key))
 		{
-			S.append("[");
-			S.append(XString::reformBack(parameters[key].unit));
-			S.append("]");
+			S.append(XString::reformBack(key));
+			S.append("=");
+			S.append(XString::reformBack(parameters[key].toQString()));
+			if (parameters[key].unit != "")
+			{
+				S.append("[");
+				S.append(XString::reformBack(parameters[key].unit));
+				S.append("]");
+			}
+			if (i < parameters.size() - 1) S.append(",");
+			i++;
 		}
-		if (i < parameters.size() - 1) S.append(",");
-		i++;
+	}
+	
+	for (QString key : parameters.keys())
+	{
+		if (!gofirst.contains(key))
+		{
+			S.append(XString::reformBack(key));
+			S.append("=");
+			S.append(XString::reformBack(parameters[key].toQString()));
+			if (parameters[key].unit != "")
+			{
+				S.append("[");
+				S.append(XString::reformBack(parameters[key].unit));
+				S.append("]");
+			}
+			if (i < parameters.size() - 1) S.append(",");
+			i++;
+		}
 	}
 	return S;
 }

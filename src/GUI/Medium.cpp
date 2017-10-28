@@ -1553,7 +1553,7 @@ void CMedium::onestepsolve_flow(double dtt)
 	fail_reason = "none";
 
 	CVector correction_factor_old = get_flow_factors();
-	
+	int ini_max_error_elements = -1;
 	while ((indicator==1) && (done<2))
 	{	
 		bool fixed_connect;
@@ -1659,11 +1659,14 @@ void CMedium::onestepsolve_flow(double dtt)
 			if (err>=err_p) 
 			{
 				if (fixed_connect) J_update2 = true; else J_update1 = true; err_expand_counter++; X = X_old; set_flow_factors(correction_factor_old); lambda /= 2.0;
+				if (ini_max_error_elements = -1) ini_max_error_elements = F.abs_max_elems();
 				err = 10000;
 			}  
 			if (err_expand_counter>4)
 			{	
 				fail_reason = "Expanding error in hydro";
+				fail_reason = fail_reason + ", max error @ " + Blocks[F.abs_max_elems()].ID;
+				set_flow_factors(correction_factor_old);
 				set_flow_factors(correction_factor_old);
 				set_fixed_connect_status(old_fixed_connect_status);
 				setS_star(X_old);
@@ -2179,7 +2182,8 @@ void CMedium::solve_fts_m2(double dt)
 				{
 					FILEBTC = fopen((outputpathname() + "Solution_details_" + parent->ID +".txt").c_str(), "a");
 					write_state(outputpathname() + "state.txt");
-					fprintf(FILEBTC, "dt too small, epoch = %i, average_dt = %e < %e", epoch_count, (t - Timemin) / double(iii), avg_dt_limit()*dt0);
+					fprintf(FILEBTC, "dt too small, epoch = %i, average_dt = %e < %e\n", epoch_count, (t - Timemin) / double(iii), avg_dt_limit()*dt0);
+					fprintf(FILEBTC, "epoch = %i, > %i\n", epoch_count, epoch_limit());
 					fclose(FILEBTC);
 				}
 				fail_reason = "dt too small, epoch = " + numbertostring(epoch_count) + ", average_dt = " + numbertostring((t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii);
@@ -4869,9 +4873,9 @@ void CMedium::onestepsolve_flow_ar(double dt)
 		if (Blocks[i].setzero == 2) X_old[i] = Blocks[i].outflow_corr_factor;
 	}
 	fail_reason = "none";
-
+	solution_detail = "none";
 	CVector correction_factor_old = get_flow_factors();
-
+	
 	while ((indicator == 1) && (done<2))
 	{
 		bool fixed_connect;
@@ -4899,13 +4903,73 @@ void CMedium::onestepsolve_flow_ar(double dt)
 		counter_flow = 0;
 		double lambda = 1;
 		J_h_update_count = 0;
+		if ((err==err) !=true)
+		{
+			vector<int> nans = F.get_nan_elements();
+			fail_reason = "indefinite X or F in hydro @";
+			solution_detail = "indefinite X or F in hydro @";
+			for (int kk = 0; kk < nans.size(); kk++)
+			{
+				fail_reason = fail_reason + Blocks[nans[kk]].ID + ",";
+				solution_detail = solution_detail +"<b>" + QString::fromStdString(Blocks[nans[kk]].ID) + "</b>,";
+			}
+			nans = infnan_H_blocks();
+			if (nans.size() > 0)
+			{
+				for (int kk = 0; kk < nans.size(); kk++)
+				{
+					fail_reason = fail_reason + "Head not a number @ " + Blocks[nans[kk]].ID + ",";
+					solution_detail = solution_detail + "<b>" + QString::fromStdString(Blocks[nans[kk]].ID) + "</b>,";
+				}
+			}
+			nans = infnan_H_flows();
+			if (nans.size() > 0)
+			{
+				for (int kk = 0; kk < nans.size(); kk++)
+				{
+					fail_reason = fail_reason + "Flow not a number @ " + Connector[nans[kk]].ID + ",";
+					solution_detail = solution_detail + "<b>" + QString::fromStdString(Connector[nans[kk]].ID) + "</b>,";
+				}
+			}
+
+			set_fixed_connect_status(old_fixed_connect_status);
+			setS_star(X_old);
+			return;
+		}
+		int ini_max_error_elements = -1;
 		while (err>tol())
 		{
 
 			bool a = (F == F);
 			if ((F == F) != true || (X == X) != true || (F.is_finite() == false) || (X.is_finite() == false))
 			{
-				fail_reason = "indefinite X or F in hydro";
+				vector<int> nans = F.get_nan_elements();
+				fail_reason = "indefinite X or F in hydro @";
+				solution_detail = "indefinite X or F in hydro @";
+				for (int kk = 0; kk < nans.size(); kk++)
+				{
+					fail_reason = fail_reason + Blocks[nans[kk]].ID + ",";
+					solution_detail = solution_detail + "<b>" + QString::fromStdString(Blocks[nans[kk]].ID) + "</b>,";
+				}
+				nans = infnan_H_blocks();
+				if (nans.size() > 0)
+				{
+					for (int kk = 0; kk < nans.size(); kk++)
+					{
+						fail_reason = fail_reason + "Head not a number @ " + Blocks[nans[kk]].ID + ",";
+						solution_detail = solution_detail + "<b>" + QString::fromStdString(Blocks[nans[kk]].ID) + "</b>,";
+					}
+				}
+				nans = infnan_H_flows();
+				if (nans.size() > 0)
+				{
+					for (int kk = 0; kk < nans.size(); kk++)
+					{
+						fail_reason = fail_reason + "Flow not a number @ " + Connector[nans[kk]].ID + ",";
+						solution_detail = solution_detail + "Flow not a number @  <b>" + QString::fromStdString(Blocks[nans[kk]].ID) + "</b>,";
+					}
+				}
+
 				set_fixed_connect_status(old_fixed_connect_status);
 				setS_star(X_old);
 				return;
@@ -4946,6 +5010,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 				if (InvJ2_arma.getnumcols() != Blocks.size())
 				{
 					fail_reason = "Hydro Jacobian in not inversible";
+					solution_detail = "Hydro Jacobian in not inversible";
 					set_flow_factors(correction_factor_old);
 					set_fixed_connect_status(old_fixed_connect_status);
 					return;
@@ -4971,18 +5036,25 @@ void CMedium::onestepsolve_flow_ar(double dt)
 
 			err_p = err;
 			err = F.norm2();
-			if (err / err_p>0.8)
+			if (err / err_p>0.9)
 				if (fixed_connect) J_update2 = true; else J_update1 = true;
 
 			if ((dx / X).abs_max()<1e-15) err = 0;
 			if (err >= err_p)
 			{
 				if (fixed_connect) J_update2 = true; else J_update1 = true; err_expand_counter++; X = X_old; set_flow_factors(correction_factor_old); lambda /= 2.0;
+				if (ini_max_error_elements == -1) ini_max_error_elements = F.abs_max_elems(); 
 				err = 10000;
 			}
 			if (err_expand_counter>4)
 			{
-				fail_reason = "Expanding error in hydro";
+				fail_reason = "Expanding error in hydro ";
+				fail_reason = fail_reason + ", max error @ " + Blocks[F.abs_max_elems()].ID;
+				fail_reason = fail_reason + ", ini max error @ " + Blocks[ini_max_error_elements].ID;
+				solution_detail = "Expanding error in hydro ";
+				solution_detail = solution_detail + ", max error @ " + QString::fromStdString(Blocks[F.abs_max_elems()].ID);
+				solution_detail = solution_detail + ", ini max error @ <b>" + QString::fromStdString(Blocks[ini_max_error_elements].ID) + "</b>";
+
 				set_flow_factors(correction_factor_old);
 				set_fixed_connect_status(old_fixed_connect_status);
 				setS_star(X_old);
@@ -4991,7 +5063,32 @@ void CMedium::onestepsolve_flow_ar(double dt)
 
 			if ((err == err) == false)
 			{
-				fail_reason = "infinite error in hydro";
+				vector<int> nans = F.get_nan_elements();
+				fail_reason = "indefinite X or F in hydro @";
+				solution_detail = "indefinite X or F in hydro @";
+				for (int kk = 0; kk < nans.size(); kk++)
+				{
+					fail_reason = fail_reason + Blocks[nans[kk]].ID + ",";
+					solution_detail = solution_detail + "<b>" + QString::fromStdString(Blocks[nans[kk]].ID) + "</b>,";
+				}
+				nans = infnan_H_blocks();
+				if (nans.size() > 0)
+				{
+					for (int kk = 0; kk < nans.size(); kk++)
+					{
+						fail_reason = fail_reason + "Head not a number @ " + Blocks[nans[kk]].ID + ",";
+						solution_detail = solution_detail + "<b>" + QString::fromStdString(Blocks[nans[kk]].ID) + "</b>,";
+					}
+				}
+				nans = infnan_H_flows();
+				if (nans.size() > 0)
+				{
+					for (int kk = 0; kk < nans.size(); kk++)
+					{
+						fail_reason = fail_reason + "Flow not a number @ " + Connector[nans[kk]].ID + ",";
+						solution_detail = solution_detail + "<b>" + QString::fromStdString(Connector[nans[kk]].ID) + "</b>,";
+					}
+				}
 				set_flow_factors(correction_factor_old);
 				set_fixed_connect_status(old_fixed_connect_status);
 				setS_star(X_old);
@@ -5003,6 +5100,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 			if (counter_flow>nr_failure_criteria())
 			{
 				fail_reason = "Number of iteration exceeded the limit in hydro";
+				solution_detail = "Number of iteration exceeded the limit in hydro";
 				set_flow_factors(correction_factor_old);
 				set_fixed_connect_status(old_fixed_connect_status);
 				setS_star(X_old);
@@ -5013,6 +5111,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 
 		failed = false;
 		fail_reason = "none";
+		solution_detail = "none";
 		indicator = 0;
 
 		for (int i = 0; i<X.num; i++)
@@ -5031,6 +5130,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 			if (Blocks[i].outflow_corr_factor>1)
 			{
 				fail_reason = "block " + Blocks[i].ID + " is wet, " + "outflow factor = " + numbertostring(Blocks[i].outflow_corr_factor);
+				solution_detail = QString::fromStdString("block " + Blocks[i].ID + " is wet, " + "outflow factor = " + numbertostring(Blocks[i].outflow_corr_factor));
 				J_update = true;
 				indicator = 1;
 				failed = true;
@@ -5098,7 +5198,7 @@ void CMedium::onestepsolve_colloid_ar(double dt)
 			}
 
 			InvJ_C_arma = inv(M1);
-			if (InvJ_C.getnumcols() == 0)
+			if (InvJ_C_arma.getnumcols() == 0)
 			{
 				fail_reason = "Colloid Jacobian in not inversible";
 				failed_colloid = true;
@@ -5592,6 +5692,28 @@ void CMedium::write_flows(string filename)
 		outfile << Connector[i].ID << ", " << Connector[i].Q << ", " << Connector[i].Q_star <<endl;
 
 	outfile.close();
+
+}
+
+vector<int> CMedium::infnan_H_blocks()
+{
+	vector<int> out; 
+	for (int i = 0; i < Blocks.size(); i++)
+		if ((Blocks[i].H_star == Blocks[i].H_star) != true)
+			out.push_back(i);
+
+	return out; 
+
+}
+
+vector<int> CMedium::infnan_H_flows()
+{
+	vector<int> out;
+	for (int i = 0; i < Connector.size(); i++)
+		if ((Connector[i].Q_star == Connector[i].Q_star) != true)
+			out.push_back(i);
+
+	return out;
 
 }
 

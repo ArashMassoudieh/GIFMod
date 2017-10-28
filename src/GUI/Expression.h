@@ -18,6 +18,7 @@ public:
 	CExpression& CExpression::operator=(const CExpression&);
 	QList<QString> operators; 
 	QList<CExpression> terms; 
+	QString sign;
 	QString function; 
 	QString parameter; 
 	double constant; 
@@ -41,4 +42,7 @@ private:
 	vector<bool> terms_calculated;
 	QList<QList<int>> sources;
 };
+
+int corresponding_parenthesis(QString S, int i);
+bool parantheses_balance(QString S);
 

@@ -16,7 +16,7 @@
     <RootNamespace>AI Setup Project</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'x64_Release' ">
-    <OutputPath>E:\GitHub\Setup</OutputPath>
+    <OutputPath>E:\Dropbox\GUI\Setup</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'x64_Release' " />
   <PropertyGroup Condition=" '$(Configuration)' == 'x64_Release' " />

@@ -36,64 +36,64 @@ public:
 	//MM
 	vector<double> D;
 
-	double CBTC::interpol(double x); //interpolate at location x
-	double CBTC::interpol_D(double x); //interpolate the distance to the next non-zero data point
-	CBTC CBTC::interpol(vector<double> x); //interpolate at each value in vector x
-	CBTC CBTC::interpol(CBTC &x); //interpolate at times in the time axis of x
+	double interpol(double x); //interpolate at location x
+	double interpol_D(double x); //interpolate the distance to the next non-zero data point
+	CBTC interpol(vector<double> x); //interpolate at each value in vector x
+	CBTC interpol(CBTC &x); //interpolate at times in the time axis of x
 	CBTC(const CBTC &C); 
-	CBTC::CBTC(string Filename); //create BTC based on the filename
-	CBTC& CBTC::operator = (const CBTC &C);
-	void CBTC::readfile(string); //read the values from a text file
-	void CBTC::writefile(string Filename); //writes the BTC contets into a fild
-	double CBTC::maxC(); //returns the maximum value
-	double CBTC::minC(); //returns the minimum value
-	void CBTC::setnumpoints(int); //resize the timeseries
-	CBTC CBTC::Log(); //take the log of all the data points
-	CBTC CBTC::Log(double min); //log(min(min,C))
-	double CBTC::std(); //standard deviation of C
-	double CBTC::mean(); //mean of C
-	double CBTC::percentile(double x); //x^th percentile of C
-	double CBTC::percentile(double x, int limit); //x^th percentile with the exception of the first "limit" data points
-	double CBTC::mean(int limit); // mean of the data after excluding "limit" data points
-	double CBTC::std(int nlimit); // standard deviation of the data after excluding "limit" data points
-	double CBTC::mean_log(int limit); //mean of log transformed data after excluding "limit" data points
-	double CBTC::integrate(); // integral of the time series
-	double CBTC::integrate(double t); //integral from the begining to time t
-	double CBTC::integrate(double t1, double t2); //integral between time t1 and t2
-	int CBTC::lookupt(double t); // finds the index of the datapoint with time t
-	double CBTC::average(); //integral of time-series devided by the domail length
-	double CBTC::average(double t); // integral to time t devided by domain length
-	double CBTC::slope(double tt); //slope of time-series at time tt
-	CBTC CBTC::distribution(int n_bins, int limit); //extract the histogram of values
-	void CBTC::append(double x); //appends a data point with value x
-	void CBTC::append(double tt, double xx); //appends a datapoint with value xx at time tt
-	void CBTC::append(CBTC &CC);// appends a time-series to the time-series
-	CBTC& CBTC::operator+=(CBTC &v); //adds another time-series to the existing one
-	CBTC& CBTC::operator%=(CBTC &v); //adds another time-series by corresponding indexes
-	CBTC CBTC::make_uniform(double increment); //create a new time-series with uniformly distributed time-axis
-	CBTC CBTC::extract(double t1, double t2); //extracts a sub time-series from t1 to t2.
-	vector<double> CBTC::trend(); //calculate the slope based on regression
-	double CBTC::mean_t(); //mean of t values of data point
-	CBTC CBTC::add_noise(double std, bool); //adds Gaussian noise to values 
-	void CBTC::assign_D(); //Assign distances to the next non-zero values
-	void CBTC::clear(); // clears the time-series
-	double CBTC::wiggle(); //calculate oscillation
-	double CBTC::wiggle_corr(int _n=10); 
-	bool CBTC::wiggle_sl(double tol);
-	double CBTC::maxfabs();
+	CBTC(string Filename); //create BTC based on the filename
+	CBTC& operator = (const CBTC &C);
+	void readfile(string); //read the values from a text file
+	void writefile(string Filename); //writes the BTC contets into a fild
+	double maxC(); //returns the maximum value
+	double minC(); //returns the minimum value
+	void setnumpoints(int); //resize the timeseries
+	CBTC Log(); //take the log of all the data points
+	CBTC Log(double min); //log(min(min,C))
+	double std(); //standard deviation of C
+	double mean(); //mean of C
+	double percentile(double x); //x^th percentile of C
+	double percentile(double x, int limit); //x^th percentile with the exception of the first "limit" data points
+	double mean(int limit); // mean of the data after excluding "limit" data points
+	double std(int nlimit); // standard deviation of the data after excluding "limit" data points
+	double mean_log(int limit); //mean of log transformed data after excluding "limit" data points
+	double integrate(); // integral of the time series
+	double integrate(double t); //integral from the begining to time t
+	double integrate(double t1, double t2); //integral between time t1 and t2
+	int lookupt(double t); // finds the index of the datapoint with time t
+	double average(); //integral of time-series devided by the domail length
+	double average(double t); // integral to time t devided by domain length
+	double slope(double tt); //slope of time-series at time tt
+	CBTC distribution(int n_bins, int limit); //extract the histogram of values
+	void append(double x); //appends a data point with value x
+	void append(double tt, double xx); //appends a datapoint with value xx at time tt
+	void append(CBTC &CC);// appends a time-series to the time-series
+	CBTC& operator+=(CBTC &v); //adds another time-series to the existing one
+	CBTC& operator%=(CBTC &v); //adds another time-series by corresponding indexes
+	CBTC make_uniform(double increment); //create a new time-series with uniformly distributed time-axis
+	CBTC extract(double t1, double t2); //extracts a sub time-series from t1 to t2.
+	vector<double> trend(); //calculate the slope based on regression
+	double mean_t(); //mean of t values of data point
+	CBTC add_noise(double std, bool); //adds Gaussian noise to values 
+	void assign_D(); //Assign distances to the next non-zero values
+	void clear(); // clears the time-series
+	double wiggle(); //calculate oscillation
+	double wiggle_corr(int _n=10); 
+	bool wiggle_sl(double tol);
+	double maxfabs();
 	double max_fabs;
-	void CBTC::knock_out(double t);
-	double CBTC::AutoCor1(int i=0);
+	void knock_out(double t);
+	double AutoCor1(int i=0);
 	bool file_not_found = false;
-	CBTC CBTC::getcummulative();
-	CBTC CBTC::Exp();
+	CBTC getcummulative();
+	CBTC Exp();
 	CBTC fabs();
 	//GUI 
-	//QList <QMap <QVariant, QVariant>> CBTC::compact() const;
-	CBTC::CBTC(QList <QMap <QVariant, QVariant>> data);
-	CBTC::CBTC(double a, double b, const vector<double>&x);
-	CBTC::CBTC(double a, double b, const CBTC &btc);
-	CBTC::CBTC(const vector<double> &t, const vector<double> &C);
+	//QList <QMap <QVariant, QVariant>> compact() const;
+	CBTC(QList <QMap <QVariant, QVariant>> data);
+	CBTC(double a, double b, const vector<double>&x);
+	CBTC(double a, double b, const CBTC &btc);
+	CBTC(const vector<double> &t, const vector<double> &C);
 	CBTC(vector<double>&, int writeInterval = 1);
 	bool error = false;
 

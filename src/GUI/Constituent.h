@@ -16,7 +16,7 @@ public:
 	CConstituent(string _settling_model);
 	~CConstituent(void);
 	CConstituent& CConstituent::operator==(const CConstituent& CC);
-	CConstituent::CConstituent(const CConstituent &C);
+	CConstituent(const CConstituent &C);
 	string name;
 	int solid;
 	double conc;

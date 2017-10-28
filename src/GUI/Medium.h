@@ -144,6 +144,10 @@ public:
 	void CMedium::set_G_star(CVector_arma &X);
 
 	void write_flows(string filename);
+
+	vector<int> infnan_H_blocks();
+
+	vector<int> infnan_H_flows();
 	
 	void CMedium::onestepsolve_flow_ar(double dt);
 	void CMedium::onestepsolve_colloid_ar(double dt);
@@ -374,7 +378,7 @@ public:
 	void update_wind_humidity();
 	double get_nextcontrolinterval(double _t);
 	void set_control_params(int);
-	
+	QString solution_detail; 
 
 
 //Sassan

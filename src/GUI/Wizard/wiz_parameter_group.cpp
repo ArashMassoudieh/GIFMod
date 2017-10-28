@@ -53,10 +53,11 @@ wiz_parameter_group::wiz_parameter_group(QString & s, Wizard_Script_Reader *_par
 		wiz_assigned_value entty(params[i]);
 		if (entty._last_error == "")
 		{
-			if (entty.entity != "parameter")
+			if ((entty.entity.toLower().trimmed() != "parameter") && (entty.entity.toLower().trimmed() !="note"))
 				items[entty.entity] = entty;
 			else
 				parameters.append(entty.value);
+			
 		}
 		else
 		{

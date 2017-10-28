@@ -203,10 +203,25 @@ void Wizard_Dialog::setup_form()
 			qDebug() << "key2: " << p << endl;
 			i++;
 			QLabel *label = new QLabel(tab);
-			label->setText(wiz.get_parameters()[p].get_question());
+			if (wiz.get_parameters()[p].get_role().toLower().trimmed() == "memo")
+				label->setWordWrap(true);
+			
+			QString question;
+			if (wiz.get_parameters()[p].get_bold())
+				question.append("<b>");
+
+			question.append(wiz.get_parameters()[p].get_question());
+			
+			if (wiz.get_parameters()[p].get_bold())
+				question.append("</b>");
+
+			label->setText(question);
 			label->setObjectName(wiz.get_parameters()[p].get_question());
 			labels[p] = label;
-			formLayout->setWidget(i, QFormLayout::LabelRole, label);
+			if (wiz.get_parameters()[p].get_role().toLower().trimmed() != "memo")
+				formLayout->setWidget(i, QFormLayout::LabelRole, label);
+			else
+				formLayout->setWidget(i, QFormLayout::SpanningRole, label);
 
 			if (wiz.get_parameters()[p].get_role().toLower().trimmed() == "integer")
 			{
@@ -227,6 +242,8 @@ void Wizard_Dialog::setup_form()
 				textedits[p] = textEdit;
 				formLayout->setWidget(i, QFormLayout::FieldRole, textEdit);
 			}
+
+			
 
 			if (wiz.get_parameters()[p].get_role().toLower().trimmed() == "float")
 			{

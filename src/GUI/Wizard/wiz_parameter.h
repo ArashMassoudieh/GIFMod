@@ -30,6 +30,14 @@ public:
 	{
 		return parameters["delegate"].value.trimmed(); 
 	}
+
+	bool get_bold()
+	{
+		if (parameters["bold"].value.trimmed() == "true") return true;
+		if (parameters["Bold"].value.trimmed() == "true") return true;
+		return false; 
+	}
+
 	wiz_assigned_value &get_parameter(const QString name)
 	{
 		return parameters[name];
@@ -51,7 +59,7 @@ public:
 		if (parameters["question"].value.trimmed() == "")
 			parameters["question"].value = parameters["name"].value;
 
-		return parameters["question"].value;
+		return parameters["question"].value.replace("#",",");
 	}
 
 	XString &get_value()
