@@ -22,6 +22,7 @@ Wizard_Script_Reader::Wizard_Script_Reader(const Wizard_Script_Reader & WSR)
 	script_specific_params = WSR.script_specific_params;
 	wiz_parameter_groups = WSR.wiz_parameter_groups;
 	wiz_params = WSR.wiz_params;
+	description = WSR.description;
 }
 
 QStringList  Wizard_Script_Reader::toQStingList()
@@ -29,6 +30,7 @@ QStringList  Wizard_Script_Reader::toQStingList()
 	QStringList out; 
 	out << "script name = " + script_name;
 	out << "icon file = " + icon_file;
+	out << "description = " + description;
 	for (QString key : major_blocks.keys())
 	{
 		out << "major_block: " + major_blocks[key].toQString(); 
@@ -91,6 +93,7 @@ bool Wizard_Script_Reader::add_command(QString line)
 	if (line.split(":").size() == 1) return false;
 	if (line.split(":")[0].toLower().trimmed() == "name") script_name = line.split(":")[1].trimmed();
 	if (line.split(":")[0].toLower().trimmed() == "icon") icon_file = line.split(":")[1].trimmed();
+	if (line.split(":")[0].toLower().trimmed() == "description") description = line.split(":")[1].trimmed().replace("#",",");
 
 	if (line.split(":")[0].toLower().trimmed() == "settings" || line.split(":")[0].toLower().trimmed() == "major_block" || line.split(":")[0].toLower().trimmed() == "major_connection" || line.split(":")[0].toLower().trimmed() == "entity")
 	{

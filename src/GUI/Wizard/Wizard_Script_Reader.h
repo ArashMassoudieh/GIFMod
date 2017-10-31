@@ -59,6 +59,7 @@ public:
 
 	QString& get_script_name() { return script_name; };
 	QString& get_script_icon() { return icon_file; };
+	QString& get_description() { return description; };
 	QList<CCommand> get_script_commands();
 	QList<CCommand> get_script_commands_major_connections(wiz_entity * wiz_ent, int & x, int & y);
 	XString get_parameter_value(QString & parameter_name);
@@ -75,6 +76,7 @@ public:
 	QStringList error_list;
 	QString script_name; 
 	QString icon_file; 
+	QString description; 
 	
 
 };

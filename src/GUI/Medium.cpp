@@ -10,6 +10,7 @@
 #include "MediumSet.h"
 #include "Matrix_arma.h"
 #include "Vector_arma.h"
+#include "qmessagebox.h"
 
 using namespace std;
 
@@ -26,6 +27,9 @@ CMedium::~CMedium(void)
 	ANS_constituents.clear();
 	ANS_obs.clear();
 	ANS_obs_noise.clear();
+	Blocks.clear();
+	Connector.clear();
+	
 	parent = 0;
 	gw = 0;
 	runtimewindow = 0;
@@ -2133,6 +2137,10 @@ void CMedium::solve_fts_m2(double dt)
 					for (int i = 0; i < controllers().size(); i++)
 						ANS_control.BTC[i] = controllers()[i].output;
 					updateProgress();
+					if (runtimewindow != 0)
+					{
+						QMessageBox::warning(runtimewindow, "Simulation Failed", "Simulation Failed! + Number of unsuccessful time-step reductions > 30", QMessageBox::Ok);
+					}
 					write_flows(outputpathname() + "flows.txt");
 				return;
 			}
@@ -2150,6 +2158,11 @@ void CMedium::solve_fts_m2(double dt)
 					FILEBTC = fopen((outputpathname() + "Solution_details_" + parent->ID + ".txt").c_str(), "a");
 					//runtimewindow->parent->logW->append("failed, trying to write state.txt.");
 					fprintf(FILEBTC, "Simulation ended by the user");
+					if (runtimewindow != 0)
+					{
+						QMessageBox::StandardButton reply;
+						QMessageBox::question(runtimewindow, "Simulation Stopped by the user", "Simulation Ended", QMessageBox::Ok);
+					}
 					fclose(FILEBTC);
 				}
 
@@ -2171,7 +2184,10 @@ void CMedium::solve_fts_m2(double dt)
 					fprintf(FILEBTC, "Simulation time exceeded the maximum simulation time");
 					fclose(FILEBTC);
 				}
-
+				if (runtimewindow != 0)
+				{
+					QMessageBox::warning(runtimewindow, "Simulation Failed", "Runtime greater than the runtime limit set by the user", QMessageBox::Ok);
+				}
 				updateProgress();
 				return;
 			}
@@ -2191,7 +2207,15 @@ void CMedium::solve_fts_m2(double dt)
 				write_flows(outputpathname() + "flows.txt");
 				for (int i = 0; i < controllers().size(); i++)
 					ANS_control.BTC[i] = controllers()[i].output;
+				if (runtimewindow != 0)
+				{
+					if (epoch_count > epoch_limit())
+						QMessageBox::warning(runtimewindow, "Simulation Failed", "Number of epochs (" + QString::number(epoch_count) + " ) exceeded the limit (" + QString::number(epoch_limit()) + ")", QMessageBox::Ok);
+					if ((t - Timemin) / double(iii) / dt0 < avg_dt_limit())
+						QMessageBox::warning(runtimewindow, "Simulation Failed", "Average time-step size (" + QString::number((t - Timemin) / double(iii)) + " ) is too small < " + QString::number(avg_dt_limit()*dt0)  , QMessageBox::Ok);
 
+
+				}
 
 				return;
 			}
@@ -2365,7 +2389,7 @@ void CMedium::solve_fts_m2(double dt)
 		}
 	}
 	// Sassan
-	updateProgress(true);
+	
 
 	for (int i = 0; i < controllers().size(); i++)
 		ANS_control.BTC[i] = controllers()[i].output;
@@ -2383,6 +2407,7 @@ void CMedium::solve_fts_m2(double dt)
 	}
 	failed = false;
 	fail_reason = "Simulation conducted successfully";
+	updateProgress(true);
 }
 
 bool CMedium::solve()

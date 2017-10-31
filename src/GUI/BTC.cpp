@@ -207,6 +207,23 @@ double CBTC::interpol(double x)
 
 }
 
+CBTC CBTC::MA_smooth(int span)
+{
+	CBTC out; 
+	for (int i = 0; i < n; i++)
+	{
+		double sum = 0; 
+		int span_1 = min(span, i);
+		span_1 = min(span_1, n - i - 1);
+		for (int j = i - span_1; j <= i + span_1; j++)
+		{ 
+			sum += C[j] / double(1 + 2 * span_1);
+		}
+		out.append(t[i], sum);
+	}
+	return out;
+}
+
 double CBTC::interpol_D(double x)
 {
 	double r=0;

@@ -1535,7 +1535,7 @@ void GraphWidget::clear()
 	if (model)
 	{
 		model->~CMedium();
-		delete model;
+		//delete model;
 	}
 	
 	model = 0; modelSet = 0; results = 0;

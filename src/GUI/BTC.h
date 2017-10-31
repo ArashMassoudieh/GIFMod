@@ -37,6 +37,7 @@ public:
 	vector<double> D;
 
 	double interpol(double x); //interpolate at location x
+	CBTC MA_smooth(int span); //Moving average smoothing with span of 1+2*span
 	double interpol_D(double x); //interpolate the distance to the next non-zero data point
 	CBTC interpol(vector<double> x); //interpolate at each value in vector x
 	CBTC interpol(CBTC &x); //interpolate at times in the time axis of x

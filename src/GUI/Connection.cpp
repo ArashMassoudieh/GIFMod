@@ -831,7 +831,8 @@ void CConnection::evaluate_functions(int i) //i=0->small s; i=1->large S
 		funcs[i].X.append(x,calc_star(funcs[i].Expression));
 	}
 
-	funcs[i].X.structured = true;		
+	funcs[i].X.structured = true;
+	funcs[i].X = funcs[i].X.MA_smooth(2);
 
 }
 

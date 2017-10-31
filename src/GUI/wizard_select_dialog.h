@@ -29,5 +29,6 @@ private slots:
 
 QMap<QString, QString> get_templates(QString &path); 
 QMap<QString, QString> get_icons(QString & path);
+QMap<QString, QString> get_descriptions(QString & path); 
 
 #endif // WIZARD_SELECT_DIALOG_H

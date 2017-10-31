@@ -8,6 +8,7 @@
 #include "ga.h"
 #include "mcmc.h"
 #include "results.h"
+#include <QMessageBox>
 
 
 #ifdef GIFMOD
@@ -2414,12 +2415,17 @@ void CMedium::updateProgress(bool finished)
 			if (!reason.toLower().contains("none"))
 				vars["label"] = reason;
 			qDebug()<< t<<dtt;
-			runtimewindow->update(vars);
+			
 			if (runtimewindow->sln_dtl_active)
 				if (!reason.toLower().contains("none"))
 					runtimewindow->slndetails_append(QString::number(epoch_count) + ":" + solution_detail + " time step size: " + QString::number(dtt));
 		}
-		
+		runtimewindow->update(vars);
+		if (finished)
+		{
+			QMessageBox::StandardButton reply;
+			QMessageBox::question(runtimewindow, "Simulation Ended", "Simulation Finished!", QMessageBox::Ok);
+		}
 	}
 }
 #endif
