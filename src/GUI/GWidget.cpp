@@ -1530,14 +1530,15 @@ void GraphWidget::clear()
 		resultsSet.clear();
 	if (modelSet)
 	{
+		qDebug() << "Deleting ModelSet";
 		modelSet->clear();
 	}
 	if (model)
 	{
-		model->~CMedium();
-		//delete model;
+		model->clear(); 
+		model = 0;
 	}
-	
+	qDebug() << "Model Deleted...";
 	model = 0; modelSet = 0; results = 0;
 	experimentsComboClear();
 	hasResults = false;

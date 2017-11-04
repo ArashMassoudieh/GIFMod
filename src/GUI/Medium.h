@@ -379,7 +379,7 @@ public:
 	double get_nextcontrolinterval(double _t);
 	void set_control_params(int);
 	QString solution_detail; 
-
+	void clear(); //clear the model
 
 //Sassan
 

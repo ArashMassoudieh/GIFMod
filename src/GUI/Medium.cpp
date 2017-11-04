@@ -27,12 +27,16 @@ CMedium::~CMedium(void)
 	ANS_constituents.clear();
 	ANS_obs.clear();
 	ANS_obs_noise.clear();
+	qDebug() << "Deleting Blocks";
 	Blocks.clear();
+	qDebug() << "Deleting Connectors";
 	Connector.clear();
+	qDebug() << "Connectors deleted";
 	
 	parent = 0;
 	gw = 0;
 	runtimewindow = 0;
+	qDebug() << "Setting parents to Null";
 }
 
 CMedium::CMedium(const CMedium &M)
@@ -4365,6 +4369,18 @@ void CMedium::set_control_params(int controller_no)
 			Connector[controllers()[controller_no].application_spec.location[i]].set_val(controllers()[controller_no].application_spec.quan[i], controllers()[controller_no].value);
 
 	}
+
+}
+
+void CMedium::clear()
+{
+	parent = 0; 
+	ANS.clear();
+	ANS_colloids.clear(); 
+	ANS_constituents.clear(); 
+	ANS_MB.clear(); 
+	Connector.clear(); 
+	Blocks.clear(); 
 
 }
 
