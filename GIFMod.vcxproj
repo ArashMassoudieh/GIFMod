@@ -2958,9 +2958,9 @@
     <CustomBuild Include="src\GUI\Widget.ui">
       <FileType>Document</FileType>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">src\GUI\ui_Widget.ui;qcustomplot.h;%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\uic.exe src\GUI\Widget.ui -o E:\GitHub\builds\release\tmp-UI\ui_Widget.h</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\uic.exe src\GUI\Widget.ui -o $(RootFolder)\builds\release\tmp-UI\ui_Widget.h</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">UIC src/GUI/Widget.ui</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">E:\GitHub\builds\release\tmp-UI\ui_Widget.h;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(RootFolder)\builds\release\tmp-UI\ui_Widget.h;%(Outputs)</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">src\GUI\ui_Widget.ui;qcustomplot.h;%(AdditionalInputs)</AdditionalInputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\uic.exe src\GUI\Widget.ui -o E:\GitHub\builds\debug\tmp-UI\ui_Widget.h</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">UIC src/GUI/Widget.ui</Message>
@@ -3046,20 +3046,20 @@
     <CustomBuild Include="src\GUI\reactionwindow.ui">
       <FileType>Document</FileType>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">src\GUI\reactionwindow.ui;%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\uic.exe src\GUI\reactionwindow.ui -o E:\GitHub\builds\release\tmp-UI\ui_reactionwindow.h</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\uic.exe src\GUI\reactionwindow.ui -o $(RootFolder)\builds\$(Configuration)\tmp-UI\ui_reactionwindow.h</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">UIC src/GUI/reactionwindow.ui</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">E:\GitHub\builds\release\tmp-UI\ui_reactionwindow.h;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(RootFolder)\builds\$(Configuration)\tmp-UI\ui_reactionwindow.h;%(Outputs)</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">src\GUI\reactionwindow.ui;%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\uic.exe src\GUI\reactionwindow.ui -o E:\GitHub\builds\debug\tmp-UI\ui_reactionwindow.h</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\uic.exe src\GUI\reactionwindow.ui -o $(RootFolder)\builds\$(Configuration)\tmp-UI\ui_reactionwindow.h</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">UIC src/GUI/reactionwindow.ui</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">E:\GitHub\builds\debug\tmp-UI\ui_reactionwindow.h;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(RootFolder)\builds\$(Configuration)\tmp-UI\ui_reactionwindow.h;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="src\GUI\runtimeWindow.ui">
       <FileType>Document</FileType>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">src\GUI\runtimeWindow.ui;qcustomplot.h;%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\uic.exe src\GUI\runtimeWindow.ui -o E:\GitHub\builds\release\tmp-UI\ui_runtimeWindow.h</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\uic.exe src\GUI\runtimeWindow.ui -o $(RootFolder)\builds\$(Configuration)\tmp-UI\ui_runtimeWindow.h</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">UIC src/GUI/runtimeWindow.ui</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">E:\GitHub\builds\release\tmp-UI\ui_runtimeWindow.h;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(RootFolder)\builds\$(Configuration)\tmp-UI\ui_runtimeWindow.h;%(Outputs)</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">src\GUI\runtimeWindow.ui;qcustomplot.h;%(AdditionalInputs)</AdditionalInputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\uic.exe src\GUI\runtimeWindow.ui -o E:\GitHub\builds\debug\tmp-UI\ui_runtimeWindow.h</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">UIC src/GUI/runtimeWindow.ui</Message>
@@ -3156,36 +3156,36 @@
     <CustomBuild Include="src\GUI\wizard_dialog.ui">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">E:\GitHub\builds\debug\tmp-UI\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\uic.exe" -o "E:\GitHub\builds\debug\tmp-UI\ui_%(Filename).h" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(RootFolder)\builds\$(Configuration)\tmp-UI\ui_%(Filename).h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\uic.exe" -o "$(RootFolder)\builds\$(Configuration)\tmp-UI\ui_%(Filename).h" "%(FullPath)"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(RootFolder)\builds\debug\tmp-UI\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\uic.exe" -o "$(RootFolder)\builds\debug\tmp-UI\ui_%(Filename).h" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(RootFolder)\builds\$(Configuration)\tmp-UI\ui_%(Filename).h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\uic.exe" -o "$(RootFolder)\builds\$(Configuration)\tmp-UI\ui_%(Filename).h" "%(FullPath)"</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="src\GUI\wizard_select_dialog.ui">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">E:\GitHub\builds\debug\tmp-UI\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\uic.exe" -o "E:\GitHub\builds\debug\tmp-UI\ui_%(Filename).h" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(RootFolder)\builds\$(Configuration)\tmp-UI\ui_%(Filename).h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\uic.exe" -o "$(RootFolder)\builds\$(Configuration)\tmp-UI\ui_%(Filename).h" "%(FullPath)"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">E:\GitHub\builds\debug\tmp-UI\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\uic.exe" -o "E:\GitHub\builds\debug\tmp-UI\ui_%(Filename).h" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(RootFolder)\builds\$(Configuration)\tmp-UI\ui_%(Filename).h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\uic.exe" -o "$(RootFolder)\builds\$(Configuration)\tmp-UI\ui_%(Filename).h" "%(FullPath)"</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="src\GUI\imageviewer_window.ui">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(RootFolder)\builds\debug\tmp-UI\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\uic.exe" -o "$(RootFolder)\builds\debug\tmp-UI\ui_%(Filename).h" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(RootFolder)\builds\$(Configuration)\tmp-UI\ui_%(Filename).h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\uic.exe" -o "$(RootFolder)\builds\$(Configuration)\tmp-UI\ui_%(Filename).h" "%(FullPath)"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(RootFolder)\builds\debug\tmp-UI\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\uic.exe" -o "$(RootFolder)\builds\debug\tmp-UI\ui_%(Filename).h" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(RootFolder)\builds\$(Configuration)\tmp-UI\ui_%(Filename).h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\uic.exe" -o "$(RootFolder)\builds\$(Configuration)\tmp-UI\ui_%(Filename).h" "%(FullPath)"</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -3196,8 +3196,8 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\uic.exe" -o "E:\GitHub\builds\debug\tmp-UI\ui_%(Filename).h" "%(FullPath)"</Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Uic%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">E:\GitHub\builds\debug\tmp-UI\ui_%(Filename).h;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\uic.exe" -o "E:\GitHub\builds\debug\tmp-UI\ui_%(Filename).h" "%(FullPath)"</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(RootFolder)\builds\$(Configuration)\tmp-UI\ui_%(Filename).h;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\uic.exe" -o "$(RootFolder)\builds\$(Configuration)\tmp-UI\ui_%(Filename).h" "%(FullPath)"</Command>
     </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

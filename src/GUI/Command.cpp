@@ -158,7 +158,7 @@ bool CCommand::add_command(Node *n)
 {
 	command = "add";
 	values.append(n->objectType.ObjectType);
-	for each (mProp prop in n->getmList(n->objectType).List)
+    for (mProp prop : n->getmList(n->objectType).List)
 	{
 		if (!n->val(prop.VariableCode).isEmpty() && n->val(prop.VariableCode) != "Default")
 			if (n->val(prop.VariableCode).replace("...", "").trimmed() != "")
@@ -177,7 +177,7 @@ bool CCommand::add_command(Edge * e)
 	command = "connect";
 	values.append(e->sourceNode()->Name());
 	values.append(e->destNode()->Name());
-	for each (mProp prop in e->getmList(e->objectType).List)
+    for (mProp prop : e->getmList(e->objectType).List)
 	{
 		if (!e->val(prop.VariableCode).isEmpty() && e->val(prop.VariableCode) != "Default")
 			if (e->val(prop.VariableCode).replace("...", "").trimmed() != "")
@@ -195,7 +195,7 @@ bool CCommand::add_command(Entity * en)
 {
 	command = "add";
 	values.append(en->objectType.ObjectType);
-	for each (mProp prop in en->getmList(en->objectType).List)
+    for (mProp prop : en->getmList(en->objectType).List)
 	{
 		if (!en->val(prop.VariableCode).isEmpty() && en->val(prop.VariableCode) != "Default")
 			if (en->val(prop.VariableCode).replace("...", "").trimmed() != "")

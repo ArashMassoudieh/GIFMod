@@ -1,4 +1,4 @@
-#include "propList.h"
+#include "PropList.h"
 #include "XString.h"
 #include "qstring.h"
 #include "node.h"
@@ -8,6 +8,8 @@
 #include "mProplist.h"
 #include "GWidget.h"
 
+
+template<>
 XString PropList<Node>::getProp(const QString &propName, const QString &experimentName, Node* parentSub) const{
 	if (!parentSub)
 		parentSub = parent;
@@ -34,9 +36,11 @@ XString PropList<Node>::getProp(const QString &propName, const QString &experime
 		return r;
 	}
 }
+
+template<>
 XString PropList<Node>::getProp(const QString& propName, QList<Node*> nodes, const QString& experimentName) const {
 	multiValues<XString> multi;
-	for each (Node* n in nodes)
+    for (Node* n : nodes)
 	{
 		multi.append(getProp(propName, experimentName, n));
 	}
@@ -46,6 +50,7 @@ XString PropList<Node>::getProp(const QString& propName, QList<Node*> nodes, con
 		return "Different values";
 }
 
+template<>
 bool PropList<Node>::setProp(const QString& propName, const XString& Value, const QString &experimentName) {
 	if (propName == "Name") {
 		if (Value != "") parent->setName(Value);
@@ -81,6 +86,7 @@ bool PropList<Node>::setProp(const QString& propName, const XString& Value, cons
 	return list[experimentName].setProp(propName, Value, parent);
 }
 
+template<>
 XString PropList<Edge>::getProp(const QString &propName, const QString &experimentName, Edge* parentSub) const{
 	if (list.keys().contains(experimentName))
 		return list.value(experimentName).getProp(propName, parent);
@@ -97,6 +103,7 @@ XString PropList<Edge>::getProp(const QString &propName, const QString &experime
 
 }
 
+template<>
 bool PropList<Edge>::setProp(const QString& propName, const XString& Value, const QString &experimentName) {
 	QString classType = typeid(this).name();
 	if (propName == "Name") {
@@ -116,6 +123,7 @@ bool PropList<Edge>::setProp(const QString& propName, const XString& Value, cons
 	return list[experimentName].setProp(propName, Value, parent);
 	}
 
+template<>
 XString PropList<Entity>::getProp(const QString &propName, const QString &experimentName, Entity* parentSub) const{
 	if (list.keys().contains(experimentName))
 		return list.value(experimentName).getProp(propName, parent);
@@ -131,6 +139,7 @@ XString PropList<Entity>::getProp(const QString &propName, const QString &experi
 	}
 }
 
+template<>
 bool PropList<Entity>::setProp(const QString& propName, const XString& Value, const QString &experimentName) {
 	QString classType = typeid(this).name();
 	if (propName == "Name") {
@@ -154,6 +163,7 @@ bool PropList<Entity>::setProp(const QString& propName, const XString& Value, co
 	}
 	return list[experimentName].setProp(propName, Value, parent);
 }
+template<>
 multiValues<> PropList<Node>::getPropMultiValues(const QString& propName, const QList<Node*> nodes, const QStringList &experimentsList) const {
 	vector<QVariant> values;
 	for (int i = 0; i<experimentsList.count(); i++)

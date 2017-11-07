@@ -3,7 +3,7 @@
 #include "mainwindow.h"
 #include "imageviewer.h"
 #include "qmessagebox.h"
-#include "commandwindow.h"
+#include "commandWindow.h"
 #include "filebutton.h"
 #include "imageviewer_window.h"
 

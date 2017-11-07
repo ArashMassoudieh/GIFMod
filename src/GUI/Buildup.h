@@ -11,7 +11,7 @@ public:
 	CBuildup(void);
 	CBuildup(string m);
 	CBuildup(const CBuildup &B);
-	CBuildup& CBuildup::operator=(const CBuildup &BB);
+    CBuildup& operator=(const CBuildup &BB);
 	~CBuildup(void);
 	string model;
 	string constituent;

@@ -11,10 +11,10 @@
 #include "qlineedit.h"
 #include "qformlayout.h"
 #include "qcheckbox.h"
-#include "unittextbox3.h"
-#include "mproplist.h"
+#include "UnitTextBox3.h"
+#include "mProplist.h"
 #include "qspinbox.h"
-#include "command.h"
+#include "Command.h"
 #include "filebutton.h"
 #include "imageviewer.h"
 

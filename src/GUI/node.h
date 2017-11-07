@@ -1,7 +1,7 @@
 #pragma once
 #include <QGraphicsItem>
 #include "PropModel.h"
-#include "Proplist.h"
+#include "PropList.h"
 #include "XString.h"
 #include "enums.h"
 
@@ -61,7 +61,7 @@ public:
     QPainterPath shape() const Q_DECL_OVERRIDE;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) Q_DECL_OVERRIDE;
 	mPropList mpropList()  const;
-	QString Name() const { return name; };
+    QString Name() const { return name; }
 	bool setName(const QString &Name);
 	void setBold(const bool _Bold = true);
 
@@ -75,7 +75,7 @@ public:
 	mProp Filter() const { return ObjectType(); };
 	QList<mProp> Filter(const QList<Node*> nodes) const { 
 		QList<mProp> objectTypes;
-		for each (Node* n in nodes)
+        foreach (Node* n , nodes)
 			objectTypes.append(n->ObjectType());
 		return objectTypes; };
 
@@ -93,7 +93,7 @@ public:
 	QString g(QString experimentName = "") const;
 	QString cg(QString experimentName = "") const;
 	QString planthsc(QString experimentName = "") const;
-	QString newNodeName(const QString name, QList<Node*> &nodes) const;
+    QString newNodeName(const QString name, QList<Node*> &nodes) const;
 	QList<ParticleInitialConditionItem> &particleInitialCondition(QString experimentName = "") const;
 	QList<ParticleInitialConditionItem> &particleInitialCondition(QString experimentName = "");
 	QList<ConstituentInitialConditionItem> &constituentInitialCondition(QString experimentName = "") const;

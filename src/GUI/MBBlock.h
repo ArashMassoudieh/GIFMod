@@ -5,7 +5,7 @@
 #include "Vector.h"
 #include "Reaction.h"
 #include "BTCSet.h"
-#include "function.h"
+#include "Function.h"
 #include "Solid_Phase.h"
 #include "RxnNetwork.h"
 #include "Buildup.h"
@@ -46,10 +46,10 @@ public:
 	~CMBBlock(void);
 	CMBBlock(const CMBBlock& BB);// copy constructor
 	int n_constts; 	int n_phases; //number of chemical species, number of phases;
-	void CMBBlock::set_num_phases_constts(int n, int m);
-	void CMBBlock::set_num_phases(int n);
-	void CMBBlock::set_num_constts(int m);
-	CMBBlock& CMBBlock::operator=(const CMBBlock &BB); //equal operator
+    void set_num_phases_constts(int n, int m);
+    void set_num_phases(int n);
+    void set_num_constts(int m);
+    CMBBlock& operator=(const CMBBlock &BB); //equal operator
 	string ID; //Identification of the Mass Balance Block
 	double H, A, V, S;  //Head, Area, Volume, Storage
 	double q; // Darcy flux
@@ -73,8 +73,8 @@ public:
 	vector<CVector> capacity_c_star;
 	vector<CVector> capacity_c_Q; // constituent capacity
 	vector<CVector> capacity_c_star_Q;
-	void CMBBlock::evaluate_capacity_c();
-	void CMBBlock::evaluate_capacity_c_star();
+    void evaluate_capacity_c();
+    void evaluate_capacity_c_star();
 	vector<CMatrix> K; //exchange of phases
 	vector<CMatrix> K_star; //exchange of phases
 	CMatrix f; //interfacial surface area between phases
@@ -82,22 +82,22 @@ public:
 	CStringOP H_S_expression; //Storage-Head Relationship
 	string H_S_expression_txt;
 	CStringOP V_S_expression; //Storage-Volume Relationship
-	double CMBBlock::calc_rxn_rate(CStringOP &C); //calculate reaction rate
-	vector<double> CMBBlock::calc_rxn_prod_rate(); //calculate production rate of all constituents
-	double CMBBlock::get_rate_exchange(int particle_type, int constituent);
-	double CMBBlock::get_exchange_rate_star(int particule_type, int phase, int constituent);
-	double CMBBlock::calc(CStringOP &C, vector<int> ii); //The function to calculate any expression
-	double CMBBlock::calc_star(CStringOP &C, vector<int> ii); //The function to calculate any expression based on star values
-	double CMBBlock::calc(CStringOP &C); //The function to calculate any expression
-	double CMBBlock::calc_star(CStringOP &C); //The function to calculate any expression based on star values
-	double CMBBlock::get_val(int i, vector<int> ii);// get the value of physical properties, variables and parameters
-	double CMBBlock::get_val_star(int i, vector<int>); //get the value of physical properties, variables and parameters based on star values
-	double CMBBlock::get_val(int i);// get the value of physical properties, variables and parameters
-	double CMBBlock::get_val_star(int i); //get the value of physical properties, variables and parameters based on star values
-	double CMBBlock::get_val(string SS); //get the value of physical properties, variables and parameters
-	void CMBBlock::set_val(int i, double val);// set the value of physical properties, variables and parameters
-	void CMBBlock::set_val_star(int i, double val); //set the value of physical properties, variables and parameters based on star values
-	void CMBBlock::set_val(const string &SS, double val); //set the value of physical properties, variables and parameters based on star values
+    double calc_rxn_rate(CStringOP &C); //calculate reaction rate
+    vector<double> calc_rxn_prod_rate(); //calculate production rate of all constituents
+    double get_rate_exchange(int particle_type, int constituent);
+    double get_exchange_rate_star(int particule_type, int phase, int constituent);
+    double calc(CStringOP &C, vector<int> ii); //The function to calculate any expression
+    double calc_star(CStringOP &C, vector<int> ii); //The function to calculate any expression based on star values
+    double calc(CStringOP &C); //The function to calculate any expression
+    double calc_star(CStringOP &C); //The function to calculate any expression based on star values
+    double get_val(int i, vector<int> ii);// get the value of physical properties, variables and parameters
+    double get_val_star(int i, vector<int>); //get the value of physical properties, variables and parameters based on star values
+    double get_val(int i);// get the value of physical properties, variables and parameters
+    double get_val_star(int i); //get the value of physical properties, variables and parameters based on star values
+    double get_val(string SS); //get the value of physical properties, variables and parameters
+    void set_val(int i, double val);// set the value of physical properties, variables and parameters
+    void set_val_star(int i, double val); //set the value of physical properties, variables and parameters based on star values
+    void set_val(const string &SS, double val); //set the value of physical properties, variables and parameters based on star values
 	vector<CBTCSet> inflow; //inflow time-series
 	
 	
@@ -105,16 +105,16 @@ public:
 	int indicator; //specify block medium 0: soil, 1: pond
 	vector<int> connectors; //the id of connectors attached to the block
 	vector<int> connectors_se;// 0: block1 of the connector 1: block 2 of the connector
-	void CMBBlock::get_funcs(CStringOP &term);
-	void CMBBlock::evaluate_functions(int i);
-	void CMBBlock::evaluate_functions();
+    void get_funcs(CStringOP &term);
+    void evaluate_functions(int i);
+    void evaluate_functions();
 	double vapor_diffusion;
 	bool fixed_evaporation;
 	double fixed_evaporation_val;
 	int setzero;
 	double outflow_corr_factor;
-	double CMBBlock::get_evaporation(double t);
-	double CMBBlock::get_evaporation(int j, double t);
+    double get_evaporation(double t);
+    double get_evaporation(int j, double t);
 	vector<int> Solid_phase_id;
 	/* variable codes: 
 	H: 1
@@ -133,30 +133,30 @@ public:
 	vector<CFunction> funcs;
 	double MBBlocks;  //MM
 	bool fixed;// fixed flow for connected connector
-	void CMBBlock::evaluate_K();
-	void CMBBlock::evaluate_K_star();
-	void CMBBlock::evaluate_capacity();
-	void CMBBlock::evaluate_capacity_star();
+    void evaluate_K();
+    void evaluate_K_star();
+    void evaluate_capacity();
+    void evaluate_capacity_star();
 	vector<string> initial_g_counter_p; vector<string> initial_g_counter_l; vector<double> initial_g;
 	vector<string> initial_cg_counter_p; vector<string> initial_cg_counter_l; vector<string> initial_cg_counter_c;  vector<double> initial_cg;
-	int CMBBlock::get_tot_num_phases();
+    int get_tot_num_phases();
 	CRxnNetwork *RXN;
-	double CMBBlock::get_exchange_rate(int particule_type, int phase, int constituent);
-	double CMBBlock::get_kd(int particule_type, int phase, int constituent);
-	void CMBBlock::set_CG(int particle_type, int phase, int constituent, double val);
-	double &CMBBlock::_CG(int particle_type, int phase, int constituent);
-	double CMBBlock::get_CG(int particle_type, int phase, int constituent);
-	int CMBBlock::get_member_no(int solid_id, int phase_no);
-	int CMBBlock::get_member_no(int solid_id, int phase_no, int constituent);
-	double CMBBlock::get_reaction_rate(int i, CVector &X, bool star);
-	CVector CMBBlock::get_reaction_rates(CVector &X, bool star);
-	double CMBBlock::get_reaction_rate(int i, bool star);
-	CVector CMBBlock::get_reaction_rates(bool star);
-	CVector CMBBlock::get_rxn_change(bool star);
-	CVector CMBBlock::get_rxn_change(CVector &X, bool star);
-	CVector CMBBlock::get_X_from_CG();
-	void CMBBlock::set_CG_star(const CVector &X);
-	CMatrix CMBBlock::Eval_Stoichiometry(bool star);
+    double get_exchange_rate(int particule_type, int phase, int constituent);
+    double get_kd(int particule_type, int phase, int constituent);
+    void set_CG(int particle_type, int phase, int constituent, double val);
+    double &_CG(int particle_type, int phase, int constituent);
+    double get_CG(int particle_type, int phase, int constituent);
+    int get_member_no(int solid_id, int phase_no);
+    int get_member_no(int solid_id, int phase_no, int constituent);
+    double get_reaction_rate(int i, CVector &X, bool star);
+    CVector get_reaction_rates(CVector &X, bool star);
+    double get_reaction_rate(int i, bool star);
+    CVector get_reaction_rates(bool star);
+    CVector get_rxn_change(bool star);
+    CVector get_rxn_change(CVector &X, bool star);
+    CVector get_X_from_CG();
+    void set_CG_star(const CVector &X);
+    CMatrix Eval_Stoichiometry(bool star);
 	bool precipitation_swch;
 	bool light_swch;
 	vector<CBuildup*> buildup;
@@ -165,8 +165,8 @@ public:
 	vector<string> envexchange_id;
 	vector<CEvaporation*> evaporation_m;
 	vector<string> evaporation_id;
-	int CMBBlock::lookup_particle_type(string S);
-	int CMBBlock::lookup_env_exchange(string S);
+    int lookup_particle_type(string S);
+    int lookup_env_exchange(string S);
 	vector<CBTC> *light;
 	vector<CBTC> *temperature;
 

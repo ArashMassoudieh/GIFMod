@@ -1,5 +1,5 @@
 #include "wizard_select_dialog.h"
-#include "QDir.h"
+#include "qdir.h"
 #include "Wizard/Wizard_Script_Reader.h"
 #include "mainwindow.h"
 

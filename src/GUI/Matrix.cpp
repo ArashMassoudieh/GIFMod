@@ -11,6 +11,7 @@
 #include "qstring.h"
 #include "qmap.h"
 #include "qvariant.h"
+#include "Vector.h"
 
 
 using namespace arma;
@@ -165,7 +166,7 @@ CMatrix mult(CMatrix &m1, CMatrix &m2)
 	return mt;
 }
 
-CMatrix operator*(CMatrix &m1, CMatrix &m2)
+CMatrix operator*(CMatrix m1, CMatrix m2)
 {
 	CMatrix a= mult(m1,m2);
 	return a;
@@ -251,7 +252,7 @@ CMatrix operator/(double d, CMatrix m1)
 }
 
 
-CVector operator*(CMatrix &m, CVector &v)
+CVector operator*(CMatrix m, CVector v)
 {
 	return mult(m,v);
 }
@@ -588,7 +589,8 @@ CVector diag(CMatrix m)
 
 CMatrix operator*(CVector v, CMatrix m)
 {
-	CMatrix a = CMatrix(v)*m;
+    auto tempMap = CMatrix(v);
+    CMatrix a = tempMap*m;
 	return a;
 }
 
@@ -711,7 +713,7 @@ CVector solve_ar(CMatrix &M, CVector &V)
 	return ansr;
 }
 
-CMatrix inv(CMatrix &M)
+CMatrix inv(CMatrix M)
 {
 
 	mat A(M.getnumrows(),M.getnumcols());	

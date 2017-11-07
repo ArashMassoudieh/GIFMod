@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "Vector_arma.h"
-#include "Math.h"
+#include "math.h"
 #include "Matrix_arma.h"
 #include <cfloat>
 #include "Vector.h"

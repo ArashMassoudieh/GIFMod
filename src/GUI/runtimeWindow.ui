@@ -203,7 +203,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Show Solution Details</string>
+             <string>Show Solution Details </string>
             </property>
            </widget>
           </item>
