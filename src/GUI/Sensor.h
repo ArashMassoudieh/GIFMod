@@ -13,7 +13,7 @@ public:
 	~CSensor();
 	CSensor(int numberofExperiments);
 	CSensor(const CSensor &M);
-	CSensor& CSensor::operator=(const CSensor &BB);
+	CSensor& operator=(const CSensor &BB);
 	void append_output(double t, double C, int experiment_id);
 	string name;
 	int loc_type; //0: block, 1: connector

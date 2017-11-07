@@ -99,8 +99,8 @@ public:
 			observations
 	}*/
 
-	QMap<QString, QVariant> Results::compact() const;
-	static Results* Results::unCompact(QMap<QString, QVariant>);
+	QMap<QString, QVariant> compact() const;
+	static Results* unCompact(QMap<QString, QVariant>);
 
 
 protected:

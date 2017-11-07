@@ -9,17 +9,17 @@ class CNormalDist
 public:
 	CNormalDist(void);
 	~CNormalDist(void);
-	double CNormalDist::unitrandom();
-	double CNormalDist::getstdnormalrand();
-	double CNormalDist::getnormalrand(double mu, double std);
-	CVector CNormalDist::getnormal(CVector &mu, CMatrix &sigma);
-	CMatrix CNormalDist::getnormal(int m, int n, double mu, double std);
-	CVector CNormalDist::getnormal(int m, double mu, double std);
-	double CNormalDist::getlognormalrand(double mu, double std);
-	CVector CNormalDist::getlognormal(CVector &mu, CMatrix &sigma);
-	CMatrix CNormalDist::getlognormal(int m, int n, double mu, double std);
-	CVector CNormalDist::getlognormal(int m, double mu, double std);
-	double CNormalDist::likelihood_mixed(double x_mod, double x_obs, double std_ln, double std_n);
+	double unitrandom();
+	double getstdnormalrand();
+	double getnormalrand(double mu, double std);
+	CVector getnormal(CVector &mu, CMatrix &sigma);
+	CMatrix getnormal(int m, int n, double mu, double std);
+	CVector getnormal(int m, double mu, double std);
+	double getlognormalrand(double mu, double std);
+	CVector getlognormal(CVector &mu, CMatrix &sigma);
+	CMatrix getlognormal(int m, int n, double mu, double std);
+	CVector getlognormal(int m, double mu, double std);
+	double likelihood_mixed(double x_mod, double x_obs, double std_ln, double std_n);
 
 };
 

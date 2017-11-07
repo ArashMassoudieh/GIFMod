@@ -14,7 +14,7 @@ public:
 	CReaction(void);
 	CReaction(int nterms);
 	CReaction(const CReaction &CR);
-	CReaction CReaction::operator=(const CReaction &CR); 
+	CReaction operator=(const CReaction &CR); 
 	int nproducts;
 	int nterms;
 	int temp_exponent;
@@ -25,9 +25,9 @@ public:
 	vector<int> product_phase;
 	vector<int> product_p_type;
 	vector<Crxtterm> terms;
-	void CReaction::set_n_terms(int);
-	void CReaction::set_n_prdcts(int);
-	void CReaction::getRxn(FILE *file);
+	void set_n_terms(int);
+	void set_n_prdcts(int);
+	void getRxn(FILE *file);
 	~CReaction(void);
 	string name;
 	
