@@ -1,9 +1,7 @@
 #pragma once
 #include "qabstractitemmodel.h"
 #include "mProplist.h"
-#include <QString>
-#include <QFileDialog>
-#include <QDir>
+#include "qstring.h"
 
 class Node;
 class Edge;

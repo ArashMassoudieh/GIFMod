@@ -24,3 +24,9 @@ win32 {
     DEFINES += ARMA_USE_LAPACK ARMA_USE_BLAS
 
 }
+
+linux {
+    #sudo apt-get install libblas-dev liblapack-dev
+     DEFINES += ARMA_USE_LAPACK ARMA_USE_BLAS
+     LIBS += -llapack -lblas
+}

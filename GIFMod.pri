@@ -139,7 +139,9 @@ HEADERS += ./src/GUI/Command.h \
     ./src/GUI/filebutton.h \
     ./src/GUI/dictionary.h \
     ./src/GUI/wizard_select_dialog.h \
-    ./src/GUI/wizard_dialog.h
+    ./src/GUI/wizard_dialog.h \
+    $$PWD/src/GUI/slndetailswindow.h \
+    $$PWD/src/GUI/imageviewer_window.h
 SOURCES += ./src/GUI/XString.cpp \
     ./src/GUI/BTC.cpp \
     ./src/GUI/BTCSet.cpp \
@@ -252,7 +254,9 @@ SOURCES += ./src/GUI/XString.cpp \
     ./src/GUI/treeitem.cpp \
     ./src/GUI/treemodel.cpp \
     ./src/GUI/tth_source.c \
-    ./src/GUI/utility_funcs.cpp
+    ./src/GUI/utility_funcs.cpp \
+    $$PWD/src/GUI/slndetailswindow.cpp \
+    $$PWD/src/GUI/imageviewer_window.cpp
 FORMS += ./src/GUI/ConstituentWindow.ui \
     ./src/GUI/ConstituentWindowPlant.ui \
     ./src/GUI/ExchangeParametersWindow.ui \
@@ -269,4 +273,6 @@ FORMS += ./src/GUI/ConstituentWindow.ui \
     ./src/GUI/reactionwindow.ui \
     ./src/GUI/runtimeWindow.ui \
     ./src/GUI/wizard_dialog.ui \
-    ./src/GUI/wizard_select_dialog.ui
+    ./src/GUI/wizard_select_dialog.ui \
+    $$PWD/src/GUI/slndetailswindow.ui \
+    $$PWD/src/GUI/imageviewer_window.ui

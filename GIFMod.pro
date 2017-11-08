@@ -8,7 +8,7 @@ CONFIG += c++14
 TARGET = GIFMod 
 TEMPLATE = app
 win32:QMAKE_CXXFLAGS += /MP
-
+LIBS += -fopenmp
 
 
 #defines

@@ -1,7 +1,7 @@
 #pragma once
 #include <QGraphicsItem>
 #include "PropModel.h"
-#include "mProplist.h"
+#include "PropList.h"
 #include "XString.h"
 #include "node.h"
 

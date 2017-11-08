@@ -57,7 +57,7 @@
      <x>0</x>
      <y>0</y>
      <width>1177</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -847,7 +847,7 @@
   <action name="actionAdd_Plant_Block">
    <property name="icon">
     <iconset>
-     <normaloff>Icons/Plant.png</normaloff>Icons/Plant.png</iconset>
+     <normaloff>../../builds/release/Icons/plant.png</normaloff>../../builds/release/Icons/plant.png</iconset>
    </property>
    <property name="text">
     <string>Add &amp;Plant Block</string>

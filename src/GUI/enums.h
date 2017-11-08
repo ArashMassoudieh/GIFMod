@@ -1,6 +1,5 @@
 #pragma once
-#include  <QColor>
-
+#include "qcolor.h"
 #define PI 3.14159265359;
 class GraphWidget;
 enum Operation_Modes{ Draw_Connector, Node1_selected, Pan, NormalMode, resizeNode };
