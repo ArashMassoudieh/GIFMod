@@ -484,7 +484,7 @@
   <customwidget>
    <class>UnitTextBox2</class>
    <extends>QLineEdit</extends>
-   <header>unittextbox2.h</header>
+   <header>UnitTextBox2.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

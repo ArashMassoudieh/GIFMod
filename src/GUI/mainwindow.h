@@ -5,12 +5,12 @@
 #include <QtCore>
 #include <QVBoxLayout>
 #include <QDockWidget>
-#include <QTreeView.h>
+#include <QTreeView>
 #include "treemodel.h"
-#include <qprogressbar>
+#include <QProgressBar>
 #include "qtableview.h"
 #include "runtimeWindow.h"
-#include "btc.h"
+#include "BTC.h"
 #include "results.h"
 #include <QDesktopWidget>
 #include "ioc.h"
@@ -77,7 +77,7 @@ public:
 	QString modelPathname();
 	QString applicationName, fileExtension, metafilename, applicationShortName;
 	logWindow *log;
-	void MainWindow::centerWidget();
+    void centerWidget();
 	Ui::MainWindow *ui;
 	runtimeWindow * rtw = 0;
 	QList<QMap<QString, QVariant>>* dataMap;
@@ -126,7 +126,7 @@ private slots:
 	void on_actionProperty_Box_triggered(bool checked);
 
 
-	void MainWindow::updateToolbarToggles(Operation_Modes OMode = Operation_Modes::NormalMode);
+    void updateToolbarToggles(Operation_Modes OMode = Operation_Modes::NormalMode);
 	void on_action_New_triggered();
 
 	void on_action_Open_triggered();
@@ -258,7 +258,7 @@ private slots:
 	bool loadModel(QString modelfilename);
 
 	void gwidgetChanged();
-	void MainWindow::closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent *event);
 	void getNumber(double initial = -1);
 	void recentItem()
 	{

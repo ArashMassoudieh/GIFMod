@@ -50,29 +50,29 @@ public:
 	CRxnNetwork(int n_Rxns, int n_params, int n_constts);
 	CRxnNetwork(const CRxnNetwork &CRxnNetwork);
 
-	CRxnNetwork operator=(const CRxnNetwork &CR); 
-	void getreactions(ifstream& file);
-	void getreactions(string filename);	 	
-	void getconstituents(string filename);
-	void setnumconcs(int n);
-	void setnumparams(int n);
-	void onestepbatchsolve(double dt);
-	void setfixedvals(int ts, double t);
-	void setiniconcs(int ts);	
+    CRxnNetwork operator=(const CRxnNetwork &CR);
+    void getreactions(ifstream& file);
+    void getreactions(string filename);
+    void getconstituents(string filename);
+    void setnumconcs(int n);
+    void setnumparams(int n);
+    void onestepbatchsolve(double dt);
+    void setfixedvals(int ts, double t);
+    void setiniconcs(int ts);
 
-	double calcterm(CStringOP &term);
-	double calcterm(CStringOP &term, vector<CConstituent> &C_prime);
-	double calcterm(CStringOP &term, int ts, double temperature);
-	double calcterm(CStringOP &term, int ts, double temperature, vector<CConstituent> &C_prime);
+    double calcterm(CStringOP &term);
+    double calcterm(CStringOP &term, vector<CConstituent> &C_prime);
+    double calcterm(CStringOP &term, int ts, double temperature);
+    double calcterm(CStringOP &term, int ts, double temperature, vector<CConstituent> &C_prime);
 		
-	CVector getrate(vector<CConstituent> &c_star, int ts);	
-	CVector reaction_rate(vector<CConstituent> &, int);
-	CVector influx_rate(vector<CConstituent> &, int);
-	void fixed_val(double &, int, int);
-	bool fixed_val_check(int, int);
+    CVector getrate(vector<CConstituent> &c_star, int ts);
+    CVector reaction_rate(vector<CConstituent> &, int);
+    CVector influx_rate(vector<CConstituent> &, int);
+    void fixed_val(double &, int, int);
+    bool fixed_val_check(int, int);
 	vector<rxparam> parameters;
-	int look_up_constituent_no(string const_name);
-	int look_up_rxn_parameters(string S);
+    int look_up_constituent_no(string const_name);
+    int look_up_rxn_parameters(string S);
 };
 
 

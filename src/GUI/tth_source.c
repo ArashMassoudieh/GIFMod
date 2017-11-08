@@ -21196,7 +21196,11 @@ YY_RULE_SETUP
   if(tth_autopic){
     picno++;
     if(tth_debug&32)fprintf(stderr,"Starting picture number %d\n",picno);
+#ifdef _WIN32
     append2(HTMLOUT,"<br /><img src=\"pic%d.gif\" alt=\"Picture %d\" />",picno,picno);
+#else
+    append2(HTMLOUT,"<br /><img src=\"pic%d.gif\" alt=\"Picture %d\" />",picno);
+#endif
     {TTH_PAR_ACTION};
     sprintf(scratchstring,"pic%d.gif",picno);
     if((tth_picfile=fopen(scratchstring,"r"))){
@@ -28617,9 +28621,8 @@ if(epsftype==0){
   }
   if(sys == SUCCESS){
     if(epsftype==1) append2(HTMLOUT,"<a href=\"%s\">Figure</a>",filestr);
-    if(epsftype==2) append3(HTMLOUT,"<img src=\"%s\" alt=\"%s\" />",filestr,filestr);
-    if(epsftype==3) append(HTMLOUT,"<a href=\"%s\"><img src=\"%s\" alt=\"%s\" /></a>"
-			    ,filestr,filestr1,filestr1);
+    if(epsftype==2) append3(HTMLOUT,"<img src=\"%s\" alt=\"%s\" />",filestr, filestr);
+    if(epsftype==3) append(HTMLOUT,"<a href=\"%s\"><img src=\"%s\" alt=\"%s\" /></a>");
   }else if(psfound){ /* This can only happen if the system call occurs. */
     fprintf(stderr,"**** System call:%s failed.\n",commandstr);
     fprintf(stderr,

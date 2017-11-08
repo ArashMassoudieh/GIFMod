@@ -42,13 +42,13 @@ void TreeItem::addChild(TreeItem *item, int index)
 void TreeItem::addChild(QList<TreeItem *> items)
 {
 	childItems.append(items);
-	for each (TreeItem *item in items)
+    foreach(TreeItem *item , items)
 		item->parentItem = this;
 }
 
 void TreeItem::deleteChild(QString name)
 {
-	for each (TreeItem *child in childItems)
+    foreach(TreeItem *child , childItems)
 		if (child->Name() == name)
 		{
 			childItems.removeAll(child);
@@ -62,7 +62,7 @@ int TreeItem::indexOf(TreeItem *item) const
 }
 int TreeItem::indexOf(QString name) const
 {
-	for each (TreeItem * item in childItems)
+    foreach(TreeItem * item , childItems)
 		if (item->Name() == name) return indexOf(item);
 	return -1;
 }
@@ -88,7 +88,7 @@ QString TreeItem::Name() const
 		{
 			qDeleteAll(children);
 			children.clear();
-			for each (Node* node in gWidget->Nodes())
+            foreach(Node* node , gWidget->Nodes())
 				new TreeItem(node, this);
 		}
 	
@@ -97,7 +97,7 @@ QString TreeItem::Name() const
 		{
 			qDeleteAll(children);
 			children.clear();
-			for each (Node* tracer in gWidget->nodesByType("Well"))
+            foreach(Node* tracer , gWidget->nodesByType("Well"))
 				new TreeItem(tracer, this);
 		}
 	if (type == Type::TracersBranch)
@@ -105,7 +105,7 @@ QString TreeItem::Name() const
 		{
 			qDeleteAll(children);
 			children.clear();
-			for each (Node* tracer in gWidget->nodesByType("Tracer"))
+            foreach(Node* tracer , gWidget->nodesByType("Tracer"))
 				new TreeItem(tracer, this);
 		}
 	if (type == Type::EdgesBranch)
@@ -113,7 +113,7 @@ QString TreeItem::Name() const
 		{
 			qDeleteAll(children);
 			children.clear();
-			for each (Edge* edge in gWidget->Edges())
+            foreach(Edge* edge , gWidget->Edges())
 				new TreeItem(edge, this);
 		}
 /*	if (type == Type::Branch)
@@ -121,7 +121,7 @@ QString TreeItem::Name() const
 		{
 			qDeleteAll(children);
 			children.clear();
-			for each (Entity *entity in gWidget->Entities)
+            foreach(Entity *entity , gWidget->Entities)
 				if (entity->ObjectType().ObjectType == Name()) new TreeItem(entity, this);
 		}
 	return children;

@@ -4,7 +4,7 @@
 #include "qtableview.h"
 #include "node.h"
 #include "GWidget.h"
-#include "unittextbox.h"
+#include "UnitTextBox.h"
 #include <QDoubleValidator>
 
 

@@ -70,50 +70,50 @@ public:
 	vector<double> u;
 	double posterior(vector<double> par);
 	void initialize();
-	void CMCMC::initialize(vector<double> par);
-	bool CMCMC::step(int k);
-	bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow* rtw = 0);
+    void initialize(vector<double> par);
+    bool step(int k);
+    bool step(int k, int nsamps, string filename, runtimeWindow* rtw = 0);
 	vector<double> purturb(int k);
 	CNormalDist ND;
 	double purtscale;
-	void CMCMC::writeoutput(string filename);
+    void writeoutput(string filename);
 	vector<int> params;
 	CBTCSet MData;
 	int nActParams;
 	int numBTCs;
-	int CMCMC::getparamno(int j);
-	double CMCMC::posterior(vector<double> par, bool out);
+    int getparamno(int j);
+    double posterior(vector<double> par, bool out);
 	bool logtrans, fixedstd;
-	void CMCMC::getfromGA(const CGA &GA);
+    void getfromGA(const CGA &GA);
 	string outputfilename;
 	int nsamples;
-	int CMCMC::getparamno(int i,int ts)const;
-	int CMCMC::get_act_paramno(int i);
-	int CMCMC::get_time_series(int i);
+    int getparamno(int i,int ts)const;
+    int get_act_paramno(int i);
+    int get_time_series(int i);
 	vector<bool> apply_to_all;
 	int n_ts;
 	int writeinterval;
-	CVector CMCMC::sensitivity(double d, vector<double> par);
-	CVector CMCMC::sensitivity_ln(double d, vector<double> par);
+    CVector sensitivity(double d, vector<double> par);
+    CVector sensitivity_ln(double d, vector<double> par);
 	runtimeWindow * rtw = 0;
 #ifdef GIFMOD
-	vector<CBTCSet*> CMCMC::model(vector<double> par);
+    vector<CBTCSet*> model(vector<double> par);
 #endif
 #ifdef GWA
-	vector<CBTCSet> CMCMC::model(vector<double> par);
+    vector<CBTCSet> model(vector<double> par);
 #endif
-	vector<CBTCSet> CMCMC::model_lumped(vector<double> par);
+    vector<CBTCSet> model_lumped(vector<double> par);
 #ifdef GIFMOD
-	vector<CBTCSet> CMCMC::model_lumped(vector<double> par, CMedium &)const ;
-	CMatrix CMCMC::sensitivity_mat_lumped(double d, vector<double> par, CMedium &) const;
+    vector<CBTCSet> model_lumped(vector<double> par, CMedium &)const ;
+    CMatrix sensitivity_mat_lumped(double d, vector<double> par, CMedium &) const;
 #endif
 #ifdef GWA
-	vector<CBTCSet> CMCMC::model_lumped(vector<double> par, CGWA &)const ;
-	CMatrix CMCMC::sensitivity_mat_lumped(double d, vector<double> par, CGWA &) const;
+    vector<CBTCSet> model_lumped(vector<double> par, CGWA &)const ;
+    CMatrix sensitivity_mat_lumped(double d, vector<double> par, CGWA &) const;
 #endif
-//CMatrix CMCMC::sensitivity_mat(double d, vector<double> par);
-	CMatrix CMCMC::sensitivity_mat_lumped(double d, vector<double> par);
-	CBTCSet CMCMC::prior_distribution(int n_bins);
+//CMatrix sensitivity_mat(double d, vector<double> par);
+    CMatrix sensitivity_mat_lumped(double d, vector<double> par);
+    CBTCSet prior_distribution(int n_bins);
 	double purt_fac;
 	bool mixederror;
 	bool noinipurt;
@@ -121,7 +121,7 @@ public:
 	vector<string> paramname;
 	bool global_sensitivity;
 	bool continue_mcmc;
-	int CMCMC::readfromfile(string filename); 
+    int readfromfile(string filename);
 
 	vector<vector<CBTCSet>> BTCout_obs;
 	vector<vector<CBTCSet>> BTCout_obs_noise;
@@ -130,8 +130,8 @@ public:
 	vector<CMatrix> global_sens_lumped;
 	CBTCSet paramsList;
 	CBTCSet realized_paramsList;
-	void CMCMC::getrealizations(CBTCSet &MCMCout);
-	void CMCMC::get_outputpercentiles(CBTCSet &MCMCout);
+    void getrealizations(CBTCSet &MCMCout);
+    void get_outputpercentiles(CBTCSet &MCMCout);
 	int n_realizations;
 	double dp_sens;
 	bool noise_realization_writeout;

@@ -3,7 +3,7 @@
 #include "GWidget.h"
 #include "process.h"
 #include "qvariant.h"
-#include <Qcolor>
+#include <QColor>
 
 struct ReactionTableModelPri{
     ReactionTableModel* This;
@@ -283,11 +283,11 @@ void ReactionTableModel::removeItem(int currentRow)
 QList<QStringList> ReactionTableModel::exportToExpession() const
 {
     QList<QStringList> data;
-    for each (Process * e in mainGraphWidget->Processes) {
+    foreach (Process * e , mainGraphWidget->Processes) {
         QStringList r;
         r.append(e->name);
 		r.append(d->Export(e->rate));
-		for each (QString c in d->Constituents) {
+        foreach (QString c , d->Constituents) {
 			if (e->stoichiometries[c] != "") r.append(QString("Product[%1]=%2").arg(c).arg(d->Export(e->stoichiometries[c])));
         }
         data.append(r);

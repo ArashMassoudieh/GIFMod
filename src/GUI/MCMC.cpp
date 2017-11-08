@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "MCMC.h"
 #include <vector>
-#include "normaldist.h"
+#include "NormalDist.h"
 #include <string>
 #include <omp.h>
 //Sassan
@@ -448,7 +448,7 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
 			for (int i=0; i<n; i++)
 				fprintf(file, "%s, ", paramname[i].c_str());
 		fprintf(file,"%s, %s, %s,", "logp", "logp_1", "stuck_counter");
-		for (int j=0; j<pertcoeff.size(); j++) fprintf(file,"%s,", string("purt_coeff_" + string(_itoa(j,buffer,10))).c_str());
+        for (int j=0; j<pertcoeff.size(); j++) fprintf(file,"%s,", string("purt_coeff_" + QString("%1").arg(j).toStdString()).c_str());
 		fprintf(file, "\n");
 		fclose(file);
 	}
@@ -461,10 +461,12 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
 		QCoreApplication::processEvents();
 		if (rtw->stopTriggered)
 			break;
-		omp_set_num_threads(numberOfThreads);
+        // ARASH: LOOK HERE
+        //omp_set_num_threads(numberOfThreads);
 #pragma omp parallel
 		{
-			srand(int(time(NULL)) ^ omp_get_thread_num() + kk);
+            // ARASH: LOOK HERE
+            //srand(int(time(NULL)) ^ omp_get_thread_num() + kk);
 #pragma omp for
 
 			for (int jj = kk; jj < min(kk + n_chains, nsamples); jj++)
@@ -919,8 +921,8 @@ void CMCMC::getrealizations(CBTCSet &MCMCout)
 		vector<vector<CGWASet>> Sys1(numberOfThreads);
 #endif
 		for (int i = 0; i < numberOfThreads; i++) Sys1[i].resize(1);
-
-		omp_set_num_threads(numberOfThreads);
+// ARASH: LOOK HERE
+        //omp_set_num_threads(numberOfThreads);
 #pragma omp parallel for 
 		for (int j = 0; j < min(numberOfThreads, n_realizations - jj*numberOfThreads); j++)
 		{

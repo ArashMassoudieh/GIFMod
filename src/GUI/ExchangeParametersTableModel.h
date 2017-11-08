@@ -1,6 +1,6 @@
 #pragma once
 #include "qabstractitemmodel.h"
-#include "QString.h"
+#include <QString>
 //#include "node.h"
 //#include "GWidget.h"
 

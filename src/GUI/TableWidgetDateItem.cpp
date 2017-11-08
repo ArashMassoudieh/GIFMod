@@ -13,7 +13,7 @@ void TableWidgetDateItem::setData(int role, const QVariant & value)
 		
 		QList<QChar> replaceItems;
 		replaceItems << '\\' << '-' << ',';
-		for each (QChar c in replaceItems)
+        foreach (QChar c , replaceItems)
 			text.replace(c, "/");
 
 		QString date = "01/01/1900";

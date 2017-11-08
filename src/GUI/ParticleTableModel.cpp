@@ -72,7 +72,7 @@ bool ParticleTableModel::setData(const QModelIndex & index, const QVariant & val
 			experimentstobeUpdated << node->experimentName();
 		else
 			experimentstobeUpdated = node->parent->experimentsList();
-		for each (QString experiment in experimentstobeUpdated)
+        foreach (QString experiment , experimentstobeUpdated)
 		{
 			if (col == 0)
 			{
@@ -102,7 +102,7 @@ bool ParticleTableModel::setData(const QModelIndex & index, const QVariant & val
 		gWidget->log(QString("Particle initial condition (%1, %2, %3) added to block: %4 for experiment %5.").arg(item.Particle).arg(item.Model).arg(item.Value).arg(node->Name()).arg(node->parent->experimentName()));
 		return true;
 	}
-	for each(QString experiment in node->parent->experimentsList())
+    foreach(QString experiment , node->parent->experimentsList())
 		node->particleInitialCondition(experiment).append(item);
 	gWidget->log(QString("Particle initial condition (%1, %2, %3) added to block: %4 for all experiments.").arg(item.Particle).arg(item.Model).arg(item.Value).arg(node->Name()));
 	return true;
@@ -117,7 +117,7 @@ bool ParticleTableModel::removeRows(int firstRow, int lastRow, const QModelIndex
 {
 	beginRemoveRows(parent, firstRow, lastRow);
 	if (node->experimentName() == "All experiments")
-		for each(QString experiment in node->parent->experimentsList())
+        foreach(QString experiment , node->parent->experimentsList())
 			node->particleInitialCondition(experiment).removeAt(firstRow);
 	else
 		node->particleInitialCondition().removeAt(firstRow);

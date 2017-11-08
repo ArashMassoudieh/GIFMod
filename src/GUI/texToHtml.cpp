@@ -69,7 +69,7 @@ string texFile2Html(string &texFileName)
 	pointer[1][0] = '-';
 	pointer[1][1] = 'L';
 
-	strcpy_s(html, main2(2, pointer));
+    strcpy(html, main2(2, pointer));
 	delete pointer[1];
 	delete pointer[0];
 //	delete pointer;

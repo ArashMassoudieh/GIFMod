@@ -10,7 +10,7 @@ public:
 	CStringOP expression;
 	int loc_type;
 	string location; 
-	CObjectiveFunction(const CObjectiveFunction &M);
-	CObjectiveFunction& operator=(const CObjectiveFunction &M);
+    CObjectiveFunction(const CObjectiveFunction &M);
+    CObjectiveFunction& operator=(const CObjectiveFunction &M);
 };
 

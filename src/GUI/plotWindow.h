@@ -2,7 +2,7 @@
 
 #include <QMainWindow>
 #include <QTimer>
-#include "customplotzoom.h"
+#include "CustomPlotZoom.h"
 #include "qvector.h"
 #include "BTCSet.h"
 #include "qstring.h"
@@ -58,7 +58,7 @@ public:
 	  if (name == "") name = QString::fromStdString(ANS.names[index]);
 	  //	  std::vector<double> vx, std::vector<double> vy) {
 	  QVector<double> x(ANS.BTC[index].n), y(ANS.BTC[index].n);
-	  int numberOfTimePoints = ANS.BTC[index].t.size();
+      int numberOfTimePoints = int(ANS.BTC[index].t.size());
 	  if (format.xAxisTimeFormat && (ANS.BTC[index].t[numberOfTimePoints - 1] - ANS.BTC[index].t[0]) < 5)
 		  format.xAxisTimeFormat = false;
 	  /*	  if (convertXtoTime)
@@ -87,7 +87,7 @@ public:
 	  if (name == "") name = QString::fromStdString(ANS.names[index]);
 //	  std::vector<double> vx, std::vector<double> vy) {
 	  QVector<double> x(ANS.BTC[index].n), y(ANS.BTC[index].n);
-	  int numberOfTimePoints = ANS.BTC[index].t.size();
+      int numberOfTimePoints = int(ANS.BTC[index].t.size());
 	  if (format.xAxisTimeFormat && (ANS.BTC[index].t[numberOfTimePoints - 1] - ANS.BTC[index].t[0]) < 5)
 		  format.xAxisTimeFormat = false;
 /*	  if (convertXtoTime)
@@ -116,7 +116,7 @@ public:
 	  if (name == "") name = QString::fromStdString(ANS.names[index]);
 	  //	  std::vector<double> vx, std::vector<double> vy) {
 	  QVector<double> x(ANS.BTC[index].n), y(ANS.BTC[index].n);
-	  int numberOfTimePoints = ANS.BTC[index].t.size();
+      int numberOfTimePoints = int(ANS.BTC[index].t.size());
 	  if (format.xAxisTimeFormat && (ANS.BTC[index].t[numberOfTimePoints - 1] - ANS.BTC[index].t[0]) < 5)
 		  format.xAxisTimeFormat = false;
 	  /*	  if (convertXtoTime)
@@ -141,11 +141,11 @@ public:
 	  return addScatterPlot(name, x, y, format);
   };
 
-  QCPGraph* plotWindow::addHistogramPlot(QString name, QVector<double> t, QVector<double> y, plotformat format = plotformat());
-  QCPGraph* plotWindow::addHistogramPlot(QString name, vector<double> t, vector<double> y, plotformat format = plotformat()){
+  QCPGraph* addHistogramPlot(QString name, QVector<double> t, QVector<double> y, plotformat format = plotformat());
+  QCPGraph* addHistogramPlot(QString name, vector<double> t, vector<double> y, plotformat format = plotformat()){
 	  return addHistogramPlot(name, vec(t), vec(y), format);
   }
-  QCPGraph* plotWindow::addPercentilePlot(QString name, QMap<QString, double> data, plotformat format = plotformat());
+  QCPGraph* addPercentilePlot(QString name, QMap<QString, double> data, plotformat format = plotformat());
   QCPGraph* addScatterPlot(CBTC data, QString name, double coefficient = 1, double offset = 0, bool convertXtoTime = true, plotformat format = plotformat()) {
 	  QVector<double> x(data.n), y(data.n);
 //	  if (convertXtoTime)
@@ -273,8 +273,8 @@ private:
   int currentDemoIndex;
   bool rightClickInitialized = false;
   QVector<double> vec(vector<double> v){
-	  QVector<double> r(v.size());
-	  for (int i = 0; i < v.size(); i++)
+      QVector<double> r(int(v.size()));
+      for (int i = 0; i < int(v.size()); i++)
 		  r[i] = v[i];
 	  return r;
   }

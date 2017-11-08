@@ -12,10 +12,10 @@ public:
 	int n;
 	vector<double> s;
 	vector<double> e;
-	CDistribution::CDistribution(int nn);
+    CDistribution(int nn);
 	CDistribution(const CDistribution &C);
-	CDistribution CDistribution::operator = (const CDistribution &C);
-	int CDistribution::GetRand();
+    CDistribution operator = (const CDistribution &C);
+    int GetRand();
 
 };
 

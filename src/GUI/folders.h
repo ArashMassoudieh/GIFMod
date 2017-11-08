@@ -1,15 +1,18 @@
-#include <windows.h>
+// ARASH: LOOK HERE
 #include <iostream>
+#ifdef _WIN32
+#include <windows.h>
 #include <shlobj.h>
+#endif
 #include "qstring.h"
-
+#ifdef _WIN32
 #pragma comment(lib, "shell32.lib")
 #ifndef UNICODE  
 	typedef std::string String;
 #else
 	typedef std::wstring String;
 #endif
-
+#endif
 /*QString myDocumentsFolderAddress() {
 	CHAR my_documents[MAX_PATH];
 	HRESULT result = SHGetFolderPath(NULL, CSIDL_PERSONAL, NULL, SHGFP_TYPE_CURRENT, my_documents);
@@ -23,6 +26,7 @@
 }*/
 
 QString localAppFolderAddress() {
+    #ifdef _WIN32
 	TCHAR szPath[MAX_PATH];
 
 	if (SUCCEEDED(SHGetFolderPath(NULL,
@@ -35,4 +39,7 @@ QString localAppFolderAddress() {
 		//PathAppend(szPath, TEXT("New Doc.txt"));
 		//HANDLE hFile = CreateFile(szPath, ...);
 	}
+#else
+    return QString();
+#endif
 }

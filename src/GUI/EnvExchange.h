@@ -12,17 +12,17 @@ public:
 	~CEnvExchange(void);
 	CEnvExchange(const CEnvExchange &B);
 	CEnvExchange(string _model);
-	CEnvExchange& CEnvExchange::operator=(const CEnvExchange &BB);
+    CEnvExchange& operator=(const CEnvExchange &BB);
 	CStringOP expression;
 	string model;
 	string constituent;
 	string phase;
 	string solid;
 	vector<double> parameters;
-	double CEnvExchange::calculate(CMBBlock *Block);
-	double CEnvExchange::calculate_star(CMBBlock *Block);
-	void CEnvExchange::set_val(string S, double val);
-	void CEnvExchange::set_val(int i, double val);
+    double calculate(CMBBlock *Block);
+    double calculate_star(CMBBlock *Block);
+    void set_val(string S, double val);
+    void set_val(int i, double val);
 	string name;
 };
 

@@ -1,4 +1,4 @@
-#include "expeditor.h"
+#include "expEditor.h"
 #include <QCompleter>
 #include <QKeyEvent>
 #include <QDebug>

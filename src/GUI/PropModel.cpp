@@ -4,7 +4,7 @@
 #include "edge.h"
 #include "entity.h"
 #include "GWidget.h"
-
+template<>
 QVariant PropModel<Node>::data(const QModelIndex & index, int role) const
 {
 	qDebug() << "Role" << role;
@@ -84,7 +84,7 @@ QVariant PropModel<Node>::data(const QModelIndex & index, int role) const
 		int col = index.column();
 		multiValues<mPropList> mList;
 		QList<mProp> objectTypes;
-		for each (Node* n in items)	objectTypes.append(n->ObjectType());
+        foreach (Node* n , items)	objectTypes.append(n->ObjectType());
 		QString VariableName = parent->getmList(objectTypes).VariableNames()[row];
 
 		if (role == VariableNameRole) return VariableName;
@@ -110,6 +110,7 @@ QVariant PropModel<Node>::data(const QModelIndex & index, int role) const
 
 	}
 }
+template<>
 bool PropModel<Node>::setData(const QModelIndex & index, const QVariant & value, int role)
 {
 	if (index.row() >= rows()) return false;
@@ -147,7 +148,7 @@ bool PropModel<Node>::setData(const QModelIndex & index, const QVariant & value,
 	}
 	return r;
 }
-
+template<>
 QVariant PropModel<Edge>::data(const QModelIndex & index, int role) const
 {
 	if (index.row() >= rows()) return QVariant();
@@ -194,7 +195,7 @@ QVariant PropModel<Edge>::data(const QModelIndex & index, int role) const
 	if (col == 1)
 		return parent->getProp(VariableName, role);
 }
-
+template<>
 bool PropModel<Edge>::setData(const QModelIndex & index, const QVariant & value, int role)
 {
 	if (index.row() >= rows()) return false;
@@ -233,7 +234,7 @@ bool PropModel<Edge>::setData(const QModelIndex & index, const QVariant & value,
 	return r;
 }
 
-
+template<>
 QVariant PropModel<Entity>::data(const QModelIndex & index, int role) const
 {
 	if (index.row() >= rows()) return QVariant();
@@ -306,7 +307,7 @@ QVariant PropModel<Entity>::data(const QModelIndex & index, int role) const
 	if (col == 1)
 		return parent->getProp(VariableName, role);
 }
-
+template<>
 bool PropModel<Entity>::setData(const QModelIndex & index, const QVariant & value, int role)
 {
 	if (index.row() >= rows()) return false;
