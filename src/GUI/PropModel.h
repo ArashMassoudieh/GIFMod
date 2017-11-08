@@ -2,6 +2,8 @@
 #include "qabstractitemmodel.h"
 #include "mProplist.h"
 #include "qstring.h"
+#include "qfiledialog.h"
+#include "qdir.h"
 
 class Node;
 class Edge;
