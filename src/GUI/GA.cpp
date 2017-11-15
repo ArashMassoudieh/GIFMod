@@ -416,8 +416,8 @@ void CGA::assignfitnesses()
 
 	}
 
- // ARASH: LOOK HERE
-//omp_set_num_threads(numberOfThreads);
+
+omp_set_num_threads(numberOfThreads);
 #pragma omp parallel for //private(ts,l)
 		for (int k=0; k<maxpop; k++)
 		{

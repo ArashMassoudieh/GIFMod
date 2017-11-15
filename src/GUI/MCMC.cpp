@@ -461,8 +461,8 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
 		QCoreApplication::processEvents();
 		if (rtw->stopTriggered)
 			break;
-        // ARASH: LOOK HERE
-        //omp_set_num_threads(numberOfThreads);
+        
+        omp_set_num_threads(numberOfThreads);
 #pragma omp parallel
 		{
             // ARASH: LOOK HERE
@@ -921,8 +921,8 @@ void CMCMC::getrealizations(CBTCSet &MCMCout)
 		vector<vector<CGWASet>> Sys1(numberOfThreads);
 #endif
 		for (int i = 0; i < numberOfThreads; i++) Sys1[i].resize(1);
-// ARASH: LOOK HERE
-        //omp_set_num_threads(numberOfThreads);
+
+        omp_set_num_threads(numberOfThreads);
 #pragma omp parallel for 
 		for (int j = 0; j < min(numberOfThreads, n_realizations - jj*numberOfThreads); j++)
 		{

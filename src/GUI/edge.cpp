@@ -316,7 +316,11 @@ QVariant Edge::getProp(const QString &propName, const int role) const
 	mProp mValue = mList()->filter(filter)[0];
 	if (role == TypeRole) return mValue.Delegate;
 	if (role == InputMethodRole) return mValue.inputMethod;
-    if (role == DefaultValuesListRole) return mValue.DefaultValuesStringList(mList(), &filter, parent);
+	if (role == DefaultValuesListRole)
+	{
+		mProp _filter = Filter();
+		return mValue.DefaultValuesStringList(mList(), &_filter, parent);
+	}
 	if (role == VariableTypeRole) return mValue.VariableType;
 	if (role == UnitRole) return getValue(propName).unit;
 	if (role == defaultUnitRole) return getValue(propName).defaultUnit;
