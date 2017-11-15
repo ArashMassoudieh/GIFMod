@@ -9,20 +9,20 @@ class CBinary
 public:
 	CBinary();
 	CBinary(int n);
-	CBinary::CBinary(int n, int preci);
+    CBinary(int n, int preci);
 	virtual ~CBinary();
 	int nDigits;
 	vector<bool> Digit;
 	int precision;
 	CBinary(const CBinary &B);
-	CBinary CBinary::operator = (const CBinary &B);
-	CBinary CBinary::operator + (const CBinary &B);
-	CBinary CBinary::extract(int spoint, int epoint);
-	double CBinary::decode(double minrange);
-	bool& CBinary::operator[](int i);
-	void CBinary::show();
+    CBinary operator = (const CBinary &B);
+    CBinary operator + (const CBinary &B);
+    CBinary extract(int spoint, int epoint);
+    double decode(double minrange);
+    bool& operator[](int i);
+    void show();
 	bool sign;
-	void CBinary::mutate(double mu);
+    void mutate(double mu);
 	
 };
 

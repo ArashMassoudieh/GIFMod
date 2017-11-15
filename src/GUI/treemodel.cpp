@@ -363,7 +363,7 @@ void TreeModel::deleteNode(Node *node)
 	QString name = node->Name();
 	int row = branch->indexOf(name);
 	QList<Edge*> edges = node->edgeList;
-	for each (Edge *edge in edges)
+    foreach (Edge *edge , edges)
 		deleteEdge(edge);
 	beginRemoveRows(parent, row, row);
 	branch->deleteChild(name);

@@ -1,5 +1,5 @@
 #include "helpWindow.h"
-#include "ui_helpwindow.h"
+#include "ui_helpWindow.h"
 #include "qdatetime.h"
 #include "qfiledialog.h"
 #include "mainwindow.h"
@@ -77,7 +77,7 @@ void helpWindow::setHtml(vector<string> text)
 }
 void helpWindow::append(QStringList text)
 {
-	for each (QString line in text)
+    foreach (QString line , text)
 		ui->textEdit->append(line);
 }
 void helpWindow::showHelp(int code, string variableName, bool appendtoList)

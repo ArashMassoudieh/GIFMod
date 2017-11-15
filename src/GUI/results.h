@@ -71,7 +71,7 @@ public:
 	CBTCSet noiseRealization(const QString &observation);
 	CBTCSet realizationPercentile(const QString &observation);
 	CBTCSet noiseRealizationPercentile(const QString &observation);int indexOf(const QString &parameter) const {
-		for (int i = 0; i < percentiles.size(); i++)
+        for (int i = 0; i < int(percentiles.size()); i++)
 			if (percentiles[i].parameter == parameter.toStdString())
 				return i;
 		return -1;
@@ -99,8 +99,8 @@ public:
 			observations
 	}*/
 
-	QMap<QString, QVariant> Results::compact() const;
-	static Results* Results::unCompact(QMap<QString, QVariant>);
+    QMap<QString, QVariant> compact() const;
+    static Results* unCompact(QMap<QString, QVariant>);
 
 
 protected:

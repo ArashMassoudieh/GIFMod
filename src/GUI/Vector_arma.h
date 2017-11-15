@@ -27,12 +27,12 @@ public:
 	CVector_arma(CVector &v);
 	CVector_arma(const vector<int> &v);
 	CVector_arma(const double x, int n);
-	CVector_arma::CVector_arma(const double x_min, const double x_max, int n);  //CVector_arma:: is redundant. However, works fine here.
+    CVector_arma(const double x_min, const double x_max, int n);  //CVector_arma:: is redundant. However, works fine here.
 	CVector_arma(const CVector_arma&);
 	double& operator[](int);
 	virtual ~CVector_arma();
 	int num;
-	int CVector_arma::range(int);
+    int range(int);
 	CVector_arma& operator=(const CVector_arma&);
 	CVector_arma& operator=(const CVector&);
 	CVector_arma& operator=(const vector<double>&);

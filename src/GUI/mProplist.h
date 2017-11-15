@@ -2,7 +2,7 @@
 
 //#include "XString.h"
 //#include "node.h"
-#include "mprop.h"
+#include "mProp.h"
 //#include "qstring.h"
 #include "enums.h"
 //#include "GWidget.h"

@@ -34,7 +34,7 @@ public:
 	TreeItem *itemFromIndex(const QModelIndex &index) const;
 	void prepareToAddFromMenu(const QString  name);
 	void update() { 
-		emit reset; };
+        emit reset; }
 	void addChildFromMenu(const QString name, QModelIndex *parentIndex);
 	void deleteNode(int row, QModelIndex &parent, QString name);
 	void deleteNode(Node *node);
@@ -65,7 +65,7 @@ public:
 		*observed, *wells, *tracers;
 #endif
 
-	QString TreeModel::singularform(QString name) const;
+    QString singularform(QString name) const;
 	TreeItem * entityParentItemfromType(QString type) const;
 public slots:
 

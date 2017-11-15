@@ -178,7 +178,8 @@ public:
             QString methodName = QString::fromLatin1(metaObject->method(i).name());
             if (method.methodType() == QMetaMethod::Slot &&
                     method.access() == QMetaMethod::Public) {
-                dukglue_register_method<T>(ScriptingEngine::jsContext(), &T::jsSlotsProxy, methodName.toStdString().data());
+                // ARASH : LOOK HERE
+                //dukglue_register_method<T>(ScriptingEngine::jsContext(), &T::jsSlotsProxy, methodName.toStdString().data());
                 qDebug() << methodName;
             }
         }

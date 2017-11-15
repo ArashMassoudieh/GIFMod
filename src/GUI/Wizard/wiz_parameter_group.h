@@ -40,7 +40,7 @@ public:
 		return parameters;
 	}
 
-	QString &pg_name()
+    QString pg_name()
 	{
 		name = items["name"].value.trimmed();
 		return items["name"].value.trimmed();

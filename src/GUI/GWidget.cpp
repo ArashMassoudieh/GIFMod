@@ -1,5 +1,5 @@
 #pragma once
-#include "gwidget.h"
+#include "GWidget.h"
 #include "edge.h"
 #include "node.h"
 #include <math.h>
@@ -33,7 +33,7 @@
 //#include "utility_funcs.h"
 #include "qfiledialog.h"
 #ifdef GIFMOD
-#include "medium.h"
+#include "Medium.h"
 #include "mainwindow.h"
 #include "ui_mainwindowGIFMod.h"
 #include "MediumSet.h"
@@ -135,9 +135,9 @@ GraphWidget::GraphWidget(QWidget *_parent, QString applicationShortName, QString
 	QStringList tempPhysicalCharacteristicsList;
 	tempPhysicalCharacteristicsList<< "a" << "h" << "v" << "s" << "z0" << "se" << "~theta" << "porosity" << "depression" << "vapor_diff" << "ks" << "~thetas" << "~thetar" << "~alphavg" << "vg_n" << "vg_m" <<
 		"~lambda" << "sc" << "bulk_density" << "~epsilonstorage" << "storage_n" << "temperature" << "light";
-	for each(QString item in tempPhysicalCharacteristicsList)
+    for (QString item : tempPhysicalCharacteristicsList)
 		PhysicalCharacteristicsList.append(XString(item));
-	QList <mProp> QL1 = mList->List;
+    QList <mProp> QL1 = mList->List;
 
 	ModelSpace.Model = mList->Models()[0];
 #ifdef GIFMOD
@@ -196,13 +196,13 @@ void GraphWidget::keyPressEvent(QKeyEvent *event)
 
 void GraphWidget::deleteSelected()
 {
-	for each (Node *node in Nodes()) if (node->isSelected()) {
+    for (Node *node : Nodes()) if (node->isSelected()) {
 		treeModel->deleteNode(node);
-//		for each (Edge *edge in node->edgeList)
+//		for (Edge *edge in node->edgeList)
 //			delete edge;
 //		delete node;
 	}
-	for each (Edge *edge in Edges()) if (edge->isSelected()) delete edge;
+    for (Edge *edge : Edges()) if (edge->isSelected()) delete edge;
 	deselectAll();
 }
 
@@ -210,7 +210,7 @@ QStringList GraphWidget::selectedItems()const
 {
 	QStringList names;
 	QList<Node *> nodes;
-	for each(QGraphicsItem *item in scene()->items())
+    for (QGraphicsItem *item : scene()->items())
 	{
 		if (Node *node = qgraphicsitem_cast<Node *>(item))
 		{
@@ -220,7 +220,7 @@ QStringList GraphWidget::selectedItems()const
 	}
 
 	QList<Edge *> edges;
-	for each(QGraphicsItem *item in scene()->items())
+    for (QGraphicsItem *item : scene()->items())
 	{
 		if (Edge *edge = qgraphicsitem_cast<Edge *>(item))
 		{
@@ -230,7 +230,7 @@ QStringList GraphWidget::selectedItems()const
 	}
 
 	QList<Entity *> entities;
-	for each(Entity *entity in Entities)
+    for (Entity *entity : Entities)
 	{
 		if (entity->isSelected())
 		{
@@ -245,21 +245,21 @@ QStringList GraphWidget::selectedItems()const
 QString GraphWidget::typeOfSelecetedItems()const
 {
 	QList<Node *> nodes;
-	for each(QGraphicsItem *item in scene()->items())
+    for (QGraphicsItem *item : scene()->items())
 	{
 		if (Node *node = qgraphicsitem_cast<Node *>(item))
 			nodes << node;
 	}
 
 	QList<Edge *> edges;
-	for each(QGraphicsItem *item in scene()->items())
+    for (QGraphicsItem *item : scene()->items())
 	{
 		if (Edge *edge = qgraphicsitem_cast<Edge *>(item))
 			edges << edge;
 	}
 
 	QList<Entity *> entities;
-	for each(Entity *entity in Entities)
+    for(Entity *entity : Entities)
 	{
 		if (entity->isSelected())
 			entities << entity;
@@ -277,7 +277,7 @@ QString GraphWidget::typeOfSelecetedItems()const
 QList<Node*> GraphWidget::selectedNodes() const
 {
 	QList<Node *> nodes;
-	for each(QGraphicsItem *item in scene()->items())
+    for(QGraphicsItem *item : scene()->items())
 	{
 		if (Node *node = qgraphicsitem_cast<Node *>(item))
 			if (node->isSelected())
@@ -289,7 +289,7 @@ QList<Node*> GraphWidget::selectedNodes() const
 QList<Edge*> GraphWidget::selectedEdges() const
 {
 	QList<Edge *> edges;
-	for each(QGraphicsItem *item in scene()->items())
+    for(QGraphicsItem *item : scene()->items())
 	{
 		if (Edge *edge = qgraphicsitem_cast<Edge *>(item))
 			if (edge->isSelected())
@@ -301,7 +301,7 @@ QList<Edge*> GraphWidget::selectedEdges() const
 QList<Entity*> GraphWidget::selectedEntities()const
 {
 	QList<Entity *> entities;
-	for each(Entity *entity in Entities)
+    for(Entity *entity : Entities)
 	{
 		if (entity->isSelected() )
 			entities << entity;
@@ -312,11 +312,11 @@ QList<Entity*> GraphWidget::selectedEntities()const
 void GraphWidget::deselectAll(QString items) const
 {
 	if (items.toLower().contains("node"))
-		for each (Node *node in Nodes()) node->setSelected(false);
+        for (Node *node : Nodes()) node->setSelected(false);
 	if (items.toLower().contains("edge"))
-		for each (Edge *edge in Edges()) edge->setSelected(false);
+        for (Edge *edge : Edges()) edge->setSelected(false);
 	if (items.toLower().contains("entity"))
-		for each (Entity *entity in Entities) entity->setSelected(false);
+        for (Entity *entity : Entities) entity->setSelected(false);
 	if (items.toLower().contains("node") ||
 		items.toLower().contains("edge") ||
 		items.toLower().contains("entity"))
@@ -428,7 +428,7 @@ void GraphWidget::rubberBandChanged(QRect rubberBandRect, QPointF fromScenePoint
 QList<Node*> GraphWidget::nodes(const QList<QGraphicsItem*> items) const
 {
 	QList<Node *> nodes;
-	for each(QGraphicsItem *item in items)
+    for(QGraphicsItem *item : items)
 	{
 		if (Node *node = qgraphicsitem_cast<Node *>(item))
 			nodes << node;
@@ -438,7 +438,7 @@ QList<Node*> GraphWidget::nodes(const QList<QGraphicsItem*> items) const
 QList<Edge*> GraphWidget::edges(const QList<QGraphicsItem*>items) const
 {
 	QList<Edge *> edges;
-	for each(QGraphicsItem *item in items)
+    for(QGraphicsItem *item : items)
 	{
 		if (Edge *edge = qgraphicsitem_cast<Edge *>(item))
 			edges << edge;
@@ -447,8 +447,8 @@ QList<Edge*> GraphWidget::edges(const QList<QGraphicsItem*>items) const
 }
 void GraphWidget::update(bool fast)
 {
-	for each (Node* n in Nodes()) n->update(fast);
-	for each (Edge* e in Edges()) e->update(fast);
+    for (Node* n : Nodes()) n->update(fast);
+    for (Edge* e : Edges()) e->update(fast);
 	
 
 }
@@ -542,12 +542,12 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 		qDebug() << event->x() << rubberBandRect().x();
 		if (event->x() > rubberBandRect().x()) //Dragging to the right
 		{
-			for each (Edge* item in edges(items(rubberBandRect())))
+            for (Edge* item : edges(items(rubberBandRect())))
 				item->setFlag(QGraphicsItem::ItemIsSelectable, false);
 		}
 		else
 		{
-			for each (Node* item in nodes(items(rubberBandRect())))
+            for (Node* item : nodes(items(rubberBandRect())))
 				item->setFlag(QGraphicsItem::ItemIsSelectable, false);
 
 		}
@@ -568,7 +568,7 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 		if (n1->warnings.count()) toolTip.append(QString("\n%1 Warning(s)").arg(n1->warnings.count()));
 		setToolTip(toolTip);
 	}
-	//for each (Node* n in Nodes()) 
+    //for (Node* n in Nodes())
 	//	if (n!=n1) n->setBold(false);
 	Edge *e1 = qgraphicsitem_cast<Edge*> (itemAt(event->pos())); //Get the item at the position
 	if (e1)
@@ -585,7 +585,7 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 		setToolTip(toolTip);
 
 	}
-	//for each (Edge*e in Edges()) 
+    //for (Edge*e in Edges())
 	//	if (e!=e1) e->setBold(false);
 	//update();
 	emit Mouse_Pos(_x, _y, txt);
@@ -601,7 +601,8 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 		if (!child)
 		{
 			tempRay->setValidation(false);
-			tempRay->adjust(Node1, &QPointF(mapToScene(event->pos())));
+            QPointF p = QPointF(mapToScene(event->pos()));
+            tempRay->adjust(Node1, &p);
 		}
 	}
 	if (Operation_Mode == Operation_Modes::NormalMode && dragMode()==DragMode::NoDrag)
@@ -681,7 +682,7 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 			resizenode->setHeight(yy - py);
 		}
 		resizenode->update();
-		for each(Edge *edge in resizenode->edges())
+        for(Edge *edge : resizenode->edges())
 			edge->adjust();
 	}
 	if (cursorModeNormal)
@@ -690,13 +691,13 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 void GraphWidget::mouseReleaseEvent(QMouseEvent *event)
 {
 //	qDebug() << "Mouse RELEASE, button: " << event->button() << ", modifier: " << event->modifiers() << ", buttons: " << event->buttons()<<", dragMode: "<< dragMode();
-	for each (Edge * item in selectedEdges())
+    for (Edge * item : selectedEdges())
 		qDebug() << item->Name();
 	if (event->button() == Qt::LeftButton && Operation_Mode == Operation_Modes::NormalMode && dragMode() == DragMode::RubberBandDrag)
 	{
-		for each (Node* item in Nodes())
+        for (Node* item : Nodes())
 			item->setFlag(QGraphicsItem::ItemIsSelectable, true);
-		for each (Edge* item in Edges())
+        for (Edge* item : Edges())
 			item->setFlag(QGraphicsItem::ItemIsSelectable, true);
 	}
 	if (event->button() == Qt::MiddleButton && Operation_Mode == Operation_Modes::Pan)
@@ -743,7 +744,7 @@ void GraphWidget::mouseReleaseEvent(QMouseEvent *event)
 			}
 			else {
 				if (node)
-					for each (Node * node in Nodes())
+                    for (Node * node : Nodes())
 							node->setFlag(QGraphicsItem::ItemIsMovable, false);
 				if (edge)
 				{
@@ -769,7 +770,7 @@ void GraphWidget::mouseReleaseEvent(QMouseEvent *event)
 	//	default:
 	}
 	bool changed = false;
-	for each (Node *n in Nodes())
+    for (Node *n : Nodes())
 	{
 		if (specs[n->Name()]["x"].toFloat() != n->x() ||
 			specs[n->Name()]["y"].toFloat() != n->y() ||
@@ -791,7 +792,7 @@ void GraphWidget::mouseReleaseEvent(QMouseEvent *event)
 }
 void GraphWidget::updateNodeCoordinates()
 {
-	for each (Node *n in Nodes())
+    for (Node *n : Nodes())
 	{
 		if (specs[n->Name()]["x"].toFloat() != n->x() ||
 			specs[n->Name()]["y"].toFloat() != n->y() ||
@@ -866,7 +867,7 @@ void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QStri
 				shifts.push_back(shift);
 			}
 		}
-		for each (QString rN in removedNodes)
+        for (QString rN : removedNodes)
 			nodeNames.removeAll(rN);
 		colors.data = data;
 		colors.factors = factors;
@@ -916,7 +917,7 @@ void GraphWidget::updateNodesColorCodes_WaterQuality(QStringList property, bool 
 			factors.push_back(factor);
 			shifts.push_back(shift);
 		}
-//		for each (QString rN in removedNodes)
+//		for (QString rN in removedNodes)
 //			nodeNames.removeAll(rN);
 		colors.data = data;
 		colors.factors = factors;
@@ -971,7 +972,7 @@ void GraphWidget::updateEdgesColorCodes(QString propertyName, bool logged, QStri
 			factors.push_back(factor);
 			shifts.push_back(shift);
 		}
-//		for each (QString rN in removedNodes)
+//		for (QString rN in removedNodes)
 //			nodeNames.removeAll(rN);
 		colors.data = data;
 		colors.factors = factors;
@@ -1028,7 +1029,7 @@ void GraphWidget::settableProp(QTableView*_tableProp)
 //{
 //	propModel = _propModel;
 //}
-void GraphWidget::add_to_undo_list(QList<QMap<QString, QVariant>> &state)
+void GraphWidget::add_to_undo_list(QList<QMap<QString, QVariant>> state)
 {
 	if (undo_counter < undolist.size() )
 		for (int i = undolist.size() ; i > undo_counter; i--)
@@ -1106,7 +1107,7 @@ QList<Node*> GraphWidget::Nodes() const
 QList<Edge *> GraphWidget::Edges() const
 {
 	QList<Edge *> edges;
-	for each(QGraphicsItem *item in scene()->items()) 
+    for(QGraphicsItem *item : scene()->items())
 	{
 		if (Edge *edge = qgraphicsitem_cast<Edge *>(item))
 			edges << edge;
@@ -1207,7 +1208,7 @@ bool GraphWidget::select(const QString &name, const QString type) const
 {
 	bool r = false;
 	if (type == "Block")
-		for each (Node* node in Nodes())
+        for (Node* node : Nodes())
 			if (node->Name() == name)
 			{
 				deselectAll();
@@ -1217,7 +1218,7 @@ bool GraphWidget::select(const QString &name, const QString type) const
 			}
 
 	if (type == "Connector")
-		for each (Edge* edge in Edges())
+        for (Edge* edge : Edges())
 			if (edge->Name() == name)
 			{
 				deselectAll();
@@ -1225,7 +1226,7 @@ bool GraphWidget::select(const QString &name, const QString type) const
 				r = true;
 				return r;
 			}
-	for each (Entity* entity in Entities)
+    for (Entity* entity : Entities)
 		if (entity->objectType.ObjectType== type && entity->Name() == name)
 		{
 			deselectAll();
@@ -1234,7 +1235,7 @@ bool GraphWidget::select(const QString &name, const QString type) const
 			r = true;
 			return r;
 		}
-	for each (Entity* entity in Entities)
+    for (Entity* entity : Entities)
 		if (entity->objectType.ObjectType == name && entity->Name() == name)
 		{
 			deselectAll();
@@ -1243,7 +1244,7 @@ bool GraphWidget::select(const QString &name, const QString type) const
 			return r;
 		}
 	if (type == "Well" || type == "Tracer")
-		for each (Node* node in Nodes())
+        for (Node* node : Nodes())
 			if (node->objectType.ObjectType == type && node->Name() == name)
 			{
 				deselectAll();
@@ -1258,7 +1259,7 @@ bool GraphWidget::select(const QString &name, const QString type) const
 {
 	bool r = false;
 	if (type == "Block")
-		for each (Node* node in Nodes())
+        for (Node* node in Nodes())
 			if (node->Name() == name)
 			{
 				deselectAll();
@@ -1268,7 +1269,7 @@ bool GraphWidget::select(const QString &name, const QString type) const
 			}
 
 	if (type == "Connector")
-		for each (Edge* edge in Edges())
+        for (Edge* edge in Edges())
 			if (edge->Name() == name)
 			{
 				deselectAll();
@@ -1276,7 +1277,7 @@ bool GraphWidget::select(const QString &name, const QString type) const
 				r = true;
 				return r;
 			}
-	for each (Entity* entity in Entities)
+    for (Entity* entity in Entities)
 		if (entity->objectType.ObjectType == type && entity->Name() == name)
 		{
 			deselectAll();
@@ -1285,7 +1286,7 @@ bool GraphWidget::select(const QString &name, const QString type) const
 			r = true;
 			return r;
 		}
-	for each (Entity* entity in Entities)
+    for (Entity* entity in Entities)
 		if (entity->objectType.ObjectType == name && entity->Name() == name)
 		{
 			deselectAll();
@@ -1294,7 +1295,7 @@ bool GraphWidget::select(const QString &name, const QString type) const
 			return r;
 		}
 	if (type == "Well" || type == "Tracer")
-		for each (Node* node in Nodes())
+        for (Node* node in Nodes())
 			if (node->objectType.ObjectType == type && node->Name() == name)
 			{
 				deselectAll();
@@ -1308,14 +1309,14 @@ bool GraphWidget::select(const QString &name, const QString type) const
 QStringList GraphWidget::EntityNames(const QString &type) const
 {
 	QStringList r;
-	for each (Entity *e in Entities)
+    for (Entity *e : Entities)
 		if (e->objectType.ObjectType.toLower() == type.toLower()) 
 			r.append(e->Name());
 	return r;
 }
 Entity* GraphWidget::entityByName(const QString &name) const
 {
-	for each (Entity *e in Entities)
+    for (Entity *e : Entities)
 		if (e->Name().toLower() == name.toLower())
 			return e;
 	return 0;
@@ -1324,7 +1325,7 @@ Entity* GraphWidget::entityByName(const QString &name) const
 QList<Entity *> GraphWidget::entitiesByType(const QString &type) const
 {
 	QList<Entity *> r;
-	for each (Entity *e in Entities)
+    for (Entity *e : Entities)
 		if (e->objectType.ObjectType == type)
 			r.append(e);
 	return r;
@@ -1333,7 +1334,7 @@ QList<Entity *> GraphWidget::entitiesByType(const QString &type) const
 QList<Node *> GraphWidget::nodesByType(const QString &type) const
 {
 	QList<Node *> r;
-	for each (Node *e in Nodes())
+    for (Node *e : Nodes())
 		if (e->objectType.ObjectType == type)
 			r.append(e);
 	return r;
@@ -1341,7 +1342,7 @@ QList<Node *> GraphWidget::nodesByType(const QString &type) const
 
 Node* GraphWidget::node(const QString &name) const
 {
-	for each (Node* i in Nodes())
+    for (Node* i : Nodes())
 		if (i->Name() == name) 
 			return i;
 	return nullptr;
@@ -1349,14 +1350,14 @@ Node* GraphWidget::node(const QString &name) const
 
 Edge* GraphWidget::edge(const QString &name) const
 {
-	for each (Edge* i in Edges())
+    for (Edge* i : Edges())
 		if (i->Name() == name) return i;
 	return nullptr;
 }
 
 Entity* GraphWidget::entity(const QString &name, const QString &type) const
 {
-	for each (Entity* i in Entities)
+    for (Entity* i : Entities)
 		if (i->Name().toLower() == name.toLower()) 
 			if (type == "*" || i->objectType.ObjectType.toLower() == type.toLower())	return i;
 	return nullptr;
@@ -1364,7 +1365,7 @@ Entity* GraphWidget::entity(const QString &name, const QString &type) const
 
 Process* GraphWidget::process(const QString &name) const
 {
-	for each (Process* i in Processes)
+    for (Process* i : Processes)
 		if (i->name == name) return i;
 	return nullptr;
 }
@@ -1456,7 +1457,7 @@ QList<QMap<QString, QVariant>> GraphWidget::compact() const// QDataStream &out, 
 #endif
 
 
-	for each (Node *n in Nodes())
+    for (Node *n : Nodes())
 	{
 		list.append(n->compact());
 	//	qDebug() << list.last()["GUI"].toString() << ", " << list.last()["Name"].toString() << " saved.";
@@ -1464,7 +1465,7 @@ QList<QMap<QString, QVariant>> GraphWidget::compact() const// QDataStream &out, 
 	qDebug() << "nodes append to list" << " " << getTime();
 
 
-	for each (Edge *e in Edges())
+    for (Edge *e : Edges())
 	{
 		list.append(e->compact());
 
@@ -1473,7 +1474,7 @@ QList<QMap<QString, QVariant>> GraphWidget::compact() const// QDataStream &out, 
 	qDebug() << "connectors append to list" << " " << getTime();
 
 
-	for each (Entity *e in Entities)
+    for (Entity *e : Entities)
 	{
 		list.append(e->compact());
 		//qDebug() << list.last()["GUI"].toString() << ", " << list.last()["Name"].toString() << " saved.";
@@ -1481,7 +1482,7 @@ QList<QMap<QString, QVariant>> GraphWidget::compact() const// QDataStream &out, 
 	qDebug() << "entties append to list" << " " << getTime();
 
 
-	for each (Process *p in Processes)
+    for (Process *p : Processes)
 	{
 		list.append(p->compact());
 		//qDebug() << list.last()["GUI"].toString() << ", " << list.last()["Name"].toString() << " saved.";
@@ -1496,10 +1497,10 @@ QList<QMap<QString, QVariant>> GraphWidget::compact() const// QDataStream &out, 
 QList<QMap<QString, QVariant>> GraphWidget::compactRXN() const
 {
 	QList<QMap<QString, QVariant>> list;
-	for each (Entity *e in Entities)
+    for (Entity *e : Entities)
 		if (e->objectType.ObjectType == "Reaction parameter" || e->objectType.ObjectType == "Reaction Network" || e->objectType.ObjectType == "Constituent")
 			list.append(e->compact());
-	for each (Process *p in Processes)
+    for (Process *p : Processes)
 		list.append(p->compact());
 	return list;
 }
@@ -1509,12 +1510,12 @@ void GraphWidget::clear()
 //expandNode(treeModel->index(-1, -1), false);
 	clearRXN(); 
 	expandNode(treeModel->index(-1, -1), false);
-	for each (Node *n in Nodes())
+    for (Node *n : Nodes())
 		treeModel->deleteNode(n);
-	for each (Edge *e in Edges())
+    for (Edge *e : Edges())
 		treeModel->deleteEdge(e);
 	QList<Entity *> EntitiesCopy = Entities;
-	for each (Entity *e in EntitiesCopy)
+    for (Entity *e : EntitiesCopy)
 		treeModel->deleteEntity(e);
 
 	Entities.clear();
@@ -1556,7 +1557,7 @@ void GraphWidget::clearRXN()
 {
 	expandNode(treeModel->index(-1, -1), false);
 	QList<Entity*> entitiesCopy = Entities;
-	for each (Entity *e in entitiesCopy)
+    for (Entity *e : entitiesCopy)
 		if (e->objectType.ObjectType == "Reaction parameter" || e->objectType.ObjectType == "Reaction Network" || e->objectType.ObjectType == "Constituent")
 		{
 			treeModel->deleteEntity(e);
@@ -1564,7 +1565,7 @@ void GraphWidget::clearRXN()
 			//Entities.removeOne(e);
 		}
 	QList<Process*> processesCopy = Processes;
-	for each (Process *p in processesCopy)
+    for (Process *p : processesCopy)
 	{
 		delete p;
 		Processes.removeOne(p);
@@ -1600,7 +1601,7 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 			//if (hasResults)			//				{
 			experimentsComboClear(false);
 			QString path = modelPathname();
-			for each (QString experiment in list[i].value("Experiments").toStringList())
+            for (QString experiment : list[i].value("Experiments").toStringList())
 				if (!experimentsList().contains(experiment))
 				{
 					experiments->addItem(experiment);
@@ -1702,7 +1703,7 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 		{
 			//			r.remove ("GUI");
 			qDebug() << list[i].value("GUI").toString() << " Added.";
-			for each (QString key in list[i].keys())
+            for (QString key : list[i].keys())
 				modelSet->blockIndex[key.toStdString()] = list[i].value(key).toInt();
 			QCoreApplication::processEvents();
 			list[i] = QMap<QString, QVariant>();
@@ -1713,7 +1714,7 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 		{
 			//			r.remove("GUI");
 			qDebug() << list[i].value("GUI").toString() << " Added.";
-			for each (QString key in list[i].keys())
+            for (QString key : list[i].keys())
 				modelSet->connectorIndex[key.toStdString()] = list[i].value(key).toInt();
 			QCoreApplication::processEvents();
 			list[i] = QMap<QString, QVariant>();
@@ -1771,7 +1772,7 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 	missingList << "Solver settings" << "Climate settings";
 
 #endif
-	for each (QString missing  in missingList)
+    for (QString missing  : missingList)
 	{
 		Entity *e = entityByName(missing);
 		if (e == nullptr)
@@ -1806,7 +1807,7 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 			//if (hasResults)
 			//				{
 			experimentsComboClear(false);
-			for each (QString experiment in item.value("Experiments").toStringList())
+            for (QString experiment in item.value("Experiments").toStringList())
 				if (!experimentsList().contains(experiment))
 				{
 					experiments->addItem(experiment);
@@ -1826,7 +1827,7 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 //			modelSet->ANS_obs_noise = CBTCSet::unCompact(item.take("ANS_obs_noise").toMap());
 			//			}
 			//			else
-			//				for each (QString experiment in item.value("Experiments"].toStringList())
+            //				for (QString experiment in item.value("Experiments"].toStringList())
 			//					if (!experimentsList().contains(experiment))
 			//						experiments->addItem(experiment);
 			QCoreApplication::processEvents();
@@ -1862,7 +1863,7 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 		{
 			//			r.remove ("GUI");
 			qDebug() << item.value("GUI").toString() << " Added.";
-			for each (QString key in item.keys())
+            for (QString key in item.keys())
 				modelSet->blockIndex[key.toStdString()] = item.value(key).toInt();
 			QCoreApplication::processEvents();
 			item = QMap<QString, QVariant>();
@@ -1873,7 +1874,7 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 		{
 			//			r.remove("GUI");
 			qDebug() << item.value("GUI").toString() << " Added.";
-			for each (QString key in item.keys())
+            for (QString key in item.keys())
 				modelSet->connectorIndex[key.toStdString()] = item.value(key).toInt();
 			QCoreApplication::processEvents();
 			item = QMap<QString, QVariant>();
@@ -1925,7 +1926,7 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 
 	QStringList missingList;
 	missingList << "Markov chain Monte Carlo" << "Solver settings" << "Project settings" << "Climate settings";
-	for each (QString missing  in missingList)
+    for (QString missing  in missingList)
 	{
 		Entity *e = entityByName(missing);
 		if (e == nullptr)
@@ -1956,7 +1957,7 @@ GraphWidget* GraphWidget::unCompact12(QList<QMap<QString, QVariant>> &list, bool
 			//if (hasResults)
 			//              {
 			experimentsComboClear(false);
-			for each (QString experiment in list[i].value("Experiments").toStringList())
+            for (QString experiment : list[i].value("Experiments").toStringList())
 				if (!experimentsList().contains(experiment))
 				{
 					experiments->addItem(experiment);
@@ -1976,7 +1977,7 @@ GraphWidget* GraphWidget::unCompact12(QList<QMap<QString, QVariant>> &list, bool
 					modelSet->ANS_obs_noise = CBTCSet::unCompact(list[i].value("ANS_obs_noise").toMap());
 					//          }
 					//          else
-					//              for each (QString experiment in list[i].value("Experiments"].toStringList())
+                    //              for (QString experiment in list[i].value("Experiments"].toStringList())
 					//                  if (!experimentsList().contains(experiment))
 					//                      experiments->addItem(experiment);
 					QCoreApplication::processEvents();
@@ -1988,7 +1989,7 @@ GraphWidget* GraphWidget::unCompact12(QList<QMap<QString, QVariant>> &list, bool
 					{
 						//          r.remove ("GUI");
 						qDebug() << list[i].value("GUI").toString() << " Added.";
-						for each (QString key in list[i].keys())
+                        for (QString key : list[i].keys())
 							modelSet->blockIndex[key.toStdString()] = list[i].value(key).toInt();
 						QCoreApplication::processEvents();
 						list[i] = QMap<QString, QVariant>();
@@ -1998,7 +1999,7 @@ GraphWidget* GraphWidget::unCompact12(QList<QMap<QString, QVariant>> &list, bool
 					{
 						//          r.remove("GUI");
 						qDebug() << list[i].value("GUI").toString() << " Added.";
-						for each (QString key in list[i].keys())
+                        for (QString key : list[i].keys())
 							modelSet->connectorIndex[key.toStdString()] = list[i].value(key).toInt();
 						QCoreApplication::processEvents();
 						list[i] = QMap<QString, QVariant>();
@@ -2053,7 +2054,7 @@ GraphWidget* GraphWidget::unCompact12(QList<QMap<QString, QVariant>> &list, bool
 
 			QStringList missingList;
 			missingList << "Markov chain Monte Carlo" << "Solver settings" << "Project settings" << "Climate settings";
-			for each (QString missing  in missingList)
+            for (QString missing  : missingList)
 			{
 				Entity *e = entityByName(missing);
 				if (e == nullptr)
@@ -2070,7 +2071,7 @@ GraphWidget* GraphWidget::unCompact12(QList<QMap<QString, QVariant>> &list, bool
 
 GraphWidget* GraphWidget::unCompact10(QList<QMap<QString, QVariant>> list) //, QWidget *parent)
 {
-	for each (QMap<QString, QVariant> r in list)
+    for (QMap<QString, QVariant> r : list)
 	{
 		if (r["GUI"].toString() == "Graphic Widget")
 		{
@@ -2081,7 +2082,7 @@ GraphWidget* GraphWidget::unCompact10(QList<QMap<QString, QVariant>> list) //, Q
 			QCoreApplication::processEvents();
 		}
 	}
-	for each (QMap<QString, QVariant> r in list)
+    for (QMap<QString, QVariant> r : list)
 	{
 		if (r["GUI"].toString() == "Block")
 		{
@@ -2090,7 +2091,7 @@ GraphWidget* GraphWidget::unCompact10(QList<QMap<QString, QVariant>> list) //, Q
 			QCoreApplication::processEvents();
 		}
 	}
-	for each (QMap<QString, QVariant> r in list)
+    for (QMap<QString, QVariant> r : list)
 	{
 		if (r["GUI"].toString() == "Connector")
 		{
@@ -2099,7 +2100,7 @@ GraphWidget* GraphWidget::unCompact10(QList<QMap<QString, QVariant>> list) //, Q
 			QCoreApplication::processEvents();
 		}
 	}
-	for each (QMap<QString, QVariant> r in list)
+    for (QMap<QString, QVariant> r : list)
 	{
 		if (r["GUI"].toString() == "Entity")
 		{
@@ -2108,7 +2109,7 @@ GraphWidget* GraphWidget::unCompact10(QList<QMap<QString, QVariant>> list) //, Q
 			QCoreApplication::processEvents();
 		}
 	}
-	for each (QMap<QString, QVariant> r in list)
+    for (QMap<QString, QVariant> r : list)
 	{
 		if (r["GUI"].toString() == "Process")
 		{
@@ -2210,7 +2211,7 @@ void GraphWidget::expandNode(const QModelIndex &parentIndex, bool expand)
 QStringList GraphWidget::nodeNames() const
 {
 	QStringList r;
-	for each (Node *n in Nodes())
+    for (Node *n : Nodes())
 		r.append(n->Name());
 	return r;
 }
@@ -2218,7 +2219,7 @@ QStringList GraphWidget::nodeNames() const
 QStringList GraphWidget::nodeNames(const QString &type) const
 {
 	QStringList r;
-	for each (Node *n in Nodes())
+    for (Node *n : Nodes())
 		if (n->objectType.ObjectType.toLower() == type.toLower()) r.append(n->Name());
 	return r;
 }
@@ -2226,7 +2227,7 @@ QStringList GraphWidget::nodeNames(const QString &type) const
 QStringList GraphWidget::edgeNames() const
 {
 	QStringList r;
-	for each (Edge *e in Edges())
+    for (Edge *e : Edges())
 		r.append(e->Name());
 	return r;
 }
@@ -2235,7 +2236,7 @@ void GraphWidget::deleteNode(Node *node)
 {
 	
 	if (static_cast<PropModel<Node>*>(tableProp->model()) == node->model) tableProp->setModel(0);
-	for each (Edge * e in node->edgeList)
+    for (Edge * e : node->edgeList)
 		treeModel->deleteEdge(e);
 	//treeModel->deleteNode(node);
 	delete node;
@@ -2281,10 +2282,10 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 	{
 		QMap<QString, QString> inflowGraphNames;
 		QStringList inflowFileNamesofNode = n->getValue("Inflow time series").toQString().split(';');
-		for each(QString file in inflowFileNamesofNode)
+        for(QString file : inflowFileNamesofNode)
 		{
 			CBTCSet inflows = CBTCSet(file.replace("./", modelPathname().append('/')).toStdString(), 1);
-			for each (string name in inflows.names)
+            for (string name : inflows.names)
 			{
 				if (!inflowGraphNames.keys().contains(QString::fromStdString(name)))
 					inflowGraphNames[QString::fromStdString(name)] = file;
@@ -2295,7 +2296,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 		{
 			menu->addSeparator();
 			QMenu *inflowSubMenu = menu->addMenu("Plot Inflow Properties");
-			for each (QString subMenuTitle in inflowGraphNames.keys())
+            for (QString subMenuTitle : inflowGraphNames.keys())
 			{
 				QStringList list;
 				list.append("Inflow");
@@ -2361,7 +2362,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 			
 			if (model->colloid_transport() && entitiesByType("Particle").count())
 			{
-				for each (Entity *p in entitiesByType("Particle"))
+                for (Entity *p : entitiesByType("Particle"))
 				{
 					QMenu *particleSubMenu = waterQualitySubMenu->addMenu(p->Name());
 					if (p->getValue("Model").contains("Single"))
@@ -2418,7 +2419,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 			{
 				if (model->colloid_transport() && entitiesByType("Particle").count())
 					menu->addSeparator();
-				for each (Entity *e in entitiesByType("Constituent"))
+                for (Entity *e : entitiesByType("Constituent"))
 				{
 					//QMenu *constituentSubMenu = waterQualitySubMenu->addMenu(e->Name());
 					QStringList list;
@@ -2429,7 +2430,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 				}
 				QMenu *sorbedSubMenu = waterQualitySubMenu->addMenu("Sorbed/Particle associated");
 				QMenu *constituentSorbedSubMenu;
-				for each (Entity *e in entitiesByType("Constituent"))
+                for (Entity *e : entitiesByType("Constituent"))
 				{
 					constituentSorbedSubMenu = sorbedSubMenu->addMenu(e->Name());
 					QStringList list;
@@ -2437,7 +2438,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 					int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()), -1, 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
 					list.append(QString::number(BTCid));
 					menuKey[constituentSorbedSubMenu->addAction("Soil")] = list;
-					for each (Entity *p in entitiesByType("Particle"))
+                    for (Entity *p : entitiesByType("Particle"))
 					{
 						QMenu *particleSubMenu = constituentSorbedSubMenu->addMenu(p->Name());
 						if (p->getValue("Model").contains("Single"))
@@ -2490,7 +2491,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 
 				// Mass menues:
 
-				for each (Entity *e in entitiesByType("Constituent"))
+                for (Entity *e : entitiesByType("Constituent"))
 				{
 					//QMenu *constituentSubMenu = waterQualitySubMenu->addMenu(e->Name());
 					QStringList list;
@@ -2503,7 +2504,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 				}
 				QMenu *sorbedmassSubMenu = massesSubMenu->addMenu("Sorbed/Particle associated");
 				QMenu *constituentSorbedmassSubMenu;
-				for each (Entity *e in entitiesByType("Constituent"))
+                for (Entity *e : entitiesByType("Constituent"))
 				{
 					constituentSorbedmassSubMenu = sorbedmassSubMenu->addMenu(e->Name());
 					QStringList list;
@@ -2513,7 +2514,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 					BTCid = model->getblocksq(n->Name().toStdString());
 					list.append(QString::number(BTCid));
 					menuKey[constituentSorbedSubMenu->addAction("Soil")] = list;
-					for each (Entity *p in entitiesByType("Particle"))
+                    for (Entity *p : entitiesByType("Particle"))
 					{
 						QMenu *particlemassSubMenu = constituentSorbedmassSubMenu->addMenu(p->Name());
 						if (p->getValue("Model").contains("Single"))
@@ -2603,7 +2604,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 				{
 					menu->addSeparator();
 					QMenu *plotSubMenu = menu->addMenu("Plot Projected Tracer concentrations");
-					for each(QString tracerName in tracersList)
+                    for(QString tracerName : tracersList)
 					{
 						QAction* ac = plotSubMenu->addAction(tracerName);
 						QStringList list;
@@ -2615,7 +2616,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 					if (results->projectedTracerConcentrations.size())
 					{
 						QMenu *plotSubMenu = menu->addMenu("Plot Projected Tracer concentrations (Realizations)");
-						for each(QString tracerName in tracersList)
+                        for(QString tracerName : tracersList)
 						{
 							QAction* ac = plotSubMenu->addAction(tracerName);
 							QStringList list;
@@ -2624,7 +2625,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 							menuKey.insert(ac, list);
 						}
 						QMenu *plotSubMenu2 = menu->addMenu("Plot Projected Tracer concentrations (Percentiles)");
-						for each(QString tracerName in tracersList)
+                        for(QString tracerName : tracersList)
 						{
 							QAction* ac = plotSubMenu2->addAction(tracerName);
 							QStringList list;
@@ -2714,7 +2715,8 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 								
 								treeModel->add(n1); 
 								row.append(n1);
-								n1->setName(n->newNodeName(n->Name(), Nodes()));
+                                QList<Node*> nodenames = Nodes();
+                                n1->setName(n->newNodeName(n->Name(), nodenames));
 								n1->edgeList.clear();
 
 								if (columnIndex == 0)
@@ -2867,7 +2869,8 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 
 								treeModel->add(n1);
 								row.append(n1);
-								n1->setName(n->newNodeName(n->Name(), Nodes()));
+                                QList<Node*> nodenames = Nodes();
+                                n1->setName(n->newNodeName(n->Name(), nodenames));
 								n1->edgeList.clear();
 
 								if (columnIndex == 0)
@@ -2975,7 +2978,8 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 								n1 = new Node(*n);
 								treeModel->add(n1);
 								row.append(n1);
-								n1->setName(n->newNodeName(n->Name(), Nodes()));
+                                QList<Node*> nodenames = Nodes();
+                                n1->setName(n->newNodeName(n->Name(), nodenames));
 								n1->edgeList.clear();
 
 								if (columnIndex == 0)
@@ -3325,20 +3329,20 @@ QString GraphWidget::updateRelativePaths(QString oldPath, QString newPath)
 	if (newPath == oldPath) return "Paths are same, nothing has changed.";
 	QStringList oldInflowFileNames = inflowFileNames;
 	inflowFileNames.clear();
-	for each (QString inflow in oldInflowFileNames)
+    for (QString inflow : oldInflowFileNames)
 	{
 		inflowFileNames.append(updateRelativePath(inflow, oldPath, newPath));
 	}
-	for each (Node *n in Nodes())
+    for (Node *n : Nodes())
 	{
 		QStringList oldInflowFiles = n->getValue("Inflow time series").toQString().split(';');
 		QString inflowFiles;
-		for each (QString file in oldInflowFiles)
+        for (QString file : oldInflowFiles)
 			inflowFiles.append(updateRelativePath(file, oldPath, newPath).append(';'));
 		inflowFiles = inflowFiles.left(inflowFiles.count() - 1);
 		n->setValue("Inflow time series", inflowFiles);
 	}
-	for each (Entity *o in entitiesByType("Observed"))
+    for (Entity *o : entitiesByType("Observed"))
 		o->setValue("Observed Data", updateRelativePath(o->getValue("Observed Data"),oldPath, newPath));
 	QString name, var;
 	Entity* e;
@@ -3358,7 +3362,8 @@ QString GraphWidget::updateRelativePaths(QString oldPath, QString newPath)
 }
 QString GraphWidget::defaultDir() const
 { 
-	return QString::fromStdString(getenv("USERPROFILE")).append("/Documents/").append(applicationShortName).append(" Projects");
+    return QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation).append("/").append(applicationShortName);
+    //return QString::fromStdString(getenv("USERPROFILE")).append("/Documents/").append(applicationShortName).append(" Projects");
 }
 QString GraphWidget::modelPathname() const
 {
@@ -3375,13 +3380,13 @@ QStringList GraphWidget::variableValuesHasError()
 
 
 
-	for each (QString experiment in experimentsList())
+    for (QString experiment : experimentsList())
 	{
 		experiments->setCurrentText(experiment);
 		log("Experiment: " + experiment);
 		log("Blocks.");
 
-		for each (Node* e in Nodes())
+        for (Node* e : Nodes())
 		{
 			e->setSelected(true);
 			if (n0) n0->setSelected(false);
@@ -3432,7 +3437,7 @@ QStringList GraphWidget::variableValuesHasError()
 					for (int i = 0; i < c.Condition.size(); i++)
 					{
 						QString condition = c.Condition[i];
-						for each(QString code in e->codes())
+                        for(QString code : e->codes())
 							if (condition.contains(QString("{%1}").arg(code)))
 								condition = condition.replace(QString("{%1}").arg(code), e->val(code));
 						if (!conditionConformed(condition, e->props.getProp(variableName, experimentName()), this))
@@ -3456,7 +3461,7 @@ QStringList GraphWidget::variableValuesHasError()
 		}
 		deselectAll();
 		log("Connectors.");
-		for each (Edge* e in Edges())
+        for (Edge* e : Edges())
 		{
 			e->setSelected(true);
 			if (e0) e0->setSelected(false);
@@ -3517,7 +3522,7 @@ QStringList GraphWidget::variableValuesHasError()
 					for (int i = 0; i < c.Condition.size(); i++)
 					{
 						QString condition = c.Condition[i];
-						for each(QString code in e->codes())
+                        for(QString code : e->codes())
 							if (condition.contains(QString("{%1}").arg(code)))
 								condition = condition.replace(QString("{%1}").arg(code), e->val(code));
 						if (!conditionConformed(condition, e->props.getProp(variableName, experimentName()), this))
@@ -3542,11 +3547,11 @@ QStringList GraphWidget::variableValuesHasError()
 		deselectAll();
 		log("Other entities.");
 		QCoreApplication::processEvents();
-		for each (Entity* e in Entities)
+        for (Entity* e : Entities)
 		{
 			e->warnings.clear();
 			e->errors.clear();
-			for each(QString variableName in e->variableNames())
+            for(QString variableName : e->variableNames())
 			{
 				if (variableName == "Read GA analysis from file")
 					int i = 0;
@@ -3579,7 +3584,7 @@ QStringList GraphWidget::variableValuesHasError()
 							}
 						}
 			}
-			for each(QString variableName in e->variableNameConditions().keys())
+            for(QString variableName : e->variableNameConditions().keys())
 			{
 				if (!EntityNames("Parameter").contains(e->getValue(variableName).toQString()))
 				{
@@ -3587,7 +3592,7 @@ QStringList GraphWidget::variableValuesHasError()
 					for (int i = 0; i < c.Condition.size(); i++)
 					{
 						QString condition = c.Condition[i];
-						for each(QString code in e->codes())
+                        for(QString code : e->codes())
 							if (condition.contains(QString("{%1}").arg(code)))
 								condition = condition.replace(QString("{%1}").arg(code), QString::number(e->val(code).toDouble()));
 						if (e->props.getProp(variableName, experimentName()).isEmpty())
@@ -3631,7 +3636,7 @@ QStringList GraphWidget::variableValuesHasError()
 		}
 #ifdef GIFMOD
 		// Check for Observation Locations
-		for each (Entity* e in entitiesByType("Observation"))
+        for (Entity* e : entitiesByType("Observation"))
 		{
 			if (e->val("loc_type") == "Block" && !nodeNames().contains(e->val("id")))
 			{
@@ -3650,8 +3655,8 @@ QStringList GraphWidget::variableValuesHasError()
 
 		}
 		//check for constituents in buildup
-		for each (Entity* e in entitiesByType("Build-up"))
-			for each (QString experiment in experimentsList())
+        for (Entity* e : entitiesByType("Build-up"))
+            for (QString experiment : experimentsList())
 				if (!EntityNames("Constituent").contains(e->val("Constituent")))
 				{
 					e->errors["Constituent"] = QString("%1 was not found in the model").arg(e->val("Constituent"));
@@ -3659,8 +3664,8 @@ QStringList GraphWidget::variableValuesHasError()
 					log(QString("Error: %1, %2: %3, %4").arg(experiment).arg(e->getValue("Type")).arg(e->Name()).arg(e->errors["Constituent"]));
 				}
 /*		//check for constituents in initial conditions
-		for each (Entity* e in entitiesByType("Build-up"))
-			for each (QString experiment in experimentsList())
+        for (Entity* e in entitiesByType("Build-up"))
+            for (QString experiment in experimentsList())
 				if (!EntityNames("Constituent").contains(e->val("Constituent")))
 					e->errors["Constituent"] = QString("%1 was not found in the model").arg(e->val("Constituent"));
 					*/
@@ -3683,28 +3688,28 @@ QStringList GraphWidget::variableValuesHasError()
 double GraphWidget::minX() const
 {
 	double n = 100000000;
-	for each (Node* e in Nodes())
+    for (Node* e : Nodes())
 		n = min(e->x(), n);
 	return n;
 }
 double GraphWidget::minY() const
 {
 	double n = 100000000;
-	for each (Node* e in Nodes())
+    for (Node* e : Nodes())
 		n = min(e->y(), n);
 	return n;
 }
 double GraphWidget::maxX() const
 {
 	double n = -1000000000;
-	for each (Node* e in Nodes())
+    for (Node* e : Nodes())
 		n = max(e->x() + e->Width(), n);
 	return n;
 }
 double GraphWidget::maxY() const
 {
 	double n = -1000000000;
-	for each (Node* e in Nodes())
+    for (Node* e : Nodes())
 		n = max(e->y() + e->Height(), n);
 	return n;
 }
@@ -3733,13 +3738,13 @@ bool validInflowFile(QString file)
 {
 //	QMap<QString, QString> inflowCurveNames;
 //	QStringList inflowFileNamesofNode = n->getValue("Inflow time series").toQString().split(';');
-//	for each(QString file in inflowFileNamesofNode)
+//	for(QString file in inflowFileNamesofNode)
 //	{
 	if (file.isEmpty())	return true;
 		CBTCSet inflows = CBTCSet(file.toStdString(), 1);
 		if (inflows.names.size() == 0) return false;
 		return true;
-//		for each (string name in inflows.names)
+//		for (string name in inflows.names)
 //		{
 //			if (!inflowCurveNames.keys().contains(QString::fromStdString(name)))
 //				inflowCurveNames[QString::fromStdString(name)] = file;
@@ -3862,7 +3867,7 @@ QList<QVariant> GraphWidget::runCommands(QList<CCommand> &commands)
 	return results; 
 }
 
-QVariant GraphWidget::runCommand(CCommand &command)
+QVariant GraphWidget::runCommand(CCommand command)
 {
 	//settings
 	bool writeOutput = true, writeDetails = false, orderedOutput = false;
@@ -4101,7 +4106,7 @@ QVariant GraphWidget::runCommand(CCommand &command)
 	return QVariant(command.toQString()+", Ok");
 }
 
-QString  GraphWidget::setprop(Node *n, QString &propname, XString &value, QString &experiment)
+QString  GraphWidget::setprop(Node *n, QString propname, XString value, QString experiment)
 {
 	QString output;
 	if (!mList->extract_props_for_type(n->objectType.ObjectType).contains(propname.toLower()))
@@ -4130,7 +4135,7 @@ QString  GraphWidget::setprop(Node *n, QString &propname, XString &value, QStrin
 	return output;
 }
 
-QString  GraphWidget::setprop(Edge *ed, QString &propname, XString &value, QString &experiment)
+QString  GraphWidget::setprop(Edge *ed, QString propname, XString value, QString experiment)
 {
 	QString output;
 	if (!mList->extract_props_for_type(ed->objectType.ObjectType).contains(propname.toLower()))
@@ -4165,7 +4170,7 @@ QString  GraphWidget::setprop(Edge *ed, QString &propname, XString &value, QStri
 	return output;
 }
 
-QString  GraphWidget::setprop(Entity *en, QString &propname, XString &value, QString &experiment)
+QString  GraphWidget::setprop(Entity *en, QString propname, XString value, QString experiment)
 {
 	QString output;
 	if (!mList->extract_props_for_type(en->objectType.ObjectType).contains(propname.toLower()))
@@ -4203,11 +4208,11 @@ QString  GraphWidget::setprop(Entity *en, QString &propname, XString &value, QSt
 
 void GraphWidget::copyProps(QString sourceExperiment, QString destExperiment)
 {
-	for each (Node *n in Nodes())
+    for (Node *n : Nodes())
 		n->copyProps(sourceExperiment, destExperiment);
-	for each (Edge *e in Edges())
+    for (Edge *e : Edges())
 		e->copyProps(sourceExperiment, destExperiment);
-	for each (Entity *e in Entities)
+    for (Entity *e : Entities)
 		e->copyProps(sourceExperiment, destExperiment);
 
 }
@@ -4242,7 +4247,7 @@ QMenu *waterQualitySubMenu = menu->addMenu("Plot Water Quality Results");
 
 if (model->colloid_transport() && entitiesByType("Particle").count())
 {
-for each (Entity *p in entitiesByType("Particle"))
+for (Entity *p in entitiesByType("Particle"))
 {
 QMenu *particleSubMenu = waterQualitySubMenu->addMenu(p->Name());
 if (p->getValue("Model").contains("Single"))
@@ -4296,7 +4301,7 @@ if (model->constituent_transport() && entitiesByType("Constituent").count())
 {
 if (model->colloid_transport() && entitiesByType("Particle").count())
 menu.addSeparator();
-for each (Entity *e in entitiesByType("Constituent"))
+for (Entity *e in entitiesByType("Constituent"))
 {
 //QMenu *constituentSubMenu = waterQualitySubMenu->addMenu(e->Name());
 QStringList list;
@@ -4307,7 +4312,7 @@ menuKey[waterQualitySubMenu->addAction(e->Name())] = list;
 }
 QMenu *sorbedSubMenu = waterQualitySubMenu->addMenu("Sorbed/Particle associated");
 QMenu *constituentSorbedSubMenu;
-for each (Entity *e in entitiesByType("Constituent"))
+for (Entity *e in entitiesByType("Constituent"))
 {
 constituentSorbedSubMenu = sorbedSubMenu->addMenu(e->Name());
 QStringList list;
@@ -4315,7 +4320,7 @@ list.append("Constituent");
 int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()), -1, 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
 list.append(QString::number(BTCid));
 menuKey[constituentSorbedSubMenu->addAction("Soil")] = list;
-for each (Entity *p in entitiesByType("Particle"))
+for (Entity *p in entitiesByType("Particle"))
 {
 QMenu *particleSubMenu = constituentSorbedSubMenu->addMenu(p->Name());
 if (p->getValue("Model").contains("Single"))

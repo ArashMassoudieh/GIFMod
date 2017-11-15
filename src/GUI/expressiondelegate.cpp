@@ -2,7 +2,7 @@
 #include "expressioneditor.h"
 #include "statusviewer.h"
 #ifdef GIFMOD
-#include "ReactionTableModel.h"
+#include "reactiontablemodel.h"
 
 ExpressionDelegate::ExpressionDelegate(ReactionTableModel* model, StatusViewer* statusbar, QObject * p)
     : QItemDelegate(p)

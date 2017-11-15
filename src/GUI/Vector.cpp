@@ -3,7 +3,7 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "Vector.h"
-#include "Math.h"
+#include "math.h"
 #include "Matrix.h"
 #include <cfloat>
 #include "Vector_arma.h"
@@ -164,14 +164,14 @@ CVector& CVector::operator-=(const CVector &v)
 	return *this;
 }
 
-CVector operator+(const CVector &v1, const CVector &v2) 
+CVector operator+(CVector v1, CVector v2)
 {
 	CVector v=v1; 
 	for (int i=0; i<v1.num; i++) v[i]=v1.vec[i]+v2.vec[i];
 	return v;
 }
 
-CVector operator-(const CVector &v1, const CVector &v2) 
+CVector operator-(CVector v1, CVector v2)
 {
 	CVector v=v1; 
 	for (int i=0; i<v1.num; i++) v[i]=v1.vec[i]-v2.vec[i];
@@ -239,7 +239,7 @@ CVector operator+(double a, CVector v)
 	return v1;
 }
 
-CVector operator-(double a, CVector &v)
+CVector operator-(double a, CVector v)
 {
 	CVector v1(v.num);
 	for (int i=0; i<v.num; i++)
@@ -397,13 +397,13 @@ CVector CVector::Log()
 	return x;
 }
 
-CVector Log(CVector &V)
+CVector Log(CVector V)
 {
 	return V.Log();
 
 }
 
-double avg(CVector &V)
+double avg(CVector V)
 {
 	return V.sum()/V.num;
 }
@@ -433,7 +433,7 @@ CVector CVector::abs()
 }
 
 
-CVector Exp(CVector &V)
+CVector Exp(CVector V)
 {
 	return V.Exp();
 
@@ -510,7 +510,7 @@ CVector CVector::sort()
 	return *this;
 }
 
-CVector combinesort(const CVector& V1, const CVector &V2)
+CVector combinesort(const CVector V1, const CVector V2)
 {
 	CVector V3 = V1;
 	CVector V = V3.append(V2);
@@ -518,7 +518,7 @@ CVector combinesort(const CVector& V1, const CVector &V2)
 
 }
 
-CVector combinesort_s(const CVector& V1, const CVector &V2)
+CVector combinesort_s(const CVector V1, const CVector V2)
 {
 	int n1=0;
 	int n2=0;

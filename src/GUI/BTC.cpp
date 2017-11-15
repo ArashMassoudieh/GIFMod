@@ -688,6 +688,19 @@ CBTC operator*(CBTC &CBTC_T, double alpha)
 	return S;
 }
 
+CBTC operator/(CBTC &CBTC_T, double alpha)
+{
+    CBTC S = CBTC_T;
+    for (int i=0; i<CBTC_T.n; i++)
+    {
+        //S.t[i] = CBTC_T.t[i];
+        S.C[i] = 1/alpha*CBTC_T.C[i];
+    }
+
+
+    return S;
+}
+
 CBTC operator/(CBTC &BTC1, CBTC &BTC2)
 {
 	CBTC S = BTC1;
@@ -1054,8 +1067,8 @@ CBTC CBTC::distribution(int n_bins, int limit)
 	for (int i=0; i<C1.num; i++)
 		C1[i] = C[i+limit];	
 	
-	double p_start = min(C1);
-	double p_end = max(C1)*1.001;
+    double p_start = C1.min();
+    double p_end = C1.max()*1.001;
 	double dp = abs(p_end - p_start)/n_bins;
 	if (dp == 0) return out;
 	out.t[0] = p_start - dp/2;	

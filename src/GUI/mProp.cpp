@@ -177,24 +177,24 @@ QList<XString> mProp::DefaultValuesList(mPropList *mPL, mProp* filter, GraphWidg
 	if (DefaultValues.toLower().contains("add at runtime"))
 	{
 		QList<XString> r;
-		for each (QString s in DefaultValues.split(';'))
+        for (QString s : DefaultValues.split(';'))
 		{
 			if (s.toLower().contains("add at runtime"))
 			{
 				if (s.toLower().contains("particle phases"))
 				{
-					for each(Entity* p in gWidget->entitiesByType("Particle"))
-						for each (QString phase in p->phases())
+                    for (Entity* p : gWidget->entitiesByType("Particle"))
+                        for (QString phase : p->phases())
 							r.append(QString("%1:%2").arg(p->Name()).arg(phase));
 				}
 				else if (s.toLower().contains("constituent phases"))
 				{
-					for each(Entity* c in gWidget->entitiesByType("Constituent"))
+                    for (Entity* c : gWidget->entitiesByType("Constituent"))
 					{
 						r.append(QString("%1:%2").arg(c->Name()).arg("Aqueous"));
 						r.append(QString("%1:%2").arg(c->Name()).arg("Soil"));
-						for each(Entity* p in gWidget->entitiesByType("Particle"))
-							for each (QString phase in p->phases())
+                        for (Entity* p : gWidget->entitiesByType("Particle"))
+                            for (QString phase : p->phases())
 								r.append(QString("%1:%2:%3").arg(c->Name()).arg(p->Name()).arg(phase));
 					}
 				}
@@ -207,7 +207,7 @@ QList<XString> mProp::DefaultValuesList(mPropList *mPL, mProp* filter, GraphWidg
 	else if (!DefaultValues.toLower().contains("populate at runtime"))
 	{
 		QList<XString> r;
-		for each (QString s in DefaultValues.split(';'))
+        for (QString s : DefaultValues.split(';'))
 			r.append(XString(s, VariableUnit.split(';')[0], VariableUnit.split(';'), DefaultUnit));
 		return r;
 	}
@@ -244,7 +244,7 @@ QList<XString> mProp::DefaultValuesList(mPropList *mPL, mProp* filter, GraphWidg
 		if (DefaultValues.toLower().contains("controller"))
 			r1.append(gWidget->EntityNames("Controller"));
 		if (DefaultValues.toLower().contains("cg[const]"))
-			for each (QString c in gWidget->EntityNames("Constituent")) r.append(QString("cg[%1]").arg(c));
+            for (QString c : gWidget->EntityNames("Constituent")) r.append(QString("cg[%1]").arg(c));
 		if (DefaultValues.toLower().contains("subtype") || DefaultValues.toLower().contains("distribution")){
 			if (mPL == nullptr || filter == nullptr) return QList<XString>() << "";
 			mProp Filter = *filter;
@@ -265,7 +265,7 @@ QList<XString> mProp::DefaultValuesList(mPropList *mPL, mProp* filter, GraphWidg
 			return r;
 		}
 		if (r1.count())
-			for each (QString QS in r1)
+            foreach (QString QS , r1)
 				r.append(QS);
 		return r;
 //		qDebug() << getList();

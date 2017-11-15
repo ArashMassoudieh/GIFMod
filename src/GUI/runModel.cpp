@@ -1,15 +1,16 @@
-#include "btc.h"
-#include "gwidget.h"
+#include "BTC.h"
+#include "GWidget.h"
 #include "entity.h"
 #include "process.h"
 #include "edge.h"
 #include "mainwindow.h"
 #include "runtimeWindow.h"
-#include "ga.h"
-#include "mcmc.h"
+#include "GA.h"
+#include "MCMC.h"
 #include "results.h"
 #include <QMessageBox>
-
+#include <omp.h>
+#include "Vector.h"
 
 #ifdef GIFMOD
 #include "MediumSet.h"
@@ -306,9 +307,9 @@ CGA::CGA(CGWASet *model, runtimeWindow* rtw)
 		"continuemcmc" << "calculate_percentile" << "calculate_correlation" << "mcmc_realization" << "noise_realization_writeout" << "obs_realization_writeout" << "const_realization_writeout" << "influent_realization" <<
 		"readfromgafile" << "calc_distributions" << "no_bins" << "mcmc_run";
 
-	for each(Entity* e in GAMCMC)
+    foreach(Entity* e , GAMCMC)
 	{
-		for each (QString code in e->codes())
+        foreach (QString code , e->codes())
 		{
 			if (!e->val(code).isEmpty() && e->val(code) != ".")
 			{
@@ -1072,7 +1073,7 @@ void MainWindow::inverseRun(CMediumSet *modelSet, runtimeWindow* rtw)
 void CMediumSet::g_get_observed()
 {
 	QStringList stdlist;
-	for each (Entity *e in gw->entitiesByType("Observation"))
+    foreach (Entity *e , gw->entitiesByType("Observation"))
 	{
 		measured_chrc M;
 		M.error_structure = 0;
@@ -1137,7 +1138,7 @@ void CMediumSet::g_get_observed()
 
 void CMediumSet::g_get_sensors()
 {
-	for each (Entity *e in gw->entitiesByType("Sensor"))
+    foreach (Entity *e , gw->entitiesByType("Sensor"))
 	{
 		CSensor M(gw->experimentsList().count());
 		M.error_structure = 0;
@@ -1162,7 +1163,7 @@ void CMediumSet::g_get_sensors()
 void CMediumSet::g_get_objective_functions()
 {
 	
-	for each (Entity *e in gw->entitiesByType("Objective Function"))
+    foreach (Entity *e , gw->entitiesByType("Objective Function"))
 	{
 		CObjectiveFunction M;
 		M.name = e->Name().toStdString();
@@ -1180,7 +1181,7 @@ void CMediumSet::g_get_objective_functions()
 
 void CMediumSet::g_get_controllers()
 {
-	for each (Entity *e in gw->entitiesByType("Controller"))
+    foreach (Entity *e , gw->entitiesByType("Controller"))
 	{
 		CController M;
 
@@ -1188,7 +1189,7 @@ void CMediumSet::g_get_controllers()
 		M.type = e->val("type").toStdString(); //Added by Arash, please check
 		M.sensor_id = e->val("sensor").toStdString(); //Added by Arash, please check
 		M.zn_controller_type = e->val("zn_controller_type").toStdString();
-		for each (QString key in e->codes())
+        foreach (QString key , e->codes())
 			if (e->val(key).toQString() != "")
 				M.set_val(key.toStdString(), e->val(key).toFloat());
 
@@ -1207,8 +1208,8 @@ void CMediumSet::g_get_environmental_params()
 	list.append(gw->entitiesByType("Project settings"));
 	list.append(gw->entitiesByType("Solver settings"));
 
-	for each (Entity *e in list)
-		for each (QString key in e->codes())
+    foreach (Entity *e , list)
+        foreach (QString key , e->codes())
 		{
 			if (key == "path")
 			{
@@ -1300,8 +1301,8 @@ void CMedium::g_get_environmental_params()
 	list.append(gw->entitiesByType("Project settings"));
 	list.append(gw->entitiesByType("Solver settings"));
 
-	for each (Entity *e in list)
-		for each (QString key in e->codes())
+    foreach (Entity *e , list)
+        foreach (QString key , e->codes())
 		{
 			if (key == "time_min")
 			{
@@ -1343,7 +1344,7 @@ void CMedium::g_get_environmental_params()
 }
 void CMediumSet::g_get_params()
 {
-	for each (Entity *e in gw->entitiesByType("Parameter"))
+    foreach (Entity *e , gw->entitiesByType("Parameter"))
 	{
 		range P;
 		P.low = 0;
@@ -1408,7 +1409,7 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 			codes.removeOne("theta_s");
 			codes.push_front("theta_s");
 		}
-		for each (QString code in codes)
+        foreach (QString code , codes)
 		{
 			//			qDebug() << code;
 			if (!n->val(code).isEmpty() && n->val(code) != ".") B.set_val(code.toStdString(), n->val(code).toFloat());
@@ -1418,7 +1419,7 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 				B.ID = n->val(code).toStdString();
 			if (code == "buildup" && !n->val(code).isEmpty()) B.buildup_id.push_back(n->val(code).toStdString());
 			if (code == "externalflux" && !n->val(code).isEmpty())
-				for each (QString flux in n->val(code).toQString().split(';'))
+                foreach (QString flux , n->val(code).toQString().split(';'))
 					B.envexchange_id.push_back(flux.trimmed().toStdString());
 			if (code == "precipitation")
 				B.precipitation_swch = n->val(code).toBool();
@@ -1430,11 +1431,11 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 			if (code == "perform_rxn")
 				B.perform_rxn = n->val(code).toBool();
 		}
-		for each (QString text in n->g().split(';'))
+        foreach (QString text , n->g().split(';'))
 			B.set_val(text.split('=').first().toStdString(), text.split('=').last().toFloat());
-		for each (QString text in n->cg().split(';'))
+        foreach (QString text , n->cg().split(';'))
 			B.set_val(text.split('=').first().toStdString(), text.split('=').last().toFloat());
-		for each (QString text in n->planthsc().split(';'))
+        foreach (QString text , n->planthsc().split(';'))
 			B.set_val(text.split('=').first().toStdString(), text.split('=').last().toFloat());
 
 		QStringList bulkDensity1Blocks = QStringList() << "Pond" << "Stream" << "Catchment";
@@ -1446,7 +1447,7 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 			B.set_val("depth", 1);
 		Blocks.push_back(B);
 
-		for each (QString code in n->codes())
+        foreach (QString code , n->codes())
 		{
 			if (gw->EntityNames("Parameter").contains(n->val(code).toQString()))
 			{
@@ -1459,7 +1460,7 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 				}
 			}
 		}
-		for each (QString code in n->codes())
+        foreach (QString code , n->codes())
 		{
 			if (gw->EntityNames("Controller").contains(n->val(code).toQString()))
 			{
@@ -1486,7 +1487,7 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 
 		QString type = e->objectType.ObjectType;//connector type 
 
-		for each (QString code in e->codes())
+        foreach (QString code , e->codes())
 			if (!e->val(code).isEmpty()) C.set_val(code.toStdString(), e->val(code).toFloat());  //sets all values except theta (theta was removed in input file)
 		if (!e->val("flow_expression").isEmpty())
 			C.flow_expression = CStringOP(e->val("flow_expression").toStdString());
@@ -1522,7 +1523,7 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 		Connector.push_back(C);
 		//progress->setValue(progress->value() + 1);
 
-		for each (QString code in e->codes())
+        foreach (QString code , e->codes())
 		{
 			if (gw->EntityNames("Parameter").contains(e->val(code).toQString()))
 			{
@@ -1535,7 +1536,7 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 				}
 			}
 		}
-		for each (QString code in e->codes())
+        foreach (QString code , e->codes())
 		{
 			if (gw->EntityNames("Controller").contains(e->val(code).toQString()))
 			{
@@ -1768,12 +1769,12 @@ void CMediumSet::g_get_particle_types()
 		if (tolower(_settling_model) == "double exponential") S.settling_model = "double_exponential";
 		S.set_settling_model(S.settling_model);
 		S.name = e->Name().toStdString();
-		for each (QString key in e->codes())//props.list.keys())
+        foreach (QString key , e->codes())//props.list.keys())
 		{
 			if (!e->val(key).isEmpty()) S.set_val(key.toStdString(), e->val(key).toFloat());
 		}
 		Solid_phase.push_back(S);
-		for each (QString code in e->codes())
+        foreach (QString code , e->codes())
 		{
 			if (gw->EntityNames("Parameter").contains(e->val(code).toQString()))
 			{
@@ -1786,7 +1787,7 @@ void CMediumSet::g_get_particle_types()
 				}
 			}
 		}
-		for each (QString code in e->codes())
+        foreach (QString code , e->codes())
 		{
 			if (gw->EntityNames("Controller").contains(e->val(code).toQString()))
 			{
@@ -1819,13 +1820,13 @@ void CMediumSet::g_get_constituents()
 		if (e->val("mobile") != "") S.mobile = e->val("mobile").toBool();
 		
 		//S.diffusion = e->val("diffusion").toFloat(); 
-		for each (QString code in e->codes())
+        foreach (QString code , e->codes())
 		{
 			qDebug() << code;
 			if (!e->val(code).isEmpty()) S.set_val(code.toStdString(), e->val(code).toFloat());
 		}
 
-		for each (SolidAqueousExchangeParameterItem	i in e->solidAqueousExchangeParameters)
+        foreach (SolidAqueousExchangeParameterItem	i , e->solidAqueousExchangeParameters)
 		{
 			string particle = (i.Particle == "Soil") ? "soil" : i.Particle.toStdString();
 			if (i.PartitioningCoefficient != "")
@@ -1842,7 +1843,7 @@ void CMediumSet::g_get_constituents()
 		// to be added S.exchange_params.push_back(atof(lid_config.param_vals[i][j].c_str()));
 		RXN.cons.push_back(S);
 
-		for each (QString code in e->codes())
+        foreach (QString code , e->codes())
 		{
 			if (gw->EntityNames("Parameter").contains(e->val(code).toQString()))
 			{
@@ -1855,7 +1856,7 @@ void CMediumSet::g_get_constituents()
 				}
 			}
 		}
-		for each (QString code in e->codes())
+        foreach (QString code , e->codes())
 		{
 			if (gw->EntityNames("Controller").contains(e->val(code).toQString()))
 			{
@@ -1875,7 +1876,7 @@ void CMediumSet::g_get_constituents()
 
 void CMediumSet::g_get_reactions()
 {
-	for each (Entity *e in gw->entitiesByType("Reaction parameter"))
+    foreach (Entity *e , gw->entitiesByType("Reaction parameter"))
 	{
 		rxparam rxparameter;
 		rxparameter.tempcorr = 1;
@@ -1885,7 +1886,7 @@ void CMediumSet::g_get_reactions()
 		else rxparameter.tempcorr = 1;
 		RXN.parameters.push_back(rxparameter);
 
-		for each (QString code in e->codes())
+        foreach (QString code , e->codes())
 		{
 			if (gw->EntityNames("Parameter").contains(e->val(code).toQString()) && code!="Name")
 			{
@@ -1898,7 +1899,7 @@ void CMediumSet::g_get_reactions()
 				}
 			}
 		}
-		for each (QString code in e->codes())
+        foreach (QString code , e->codes())
 		{
 			if (gw->EntityNames("Controller").contains(e->val(code).toQString()))
 			{
@@ -1922,7 +1923,7 @@ void CMediumSet::g_get_reactions()
 		CReaction Rx;
 		Rx.name = e->name.toStdString(); //NAME
 		Rx.rate = CStringOP(e->rateExpression().toStdString(), &RXN);
-		for each (QString key in e->productExpressions().keys())
+        foreach (QString key , e->productExpressions().keys())
 			if (RXN.look_up_constituent_no(key.toStdString()) != -1)
 			{
 				Rx.products.push_back(RXN.look_up_constituent_no(key.toStdString()));
@@ -1956,14 +1957,14 @@ void CMediumSet::g_get_buildup()
 			else S.phase = "attached";
 		}
 
-		for each (QString code in e->codes())
+        foreach (QString code , e->codes())
 		{
 			if (!e->val(code).isEmpty()) S.set_val(code.toStdString(), e->val(code).toFloat());
 		}
 
 		buildup.push_back(S);
 
-		for each (QString code in e->codes())
+        foreach (QString code , e->codes())
 		{
 			if (gw->EntityNames("Parameter").contains(e->val(code).toQString()))
 			{
@@ -1976,7 +1977,7 @@ void CMediumSet::g_get_buildup()
 				}
 			}
 		}
-		for each (QString code in e->codes())
+        foreach (QString code , e->codes())
 		{
 			if (gw->EntityNames("Controller").contains(e->val(code).toQString()))
 			{
@@ -2013,14 +2014,14 @@ void CMediumSet::g_get_external_flux()
 
 		if (e->val("expression") != "") S.expression = e->val("expression").toStdString();
 
-		for each (QString code in e->codes())
+        foreach (QString code , e->codes())
 		{
 			if (!e->val(code).isEmpty()) S.set_val(code.toStdString(), e->val(code).toFloat());
 		}
 
 		externalflux.push_back(S);
 
-		for each (QString code in e->codes())
+        foreach (QString code , e->codes())
 		{
 			if (gw->EntityNames("Parameter").contains(e->val(code).toQString()))
 			{
@@ -2033,7 +2034,7 @@ void CMediumSet::g_get_external_flux()
 				}
 			}
 		}
-		for each (QString code in e->codes())
+        foreach (QString code , e->codes())
 		{
 			if (gw->EntityNames("Controller").contains(e->val(code).toQString()))
 			{
@@ -2073,13 +2074,13 @@ void CMediumSet::g_get_evapotranspiration()
 		if (e->val("fao_56_kc_coefficient") != "") S.single_crop_coefficient_filename = e->val("fao_56_kc_coefficient").toFileName(gw->modelPathname()).toStdString();
 		if (e->val("uptake_constituents") != "") S.uptake = e->val("uptake_constituents").toBool();
 
-		for each (QString code in e->codes())
+        foreach (QString code , e->codes())
 		{
 			if (!e->val(code).isEmpty()) S.set_val(code.toStdString(), e->val(code).toFloat());
 		}
 		evaporation_model.push_back(S);
 
-		for each (QString code in e->codes())
+        foreach (QString code , e->codes())
 		{
 			if (gw->EntityNames("Parameter").contains(e->val(code).toQString()))
 			{
@@ -2092,7 +2093,7 @@ void CMediumSet::g_get_evapotranspiration()
 				}
 			}
 		}
-		for each (QString code in e->codes())
+        foreach (QString code , e->codes())
 		{
 			if (gw->EntityNames("Controller").contains(e->val(code).toQString()))
 			{

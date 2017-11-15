@@ -9,7 +9,7 @@ public:
 	CIndividual();
 	CIndividual(int n);
 	CIndividual(const CIndividual &C);
-	CIndividual CIndividual::operator = (const CIndividual &C);
+    CIndividual operator = (const CIndividual &C);
 	virtual ~CIndividual();
 	vector<double> x;
 	vector<double> pert;
@@ -21,10 +21,10 @@ public:
 	int nParams;
 	vector<int> precision;
 	vector<double> minrange, maxrange;
-	void CIndividual::initialize();
-	void CIndividual::mutate(double mu);
+    void initialize();
+    void mutate(double mu);
 	int rank;
-	void CIndividual::shake(double shakescale);
+    void shake(double shakescale);
 	double R2;
 	double MSE;
 

@@ -6,7 +6,7 @@
 #include "ui_wizard_select_dialog.h"
 #include "qstringlist.h"
 #include "qmap.h"
-#include "mPropList.h"
+#include "mProplist.h"
 
 class MainWindow;
 

@@ -11,6 +11,7 @@
 #include "Matrix_arma.h"
 #include "Vector_arma.h"
 #include "qmessagebox.h"
+#include "Vector.h"
 
 using namespace std;
 
@@ -1368,8 +1369,8 @@ CVector CMedium::Jacobian_S(const CVector &V, int &i, double &dt)  //Works also 
 	CVector F1, F0;
 	F1 = getres_S(V1,dt);
 	F0 = getres_S(CVector(V),dt);
-
-	return (F1 - F0)/epsilon;
+    CVector res = (F1 - F0)/epsilon;
+    return res;
 }
 
 CVector CMedium::Jacobian_S(const CVector &V, CVector &F0, int i, double dt)  //Works also w/o reference (&) 
@@ -4378,7 +4379,7 @@ void CMedium::clear()
 	ANS.clear();
 	ANS_colloids.clear(); 
 	ANS_constituents.clear(); 
-	ANS_MB.clear(); 
+    //ANS_MB.clear();
 	Connector.clear(); 
 	Blocks.clear(); 
 
@@ -4906,7 +4907,8 @@ void CMedium::onestepsolve_flow_ar(double dt)
 	int done = 0;
 	CVector_arma pos_def;
 	vector<int> old_fixed_connect_status = get_fixed_connect_status();
-	CVector_arma X_old = getS();
+    CVector _S = getS();
+    CVector_arma X_old = _S;
 
 	for (int i = 0; i<Blocks.size(); i++)
 	{
@@ -4926,8 +4928,8 @@ void CMedium::onestepsolve_flow_ar(double dt)
 		double errF;
 		int J_update1, J_update2;
 		J_update1 = J_update2 = J_update;
-
-		CVector_arma X = getS();    //getting the Storage of blocks, test
+        CVector _S = getS();
+        CVector_arma X = _S;    //getting the Storage of blocks, test
 		fixed_connect = false;
 		for (int i = 0; i<Blocks.size(); i++)
 		{
@@ -5304,7 +5306,8 @@ void CMedium::onestepsolve_const_ar(double dtt)
 	evaluate_capacity_c();
 	int error_expand_counter = 0;
 	update_rxn_params();
-	CVector_arma X = get_X_from_CG();
+    CVector _CG = get_X_from_CG();
+    CVector_arma X = _CG;
 
 	CVector_arma X_old = X;
 	CVector_arma F = getres_Q(X, dtt);

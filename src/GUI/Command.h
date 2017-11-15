@@ -15,7 +15,7 @@ public:
 	CCommand(); //default constructor 
 	CCommand(QString s);
 	CCommand(const CCommand &s);
-	CCommand& CCommand::operator=(const CCommand &s);
+    CCommand& operator=(const CCommand &s);
 	QString toQString();
 	CCommand(string s);
 	~CCommand();

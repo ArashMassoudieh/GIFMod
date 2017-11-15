@@ -16,17 +16,17 @@ public:
 	~wiz_parameter();
 	wiz_parameter(QString &s, Wizard_Script_Reader *_parent);
 	Wizard_Script_Reader *parent;
-	QString& get_name()
+    QString get_name()
 	{
 		name = parameters["name"].value.trimmed();
 		return name;
 	}
-	QString& get_last_error()
+    QString get_last_error()
 	{
 		return _last_error;
 	}
 
-	QString &get_role()
+    QString get_role()
 	{
 		return parameters["delegate"].value.trimmed(); 
 	}
@@ -48,13 +48,13 @@ public:
 		return parameters;
 	}
 
-	QString &param_name()
+    QString param_name()
 	{
 		name = parameters["name"].value.trimmed();
 		return parameters["name"].value.trimmed();
 	}
 
-	QString &get_question()
+    QString get_question()
 	{
 		if (parameters["question"].value.trimmed() == "")
 			parameters["question"].value = parameters["name"].value;
@@ -62,7 +62,7 @@ public:
 		return parameters["question"].value.replace("#",",");
 	}
 
-	XString &get_value()
+    XString get_value()
 	{
 		return value;
 	}

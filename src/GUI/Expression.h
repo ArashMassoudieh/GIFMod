@@ -15,7 +15,7 @@ public:
 	CExpression(void);
 	CExpression(QString S);
 	CExpression(const CExpression &S);
-	CExpression& CExpression::operator=(const CExpression&);
+    CExpression& operator=(const CExpression&);
 	QList<QString> operators; 
 	QList<CExpression> terms; 
 	QString sign;

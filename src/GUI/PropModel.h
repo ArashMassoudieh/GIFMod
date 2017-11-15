@@ -1,7 +1,9 @@
 #pragma once
 #include "qabstractitemmodel.h"
-#include "mproplist.h"
-#include "QString.h"
+#include "mProplist.h"
+#include "qstring.h"
+#include "qfiledialog.h"
+#include "qdir.h"
 
 class Node;
 class Edge;
@@ -75,7 +77,7 @@ public:
 signals:
 	void changed();
 public slots:
-	void browserCheck(QString)
+    void browserCheck(QString _fileName)
 	{
 		QString file;
 		if (_fileName.contains("..."))
@@ -94,7 +96,7 @@ public slots:
 		setData(QModelIndex(), fileName, loadIndex);
 		//parent->deselectAll();
 		return;
-	};
+    }
 
 private:
 	void save(const QModelIndex index) const{

@@ -2,13 +2,13 @@
 #define commandWindow_H
 
 #include <QDialog>
-#include "vector.h"
+#include <vector>
 #include "navigationList.h"
 #include "GWidget.h"
 //#include "CommandTextEdit.h"
 #include "Command.h"
 
-
+using namespace std;
 
 namespace Ui {
 class commandWindow;

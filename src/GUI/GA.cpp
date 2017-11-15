@@ -2,7 +2,7 @@
 ////////////////////////////////////////////////////////////////////////
 #include "GA.h"
 #include "StringOP.h"
-
+#include <stdlib.h>
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
@@ -177,7 +177,7 @@ CGA::CGA(string filename, CMediumSet &Syst)
 				loged.push_back(Sys.parameters[i].log);
 				for (int j=0; j<1; j++)
 				{	to_ts.push_back(j);
-					paramname.push_back(Sys.parameters[i].name + "_" + string(_itoa(j,buffer,10)));
+                    paramname.push_back(Sys.parameters[i].name + "_" + QString("%1").arg(j).toStdString());
 				}
 			}
 		}
@@ -415,8 +415,9 @@ void CGA::assignfitnesses()
 #endif
 
 	}
-		
-omp_set_num_threads(numberOfThreads);
+
+ // ARASH: LOOK HERE
+//omp_set_num_threads(numberOfThreads);
 #pragma omp parallel for //private(ts,l)
 		for (int k=0; k<maxpop; k++)
 		{
@@ -545,7 +546,7 @@ void CGA::write_to_detailed_GA(string s)
 #ifdef GWA
 	FileOut = fopen((Sys.Medium[0].pathname + "detail_GA.txt").c_str(), "a");
 #endif
-	fprintf(FileOut, "%s\n", s);
+    fprintf(FileOut, "%s\n", s.c_str());
 	fclose(FileOut);
 
 }

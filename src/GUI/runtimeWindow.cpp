@@ -1,5 +1,5 @@
 #include "runtimeWindow.h"
-#include "ui_runtimewindow.h"
+#include "ui_runtimeWindow.h"
 #include <QDebug>
 #include <QDesktopWidget>
 #include <QScreen>
@@ -9,8 +9,8 @@
 #include "qmenu.h"
 #include "GWidget.h"
 #ifdef GIFMOD
-#include "medium.h"
-#include "mediumset.h"
+#include "Medium.h"
+#include "MediumSet.h"
 #endif
 #ifdef GWA
 #include "gwa.h"
@@ -689,7 +689,10 @@ void runtimeWindow::showMenu(QMouseEvent *event)
 {
 	QPoint pos = event->pos();
 	if (event->button() == Qt::RightButton)
-		contextMenuEvent(&QContextMenuEvent(QContextMenuEvent::Mouse, pos));
+    {	QContextMenuEvent *QCME = new QContextMenuEvent(QContextMenuEvent::Mouse, pos);
+        contextMenuEvent(QCME);
+
+    }
 }
 void runtimeWindow::setupDemo(int demoIndex)
 {

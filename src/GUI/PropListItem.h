@@ -1,11 +1,8 @@
 #pragma once
 #include "qmap.h"
-
-
-
-class XString;
-class QString;
-#include "qvariant.h"
+#include "XString.h"
+#include <QString>
+#include <QVariant>
 
 template<class T>
 class PropListItem
@@ -28,7 +25,7 @@ public:
 
 	QMap<QString, QString> compact() const{
 		QMap<QString, QString> r;
-		for each (QString key in list.keys())
+        foreach (QString key, list.keys())
 		{
 			r[key.toLower()] = list[key].compact();
 		}
@@ -36,7 +33,7 @@ public:
 	}
 	static QMap<QString, XString> unCompact(const QMap<QString, QVariant> &c) {
 		QMap<QString, XString> r;
-		for each (QString key in c.keys())
+        foreach (QString key, c.keys())
 		{
 			QString newKey;
 			int i = key.split(' ').size();

@@ -14,7 +14,7 @@ public:
 	CFunction(void);
 	CFunction(const CFunction &F);
 	int var_id;
-	CFunction CFunction::operator = (const CFunction &F);
+    CFunction operator = (const CFunction &F);
 	~CFunction(void);
 };
 

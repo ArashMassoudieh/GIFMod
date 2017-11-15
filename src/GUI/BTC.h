@@ -123,6 +123,7 @@ CBTC operator+(CBTC&, CBTC&);
 CBTC operator-(CBTC&, CBTC&);
 CBTC operator%(CBTC&, CBTC&);
 CBTC operator&(CBTC&, CBTC&);
+CBTC operator/(CBTC &CBTC_T, double alpha);
 CBTC operator>(CBTC& BTC1, CBTC& BTC2);
 double XYbar(CBTC& BTC_p, CBTC &BTC_d);
 double X2bar(CBTC& BTC_p, CBTC &BTC_d);

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "individual.h"
+
+#include "Individual.h"
 #include "Distribution.h"
 #include <stdio.h>
 #ifdef GIFMOD
@@ -113,53 +114,53 @@ public:
 	CGA(int n, int nParams);
 	CGA(const CGA &C);
 
-	CGA CGA::operator=(CGA &C);
+    CGA operator=(CGA &C);
 
 #ifdef GIFMOD
-	CGA::CGA(string filename, CMediumSet &Sys);
-	vector<CMediumSet>& CGA::assignfitnesses_p(vector<double> inp);
+    CGA(string filename, CMediumSet &Sys);
+    vector<CMediumSet>& assignfitnesses_p(vector<double> inp);
 	CGA(CMediumSet *model, runtimeWindow* progress);
 #endif
 #ifdef GWA
-	CGA::CGA(string filename, CGWASet &Sys);
-	vector<CGWASet>& CGA::assignfitnesses_p(vector<double> inp);
+    CGA(string filename, CGWASet &Sys);
+    vector<CGWASet>& assignfitnesses_p(vector<double> inp);
 	CGA(CGWASet *model, runtimeWindow* progress);
 #endif
 
 	virtual ~CGA();
-	void CGA::initialize();
-	void CGA::Setminmax(int a, double minrange, double maxrange, int prec);		
-	void CGA::fitnessdistini();	
-	void CGA::crossover();
-	double CGA::avgfitness();
-	void CGA::mutate(double mu);
-	void CGA::assignfitnesses();
-	int CGA::maxfitness();
-	double CGA::variancefitness();	
-	double CGA::stdfitness();
-	double CGA::avg_actual_fitness();	
+    void initialize();
+    void Setminmax(int a, double minrange, double maxrange, int prec);
+    void fitnessdistini();
+    void crossover();
+    double avgfitness();
+    void mutate(double mu);
+    void assignfitnesses();
+    int maxfitness();
+    double variancefitness();
+    double stdfitness();
+    double avg_actual_fitness();
 	void write_to_detailed_GA(string s);
-	int CGA::optimize();
-	void CGA::setnumpop(int n);	
-	double CGA::avg_inv_actual_fitness();
-	int CGA::optimize(int nGens, char DefOutPutFileName[]);
-	void CGA::setnparams(int n);	
-	void CGA::assignfixedvalues();
-	void CGA::assignrank();
-	void CGA::assignfitness_rank(double N);	
-	void CGA::shake();	
-	void CGA::crossoverRC();	
-	void CGA::getfromfile(char filename[]);	
-	void CGA::fillfitdist();
-	double CGA::assignfitnesses(vector<double> inp);
-	int CGA::getparamno(int i, int ts);
-	int CGA::get_act_paramno(int i);
-	int CGA::get_time_series(int i);	
-	double CGA::evaluateforward();
-	double CGA::evaluateforward_mixed(vector<double> v);
-	double CGA::getfromoutput(string filename);
-	void CGA::getinifromoutput(string filename);	
-	void CGA::getinitialpop(string filename);
+    int optimize();
+    void setnumpop(int n);
+    double avg_inv_actual_fitness();
+    int optimize(int nGens, char DefOutPutFileName[]);
+    void setnparams(int n);
+    void assignfixedvalues();
+    void assignrank();
+    void assignfitness_rank(double N);
+    void shake();
+    void crossoverRC();
+    void getfromfile(char filename[]);
+    void fillfitdist();
+    double assignfitnesses(vector<double> inp);
+    int getparamno(int i, int ts);
+    int get_act_paramno(int i);
+    int get_time_series(int i);
+    double evaluateforward();
+    double evaluateforward_mixed(vector<double> v);
+    double getfromoutput(string filename);
+    void getinifromoutput(string filename);
+    void getinitialpop(string filename);
 	
 	// GUI
 	int numberOfThreads;

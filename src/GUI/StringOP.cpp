@@ -995,8 +995,7 @@ double pipe_poly(double x)
 
 string numbertostring(int x)
 {
-	char buffer[33];
-	return string(_itoa(x,buffer,10));
+    return QString("%1").arg(x).toStdString();
 }
 
 string numbertostring(vector<int> x)

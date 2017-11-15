@@ -90,9 +90,9 @@ bool ConstituentTableModel::setData(const QModelIndex & index, const QVariant & 
 
 		if (col == 0)
 		{
-			for each (QString experiment in experimentstobeUpdated)
+            foreach (QString experiment , experimentstobeUpdated)
 				node->constituentInitialCondition(experiment)[row].Constituent = value.toString();
-			for each (QString experiment in experimentstobeUpdated)
+            foreach (QString experiment , experimentstobeUpdated)
 			{
 				if (data(createIndex(row, 1)).toString() == "Soil" || data(createIndex(row, 1)).toString() == "Aqueous")
 					node->constituentInitialCondition(experiment)[row].Model = "";
@@ -102,9 +102,9 @@ bool ConstituentTableModel::setData(const QModelIndex & index, const QVariant & 
 		}
 		if (col == 1)
 		{
-			for each (QString experiment in experimentstobeUpdated)
+            foreach (QString experiment , experimentstobeUpdated)
 				node->constituentInitialCondition(experiment)[row].Particle = value.toString();
-			for each (QString experiment in experimentstobeUpdated)
+            foreach (QString experiment , experimentstobeUpdated)
 			{
 				
 				if (value.toString() == "Soil" || value.toString() == "Aqueous")
@@ -114,16 +114,16 @@ bool ConstituentTableModel::setData(const QModelIndex & index, const QVariant & 
 					QString modelValue = node->constituentInitialCondition(experiment)[row].Model;
 					QStringList modelDafaultValues = data(createIndex(row, 2), DefaultValuesListRole).toStringList();
 					if (!modelDafaultValues.contains(modelValue))
-						for each (QString experiment in experimentstobeUpdated)
+                        foreach (QString experiment , experimentstobeUpdated)
 							node->constituentInitialCondition(experiment)[row].Model = modelDafaultValues[0];
 				}
 			}
 		}
 		if (col == 2)
-			for each (QString experiment in experimentstobeUpdated)
+            foreach (QString experiment , experimentstobeUpdated)
 				node->constituentInitialCondition(experiment)[row].Model = value.toString();
 		if (col == 3)
-			for each (QString experiment in experimentstobeUpdated)
+            foreach (QString experiment , experimentstobeUpdated)
 				node->constituentInitialCondition(experiment)[row].Value = value.toString();
 
 		return true;
@@ -144,7 +144,7 @@ bool ConstituentTableModel::setData(const QModelIndex & index, const QVariant & 
 		gWidget->log(QString("Constituent initial condition (%1, %2, %3, %4) added to block: %5 for experiment %6.").arg(item.Constituent).arg(item.Particle).arg(item.Model).arg(item.Value).arg(node->Name()).arg(node->experimentName()));
 		return true;
 	}
-	for each(QString experiment in node->parent->experimentsList())
+    foreach(QString experiment , node->parent->experimentsList())
 		node->constituentInitialCondition(experiment).append(item);
 	gWidget->log(QString("Constituent initial condition (%1, %2, %3, %4) added to block: %5 for all experiments.").arg(item.Constituent).arg(item.Particle).arg(item.Model).arg(item.Value).arg(node->Name()));
 	return true;
@@ -160,7 +160,7 @@ bool ConstituentTableModel::removeRows(int firstRow, int lastRow, const QModelIn
 	if (firstRow == -1 || lastRow == -1) return false;
 	beginRemoveRows(parent, firstRow, lastRow);
 	if (node->experimentName() == "All experiments")
-		for each(QString experiment in node->parent->experimentsList())
+        foreach(QString experiment , node->parent->experimentsList())
 			node->constituentInitialCondition(experiment).removeAt(firstRow);
 	else
 		node->constituentInitialCondition().removeAt(firstRow);

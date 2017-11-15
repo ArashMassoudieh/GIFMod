@@ -1,4 +1,4 @@
-#include "propListItem.h"
+#include "PropListItem.h"
 #include "XString.h"
 #include "qstring.h"
 #include "node.h"
@@ -9,7 +9,7 @@
 #include "GWidget.h"
 
 //PropList<Node>::PropList(Node *Parent){ parent = Parent; };
-
+template<>
 XString PropListItem<Node>::getProp(const QString &inpPropName, Node* parent) const{
 	QString propName = inpPropName.toLower();
 	if (list.keys().contains(propName))
@@ -26,7 +26,7 @@ XString PropListItem<Node>::getProp(const QString &inpPropName, Node* parent) co
 		//return parent->getmList(filter)[0].DefaultValuesList(0,0,parent->parent)[0];
 	}
 }
-
+template<>
 bool PropListItem<Node>::setProp(const QString& inpPropName, const XString& Value, Node* parent) {
 //	QString classType = typeid(this).name();
 	QString propName = inpPropName.toLower();
@@ -57,7 +57,7 @@ bool PropListItem<Node>::setProp(const QString& inpPropName, const XString& Valu
 			if (propName.contains("inflow"))
 			{
 				QString files;
-				for each(QString file in Value.split(';'))
+                foreach(QString file , Value.split(';'))
 				{
 					if (!parent->parent->inflowFileNames.contains(relativePathFilename(file, parent->parent->modelPathname())))
 						parent->parent->inflowFileNames.append(relativePathFilename(file, parent->parent->modelPathname()));
@@ -77,7 +77,7 @@ bool PropListItem<Node>::setProp(const QString& inpPropName, const XString& Valu
 		}
 	return false;
 }
-
+template<>
 XString PropListItem<Edge>::getProp(const QString &inpPropName, Edge* parent) const{
 	QString propName = inpPropName.toLower();
 	if (list.contains(propName))
@@ -94,7 +94,7 @@ XString PropListItem<Edge>::getProp(const QString &inpPropName, Edge* parent) co
 	}
 
 }
-
+template<>
 bool PropListItem<Edge>::setProp(const QString& inpPropName, const XString& Value, Edge* parent) {
 	QString propName = inpPropName.toLower();
 	QString classType = typeid(this).name();
@@ -130,7 +130,7 @@ bool PropListItem<Edge>::setProp(const QString& inpPropName, const XString& Valu
 	return false;
 	
 }
-
+template<>
 XString PropListItem<Entity>::getProp(const QString &inpPropName, Entity* parent) const{
 	QString propName = inpPropName.toLower();
 	if (list.contains(propName))
@@ -146,7 +146,7 @@ XString PropListItem<Entity>::getProp(const QString &inpPropName, Entity* parent
 		return parent->getmList(filter)[0].DefaultValuesList(0, 0, parent->parent)[0];
 	}
 }
-
+template<>
 bool PropListItem<Entity>::setProp(const QString& inpPropName, const XString& Value, Entity* parent) {
 	QString propName = inpPropName.toLower();
 	QString classType = typeid(this).name();

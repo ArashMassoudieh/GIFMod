@@ -17,7 +17,7 @@ public:
 	bool fixed_connect;
 	CRestoreInfo();
 	CRestoreInfo(const CRestoreInfo &F);
-	CRestoreInfo& CRestoreInfo::operator=(const CRestoreInfo &F);
+    CRestoreInfo& operator=(const CRestoreInfo &F);
 	~CRestoreInfo();
 	int iii;
 };

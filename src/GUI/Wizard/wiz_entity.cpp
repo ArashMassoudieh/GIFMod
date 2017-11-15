@@ -88,7 +88,7 @@ QString wiz_entity::get_direction()
 	return s;
 }
 
-XString wiz_entity::get_value(wiz_assigned_value &x)
+XString wiz_entity::get_value(wiz_assigned_value x)
 {
 	XString X; 
 	qDebug() << x.entity << " count: " << parameters.count(x.entity) << endl; 
@@ -109,7 +109,7 @@ XString wiz_entity::get_value(wiz_assigned_value &x)
 
 }
 
-XString wiz_entity::get_value(QString &x)
+XString wiz_entity::get_value(QString x)
 {
 	if (parameters.count(x) > 0)
 		return get_value(parameters[x]);

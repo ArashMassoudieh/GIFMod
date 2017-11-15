@@ -2,11 +2,13 @@
 #define HELPWINDOW_H
 
 #include <QDialog>
-#include "vector.h"
+#include <vector>
 #include "navigationList.h"
 #include "GWidget.h"
 
 //class MainWindow;
+
+using namespace std;
 
 namespace Ui {
 class helpWindow;

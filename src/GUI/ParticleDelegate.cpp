@@ -1,8 +1,9 @@
-#include "particledelegate.h"
+
+#include "ParticleDelegate.h"
 #include <qcombobox.h>
 #include <qdebug.h>
 #include <QFileDialog>
-#include <Qlineedit>
+#include <QLineEdit>
 #include "qcheckbox.h"
 #include "UnitTextBox.h"
 #include "qapplication.h"

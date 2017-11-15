@@ -146,7 +146,7 @@ QCPGraph* plotWindow::addPercentilePlot(QString name, QMap<QString, double> data
 	double p25, p975, p50, mean;
 	QStringList vars;
 	vars << "p25" << "p975" << "p50" << "mean";
-	for each (QString var in vars)
+    foreach (QString var , vars)
 		if (data.keys().contains(var))
 		{
 			if (var == "p25") p25 = data[var];
@@ -654,7 +654,7 @@ void plotWindow::contextMenuEvent(QContextMenuEvent *event)
 
 
 			if (selectedAction->text().contains("Paste"))
-				for each (QCPGraph *g in parent->graphsClipboard.keys())
+                foreach (QCPGraph *g , parent->graphsClipboard.keys())
 				{
 					addScatterPlot(g, parent->graphsClipboard[g]);
 				}
@@ -712,7 +712,11 @@ void plotWindow::showMenu(QMouseEvent *event)
 {
 	QPoint pos = event->pos();
 	if (event->button() == Qt::RightButton)
-		contextMenuEvent(&QContextMenuEvent(QContextMenuEvent::Mouse, pos));
+    {
+        QContextMenuEvent *QCME = new QContextMenuEvent(QContextMenuEvent::Mouse, pos);
+        contextMenuEvent(QCME);
+
+    }
 	//ui->customPlot->mouseRelease(event);
 }
 void plotWindow::setupDemo(int demoIndex)

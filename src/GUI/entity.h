@@ -1,7 +1,7 @@
 #pragma once
 #include <QList>
 #include "mProplist.h"
-#include "Proplist.h"
+#include "PropList.h"
 #include "PropModel.h"
 #include "GWidget.h"
 //class mPropList;
@@ -23,12 +23,12 @@ public:
 		delete model;
 	}
 
-	Entity Entity::operator=(const Entity &);
+    Entity operator=(const Entity &);
 //	*Entity *Entity::operator=(const Entity *);
 	//void setProp(const QString _Property, const QString _Value);
 	mPropList getmList(const mProp _filter = '*') const;
-	void Entity::setName(const QString _name);
-	void Entity::setObjectType(const mProp _type);
+    void setName(const QString _name);
+    void setObjectType(const mProp _type);
 	mProp ObjectType() const{ return objectType; };
 	mProp Filter() const { return ObjectType(); };
 
@@ -49,8 +49,8 @@ public:
 	mProp Filter();
 	PropModel<Entity> *model;
 	PropList<Entity> props;
-	QString Entity::newEntityName(const QString &type, const QString name, QList<Entity*> *entities) const;
-	QString Entity::newEntityName(const QString name, QStringList &existingNames) const;
+    QString newEntityName(const QString &type, const QString name, QList<Entity*> *entities) const;
+    QString newEntityName(const QString name, QStringList &existingNames) const;
 	QString name;
 	QMap<QString, QVariant> compact() const;
 	static Entity* unCompact(QMap<QString, QVariant>, GraphWidget *gwidget, bool oldVersionLoad = false);
@@ -121,7 +121,7 @@ public:
 	//QList<SolidAqueousExchangeParameterItem> &solidAqueousExchangeParameter(QString experimentName = "");
 	QString exchangeRate() const{
 		QString r;
-		for each (SolidAqueousExchangeParameterItem i in solidAqueousExchangeParameters){
+        for (SolidAqueousExchangeParameterItem i : solidAqueousExchangeParameters){
 			if (r != "") r.append("; ");
 			r.append("rate[");
 			r.append(i.Particle);
@@ -132,7 +132,7 @@ public:
 	}
 	QString partitioningCoefficient() const{
 		QString r;
-		for each (SolidAqueousExchangeParameterItem i in solidAqueousExchangeParameters){
+        for (SolidAqueousExchangeParameterItem i : solidAqueousExchangeParameters){
 			if (r != "") r.append("; ");
 			r.append("kd[");
 			r.append(i.Particle);
