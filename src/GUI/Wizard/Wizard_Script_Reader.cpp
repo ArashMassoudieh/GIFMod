@@ -17,6 +17,7 @@ Wizard_Script_Reader::Wizard_Script_Reader(const Wizard_Script_Reader & WSR)
 	major_blocks = WSR.major_blocks;
 	major_connections = WSR.major_connections;
 	project_settings = WSR.project_settings;
+	change_properties = WSR.change_properties;
 	script_name = WSR.script_name;
 	entities = WSR.entities;
 	script_specific_params = WSR.script_specific_params;
@@ -39,6 +40,11 @@ QStringList  Wizard_Script_Reader::toQStingList()
 	for (QString key : major_connections.keys())
 	{
 		out << "major_connection: " + major_connections[key].toQString();
+	}
+
+	for (QString key : change_properties.keys())
+	{
+		out << "change_property: " + change_properties[key].toQString();
 	}
 
 	for (QString key : entities.keys())
@@ -95,7 +101,7 @@ bool Wizard_Script_Reader::add_command(QString line)
 	if (line.split(":")[0].toLower().trimmed() == "icon") icon_file = line.split(":")[1].trimmed();
 	if (line.split(":")[0].toLower().trimmed() == "description") description = line.split(":")[1].trimmed().replace("#",",");
 
-	if (line.split(":")[0].toLower().trimmed() == "settings" || line.split(":")[0].toLower().trimmed() == "major_block" || line.split(":")[0].toLower().trimmed() == "major_connection" || line.split(":")[0].toLower().trimmed() == "entity")
+	if (line.split(":")[0].toLower().trimmed() == "settings" || line.split(":")[0].toLower().trimmed() == "major_block" || line.split(":")[0].toLower().trimmed() == "major_connection" || line.split(":")[0].toLower().trimmed() == "entity" || line.split(":")[0].toLower().trimmed() == "change_property")
 	{
 		wiz_entity entty(line, this); 
 		if (entty.name() == "" & entty.entity() == "settings")
@@ -119,6 +125,12 @@ bool Wizard_Script_Reader::add_command(QString line)
 			{
 				major_connections[entty.name()] = entty;
 			}
+
+			else if (entty.entity() == "change_property")
+			{
+				change_properties[entty.name()] = entty;
+			}
+
 			else if (entty.entity() == "entity")
 			{
 				entities[entty.name()] = entty;
@@ -222,6 +234,46 @@ CCommand Wizard_Script_Reader::get_script_commands_project_settings(wiz_entity *
 	return command;
 }
 
+CCommand Wizard_Script_Reader::get_script_change_properties(wiz_entity *wiz_ent)
+{
+	CCommand command;
+	command.command = "setprop";
+	if (wiz_ent->has_parameter("index")) 
+		command.values.append(wiz_ent->name() + " (" + wiz_ent->get_value("index")+ ")");
+	else
+		command.values.append(wiz_ent->name());
+
+	mProp _filter;
+	_filter.setstar();
+	_filter.GuiObject = "Block";
+	_filter.ObjectType = wiz_ent->type();
+	_filter.SubType = wiz_ent->subtype();
+	mPropList m = mproplist->filter(_filter);
+
+	for (wiz_assigned_value item : wiz_ent->get_parameters())
+	{
+		if (!script_specific_params.contains(item.entity))
+		{
+			_filter.VariableName = item.entity;
+			mPropList m1 = m.filter(_filter);
+			if (m.VariableNames_w_abv().contains(item.entity))
+			{
+				if (m1[0].Delegate != "DateTime")
+					command.parameters[item.entity] = wiz_ent->get_value(item);
+				else
+				{
+					QDateTime QDT = QDateTime::fromString(wiz_ent->get_value(item), "M/d/yyyy hh:mm AP");
+					qDebug() << QDT << QDT.toString() << QDT.isValid();
+					command.parameters[item.entity] = QString::number(QDate2Xldate(QDT));
+				}
+			}
+		}
+	}
+
+	return command;
+}
+
+
 QList<CCommand> Wizard_Script_Reader::get_script_commands_major_blocks(wiz_entity *wiz_ent, int &x, int &y)
 {
 	QList<CCommand> commands;
@@ -309,7 +361,10 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands()
 	{
 		commands.append(get_script_commands_entities(&get_entities()[key]));
 	}
-
+	for (QString key : get_change_props().keys())
+	{
+		commands.append(get_script_change_properties(&get_change_props()[key]));
+	}
 
 	return commands; 
 
