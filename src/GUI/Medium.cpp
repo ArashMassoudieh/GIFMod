@@ -2393,8 +2393,9 @@ void CMedium::solve_fts_m2(double dt)
 			}
 		}
 	}
-	// Sassan
-	
+	qDebug() << "Solution Ended!";
+
+	qDebug() << "Making answers uniform";
 
 	for (int i = 0; i < controllers().size(); i++)
 		ANS_control.BTC[i] = controllers()[i].output;
@@ -2403,11 +2404,14 @@ void CMedium::solve_fts_m2(double dt)
 	{
 		if (ANS.BTC[0].n)
 		{
-			ANS = ANS.make_uniform(dt0);
-			if (colloid_transport()) ANS_colloids = ANS_colloids.make_uniform(dt0);
-			if (constituent_transport()) ANS_constituents = ANS_constituents.make_uniform(dt0);
+			qDebug() << "Making hydro answers uniform";
+			ANS = ANS.make_uniform(dt0, false);
+			qDebug() << "Making colloid answers uniform";
+			if (colloid_transport()) ANS_colloids = ANS_colloids.make_uniform(dt0, false);
+			qDebug() << "Making transport answers uniform";
+			if (constituent_transport()) ANS_constituents = ANS_constituents.make_uniform(dt0, false);
 			ANS_obs.unif = false;
-			ANS_obs = ANS_obs.make_uniform(dt0);
+			ANS_obs = ANS_obs.make_uniform(dt0, false);
 		}
 	}
 	failed = false;

@@ -698,7 +698,7 @@ CBTC CBTCSet::divide(int ii, int jj)
 
 }
 
-CBTCSet CBTCSet::make_uniform(double increment)
+CBTCSet CBTCSet::make_uniform(double increment, bool assgn_d)
 {
 	if (nvars==0) return CBTCSet();
 	CBTCSet out(nvars);
@@ -706,13 +706,19 @@ CBTCSet CBTCSet::make_uniform(double increment)
 	
 	if (unif == true)
 	{
+		qDebug() << "make uniform with unif option";
 		for (int i = 0; i < nvars; i++)
 		{
 			out.BTC[i].append(BTC[i].t[0], BTC[i].C[0]);
-			if (BTC[i].D.size() == 0) BTC[i].assign_D();
+			if (assgn_d)
+			{
+				qDebug() << "Assigning D to the original BTC";
+				if (BTC[i].D.size() == 0) BTC[i].assign_D();
+			}
 		}
 		for (int i=0; i<BTC[0].n-1; i++)
 		{
+			//qDebug() << i;
 			int i1 = int((BTC[0].t[i]-BTC[0].t[0])/increment);
 			int i2 = int((BTC[0].t[i+1]-BTC[0].t[0])/increment);
 			for (int j=i1+1; j<=i2; j++)
@@ -721,17 +727,26 @@ CBTCSet CBTCSet::make_uniform(double increment)
 				for (int k=0; k<nvars; k++)
 				{
 					double CC = (x-BTC[k].t[i])/(BTC[k].t[i+1]-BTC[k].t[i])*(BTC[k].C[i+1]-BTC[k].C[i])+BTC[k].C[i];
-					double DD = (x - BTC[k].t[i]) / (BTC[k].t[i + 1] - BTC[k].t[i])*(BTC[k].D[i + 1] - BTC[k].D[i]) + BTC[k].D[i];
+					
 					out.BTC[k].append(x,CC);
-					out.BTC[k].D.push_back(DD);
+					if (assgn_d)
+					{
+						double DD = (x - BTC[k].t[i]) / (BTC[k].t[i + 1] - BTC[k].t[i])*(BTC[k].D[i + 1] - BTC[k].D[i]) + BTC[k].D[i];
+						out.BTC[k].D.push_back(DD);
+					}
 				}
 			}
 		}
 	}
 	else
 	{
-		for (int k=0; k<nvars; k++)
+		qDebug() << "make uniform without unif option";
+		for (int k = 0; k < nvars; k++)
+		{
+			qDebug() << "Variable:" + QString::fromStdString(names[k]); 
 			out.BTC[k] = BTC[k].make_uniform(increment);
+
+		}
 	}
 	for (int k=0; k<nvars; k++)
 		out.BTC[k].structured = true;

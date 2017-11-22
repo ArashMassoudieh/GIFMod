@@ -43,7 +43,7 @@ public:
 	CBTC add_mult(vector<int> ii, vector<double> mult);
 	CBTC add_mult(vector<int> ii, CBTCSet &mult);
 	CBTC divide(int ii, int jj);
-	CBTCSet make_uniform(double increment);
+	CBTCSet make_uniform(double increment, bool assgn_d=true);
 	CBTCSet getpercentiles(vector<double> percents);
 	CVector out_of_limit(double limit);
 	CBTCSet distribution(int n_bins, int n_columns, int limit);

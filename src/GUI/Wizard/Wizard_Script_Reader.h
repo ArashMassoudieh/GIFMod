@@ -28,6 +28,7 @@ public:
 	~Wizard_Script_Reader();
 	CCommand get_script_commands_entities(wiz_entity * wiz_ent);
 	CCommand get_script_commands_project_settings(wiz_entity * wiz_ent);
+	CCommand get_script_change_properties(wiz_entity * wiz_ent);
 	QList<CCommand> get_script_commands_major_blocks(wiz_entity * wiz_ent, int & x, int & y);
 		
 	QMap<QString, wiz_entity> &get_major_blocks()
@@ -57,6 +58,11 @@ public:
 		return wiz_parameter_groups;
 	}
 
+	QMap<QString, wiz_entity> &get_change_props()
+	{
+		return change_properties;
+	}
+
 	QString& get_script_name() { return script_name; };
 	QString& get_script_icon() { return icon_file; };
 	QString& get_description() { return description; };
@@ -71,6 +77,7 @@ public:
 	QMap<QString, wiz_entity> major_connections;
 	QMap<QString, wiz_entity> entities;
 	QMap<QString, wiz_entity> project_settings;
+	QMap<QString, wiz_entity> change_properties;
 	QMap<QString, wiz_parameter> wiz_params;
 	QMap<QString, wiz_parameter_group> wiz_parameter_groups;
 	QStringList error_list;
