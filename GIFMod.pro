@@ -8,8 +8,9 @@ CONFIG += c++14
 TARGET = GIFMod 
 TEMPLATE = app
 win32:QMAKE_CXXFLAGS += /MP
-LIBS += -fopenmp
-
+QMAKE_CXXFLAGS += -fopenmp
+QMAKE_LFLAGS +=  -fopenmp
+LIBS += -lgomp -lpthread
 
 #defines
 DEFINES += UNICODE GIFMOD
