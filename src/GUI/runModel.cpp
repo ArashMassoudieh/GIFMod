@@ -498,7 +498,7 @@ int CGA::optimize(runtimeWindow* rtw)
 		rtw->experiment = &Sys.Medium[0];//should represent experiment
         qDebug()<<"Line 499 in runmodel.cpp";
 		updateProgress(rtw, vars);
-        qDebug()<<"Update progress done!";
+        qDebug()<<"Update progress done! (501)";
 		//QApplication::processEvents();
 
 		//plot i as ngen, exp(-Fitness[i][0] )
@@ -539,13 +539,17 @@ int CGA::optimize(runtimeWindow* rtw)
 		Fitness[i][0] = Ind[j].actual_fitness;
 
 		fillfitdist();
-		if (RCGA == true)
+        qDebug()<<"Cross over";
+        if (RCGA == true)
 			crossoverRC();
 		else
 			crossover();
 
-		mutate(pmute);
+        qDebug()<<"Cross over done!";
+        mutate(pmute);
+        qDebug()<<"Mutation done!";
 		shake();
+        qDebug()<<"Shaking done!";
 	}
 	//Form1.label1->Text=L"finalizing GA ";
 	//Form1.Refresh();
@@ -651,7 +655,7 @@ void CGA::updateProgress(runtimeWindow* rtw, QMap<QString, QString> params, bool
 		}
 		rtw->update(vars);
 	}
-    qDebug()<<"update progress done!";
+    qDebug()<<"update progress done! (658)";
 }
 void CGA::updateProgress(runtimeWindow* rtw, bool resetGeneration) const
 {

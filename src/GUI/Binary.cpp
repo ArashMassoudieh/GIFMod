@@ -6,7 +6,7 @@
 #include "math.h"
 #include <iostream>
 #include "DistributionNUnif.h"
-
+#include "qdebug.h"
 
 using namespace std;
 
@@ -128,10 +128,13 @@ CBinary CBinary::extract(int spoint, int epoint)
 
 }
 
-bool& CBinary::operator[](int i)
+int& CBinary::operator[](int i)
 {
-	bool x = Digit[i];
-	return x;
+    int *p = 0;
+    if ((i<Digit.size()) & (i>-1))
+        return this->Digit[i];
+    else
+        return *p;
 }
 
 void cross(CBinary &B1, CBinary &B2, int p)
@@ -165,7 +168,9 @@ void cross(CBinary &B1, CBinary &B2, vector<int> p)
 		{
 			if (i%2==0)
 			{
-				B1[i] = BT1[i];
+                qDebug()<<BT1[i];
+
+                B1[i] = BT1[i];
 				B2[i] = BT2[i];
 			}
 			else

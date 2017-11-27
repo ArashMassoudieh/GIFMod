@@ -12,14 +12,14 @@ public:
     CBinary(int n, int preci);
 	virtual ~CBinary();
 	int nDigits;
-	vector<bool> Digit;
+    vector<int> Digit;
 	int precision;
 	CBinary(const CBinary &B);
     CBinary operator = (const CBinary &B);
     CBinary operator + (const CBinary &B);
     CBinary extract(int spoint, int epoint);
     double decode(double minrange);
-    bool& operator[](int i);
+    int& operator[](int i);
     void show();
 	bool sign;
     void mutate(double mu);
