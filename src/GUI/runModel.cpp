@@ -458,9 +458,9 @@ int CGA::optimize(runtimeWindow* rtw)
 	for (int i = 0; i<nGen; i++)
 	{
 
-        qDebug()<<"Assign Fitnesses";
+        //qDebug()<<"Assign Fitnesses";
         assignfitnesses(rtw);
-        qDebug()<<"Assign Fitnesses done! ";
+        //qDebug()<<"Assign Fitnesses done! ";
 		if (rtw->stopTriggered)
 			break;
 		FileOut = fopen(RunFileName.c_str(), "a");
@@ -496,10 +496,10 @@ int CGA::optimize(runtimeWindow* rtw)
 		qDebug() << i << -Fitness[i][0];
 
 		rtw->experiment = &Sys.Medium[0];//should represent experiment
-        qDebug()<<"Line 499 in runmodel.cpp";
+        //qDebug()<<"Line 499 in runmodel.cpp";
 		updateProgress(rtw, vars);
-        qDebug()<<"Update progress done! (501)";
-		//QApplication::processEvents();
+        //qDebug()<<"Update progress done! (501)";
+        QApplication::processEvents();
 
 		//plot i as ngen, exp(-Fitness[i][0] )
 		if (i>10)
@@ -539,17 +539,17 @@ int CGA::optimize(runtimeWindow* rtw)
 		Fitness[i][0] = Ind[j].actual_fitness;
 
 		fillfitdist();
-        qDebug()<<"Cross over";
+        //qDebug()<<"Cross over";
         if (RCGA == true)
 			crossoverRC();
 		else
 			crossover();
 
-        qDebug()<<"Cross over done!";
+        //qDebug()<<"Cross over done!";
         mutate(pmute);
-        qDebug()<<"Mutation done!";
+        //qDebug()<<"Mutation done!";
 		shake();
-        qDebug()<<"Shaking done!";
+        //qDebug()<<"Shaking done!";
 	}
 	//Form1.label1->Text=L"finalizing GA ";
 	//Form1.Refresh();
@@ -577,9 +577,9 @@ int CGA::optimize(runtimeWindow* rtw)
 	if (!rtw->stopTriggered)
 		assignfitnesses(final_params);
 
-    qDebug()<<"clearing sys1";
+    //qDebug()<<"clearing sys1";
     Sys1.clear();
-    qDebug()<<"Systems cleared";
+    //qDebug()<<"Systems cleared";
 	QMap<QString, QString> vars;
 	updateProgress(rtw, vars, true);
 	
@@ -655,7 +655,7 @@ void CGA::updateProgress(runtimeWindow* rtw, QMap<QString, QString> params, bool
 		}
 		rtw->update(vars);
 	}
-    qDebug()<<"update progress done! (658)";
+    //qDebug()<<"update progress done! (658)";
 }
 void CGA::updateProgress(runtimeWindow* rtw, bool resetGeneration) const
 {
@@ -732,9 +732,9 @@ void CGA::assignfitnesses(runtimeWindow* rtw)
 	Sys1[k].Medium[0].finalize_set_param();
 #endif
 	}
-    qDebug()<<"Update progress inside Assignfitnesses";
+    //qDebug()<<"Update progress inside Assignfitnesses";
     updateProgress(rtw, true);
-    qDebug()<<"Update progress inside Assignfitnesses, done! ";
+    //qDebug()<<"Update progress inside Assignfitnesses, done! ";
 
 /*	int populationProgress;
 	QMap<QString, QVariant> vars;
@@ -2424,10 +2424,10 @@ void CMedium::updateProgress(bool finished)
 			vars["dtt"] = dtt;
 			vars["epoch count"] = epoch_count;
 			QString reason = QString::fromStdString(fail_reason);
-			qDebug() << reason;
+            //qDebug() << reason;
 			if (!reason.toLower().contains("none"))
 				vars["label"] = reason;
-			qDebug()<< t<<dtt;
+            //qDebug()<< t<<dtt;
 			
 			if (runtimewindow->sln_dtl_active)
 				if (!reason.toLower().contains("none"))
