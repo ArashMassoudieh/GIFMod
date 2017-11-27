@@ -496,8 +496,9 @@ int CGA::optimize(runtimeWindow* rtw)
 		qDebug() << i << -Fitness[i][0];
 
 		rtw->experiment = &Sys.Medium[0];//should represent experiment
-
+        qDebug()<<"Line 499 in runmodel.cpp";
 		updateProgress(rtw, vars);
+        qDebug()<<"Update progress done!";
 		//QApplication::processEvents();
 
 		//plot i as ngen, exp(-Fitness[i][0] )
@@ -572,7 +573,9 @@ int CGA::optimize(runtimeWindow* rtw)
 	if (!rtw->stopTriggered)
 		assignfitnesses(final_params);
 
-	Sys1.clear();
+    qDebug()<<"clearing sys1";
+    Sys1.clear();
+    qDebug()<<"Systems cleared";
 	QMap<QString, QString> vars;
 	updateProgress(rtw, vars, true);
 	
