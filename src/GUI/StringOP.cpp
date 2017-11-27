@@ -802,7 +802,7 @@ vector<string> split(const string &s, char del=',')
 			lastdel = i+1;
 		}
 	}
-	if (lastdel<s.size()) strings.push_back(trim(s.substr(lastdel, s.size()-lastdel)));  // works w/o trim- Trim can be deleted
+    if (lastdel<s.size() && trim(s.substr(lastdel, s.size()-lastdel))!="\r") strings.push_back(trim(s.substr(lastdel, s.size()-lastdel)));  // works w/o trim- Trim can be deleted
 	for (int i=0; i<strings.size(); i++) strings[i] = trim(strings[i]);					// Trim can be deleted
 	return strings;
 
