@@ -458,7 +458,9 @@ int CGA::optimize(runtimeWindow* rtw)
 	for (int i = 0; i<nGen; i++)
 	{
 
-		assignfitnesses(rtw);
+        qDebug()<<"Assign Fitnesses";
+        assignfitnesses(rtw);
+        qDebug()<<"Assign Fitnesses done! ";
 		if (rtw->stopTriggered)
 			break;
 		FileOut = fopen(RunFileName.c_str(), "a");
@@ -646,6 +648,7 @@ void CGA::updateProgress(runtimeWindow* rtw, QMap<QString, QString> params, bool
 		}
 		rtw->update(vars);
 	}
+    qDebug()<<"update progress done!";
 }
 void CGA::updateProgress(runtimeWindow* rtw, bool resetGeneration) const
 {
@@ -722,7 +725,9 @@ void CGA::assignfitnesses(runtimeWindow* rtw)
 	Sys1[k].Medium[0].finalize_set_param();
 #endif
 	}
-	updateProgress(rtw, true);
+    qDebug()<<"Update progress inside Assignfitnesses";
+    updateProgress(rtw, true);
+    qDebug()<<"Update progress inside Assignfitnesses, done! ";
 
 /*	int populationProgress;
 	QMap<QString, QVariant> vars;
