@@ -437,14 +437,15 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
 	{	file = fopen(filename.c_str(),"w");
 		fclose(file);
 	}
-#ifdef gifmod
-	QCoreApplication::processEvents();
+#ifdef GIFMOD
+    QCoreApplication::processEvents(QEventLoop::AllEvents,10*1000);
 #endif
-	char buffer[33];
-	if (continue_mcmc == false)
+
+    QString s;
+    if (continue_mcmc == false)
 	{
 		file = fopen(filename.c_str(),"a");
-		fprintf(file,"%s, ", "no.");
+        fprintf(file,"%s, ", "no.");
 			for (int i=0; i<n; i++)
 				fprintf(file, "%s, ", paramname[i].c_str());
 		fprintf(file,"%s, %s, %s,", "logp", "logp_1", "stuck_counter");
@@ -458,7 +459,7 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
 	ini_purt_fact = pertcoeff[0];
 	for (int kk=k; kk<k+nsamps+n_chains; kk+=n_chains)
 	{
-		QCoreApplication::processEvents();
+        QCoreApplication::processEvents(QEventLoop::AllEvents,10*1000);
 		if (rtw->stopTriggered)
 			break;
         
@@ -471,9 +472,9 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
 
 			for (int jj = kk; jj < min(kk + n_chains, nsamples); jj++)
 			{
-				bool stepstuck = !step(jj);
-				QCoreApplication::processEvents();
-				if (stepstuck == true)
+                QCoreApplication::processEvents(QEventLoop::AllEvents,10*1000);
+                bool stepstuck = !step(kk);
+                if (stepstuck == true)
 				{
 					stuckcounter[jj - kk]++;
 					acceptance_count++;
@@ -482,28 +483,29 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
 					stuckcounter[jj - kk] = 0;
 
 			}
-			QCoreApplication::processEvents();
+            QCoreApplication::processEvents(QEventLoop::AllEvents,100*1000);
 
 			if (kk % (50 * n_chains) == 0 || kk == k + nsamps + n_chains - 1)
 			{
-				file = fopen(filename.c_str(), "a");
+
+                file = fopen(filename.c_str(), "a");
 				for (int jj = max(min(kk + n_chains, nsamples) - 50 * n_chains, 0); jj < min(kk + n_chains, nsamples); jj++)
 				{
 					if (jj%writeinterval == 0)
 					{
-						QCoreApplication::processEvents();
+                        QCoreApplication::processEvents(QEventLoop::AllEvents,100*1000);
 
 						fprintf(file, "%i, ", jj);
 						for (int i = 0; i < n; i++)
 							fprintf(file, "%le, ", Params[jj][i]);
-						fprintf(file, "%le, %le, %f,", logp[jj], logp1[jj], stuckcounter[jj%n_chains]);
+                        fprintf(file, "%le, %le, %f,", logp[jj], logp1[jj], stuckcounter[jj%n_chains]);
 						for (int j = 0; j < pertcoeff.size(); j++) fprintf(file, "%le,", pertcoeff[j]);
 						fprintf(file, "\n");
 						
 					}
 
-					cout << jj << "," << pertcoeff[0] << "," << stuckcounter.max() << "," << stuckcounter.min() << endl;
-					qDebug() << jj << "," << pertcoeff[0] << "," << stuckcounter.max() << "," << stuckcounter.min();
+                    //cout << jj << "," << pertcoeff[0] << "," << stuckcounter.max() << "," << stuckcounter.min() << endl;
+                    //qDebug() << jj << "," << pertcoeff[0] << "," << stuckcounter.max() << "," << stuckcounter.min();
 					//if (jj<n_burnout)
 				}
 				fclose(file);
@@ -534,7 +536,22 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
 			vars["perterbation factor"] = pertcoeff[0] / ini_purt_fact;
 			vars["acceptance rate"] = double(accepted_count) / double(total_count);
 			vars["x"] = kk;
-			rtw->update(vars);
+            rtw->update(vars);
+
+
+            if (rtw->sln_dtl_active)
+            {   s = s+"Sample no: "+QString::number(kk) + " Parameters: ";
+                for (int i = 0; i < n; i++)
+                    s+=QString::number(Params[kk][i]);
+
+                s+= " Stuck counter: " + QString::number(stuckcounter[kk%n_chains]);
+                s+= " Log Likelihood: " + QString::number(logp[kk],'e',2);
+
+                rtw->slndetails_append(s);
+                rtw->slndetails_append(" ");
+            }
+            QCoreApplication::processEvents(QEventLoop::AllEvents,10*1000);
+
 		}
 	}
 	

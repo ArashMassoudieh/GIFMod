@@ -2193,7 +2193,8 @@ void CMedium::solve_fts_m2(double dt)
 				{
 					QMessageBox::warning(runtimewindow, "Simulation Failed", "Runtime greater than the runtime limit set by the user", QMessageBox::Ok);
 				}
-				updateProgress();
+
+                updateProgress();
 				return;
 			}
 
@@ -2392,6 +2393,9 @@ void CMedium::solve_fts_m2(double dt)
 				t += dtt;
 			}
 		}
+
+        if (iii%120==0)
+            QCoreApplication::processEvents(QEventLoop::AllEvents,10*1000);
 	}
 	qDebug() << "Solution Ended!";
 

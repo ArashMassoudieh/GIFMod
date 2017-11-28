@@ -253,9 +253,11 @@ void runtimeWindow::on_btnStop_clicked()
 
 void runtimeWindow::on_slndtls_clicked()
 {
-	slndtlwndw = new slndetailswindow(this);
-	slndtlwndw->show();
-	sln_dtl_active = true;
+    if (!sln_dtl_active)
+    {   slndtlwndw = new slndetailswindow(this);
+        slndtlwndw->show();
+        sln_dtl_active = true;
+    }
 }
 
 void runtimeWindow::slndetails_append(QString s)

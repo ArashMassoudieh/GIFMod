@@ -499,7 +499,7 @@ int CGA::optimize(runtimeWindow* rtw)
         //qDebug()<<"Line 499 in runmodel.cpp";
 		updateProgress(rtw, vars);
         //qDebug()<<"Update progress done! (501)";
-        QApplication::processEvents();
+        QApplication::processEvents(QEventLoop::AllEvents,100*1000);
 
 		//plot i as ngen, exp(-Fitness[i][0] )
 		if (i>10)
@@ -757,18 +757,27 @@ void CGA::assignfitnesses(runtimeWindow* rtw)
 #ifdef GWA
 		FileOut = fopen((Sys.pathname() + "detail_GA.txt").c_str(), "a");
 #endif
-		std::fprintf(FileOut, "%i, ", k);
+
+        std::fprintf(FileOut, "%i, ", k);
+        QString s = "Begining individual " + QString::number(k) + " Parameter values: ";
 		for (int l = 0; l < Ind[0].nParams; l++)
 			if (loged[get_act_paramno(l)] == true)
-				std::fprintf(FileOut, "%le, ", pow(10, Ind[k].x[l]));
+            {	std::fprintf(FileOut, "%le, ", pow(10, Ind[k].x[l]));
+                s=s+QString::number(pow(10, Ind[k].x[l]),'e',2) + ", ";
+            }
 			else
-			std::fprintf(FileOut, "%le, ", Ind[k].x[l]);
-
+            {   std::fprintf(FileOut, "%le, ", Ind[k].x[l]);
+                s=s+QString::number(Ind[k].x[l],'e',2);
+            }
+#pragma omp critical
+        {if (rtw->sln_dtl_active)
+            rtw->slndetails_append(s);
+        }
 		//fprintf(FileOut, "%le, %le, %i, %e, %i, %i", Ind[k].actual_fitness, Ind[k].fitness, Ind[k].rank, time_[k], threads_num[k],num_threads[k]);
 		//fprintf(FileOut, "%le, %le, %i, %e", Ind[k].actual_fitness, Ind[k].fitness, Ind[k].rank, time_[k]);
 		std::fprintf(FileOut, "\n");
 		std::fclose(FileOut);
-		QCoreApplication::processEvents();
+        QCoreApplication::processEvents(QEventLoop::AllEvents,100*1000);
 		clock_t t0 = clock();
 //		for (int ts = 0; ts<1; ts++)
 //		{
@@ -788,7 +797,13 @@ void CGA::assignfitnesses(runtimeWindow* rtw)
 		FileOut = fopen((Sys.Medium[0].pathname + "detail_GA.txt").c_str(), "a");
 #endif
 
-		std::fprintf(FileOut, "%i, fitness=%le, time=%e, epochs=%i\n", k, Ind[k].actual_fitness, time_[k], epochs[k]);
+#pragma omp critical
+        {
+            if (rtw->sln_dtl_active)
+                rtw->slndetails_append("Finished Individual " + QString::number(k) + ":" + " fitness: " + QString::number(Ind[k].actual_fitness) + "time: " + QString::number(time_[k]) + "epochs: " + QString::number(epochs[k]));
+        }
+
+        std::fprintf(FileOut, "%i, fitness=%le, time=%e, epochs=%i\n", k, Ind[k].actual_fitness, time_[k], epochs[k]);
 		std::fclose(FileOut);
 
 	}
@@ -899,12 +914,12 @@ void MainWindow::inverseRun(CMediumSet *modelSet, runtimeWindow* rtw)
 
 			//CMatrix S_mat = MCMC.sensitivity_mat(GA.dp_sens, GA.final_params);
 			//S_mat.writetofile(modelSet->pathname + "sensitivity_mat.txt");
-			qDebug() << 1004;
+            //qDebug() << 1004;
 	rtw->setLabel("Local Sensitivity Analysis");
 			CMatrix S_mat_lumped = MCMC.sensitivity_mat_lumped(GA.dp_sens, GA.final_params);
-			qDebug() << 1005;
+            //qDebug() << 1005;
 			S_mat_lumped.writetofile(modelSet->FI.outputpathname + "sensitivity_mat_lumped.txt");
-			qDebug() << 1006;
+            //qDebug() << 1006;
 			mainGraphWidget->results->localSensitivityMatrix = S_mat_lumped;
 
 		}
@@ -913,14 +928,14 @@ void MainWindow::inverseRun(CMediumSet *modelSet, runtimeWindow* rtw)
 	//**************************************** MCMC ****************************************
 	if (GA.mcmc_run == true && rtw->stopTriggered == false)	//Switch for MCMC Section
 	{
-		qDebug() << 1008;
+        //qDebug() << 1008;
 		if (GA.justreadmcmc == false)
 		{
-			qDebug() << 1009;
+            //qDebug() << 1009;
 			rtw->setMode("MCMC");
 			rtw->setLabel("Stochastic Parameter Estimation");
 			MCMC.step(mcmcstart, int((MCMC.nsamples - mcmcstart) / MCMC.n_chains)*MCMC.n_chains, MCMC.outputfilename, rtw);
-			qDebug() << 1010;
+            //qDebug() << 1010;
 			// MCMC run time :			
 			t1 = clock() - t0;
 			float run_time = ((float)t1) / CLOCKS_PER_SEC;

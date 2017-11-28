@@ -11,6 +11,7 @@ slndetailswindow::slndetailswindow(runtimeWindow *_parent)
 
 slndetailswindow::~slndetailswindow()
 {
+    parent->sln_dtl_active = false;
 }
 
 void slndetailswindow::close_window()
