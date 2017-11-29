@@ -441,7 +441,7 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
     QCoreApplication::processEvents(QEventLoop::AllEvents,10*1000);
 #endif
 
-    QString s;
+
     if (continue_mcmc == false)
 	{
 		file = fopen(filename.c_str(),"a");
@@ -473,7 +473,7 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
 			for (int jj = kk; jj < min(kk + n_chains, nsamples); jj++)
 			{
                 QCoreApplication::processEvents(QEventLoop::AllEvents,10*1000);
-                bool stepstuck = !step(kk);
+                bool stepstuck = !step(jj);
                 if (stepstuck == true)
 				{
 					stuckcounter[jj - kk]++;
@@ -482,7 +482,23 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
 				else
 					stuckcounter[jj - kk] = 0;
 
-			}
+
+#pragma omp critical
+            {   if (rtw->sln_dtl_active)
+                {   QString s;
+                    s = s+"Sample no: "+QString::number(jj) + " Parameters: ";
+                    for (int i = 0; i < n; i++)
+                        s+=QString::number(Params[jj][i],'e',2)+ ",";
+
+                    s+= " Stuck counter: " + QString::number(stuckcounter[jj-kk]);
+                    s+= " Log Likelihood: " + QString::number(logp[jj],'e',2);
+
+                    rtw->slndetails_append(s);
+                    rtw->slndetails_append(" ");
+                    QCoreApplication::processEvents(QEventLoop::AllEvents,100*1000);
+                }
+            }
+        }
             QCoreApplication::processEvents(QEventLoop::AllEvents,100*1000);
 
 			if (kk % (50 * n_chains) == 0 || kk == k + nsamps + n_chains - 1)
@@ -538,19 +554,6 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
 			vars["x"] = kk;
             rtw->update(vars);
 
-
-            if (rtw->sln_dtl_active)
-            {   s = s+"Sample no: "+QString::number(kk) + " Parameters: ";
-                for (int i = 0; i < n; i++)
-                    s+=QString::number(Params[kk][i]);
-
-                s+= " Stuck counter: " + QString::number(stuckcounter[kk%n_chains]);
-                s+= " Log Likelihood: " + QString::number(logp[kk],'e',2);
-
-                rtw->slndetails_append(s);
-                rtw->slndetails_append(" ");
-            }
-            QCoreApplication::processEvents(QEventLoop::AllEvents,10*1000);
 
 		}
 	}
