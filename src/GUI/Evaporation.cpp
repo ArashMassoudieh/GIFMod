@@ -34,9 +34,9 @@ CEvaporation::CEvaporation(string _model)
 	model = _model;
 	if (model == "aerodynamic")
 	{
-		string Ea = "(0.0000000009424*f[20]*f[22]*(1-f[21])*f[6000])";
-		string wind_term = "f[6003]*" + Ea + ")";
-		expression = CStringOP("(" + wind_term + ")*86400*f[2]");
+		//string Ea = "(0.0000000009424*f[20]*f[22]*(1-f[21])*f[6000])";
+		string Ea =   "(0.00000000001522790*f[20]*f[22]*(1-f[21])*f[6000])";
+		expression = CStringOP("(" + Ea + ")*86400*f[2]");
 		parameters.resize(5);
 		parameters[3] = 66;
 	}
@@ -69,7 +69,7 @@ CEvaporation::CEvaporation(string _model)
 	if (model == "penman")
 	{
 		string Er = "(f[18]/(1000*f[23]))";
-		string Ea = "(0.0000000009424*f[20]*f[22]*(1-f[21])*f[6000])";
+		string Ea = "(0.00000000001522790*f[20]*f[22]*(1-f[21])*f[6000])";
 		string Delta = "(4098*f[22]/((237.3+f[19])^2))";
 		string light_term = "(f[6004]*" + Delta + "/(" + Delta + " + f[6003])*" + Er + ")";
 		string wind_term = "(f[6003]/(f[6003]+" + Delta + ")*" + Ea +")";
@@ -82,7 +82,7 @@ CEvaporation::CEvaporation(string _model)
 	if (model == "fao-56")
 	{
 		string Er = "(f[18]/(1000*f[23]))";
-		string Ea = "(0.0000000009424*f[20]*f[22]*(1-f[21])*f[6000])";
+		string Ea = "(0.00000000001522790*f[20]*f[22]*(1-f[21])*f[6000])";
 		string Delta = "(4098*f[22]/((237.3+f[19])^2))";
 		string light_term = "(f[6004]*" + Delta + "/(" + Delta + "+ f[6003])*" + Er + ")";
 		string wind_term = "(f[6003]/(f[6003]+" + Delta + ")*" + Ea + ")";
@@ -110,7 +110,7 @@ CEvaporation::CEvaporation(string _model)
 	if (model == "penman (plant)")
 	{
 		string Er = "(f[18]/(1000*f[23]))";
-		string Ea = "(0.0000000009424*f[20]*f[22]*(1-f[21])*f[6000])";
+		string Ea = "(0.00000000001522790*f[20]*f[22]*(1-f[21])*f[6000])";
 		string Delta = "(4098*f[22]/((237.3+f[19])^2))";
 		string light_term = "(f[6004]*" + Delta + "/(" + Delta + "+ f[6003])*" + Er + ")";
 		string wind_term = "(f[6003]/(f[6003]+" + Delta + ")*" + Ea + ")";
@@ -122,7 +122,7 @@ CEvaporation::CEvaporation(string _model)
 
 	if (model == "aerodynamic (plant)")
 	{
-		string Ea = "(0.0000000009424*f[20]*f[22]*(1-f[21])*f[6000])";
+		string Ea = "(0.00000000001522790*f[20]*f[22]*(1-f[21])*f[6000])";
 		string wind_term = "f[6003]*" + Ea + ")";
 		expression = CStringOP("(" + wind_term + ")*86400*f[2]*f[24]/(f[24]+f[6006])");
 		parameters.resize(10);
