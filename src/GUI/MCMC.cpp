@@ -501,7 +501,7 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
         }
             QCoreApplication::processEvents(QEventLoop::AllEvents,100*1000);
 
-			if (kk % (50 * n_chains) == 0 || kk == k + nsamps + n_chains - 1)
+			if (kk % (50 * n_chains) < n_chains || kk == k + nsamps + n_chains - 1)
 			{
 
                 file = fopen(filename.c_str(), "a");
