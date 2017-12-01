@@ -238,7 +238,9 @@ CCommand Wizard_Script_Reader::get_script_change_properties(wiz_entity *wiz_ent)
 {
 	CCommand command;
 	command.command = "setprop";
-	if (wiz_ent->has_parameter("index")) 
+	if (wiz_ent->has_parameter("index_h"))
+		command.values.append(wiz_ent->name() + " (" + wiz_ent->get_value("index_h") + "," + wiz_ent->get_value("index_v") + ")");
+	else if (wiz_ent->has_parameter("index")) 
 		command.values.append(wiz_ent->name() + " (" + wiz_ent->get_value("index")+ ")");
 	else
 		command.values.append(wiz_ent->name());
