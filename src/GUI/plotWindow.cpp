@@ -585,7 +585,7 @@ void plotWindow::contextMenuEvent(QContextMenuEvent *event)
 						QList<QCPData> oldY = ui->customPlot->graph(i)->data()->values();
 						for (int c = 0; c < n; ++c)
 						{
-							qDebug() << c;
+							//qDebug() << c;
 							if (newTimeFormat)
 								x[c] = xtoTime(oldX[c]);
 							else

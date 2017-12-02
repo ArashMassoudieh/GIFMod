@@ -161,7 +161,7 @@ void csvEditor::load(QString fileName)
 				}
 
 			}
-			qDebug() << row << col;
+			//qDebug() << row << col;
 		}
 		row += addRow;
 	}
@@ -211,7 +211,7 @@ void csvEditor::save(QString fileName)
 		QStringList list;
 		for (int j = 0; j < ui->tableWidget->columnCount(); j++)
 		{
-			qDebug() << i << j;
+			//qDebug() << i << j;
 			if (!precipitation) // time vaule tables
 			{
 				if (j%2==0)//time columns
@@ -226,7 +226,7 @@ void csvEditor::save(QString fileName)
 				else// value columns
 					list.append(ui->tableWidget->item(i, j) ? ui->tableWidget->item(i, j)->text() : "");
 			}
-			qDebug() << i << j << list.last();
+			//qDebug() << i << j << list.last();
 		}
 		QString line = list.join(",");
 		bool lastRow = (i == ui->tableWidget->rowCount() - 1) ? true : false;
@@ -350,7 +350,7 @@ QString csvEditor::text()
 
 void csvEditor::on_horizontal_sectionClicked(int i)
 {
-	qDebug() << i;
+	//qDebug() << i;
 }
 
 void csvEditor::on_horizontal_sectionDoubleClicked(int i)

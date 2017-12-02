@@ -65,7 +65,7 @@ void commandWindow::newCommandSubmitted()
 	ui->textEdit->append(result);
 	ui->textEdit->append("\n");
 
-	qDebug() << ui->textEdit->toPlainText();
+	//qDebug() << ui->textEdit->toPlainText();
 	ui->lineEdit->setText("");
 }
 
@@ -127,7 +127,7 @@ void commandWindow::append(QString s)
 
 void commandWindow::commandDotRelease(QKeyEvent *e)
 {
-	qDebug() << "dot";
+	//qDebug() << "dot";
 }
 
 void commandWindow::commandCommaRelease(QKeyEvent *e)
@@ -144,13 +144,13 @@ void commandWindow::commandSpaceRelease(QKeyEvent * e)
 
 void commandWindow::commandKeyRelease(QKeyEvent *e)
 {
-	qDebug() << prevIndex << nextIndex;
+	//qDebug() << prevIndex << nextIndex;
 
 	/*	if (prevIndex < 0)
 			prevIndex = 0;
 		if (nextIndex > commandsHistory.count() - 1)
 			nextIndex = commandsHistory.count() - 1;
-		qDebug() << prevIndex << nextIndex;
+		//qDebug() << prevIndex << nextIndex;
 		*/
 	int index;
 	if (e->key() == Qt::Key_Up)
@@ -168,7 +168,7 @@ void commandWindow::commandKeyRelease(QKeyEvent *e)
 		prevIndex = max(0, prevIndex);
 	}
 
-	qDebug() << prevIndex << index << nextIndex;
+	//qDebug() << prevIndex << index << nextIndex;
 	ui->lineEdit->setText(commandsHistory[index]);
 }
 

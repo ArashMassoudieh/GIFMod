@@ -224,7 +224,7 @@ CCommand Wizard_Script_Reader::get_script_commands_project_settings(wiz_entity *
 				else
 				{
 					QDateTime QDT = QDateTime::fromString(wiz_ent->get_value(item),"M/d/yyyy hh:mm AP");
-					qDebug() << QDT << QDT.toString() << QDT.isValid();
+					//qDebug() << QDT << QDT.toString() << QDT.isValid();
 					command.parameters[item.entity] = QString::number(QDate2Xldate(QDT)); 
 				}
 			}
@@ -265,7 +265,7 @@ CCommand Wizard_Script_Reader::get_script_change_properties(wiz_entity *wiz_ent)
 				else
 				{
 					QDateTime QDT = QDateTime::fromString(wiz_ent->get_value(item), "M/d/yyyy hh:mm AP");
-					qDebug() << QDT << QDT.toString() << QDT.isValid();
+					//qDebug() << QDT << QDT.toString() << QDT.isValid();
 					command.parameters[item.entity] = QString::number(QDate2Xldate(QDT));
 				}
 			}

@@ -144,7 +144,7 @@ int ObservedConstituentTableModel::rowCount(const QModelIndex & index) const
 	return 1;
 /*	int size = node->constituentInitialCondition.count();
 	static int rows;
-	qDebug() << QString("size of Constituent initial conditions is %1").arg(size);
+	//qDebug() << QString("size of Constituent initial conditions is %1").arg(size);
 
 	return node->constituentInitialCondition.count()+1;
 */

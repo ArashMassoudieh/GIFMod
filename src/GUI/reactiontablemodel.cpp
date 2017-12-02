@@ -202,7 +202,7 @@ bool ReactionTableModel::setData(const QModelIndex &index, const QVariant &value
 	}
 	QVariant oldData = data(index, role);
 	if (value == oldData){
-		qDebug() << "nothing has changed.";
+		//qDebug() << "nothing has changed.";
 		return false;
 	}
     if (index.column() >= 0) {

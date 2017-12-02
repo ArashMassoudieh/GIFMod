@@ -458,9 +458,9 @@ int CGA::optimize(runtimeWindow* rtw)
 	for (int i = 0; i<nGen; i++)
 	{
 
-        //qDebug()<<"Assign Fitnesses";
+        ////qDebug()<<"Assign Fitnesses";
         assignfitnesses(rtw);
-        //qDebug()<<"Assign Fitnesses done! ";
+        ////qDebug()<<"Assign Fitnesses done! ";
 		if (rtw->stopTriggered)
 			break;
 		FileOut = fopen(RunFileName.c_str(), "a");
@@ -493,12 +493,12 @@ int CGA::optimize(runtimeWindow* rtw)
 		QMap<QString, QString> vars;
 		vars["i"] = QString::number(i);
 		vars["likelihood"] = QString::number(-Fitness[i][0]);
-		qDebug() << i << -Fitness[i][0];
+		//qDebug() << i << -Fitness[i][0];
 
 		rtw->experiment = &Sys.Medium[0];//should represent experiment
-        //qDebug()<<"Line 499 in runmodel.cpp";
+        ////qDebug()<<"Line 499 in runmodel.cpp";
 		updateProgress(rtw, vars);
-        //qDebug()<<"Update progress done! (501)";
+        ////qDebug()<<"Update progress done! (501)";
         QApplication::processEvents(QEventLoop::AllEvents,100*1000);
 
 		//plot i as ngen, exp(-Fitness[i][0] )
@@ -539,17 +539,17 @@ int CGA::optimize(runtimeWindow* rtw)
 		Fitness[i][0] = Ind[j].actual_fitness;
 
 		fillfitdist();
-        //qDebug()<<"Cross over";
+        ////qDebug()<<"Cross over";
         if (RCGA == true)
 			crossoverRC();
 		else
 			crossover();
 
-        //qDebug()<<"Cross over done!";
+        ////qDebug()<<"Cross over done!";
         mutate(pmute);
-        //qDebug()<<"Mutation done!";
+        ////qDebug()<<"Mutation done!";
 		shake();
-        //qDebug()<<"Shaking done!";
+        ////qDebug()<<"Shaking done!";
 	}
 	//Form1.label1->Text=L"finalizing GA ";
 	//Form1.Refresh();
@@ -577,9 +577,9 @@ int CGA::optimize(runtimeWindow* rtw)
 	if (!rtw->stopTriggered)
 		assignfitnesses(final_params);
 
-    //qDebug()<<"clearing sys1";
+    ////qDebug()<<"clearing sys1";
     Sys1.clear();
-    //qDebug()<<"Systems cleared";
+    ////qDebug()<<"Systems cleared";
 	QMap<QString, QString> vars;
 	updateProgress(rtw, vars, true);
 	
@@ -655,7 +655,7 @@ void CGA::updateProgress(runtimeWindow* rtw, QMap<QString, QString> params, bool
 		}
 		rtw->update(vars);
 	}
-    //qDebug()<<"update progress done! (658)";
+    ////qDebug()<<"update progress done! (658)";
 }
 void CGA::updateProgress(runtimeWindow* rtw, bool resetGeneration) const
 {
@@ -732,9 +732,9 @@ void CGA::assignfitnesses(runtimeWindow* rtw)
 	Sys1[k].Medium[0].finalize_set_param();
 #endif
 	}
-    //qDebug()<<"Update progress inside Assignfitnesses";
+    ////qDebug()<<"Update progress inside Assignfitnesses";
     updateProgress(rtw, true);
-    //qDebug()<<"Update progress inside Assignfitnesses, done! ";
+    ////qDebug()<<"Update progress inside Assignfitnesses, done! ";
 
 /*	int populationProgress;
 	QMap<QString, QVariant> vars;
@@ -853,7 +853,7 @@ void MainWindow::inverseRun(CMediumSet *modelSet, runtimeWindow* rtw)
 			//out.writetofile(modelSet->outputpathname +"likelihood.txt");
 		}
 		rtw->setLabel("Updating Model Parameters");
-		qDebug() << 900;
+		//qDebug() << 900;
 		mainGraphWidget->trackingUndo = false;
 		QList<Entity*> GUIparameters = mainGraphWidget->entitiesByType("Parameter");
 
@@ -888,7 +888,7 @@ void MainWindow::inverseRun(CMediumSet *modelSet, runtimeWindow* rtw)
 
 	//**************************************** local sensitivity ****************************************
 	t0 = clock();
-	qDebug() << 1000;
+	//qDebug() << 1000;
 	CMCMC MCMC(GA);
 	int mcmcstart = MCMC.n_chains;
 	if (GA.justreadmcmc == false && rtw->stopTriggered == false)
@@ -897,15 +897,15 @@ void MainWindow::inverseRun(CMediumSet *modelSet, runtimeWindow* rtw)
 		//	Form1.Refresh();
 		if (MCMC.continue_mcmc == false)
 		{
-			qDebug() << 1001;
+			//qDebug() << 1001;
 			MCMC.initialize(GA.final_params);
 		}
 		else
 		{
-			qDebug() << 1002;
+			//qDebug() << 1002;
 			mcmcstart = MCMC.readfromfile(MCMC.outputfilename);
 		}
-		qDebug() << 1003;
+		//qDebug() << 1003;
 
 		if ((GA.sens_out == true) && (MCMC.continue_mcmc == false))
 		{
@@ -914,28 +914,28 @@ void MainWindow::inverseRun(CMediumSet *modelSet, runtimeWindow* rtw)
 
 			//CMatrix S_mat = MCMC.sensitivity_mat(GA.dp_sens, GA.final_params);
 			//S_mat.writetofile(modelSet->pathname + "sensitivity_mat.txt");
-            //qDebug() << 1004;
+            ////qDebug() << 1004;
 	rtw->setLabel("Local Sensitivity Analysis");
 			CMatrix S_mat_lumped = MCMC.sensitivity_mat_lumped(GA.dp_sens, GA.final_params);
-            //qDebug() << 1005;
+            ////qDebug() << 1005;
 			S_mat_lumped.writetofile(modelSet->FI.outputpathname + "sensitivity_mat_lumped.txt");
-            //qDebug() << 1006;
+            ////qDebug() << 1006;
 			mainGraphWidget->results->localSensitivityMatrix = S_mat_lumped;
 
 		}
 	}
-	qDebug() << 1007;
+	//qDebug() << 1007;
 	//**************************************** MCMC ****************************************
 	if (GA.mcmc_run == true && rtw->stopTriggered == false)	//Switch for MCMC Section
 	{
-        //qDebug() << 1008;
+        ////qDebug() << 1008;
 		if (GA.justreadmcmc == false)
 		{
-            //qDebug() << 1009;
+            ////qDebug() << 1009;
 			rtw->setMode("MCMC");
 			rtw->setLabel("Stochastic Parameter Estimation");
 			MCMC.step(mcmcstart, int((MCMC.nsamples - mcmcstart) / MCMC.n_chains)*MCMC.n_chains, MCMC.outputfilename, rtw);
-            //qDebug() << 1010;
+            ////qDebug() << 1010;
 			// MCMC run time :			
 			t1 = clock() - t0;
 			float run_time = ((float)t1) / CLOCKS_PER_SEC;
@@ -945,20 +945,20 @@ void MainWindow::inverseRun(CMediumSet *modelSet, runtimeWindow* rtw)
 
 			runtime_file << " MCMC Run Time :  " << run_time << st << endl;
 		}
-		qDebug() << 1011;
+		//qDebug() << 1011;
 		CBTCSet MCMCOut(MCMC.outputfilename, false);
 		MCMCOut.names = MCMC.paramname;
 		if (GA.calc_distributions == true)
 		{
-			qDebug() << 1012;
+			//qDebug() << 1012;
 			CBTCSet posterior_distribution = MCMCOut.distribution(GA.no_bins, MCMC.paramname.size(), MCMC.n_burnout);
 			posterior_distribution.names = MCMC.paramname;
 			posterior_distribution.writetofile(modelSet->FI.outputpathname + "posterior_distribution.txt");
-			qDebug() << 1013;
+			//qDebug() << 1013;
 			mainGraphWidget->results->posteriors = posterior_distribution;
 
 			CBTCSet prior_distribution = MCMC.prior_distribution(GA.no_bins * 10);
-			qDebug() << 1014;
+			//qDebug() << 1014;
 			prior_distribution.names = MCMC.paramname;
 			prior_distribution.writetofile(modelSet->FI.outputpathname + "prior_distribution.txt");
 
@@ -966,13 +966,13 @@ void MainWindow::inverseRun(CMediumSet *modelSet, runtimeWindow* rtw)
 		}
 
 		//********************************* MCMC Percentile **************************************
-		qDebug() << 1015;
+		//qDebug() << 1015;
 		t0 = clock();
 		char buffer[33];
 
 		if (GA.calculate_percentile == true)
 		{
-			qDebug() << 1016;
+			//qDebug() << 1016;
 			vector<int> index;
 			for (int i=0; i<MCMC.nActParams; i++) index.push_back(i+1);
 			vector<double> p2dot5 = MCMCOut.percentile(0.025, MCMC.n_burnout);
@@ -983,7 +983,7 @@ void MainWindow::inverseRun(CMediumSet *modelSet, runtimeWindow* rtw)
 
 			FILE *filepercentile;
 			filepercentile = fopen((modelSet->FI.outputpathname + "percentiles.txt").c_str(), "w");
-			qDebug() << 1017;
+			//qDebug() << 1017;
 			for (int i = 0; i < MCMCOut.names.size(); i++)
 				fprintf(filepercentile, "%s, ", MCMCOut.names[i].c_str());
 
@@ -1008,7 +1008,7 @@ void MainWindow::inverseRun(CMediumSet *modelSet, runtimeWindow* rtw)
 
 			int n = MCMCOut.names.size();
 			mainGraphWidget->results->percentiles.resize(n);
-			qDebug() << 1018;
+			//qDebug() << 1018;
 			for (int i = 0; i < n; i++)
 			{
 				mainGraphWidget->results->percentiles[i].parameter = MCMCOut.names[i];
@@ -1022,7 +1022,7 @@ void MainWindow::inverseRun(CMediumSet *modelSet, runtimeWindow* rtw)
 		//********************************* MCMC mean out **************************************
 
 			double out1 = GA.assignfitnesses(mean);
-			qDebug() << 1019;
+			//qDebug() << 1019;
 
 			GA.Sys_out.ANS_obs.writetofile(modelSet->FI.outputpathname + "BTC_Obs_mean.txt", modelSet->FI.write_interval);
 			
@@ -1032,7 +1032,7 @@ void MainWindow::inverseRun(CMediumSet *modelSet, runtimeWindow* rtw)
 
 		if (GA.calculate_correlation == true)
 		{
-			qDebug() << 1020;
+			//qDebug() << 1020;
 			CMatrix correlation_mat = MCMCOut.correlation(MCMC.n_burnout, MCMC.MCMCParam.size());
 			correlation_mat.writetofile(modelSet->FI.outputpathname + "correlation_mat.txt");
 			mainGraphWidget->results->correlationMatrix = correlation_mat;
@@ -1042,21 +1042,21 @@ void MainWindow::inverseRun(CMediumSet *modelSet, runtimeWindow* rtw)
 
 		if (GA.mcmc_realization == true)
 		{
-			qDebug() << 1021;
+			//qDebug() << 1021;
 			rtw->setLabel("Generating Posterior Realizations");
 			MCMC.rtw = rtw;
 			MCMC.get_outputpercentiles(MCMCOut);
-			qDebug() << 1022;
+			//qDebug() << 1022;
 			if (GA.obs_realization_writeout)
 				for (int i = 0; i < MCMC.G.measured_quan.size(); i++)
 					for (int j = 0; j < 1; j++)
 						MCMC.BTCout_obs[j][i].writetofile(modelSet->FI.outputpathname + "BTC_obs_" + MCMC.G.measured_quan[i].name + ".txt", modelSet->FI.write_interval);
-			qDebug() << 1023;
+			//qDebug() << 1023;
 			if (GA.noise_realization_writeout)
 				for (int i = 0; i < MCMC.G.measured_quan.size(); i++)
 					for (int j = 0; j < 1; j++)
 						MCMC.BTCout_obs_noise[j][i].writetofile(modelSet->FI.outputpathname + "BTC_obs_noise_" + MCMC.G.measured_quan[i].name + ".txt", modelSet->FI.write_interval);
-			qDebug() << 1024;
+			//qDebug() << 1024;
 			// calculating percentiles
 			
 			mainGraphWidget->results->realizations = MCMC.BTCout_obs;
@@ -1065,19 +1065,19 @@ void MainWindow::inverseRun(CMediumSet *modelSet, runtimeWindow* rtw)
 			mainGraphWidget->results->noiseRealizationsPercentiles = MCMC.BTCout_obs_prcntle_noise;  
 			mainGraphWidget->results->model = mainGraphWidget->modelSet;
 			// Observations mainGraphWidget->modelSet->measured_quan
-			qDebug() << 1025;
+			//qDebug() << 1025;
 			if (modelSet->FI.realizeparamfilename != "") MCMC.paramsList.writetofile(modelSet->FI.outputpathname + modelSet->FI.realizeparamfilename);
-			qDebug() << 1026;
+			//qDebug() << 1026;
 
 			if (MCMC.global_sensitivity == true)
 			{
-				qDebug() << 1027;
+				//qDebug() << 1027;
 				CMatrix global_sens_lumped_avg = Average(MCMC.global_sens_lumped);
 				global_sens_lumped_avg.writetofile(modelSet->FI.outputpathname + "global_sensitivity_lumped_avg.txt");
 				mainGraphWidget->results->globalSensitivityMatrix = global_sens_lumped_avg;
 
 			}
-			qDebug() << 1028;
+			//qDebug() << 1028;
 			// post-MCMC run time :		
 			t1 = clock() - t0;
 			float run_time = ((float)t1) / CLOCKS_PER_SEC;
@@ -1438,7 +1438,7 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 		}
         foreach (QString code , codes)
 		{
-			//			qDebug() << code;
+			//			//qDebug() << code;
 			if (!n->val(code).isEmpty() && n->val(code) != ".") B.set_val(code.toStdString(), n->val(code).toFloat());
 			if (code == "inflow" && !n->val(code).isEmpty() && n->val(code) != ".")
 				B.inflow_filename.push_back(fullFilename(n->val(code), gw->modelPathname()).toStdString());
@@ -1659,7 +1659,7 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 				manual << "constant_input" << "constant_input_val";
 				for each (QString code in n->codes())
 				{
-					//			qDebug() << code;
+					//			//qDebug() << code;
 					if (!manual.contains(code) && !n->val(code).isEmpty() && n->val(code) != ".") T.set_val(code.toStdString(), n->val(code).toFloat());
 
 					if (code == "constant_input_val" && n->val("constant_input").toBool())  T.set_val("constant_input", n->val("constant_input_val").toFloat());
@@ -1849,7 +1849,7 @@ void CMediumSet::g_get_constituents()
 		//S.diffusion = e->val("diffusion").toFloat(); 
         foreach (QString code , e->codes())
 		{
-			qDebug() << code;
+			//qDebug() << code;
 			if (!e->val(code).isEmpty()) S.set_val(code.toStdString(), e->val(code).toFloat());
 		}
 
@@ -2439,10 +2439,10 @@ void CMedium::updateProgress(bool finished)
 			vars["dtt"] = dtt;
 			vars["epoch count"] = epoch_count;
 			QString reason = QString::fromStdString(fail_reason);
-            //qDebug() << reason;
+            ////qDebug() << reason;
 			if (!reason.toLower().contains("none"))
 				vars["label"] = reason;
-            //qDebug()<< t<<dtt;
+            ////qDebug()<< t<<dtt;
 			
 			if (runtimewindow->sln_dtl_active)
 				if (!reason.toLower().contains("none"))
@@ -2676,7 +2676,7 @@ void MainWindow::inverseRun(CGWASet *model, runtimeWindow* progress)
 //		mainGraphWidget->trackingUndo = true;
 		//**************************************** local sensitivity ****************************************
 		t0 = clock();
-		qDebug() << "10";
+		//qDebug() << "10";
 		CMCMC MCMC(GA);
 		int mcmcstart = MCMC.n_chains;
 		if (GA.justreadmcmc == false)
@@ -2706,7 +2706,7 @@ void MainWindow::inverseRun(CGWASet *model, runtimeWindow* progress)
 		//**************************************** MCMC ****************************************
 		if (GA.mcmc_run)
 		{
-			qDebug() << "20";
+			//qDebug() << "20";
 			CBTCSet MCMCOut;
 			bool haveMCMCOut = false;
 			if (GA.justreadmcmc == false)
@@ -2716,21 +2716,21 @@ void MainWindow::inverseRun(CGWASet *model, runtimeWindow* progress)
 				progress->setMode("MCMC");
 				progress->setLabel("Stochastic Parameter Estimation");
 				//			MCMC.step(mcmcstart, int((MCMC.nsamples - mcmcstart) / MCMC.n_chains)*MCMC.n_chains, system.outpathname + MCMC.outputfilename, progress);
-				qDebug() << 21;
+				//qDebug() << 21;
 				MCMC.step(mcmcstart, int((MCMC.nsamples - mcmcstart) / MCMC.n_chains)*MCMC.n_chains, MCMC.outputfilename, progress);
 				progress->setLabel("Stochastic Parameter Estimation done");
-				qDebug() << 22;
+				//qDebug() << 22;
 				MCMCOut = CBTCSet(MCMC.Params, MCMC.writeinterval);
 				for (int i = 0; i < GA.Sys.parameters.size(); i++)
 					MCMCOut.setname(i, GA.Sys.parameters[i].name);
 //				MCMCOut.writetofile(MCMC.outputfilename + "original");
 //				CBTC(MCMC.logp).writefile(MCMC.outputfilename + "logp");
 //				CBTC(MCMC.logp1).writefile(MCMC.outputfilename + "logp1");
-				qDebug() << 23;
+				//qDebug() << 23;
 				MCMCOut.append(CBTC(MCMC.logp, MCMC.writeinterval), "Posterior Probability");
-				qDebug() << 24;
+				//qDebug() << 24;
 				MCMCOut.append(CBTC(MCMC.logp1, MCMC.writeinterval), "Posterior Probability1");
-				qDebug() << 25;
+				//qDebug() << 25;
 				haveMCMCOut = true;
 	//			MCMCOut.writetofile(MCMC.outputfilename + "combined");
 				// MCMC run time :
@@ -2742,7 +2742,7 @@ void MainWindow::inverseRun(CGWASet *model, runtimeWindow* progress)
 
 				runtime_file << " MCMC Run Time :  " << run_time << st << endl;
 			}
-			qDebug() << "30";
+			//qDebug() << "30";
 			if (!haveMCMCOut)
 			{
 				model->operator()().gw->log(QString("Loading MCMC data from: %1").arg(QString::fromStdString(MCMC.outputfilename)));
@@ -2751,8 +2751,8 @@ void MainWindow::inverseRun(CGWASet *model, runtimeWindow* progress)
 				MCMCOut.names = MCMC.paramname;
 			}
 			//		CBTCSet MCMCOut(system.outpathname + MCMC.outputfilename, false);
-			qDebug() << "31";
-			qDebug() << "32";
+			//qDebug() << "31";
+			//qDebug() << "32";
 
 			//CBTCSet MCMC_red = MCMCOut.Extract(11);
 			//MCMC_red.names=MCMCOut.names;
@@ -2760,23 +2760,23 @@ void MainWindow::inverseRun(CGWASet *model, runtimeWindow* progress)
 
 			if (GA.calc_distributions == true)
 			{
-				qDebug() << "33" << GA.no_bins << MCMC.paramname.size() << MCMC.n_burnout;
+				//qDebug() << "33" << GA.no_bins << MCMC.paramname.size() << MCMC.n_burnout;
 				progress->setLabel("Calculating Distributions");
 
 				CBTCSet posterior_distribution = MCMCOut.distribution(GA.no_bins, MCMC.paramname.size(), MCMC.n_burnout);
-				qDebug() << 33.1;
+				//qDebug() << 33.1;
 				posterior_distribution.names = MCMC.paramname;
-				qDebug() << 33.2;
+				//qDebug() << 33.2;
 				posterior_distribution.writetofile(system().outpathname + "posterior_distribution.txt");
-				qDebug() << "34";
+				//qDebug() << "34";
 
 				mainGraphWidget->results->posteriors = posterior_distribution;
-				qDebug() << "35";
+				//qDebug() << "35";
 
 				CBTCSet prior_distribution = MCMC.prior_distribution(GA.no_bins * 10);
 				prior_distribution.names = MCMC.paramname;
 				prior_distribution.writetofile(system().outpathname + "prior_distribution.txt");
-				qDebug() << "36";
+				//qDebug() << "36";
 
 				mainGraphWidget->results->priors = prior_distribution;
 			}
@@ -2784,7 +2784,7 @@ void MainWindow::inverseRun(CGWASet *model, runtimeWindow* progress)
 
 
 			//********************************* MCMC Percentile **************************************
-			qDebug() << "40";
+			//qDebug() << "40";
 
 			t0 = clock();
 			char buffer[33];
@@ -2792,26 +2792,26 @@ void MainWindow::inverseRun(CGWASet *model, runtimeWindow* progress)
 			if (GA.calculate_percentile == true)
 			{
 				progress->setLabel("Calculating Percentiles");
-				qDebug() << 41;
+				//qDebug() << 41;
 				CBTCSet sorted = MCMCOut.sort(MCMC.n_burnout);
-				qDebug() << 41.05;
+				//qDebug() << 41.05;
 
 				vector<double> p2dot5 = sorted.percentile(0.025, 0);
-				qDebug() << 41.1;
+				//qDebug() << 41.1;
 				vector<double> p50 = sorted.percentile(0.5, 0);
-				qDebug() << 41.2;
+				//qDebug() << 41.2;
 				vector<double> mean = sorted.mean(0);
-				qDebug() << 41.3;
+				//qDebug() << 41.3;
 				vector<double> std = sorted.std(0);
-				qDebug() << 41.4;
+				//qDebug() << 41.4;
 				vector<double> p97dot5 = sorted.percentile(0.975, 0);
-				qDebug() << 42.5;
+				//qDebug() << 42.5;
 				FILE *filepercentile;
 				filepercentile = fopen((system().outpathname + "percentiles.txt").c_str(), "w");
-				qDebug() << 43;
+				//qDebug() << 43;
 				for (int i = 0; i < MCMCOut.names.size(); i++)
 					fprintf(filepercentile, "%s, ", MCMCOut.names[i].c_str());
-				qDebug() << 44;
+				//qDebug() << 44;
 				fprintf(filepercentile, "\n");
 
 				CVector(p2dot5).writetofile(filepercentile);
@@ -2819,11 +2819,11 @@ void MainWindow::inverseRun(CGWASet *model, runtimeWindow* progress)
 				CVector(p97dot5).writetofile(filepercentile);
 				CVector(mean).writetofile(filepercentile);
 				CVector(std).writetofile(filepercentile);
-				qDebug() << 45;
+				//qDebug() << 45;
 				double mean_log = mean[MCMCOut.nvars - 4];
 				double mean_likelihood = MCMCOut.BTC[MCMCOut.nvars - 4].Exp().average();
 				fprintf(filepercentile, "mean log: %e\n", 2 * mean_log);
-				qDebug() << 46;
+				//qDebug() << 46;
 				double logp_mean = -GA.assignfitnesses(mean);
 				fprintf(filepercentile, "f(mean): %e\n", 2 * logp_mean);
 
@@ -2831,10 +2831,10 @@ void MainWindow::inverseRun(CGWASet *model, runtimeWindow* progress)
 				fprintf(filepercentile, "DIC: %e\n", DIC);
 
 				fclose(filepercentile);
-				qDebug() << 47;
+				//qDebug() << 47;
 				int n = MCMCOut.names.size();
 				mainGraphWidget->results->percentiles.resize(n);
-				qDebug() << 48;
+				//qDebug() << 48;
 				for (int i = 0; i < n; i++)
 				{
 					mainGraphWidget->results->percentiles[i].parameter = MCMCOut.names[i];
@@ -2846,7 +2846,7 @@ void MainWindow::inverseRun(CGWASet *model, runtimeWindow* progress)
 				}
 
 				//********************************* MCMC mean out **************************************
-				qDebug() << 49;
+				//qDebug() << 49;
 				double out1 = GA.assignfitnesses(mean);
 
 				GA.Sys_out.Medium[0].modeled.writetofile(system().outpathname + "BTC_mean.txt");
@@ -2857,14 +2857,14 @@ void MainWindow::inverseRun(CGWASet *model, runtimeWindow* progress)
 
 			if (GA.calculate_correlation == true)
 			{
-				qDebug() << 49.5;
+				//qDebug() << 49.5;
 				CMatrix correlation_mat = MCMCOut.correlation(MCMC.n_burnout, MCMC.MCMCParam.size());
 				correlation_mat.writetofile(system().outpathname + "correlation_mat.txt");
 				mainGraphWidget->results->correlationMatrix = correlation_mat;
 			}
 
 			//********************************* MCMC realizations out **************************************
-			qDebug() << "50";
+			//qDebug() << "50";
 
 			if (GA.mcmc_realization == true)
 			{
@@ -2961,11 +2961,11 @@ void MainWindow::inverseRun(CGWASet *model, runtimeWindow* progress)
 
 					for (int thread = 0; thread < endfor; thread++)
 					{
-						qDebug() << "samp = " << samp + thread << thread << "started";
+						//qDebug() << "samp = " << samp + thread << thread << "started";
 						cout << "Realization Sample No. : " << samp + thread << endl;
 
 						sys[thread].doModel();
-						qDebug() << "samp = " << samp + thread << thread << "done";
+						//qDebug() << "samp = " << samp + thread << thread << "done";
 
 #pragma omp critical
 						if (MCMC.global_sensitivity == true)
@@ -3030,17 +3030,17 @@ void MainWindow::inverseRun(CGWASet *model, runtimeWindow* progress)
 				vars["progress"] = 100;
 				progress->update(vars);
 
-				qDebug() << "200";
+				//qDebug() << "200";
 				CBTCSet R2_all_realization(2 * all_realizations_t.BTC.size() + 2);
-				qDebug() << 201;
+				//qDebug() << 201;
 				R2_all_realization.names.push_back("R2 all realizations");
-				qDebug() << 202;
+				//qDebug() << 202;
 				R2_all_realization.BTC[0].append(R2_c(all_realizations.BTC[0], all_realizations.BTC[1]));
-				qDebug() << 203;
+				//qDebug() << 203;
 				R2_all_realization.names.push_back("R2_ln all realizations");
-				qDebug() << 204;
+				//qDebug() << 204;
 				R2_all_realization.BTC[1].append(R2_c(all_realizations.BTC[0].Log(1e-12), all_realizations.BTC[1].Log(1e-12)));
-				qDebug() << 205;
+				//qDebug() << 205;
 
 				for (int ii = 0; ii < all_realizations_t.BTC.size(); ii++)
 				{
@@ -3049,29 +3049,29 @@ void MainWindow::inverseRun(CGWASet *model, runtimeWindow* progress)
 					R2_all_realization.names.push_back(system().Tracer[ii].name + "(R2_ln)");
 					R2_all_realization.BTC[2 * ii + 3].append(R2_c(all_realizations_t.BTC[ii].Log(1e-12), all_realizations_m.BTC[ii].Log(1e-12)));
 				}
-				qDebug() << 206;
+				//qDebug() << 206;
 				for (int ij = 0; ij < system().Tracer.size(); ij++)
 				{
 					R2_t.names.push_back(system().Tracer[ij].name);
 					R2_t_ln.names.push_back(system().Tracer[ij].name);
 				}
-				qDebug() << 207;
+				//qDebug() << 207;
 				R2_t.writetofile(system().outpathname + "R2_tracers.txt");
 				R2_t_ln.writetofile(system().outpathname + "R2_tracers_ln.txt");
 				R2_overall.writefile(system().outpathname + "R2_overall.txt");
 				R2_overall_ln.writefile(system().outpathname + "R2_overall_ln.txt");
 				R2_all_realization.writetofile(system().outpathname + "R2_all_realization.txt");
 
-				qDebug() << 208;
+				//qDebug() << 208;
 				for (int i = 0; i < system().Well.size(); i++)
 				{
 					Age_dist[i].writetofile(system().outpathname + "Age_dist_" + GA.Sys_out.Medium[0].Well[i].name + ".txt");
 					Age_dist_cum[i].writetofile(system().outpathname + "Age_dist_cum" + GA.Sys_out.Medium[0].Well[i].name + ".txt");
 				}
-				qDebug() << 209;
+				//qDebug() << 209;
 				for (int i = 0; i < n_BTCout_obs; i++)
 					modeled_samples[i].writetofile(system().outpathname + "modeled_" + GA.Sys_out.Medium[0].measured_quan[i].name + ".txt");
-				qDebug() << 210;
+				//qDebug() << 210;
 				for (int i = 0; i < system().Well.size(); i++)
 					for (int j = 0; j < system().Tracer.size(); j++)
 						projected_samples[j + i*system().Tracer.size()].writetofile(system().outpathname + "Projected_" + system().Well[i].name + "_" + system().Tracer[j].name + ".txt");
@@ -3082,7 +3082,7 @@ void MainWindow::inverseRun(CGWASet *model, runtimeWindow* progress)
 				//			BTCout_obs_noise[j][i].writetofile(system.outpathname + "BTC_obs_noise" + string(_itoa(i,buffer,10)) + "_" + string(_itoa(j,buffer,10)) + ".txt",system.writeinterval);
 
 				// calculating percentiles
-				qDebug() << "300";
+				//qDebug() << "300";
 
 				if (GA.calc_output_percentiles.size() > 0)
 				{
@@ -3116,7 +3116,7 @@ void MainWindow::inverseRun(CGWASet *model, runtimeWindow* progress)
 						Age_dist_cum_prcntle[i].writetofile(system().outpathname + "Age_dist_cum_prcntl_" + GA.Sys_out.Medium[0].Well[i].name + ".txt");
 					}
 				}
-				qDebug() << "400";
+				//qDebug() << "400";
 
 				mainGraphWidget->results->youngAgeDistributionRealizations = Age_dist;
 				mainGraphWidget->results->cumulativeYoungAgeDistributionRealizations = Age_dist_cum;
@@ -3137,7 +3137,7 @@ void MainWindow::inverseRun(CGWASet *model, runtimeWindow* progress)
 					global_sens_lumped_avg.writetofile(system().outpathname + "global_sensitivity_lumped_avg.txt");
 					mainGraphWidget->results->globalSensitivityMatrix = global_sens_lumped_avg;
 				}
-				qDebug() << "500";
+				//qDebug() << "500";
 
 				// post-MCMC run time :
 				t1 = clock() - t0;

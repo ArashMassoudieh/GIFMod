@@ -268,7 +268,7 @@ QList<XString> mProp::DefaultValuesList(mPropList *mPL, mProp* filter, GraphWidg
             foreach (QString QS , r1)
 				r.append(QS);
 		return r;
-//		qDebug() << getList();
+//		//qDebug() << getList();
 //			return QList<XString>() << "Check the" << "mProp.cpp code" << "Default Values" << "for population.";
 //		return QList<XString>() << "*";
 	}

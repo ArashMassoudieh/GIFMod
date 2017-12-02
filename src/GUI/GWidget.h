@@ -244,12 +244,12 @@ public:
 	bool changedState = false;
 
 	void startEditingDelegate(QString variableName){
-		qDebug() << "start editing " << variableName;
+		//qDebug() << "start editing " << variableName;
 		allowRunVariableName = variableName;
 		allowRun = false;
 	}
 	void endEditingDelegate() {
-		qDebug() << "end editing " << allowRunVariableName;
+		//qDebug() << "end editing " << allowRunVariableName;
 		allowRunVariableName = "";
 		allowRun = true;
 	}

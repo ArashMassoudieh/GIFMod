@@ -453,7 +453,7 @@ QString Edge::updateSubType()
 	{
 		objectType.SubType = r;
 		changed();
-		qDebug() << source->ObjectType().ObjectType << dest->ObjectType().ObjectType << objectType.SubType;
+		//qDebug() << source->ObjectType().ObjectType << dest->ObjectType().ObjectType << objectType.SubType;
 	}
 	return objectType.SubType;
 
@@ -461,7 +461,7 @@ QString Edge::updateSubType()
 
 QMap<QString, QVariant> Edge::compact() const
 {
-//	qDebug() << "Compacting: " << name << sourceNode()->Name() << destNode()->Name();
+//	//qDebug() << "Compacting: " << name << sourceNode()->Name() << destNode()->Name();
 
 	QMap<QString, QVariant> r;
 	r["Source Node"] = sourceNode()->Name();
@@ -480,13 +480,13 @@ QMap<QString, QVariant> Edge::compact() const
 
 Edge* Edge::unCompact(QMap<QString, QVariant> n, GraphWidget *gwidget, bool oldVersion)
 {
-	qDebug() << "Loading: " << n["Name"].toString() << n["Source Node"].toString() << n["Dest Node"].toString();
+	//qDebug() << "Loading: " << n["Name"].toString() << n["Source Node"].toString() << n["Dest Node"].toString();
 
 
 	QString source = n["Source Node"].toString();
 	QString dest = n["Dest Node"].toString();
-	qDebug() << gwidget->node(source)->Name();
-	qDebug() << gwidget->node(dest)->Name();
+	//qDebug() << gwidget->node(source)->Name();
+	//qDebug() << gwidget->node(dest)->Name();
 	Edge *edge = new Edge(gwidget->node(source), gwidget->node(dest), gwidget);
 
 	if (!gwidget->Edges().contains(edge))
@@ -524,14 +524,14 @@ Edge* Edge::unCompact(QMap<QString, QVariant> n, GraphWidget *gwidget, bool oldV
 
 Edge* Edge::unCompact10(QMap<QString, QVariant> n, GraphWidget *gwidget)
 {
-	qDebug() << "FUNCTION CANCELED.";
-	/*qDebug() << "Loading: " << n["Name"].toString() << n["Source Node"].toString() << n["Dest Node"].toString();
+	//qDebug() << "FUNCTION CANCELED.";
+	/*//qDebug() << "Loading: " << n["Name"].toString() << n["Source Node"].toString() << n["Dest Node"].toString();
 
 
 	QString source = n["Source Node"].toString();
 	QString dest = n["Dest Node"].toString();
-	qDebug() << gwidget->node(source)->Name();
-	qDebug() << gwidget->node(dest)->Name();
+	//qDebug() << gwidget->node(source)->Name();
+	//qDebug() << gwidget->node(dest)->Name();
 	Edge *edge = new Edge(gwidget->node(source), gwidget->node(dest), gwidget);
 
 	if (!gwidget->Edges().contains(edge))
@@ -579,7 +579,7 @@ QMap<QString, condition> Edge::variableNameConditions() const
 }
 XString Edge::val(const QString & code) const
 {
-	qDebug() << code;
+	//qDebug() << code;
     foreach (mProp mP , getmList(objectType).List)
 		if (mP.VariableCode.toLower() == code.toLower())
 		{

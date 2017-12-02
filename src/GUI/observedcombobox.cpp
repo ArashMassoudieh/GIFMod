@@ -14,7 +14,7 @@ ObservedComboBox::~ObservedComboBox()
 }
 void ObservedComboBox::textChanged(const QString & text)
 {
-	qDebug() << text;
+	//qDebug() << text;
 	if (text == "Particle...")
 	{
 		QString txt;

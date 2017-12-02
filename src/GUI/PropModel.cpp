@@ -7,7 +7,7 @@
 template<>
 QVariant PropModel<Node>::data(const QModelIndex & index, int role) const
 {
-	qDebug() << "Role" << role;
+	//qDebug() << "Role" << role;
 	if (!items.count()) // ordinary structure (only one object selected)
 	{
 		if (index.row() >= rows()) return QVariant();
@@ -33,10 +33,10 @@ QVariant PropModel<Node>::data(const QModelIndex & index, int role) const
 			return QVariant();
 		int row = index.row();
 		int col = index.column();
-		qDebug() << QString("data for (%1, %2) role %3").arg(row).arg(col).arg(role);
+		//qDebug() << QString("data for (%1, %2) role %3").arg(row).arg(col).arg(role);
 		QString VariableName = parent->getmList(parent->ObjectType()).VariableNames()[row];
 
-		qDebug() << QString("Variable Name %1").arg(VariableName); // .arg(col).arg(role).arg(VariableName);
+		//qDebug() << QString("Variable Name %1").arg(VariableName); // .arg(col).arg(role).arg(VariableName);
 
 		if (role == VariableNameRole) return VariableName;
 		if (col == 0) {
@@ -122,7 +122,7 @@ bool PropModel<Node>::setData(const QModelIndex & index, const QVariant & value,
 		role = Qt::EditRole;
 		QString VariableName = idx.sibling(idx.row(), 0).data().toString();
 		bool r = parent->setProp(VariableName, value, role);
-		qDebug() << QString("set %1 to %2.").arg(VariableName).arg(value.toString());
+		//qDebug() << QString("set %1 to %2.").arg(VariableName).arg(value.toString());
 		if (r) emit dataChanged(idx, idx);
 		return r;
 	}
@@ -174,9 +174,9 @@ QVariant PropModel<Edge>::data(const QModelIndex & index, int role) const
 	//	int rindex = index.row();// +Offset;
 	int row = index.row();
 	int col = index.column();
-	//qDebug() << QString("data for (%1, %2) role %3").arg(row).arg(col).arg(role);
+	////qDebug() << QString("data for (%1, %2) role %3").arg(row).arg(col).arg(role);
 	QString VariableName = parent->getmList(parent->ObjectType()).VariableNames()[row];
-	//qDebug() << QString("data for (%1, %2) role %3: %4").arg(row).arg(col).arg(role).arg(VariableName);
+	////qDebug() << QString("data for (%1, %2) role %3: %4").arg(row).arg(col).arg(role).arg(VariableName);
 	if (role == VariableNameRole) return VariableName;
 	if (col == 0) {
 		if (role == Qt::DisplayRole) return VariableName;
@@ -207,7 +207,7 @@ bool PropModel<Edge>::setData(const QModelIndex & index, const QVariant & value,
 		role = Qt::EditRole;
 		QString VariableName = idx.sibling(idx.row(), 0).data().toString();
 		bool r = parent->setProp(VariableName, value, role);
-		qDebug() << QString("set %1 to %2.").arg(VariableName).arg(value.toString());
+		//qDebug() << QString("set %1 to %2.").arg(VariableName).arg(value.toString());
 		if (r) emit dataChanged(idx, idx);
 		return r;
 	}
@@ -270,9 +270,9 @@ QVariant PropModel<Entity>::data(const QModelIndex & index, int role) const
 		return QVariant();
 	int row = index.row();
 	int col = index.column();
-	//qDebug() << QString("data for (%1, %2) role %3").arg(row).arg(col).arg(role);
+	////qDebug() << QString("data for (%1, %2) role %3").arg(row).arg(col).arg(role);
 	QString VariableName = parent->getmList(parent->ObjectType()).VariableNames()[row];
-	//qDebug() << QString("data for (%1, %2) role %3: %4").arg(row).arg(col).arg(role).arg(VariableName);
+	////qDebug() << QString("data for (%1, %2) role %3: %4").arg(row).arg(col).arg(role).arg(VariableName);
 	if (VariableName.contains("mum"))// && role == 6)
 		int i = 0;
 	if (role == VariableNameRole) return VariableName;
@@ -303,7 +303,7 @@ QVariant PropModel<Entity>::data(const QModelIndex & index, int role) const
 		return QVariant();
 	}
 //	if (role == fullFileNameRole)
-//		qDebug() << QString("data for (%1, %2) role %3").arg(row).arg(col).arg(role);
+//		//qDebug() << QString("data for (%1, %2) role %3").arg(row).arg(col).arg(role);
 	if (col == 1)
 		return parent->getProp(VariableName, role);
 }
@@ -324,7 +324,7 @@ bool PropModel<Entity>::setData(const QModelIndex & index, const QVariant & valu
 		VariableName = index.sibling(row, 0).data().toString();
 
 	bool r = parent->setProp(VariableName, value, role);
-	qDebug() << QString("set %1 to %2.").arg(VariableName).arg(value.toString());
+	//qDebug() << QString("set %1 to %2.").arg(VariableName).arg(value.toString());
 	if (r)
 	{
 		if (value.toStringList().size())

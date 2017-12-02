@@ -13,7 +13,7 @@ StatusViewer::StatusViewer(QWidget* p): QLabel(p)
 void StatusViewer::showInfo(const QString &msg, int delay)
 {
     setStatus(msg, delay, QColor("black"));
-    qDebug() << msg;
+    //qDebug() << msg;
 }
 
 

@@ -486,7 +486,7 @@ void CGA::crossover()
 	Ind[1] = Ind_old[a];
 	for (int i=2; i<maxpop; i+=2)
 	{
-        //qDebug()<<"i = "<< i;
+        ////qDebug()<<"i = "<< i;
 		int j1 = fitdist.GetRand();
 		int j2 = fitdist.GetRand();
 		double x = GetRndUniF(0,1);

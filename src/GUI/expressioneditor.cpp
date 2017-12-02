@@ -61,7 +61,7 @@ void ExpressionEditor::setupCompleter()
 
 void ExpressionEditor::focusInEvent(QFocusEvent *e)
 {
-    qDebug() << "FocusIn event";
+    //qDebug() << "FocusIn event";
     if (d->Comp) {
         d->Comp->setWidget(this);
     }
@@ -75,7 +75,7 @@ void ExpressionEditor::focusInEvent(QFocusEvent *e)
 
 void ExpressionEditor::focusOutEvent(QFocusEvent *e)
 {
-    qDebug() << "FocusOut event";
+    //qDebug() << "FocusOut event";
     d->Editing = false;    
     QLineEdit::focusOutEvent(e);
 }
@@ -125,7 +125,7 @@ void ExpressionEditor::keyPressEvent(QKeyEvent *e)
 									 <<Qt::Key_Escape << Qt::Key_Underscore << 46;
 
     if (!escapeKeys.contains(e->key()) && !ck.isLetterOrNumber() && !operators.contains(QString(ck))) {
-		qDebug() << e->key() << int(Qt::Key_Enter);
+		//qDebug() << e->key() << int(Qt::Key_Enter);
         backspace();return;
     }
 

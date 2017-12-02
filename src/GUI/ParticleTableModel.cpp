@@ -17,7 +17,7 @@ QVariant ParticleTableModel::data(const QModelIndex & index, int role) const
 		return QVariant();
 	int row = index.row();
 	int col = index.column();
-	qDebug() << row << col << role;
+	//qDebug() << row << col << role;
 	if (row == 1 && col == 2 && role == 8)
 		int i = 0;
 	if (role == TypeRole)
@@ -56,7 +56,7 @@ QVariant ParticleTableModel::data(const QModelIndex & index, int role) const
 		return node->particleInitialCondition()[row].Model;
 	if (col == 2)
 		return node->particleInitialCondition()[row].Value;
-	qDebug() << "returned nothing.";
+	//qDebug() << "returned nothing.";
 	return QVariant();
 }
 

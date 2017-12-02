@@ -109,7 +109,7 @@ QMap<QString, XString> gridWindow::getGridInfo()
 	
 void gridWindow::on_buttonBox_clicked(QAbstractButton * button)
 {
-	qDebug() << button->text();
+	//qDebug() << button->text();
 	if (button->text() == "OK")
 	{
 		accepted = true;

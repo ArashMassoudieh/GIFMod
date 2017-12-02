@@ -65,7 +65,7 @@ void helpWindow::setHtml(QString html)
 {
 //	QString Html = QString::fromStdString(html);
 	ui->textEdit->setHtml(html);
-	qDebug() << ui->textEdit->toHtml();
+	//qDebug() << ui->textEdit->toHtml();
 }
 
 void helpWindow::setHtml(vector<string> text)

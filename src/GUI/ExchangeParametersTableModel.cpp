@@ -17,7 +17,7 @@ QVariant ExchangeParametersTableModel::data(const QModelIndex & index, int role)
 		return QVariant();
 	int row = index.row();
 	int col = index.column();
-	qDebug() << row << col << role;
+	//qDebug() << row << col << role;
 	if (row == 1 && col == 2 && role == 8)
 		int i = 0;
 	if (role == TypeRole)
@@ -38,7 +38,7 @@ QVariant ExchangeParametersTableModel::data(const QModelIndex & index, int role)
 		return entity->solidAqueousExchangeParameters[row].ExchangeRate;
 	if (col == 2)
 		return entity->solidAqueousExchangeParameters[row].PartitioningCoefficient;
-	qDebug() << "returned nothing.";
+	//qDebug() << "returned nothing.";
 	return QVariant();
 }
 

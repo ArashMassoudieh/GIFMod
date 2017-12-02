@@ -549,7 +549,7 @@ CBTCSet CBTCSet::sort(int burnOut)
 	for (int i = 0; i < nvars; i++)
 	{
 		counter++;
-		qDebug() << "sorting BTC " << i << "(" << counter << ")";
+		//qDebug() << "sorting BTC " << i << "(" << counter << ")";
 		clock_t t0 = clock();
 //		r.BTC[i].C.resize(BTC[i].n - burnOut);
 		tempVec.resize(BTC[i].n - burnOut);
@@ -560,7 +560,7 @@ CBTCSet CBTCSet::sort(int burnOut)
 //		r.BTC[i].C = QSort(temp);
 		clock_t t1 = clock() - t0;
 		float run_time = ((float)t1) / CLOCKS_PER_SEC;
-		qDebug() << "sorting BTC " << i << " finished in" << run_time << " sec (" << --counter << ")";
+		//qDebug() << "sorting BTC " << i << " finished in" << run_time << " sec (" << --counter << ")";
 	}
 	for (int i = 0; i < nvars; i++)
 	{
@@ -570,18 +570,18 @@ CBTCSet CBTCSet::sort(int burnOut)
 	}
 	clock_t tt1 = clock() - tt0;
 	float run_time = ((float)tt1) / CLOCKS_PER_SEC;
-	qDebug() << "total time << " << run_time << "sec";
+	//qDebug() << "total time << " << run_time << "sec";
 
 	return r;
 }
 CBTCSet CBTCSet::distribution(int n_bins, int n_columns, int limit)
 {
-	qDebug() << "Distribution bins, columns, limit" << n_bins << n_columns << limit;
+	//qDebug() << "Distribution bins, columns, limit" << n_bins << n_columns << limit;
 	CBTCSet A(n_columns);		
 	for (int i = 0; i < n_columns; i++)
 	{
 		A.BTC[i] = BTC[i].distribution(n_bins, limit);
-		qDebug() << "BTC[" << i << "] done";
+		//qDebug() << "BTC[" << i << "] done";
 	}
 
 	return A;
@@ -706,19 +706,19 @@ CBTCSet CBTCSet::make_uniform(double increment, bool assgn_d)
 	
 	if (unif == true)
 	{
-		qDebug() << "make uniform with unif option";
+		//qDebug() << "make uniform with unif option";
 		for (int i = 0; i < nvars; i++)
 		{
 			out.BTC[i].append(BTC[i].t[0], BTC[i].C[0]);
 			if (assgn_d)
 			{
-				qDebug() << "Assigning D to the original BTC";
+				//qDebug() << "Assigning D to the original BTC";
 				if (BTC[i].D.size() == 0) BTC[i].assign_D();
 			}
 		}
 		for (int i=0; i<BTC[0].n-1; i++)
 		{
-			//qDebug() << i;
+			////qDebug() << i;
 			int i1 = int((BTC[0].t[i]-BTC[0].t[0])/increment);
 			int i2 = int((BTC[0].t[i+1]-BTC[0].t[0])/increment);
 			for (int j=i1+1; j<=i2; j++)
@@ -740,10 +740,10 @@ CBTCSet CBTCSet::make_uniform(double increment, bool assgn_d)
 	}
 	else
 	{
-		qDebug() << "make uniform without unif option";
+		//qDebug() << "make uniform without unif option";
 		for (int k = 0; k < nvars; k++)
 		{
-			qDebug() << "Variable:" + QString::fromStdString(names[k]); 
+			//qDebug() << "Variable:" + QString::fromStdString(names[k]); 
 			out.BTC[k] = BTC[k].make_uniform(increment);
 
 		}

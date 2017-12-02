@@ -80,10 +80,10 @@ public:
 
 //        for (int i=0;i<metaObject->constructorCount();i++){
 //            auto constructor = metaObject->constructor(i);
-//            qDebug() << metaObject->className()
+//            //qDebug() << metaObject->className()
 //                     << " : " << constructor.methodSignature().toStdString() << "\n";
 
-//            qDebug() << "Argument list count :" << constructor.parameterCount()<<  "\n";
+//            //qDebug() << "Argument list count :" << constructor.parameterCount()<<  "\n";
 //            for(int j=0;j< constructor.parameterCount();j++)
 //            {
 //                QMetaType::Type atype  = (QMetaType::Type) constructor.parameterType(j);
@@ -180,7 +180,7 @@ public:
                     method.access() == QMetaMethod::Public) {
                 // ARASH : LOOK HERE
                 //dukglue_register_method<T>(ScriptingEngine::jsContext(), &T::jsSlotsProxy, methodName.toStdString().data());
-                qDebug() << methodName;
+                //qDebug() << methodName;
             }
         }
     }
@@ -228,7 +228,7 @@ public:
         }
         catch (const std::exception& e)
         {
-            qDebug() << "jsSlotProxy  Exception : " << e.what();
+            //qDebug() << "jsSlotProxy  Exception : " << e.what();
         }
     }
  
@@ -238,16 +238,18 @@ class JSTest : public QObject , public ScriptableObject<JSTest>{
     Q_OBJECT
 public:
     JSTest() {
-		qDebug() << "i'm being constructed";
+		//qDebug() << "i'm being constructed";
 	}
     JSTest(const JSTest & /*copy*/) {}
     ~JSTest() {
-		qDebug() << "i'm being destructed";
+		//qDebug() << "i'm being destructed";
 	}
 
 public slots:
-    void slot1() { qDebug() << "slot1: i'm being called"; }
-    void slot2() { qDebug() << "slot2: i'm being called"; }
+    void slot1() { //qDebug() << "slot1: i'm being called"; 
+	}
+    void slot2() { //qDebug() << "slot2: i'm being called"; 
+	}
 };
 //Q_DECLARE_METATYPE(JSTest*)
 #endif // SCRIPTINGENGINE_H

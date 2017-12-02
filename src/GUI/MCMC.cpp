@@ -457,6 +457,7 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
 	CVector stuckcounter(n_chains);
 	int acceptance_count=0;
 	ini_purt_fact = pertcoeff[0];
+	int k_0 = k;
 	for (int kk=k; kk<k+nsamps+n_chains; kk+=n_chains)
 	{
         QCoreApplication::processEvents(QEventLoop::AllEvents,10*1000);
@@ -464,23 +465,31 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
 			break;
         
         omp_set_num_threads(numberOfThreads);
+
+		
+          
+#ifdef WIN64
 #pragma omp parallel
 		{
-            // ARASH: LOOK HERE
-            //srand(int(time(NULL)) ^ omp_get_thread_num() + kk);
-#pragma omp for
+			srand(int(time(NULL)) ^ omp_get_thread_num() + kk);
+		}
+#endif
 
-			for (int jj = kk; jj < min(kk + n_chains, nsamples); jj++)
+#pragma omp parallel for
+		for (int jj = kk; jj < min(kk + n_chains, nsamples); jj++)
+		{
+            QCoreApplication::processEvents(QEventLoop::AllEvents,10*1000);
+            
+			qDebug() << "Starting step: " + QString::number(jj);
+			bool stepstuck = !step(jj);
+			qDebug() << "Step: " + QString::number(jj) + "Done!";
+            if (stepstuck == true)
 			{
-                QCoreApplication::processEvents(QEventLoop::AllEvents,10*1000);
-                bool stepstuck = !step(jj);
-                if (stepstuck == true)
-				{
-					stuckcounter[jj - kk]++;
-					acceptance_count++;
-				}
-				else
-					stuckcounter[jj - kk] = 0;
+				stuckcounter[jj - kk]++;
+				acceptance_count++;
+			}
+			else
+				stuckcounter[jj - kk] = 0;
 
 
 #pragma omp critical
@@ -499,47 +508,47 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
                 }
             }
         }
-            QCoreApplication::processEvents(QEventLoop::AllEvents,100*1000);
+        QCoreApplication::processEvents(QEventLoop::AllEvents,100*1000);
 
-			if (kk % (50 * n_chains) < n_chains || kk == k + nsamps + n_chains - 1)
+		if ((kk-k_0) % (50 * n_chains) == 0 || kk == k + nsamps + n_chains - 1)
+		{
+
+            file = fopen(filename.c_str(), "a");
+			for (int jj = max(min(kk + n_chains, nsamples) - 50 * n_chains, k_0); jj < min(kk + n_chains, nsamples); jj++)
 			{
-
-                file = fopen(filename.c_str(), "a");
-				for (int jj = max(min(kk + n_chains, nsamples) - 50 * n_chains, 0); jj < min(kk + n_chains, nsamples); jj++)
+				if (jj%writeinterval == 0)
 				{
-					if (jj%writeinterval == 0)
-					{
-                        QCoreApplication::processEvents(QEventLoop::AllEvents,100*1000);
+                    QCoreApplication::processEvents(QEventLoop::AllEvents,100*1000);
 
-						fprintf(file, "%i, ", jj);
-						for (int i = 0; i < n; i++)
-							fprintf(file, "%le, ", Params[jj][i]);
-                        fprintf(file, "%le, %le, %f,", logp[jj], logp1[jj], stuckcounter[jj%n_chains]);
-						for (int j = 0; j < pertcoeff.size(); j++) fprintf(file, "%le,", pertcoeff[j]);
-						fprintf(file, "\n");
+					fprintf(file, "%i, ", jj);
+					for (int i = 0; i < n; i++)
+						fprintf(file, "%le, ", Params[jj][i]);
+                    fprintf(file, "%le, %le, %f,", logp[jj], logp1[jj], stuckcounter[jj%n_chains]);
+					for (int j = 0; j < pertcoeff.size(); j++) fprintf(file, "%le,", pertcoeff[j]);
+					fprintf(file, "\n");
 						
-					}
-
-                    //cout << jj << "," << pertcoeff[0] << "," << stuckcounter.max() << "," << stuckcounter.min() << endl;
-                    //qDebug() << jj << "," << pertcoeff[0] << "," << stuckcounter.max() << "," << stuckcounter.min();
-					//if (jj<n_burnout)
 				}
-				fclose(file);
-			}
-			if (kk % (50*n_chains) == 0)
-			{
-				if (double(accepted_count) / double(total_count)>acceptance_rate)
-					for (int i = 0; i < nActParams; i++) pertcoeff[i] /= purtscale;
-				else
-					for (int i = 0; i < nActParams; i++) pertcoeff[i] *= purtscale;
-				accepted_count = 0;
-				total_count = 0;
 
+                //cout << jj << "," << pertcoeff[0] << "," << stuckcounter.max() << "," << stuckcounter.min() << endl;
+                ////qDebug() << jj << "," << pertcoeff[0] << "," << stuckcounter.max() << "," << stuckcounter.min();
+				//if (jj<n_burnout)
 			}
-			//double error = double(accepted_count) / double(total_count) - acceptance_rate;
-			//for (int i = 0; i < nActParams; i++) pertcoeff[i] /= pow(purtscale, error);
+			fclose(file);
+		}
+		if ((kk-k_0) % (50*n_chains) == 0)
+		{
+			if (double(accepted_count) / double(total_count)>acceptance_rate)
+				for (int i = 0; i < nActParams; i++) pertcoeff[i] /= purtscale;
+			else
+				for (int i = 0; i < nActParams; i++) pertcoeff[i] *= purtscale;
+			accepted_count = 0;
+			total_count = 0;
 
 		}
+		//double error = double(accepted_count) / double(total_count) - acceptance_rate;
+		//for (int i = 0; i < nActParams; i++) pertcoeff[i] /= pow(purtscale, error);
+
+		
 		if (rtw)
 		{
 			QMap<QString, QVariant> vars;
@@ -918,16 +927,16 @@ void CMCMC::getrealizations(CBTCSet &MCMCout)
 
 	realized_paramsList = CBTCSet(MCMCout.nvars);
 	paramsList = CBTCSet(MCMCout.nvars);
-	qDebug() << "paramsList.names.size()" << paramsList.names.size();
+	//qDebug() << "paramsList.names.size()" << paramsList.names.size();
 	paramsList.names = MCMCout.names;
-	qDebug() << "MCMCout.names.size()" << MCMCout.names.size();
+	//qDebug() << "MCMCout.names.size()" << MCMCout.names.size();
 
 	for (int j = 0; j < n_realizations; j++)
 	{
 		vector<double> param = MCMCout.getrandom(n_burnout);
 		realized_paramsList.append(j, param);
 	}
-	qDebug() << 612;
+	//qDebug() << 612;
 	//progress->setValue(0);
 	double pValue = 0;
 	double inc = 100.0 / n_realizations;
@@ -948,7 +957,7 @@ void CMCMC::getrealizations(CBTCSet &MCMCout)
 		{
 			int realizationNumber = jj*numberOfThreads + j;
 			cout << "Realization Sample No. : " << realizationNumber << endl;
-			qDebug() << "Realization Sample No. : " << realizationNumber;
+			//qDebug() << "Realization Sample No. : " << realizationNumber;
 			vector<double> param = realized_paramsList.getrow(realizationNumber);
 			Sys1[j][0] = G;
 			Sys1[j][0].ID = numbertostring(j);
@@ -999,15 +1008,15 @@ void CMCMC::getrealizations(CBTCSet &MCMCout)
 #endif
 				}
 			}
-			qDebug() << "Realization Completed : " << realizationNumber << endl;
+			//qDebug() << "Realization Completed : " << realizationNumber << endl;
 			cout << "Realization Completed : " << realizationNumber;
-			qDebug() << "Progress: " << pValue << inc;
+			//qDebug() << "Progress: " << pValue << inc;
 			pValue += inc;
-			qDebug() << "Progress: " << pValue;
+			//qDebug() << "Progress: " << pValue;
 		}
-		qDebug() << "Progress: " << pValue << inc;
+		//qDebug() << "Progress: " << pValue << inc;
 		pValue += inc*numberOfThreads;
-		qDebug() << "Progress: " << pValue;
+		//qDebug() << "Progress: " << pValue;
 		if (rtw)
 		{
 			QMap<QString, QVariant> vars;
@@ -1028,19 +1037,19 @@ void CMCMC::getrealizations(CBTCSet &MCMCout)
 
 void CMCMC::get_outputpercentiles(CBTCSet &MCMCout)
 {
-	qDebug() << 501;
+	//qDebug() << 501;
 	getrealizations(MCMCout);
-	qDebug() << 502;
+	//qDebug() << 502;
 #ifdef GIFMOD
 	int n_BTCout_obs = G.measured_quan.size();
 #endif
 #ifdef GWA
 	int n_BTCout_obs = G.Medium[0].measured_quan.size();
 #endif
-qDebug() << 503;
+//qDebug() << 503;
 	BTCout_obs_prcntle.resize(1); for (int j = 0; j < 1; j++) BTCout_obs_prcntle[j].resize(n_BTCout_obs);
 	BTCout_obs_prcntle_noise.resize(1); for (int j = 0; j < 1; j++) BTCout_obs_prcntle_noise[j].resize(n_BTCout_obs);
-	qDebug() << 504;
+	//qDebug() << 504;
 	if (calc_output_percentiles.size()>0)
 		for (int i = 0; i < n_BTCout_obs; i++)
 		{
@@ -1065,5 +1074,5 @@ qDebug() << 503;
 
 			}
 		}
-	qDebug() << 505;
+	//qDebug() << 505;
 }

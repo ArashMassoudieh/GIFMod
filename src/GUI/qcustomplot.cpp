@@ -226,7 +226,7 @@ void QCPPainter::restore()
   if (!mAntialiasingStack.isEmpty())
     mIsAntialiasing = mAntialiasingStack.pop();
   else
-    qDebug() << Q_FUNC_INFO << "Unbalanced save/restore";
+    //qDebug() << Q_FUNC_INFO << "Unbalanced save/restore";
   QPainter::restore();
 }
 
@@ -757,8 +757,8 @@ QCPLayer::~QCPLayer()
   while (!mChildren.isEmpty())
     mChildren.last()->setLayer(0); // removes itself from mChildren via removeChild()
   
-  if (mParentPlot->currentLayer() == this)
-    qDebug() << Q_FUNC_INFO << "The parent plot's mCurrentLayer will be a dangling pointer. Should have been set to a valid layer or 0 beforehand.";
+  //if (mParentPlot->currentLayer() == this)
+    //qDebug() << Q_FUNC_INFO << "The parent plot's mCurrentLayer will be a dangling pointer. Should have been set to a valid layer or 0 beforehand.";
 }
 
 /*!
@@ -792,8 +792,9 @@ void QCPLayer::addChild(QCPLayerable *layerable, bool prepend)
       mChildren.prepend(layerable);
     else
       mChildren.append(layerable);
-  } else
-    qDebug() << Q_FUNC_INFO << "layerable is already child of this layer" << reinterpret_cast<quintptr>(layerable);
+  }
+  else {}
+    //qDebug() << Q_FUNC_INFO << "layerable is already child of this layer" << reinterpret_cast<quintptr>(layerable);
 }
 
 /*! \internal
@@ -807,8 +808,8 @@ void QCPLayer::addChild(QCPLayerable *layerable, bool prepend)
 */
 void QCPLayer::removeChild(QCPLayerable *layerable)
 {
-  if (!mChildren.removeOne(layerable))
-    qDebug() << Q_FUNC_INFO << "layerable is not child of this layer" << reinterpret_cast<quintptr>(layerable);
+	if (!mChildren.removeOne(layerable)) {}
+    //qDebug() << Q_FUNC_INFO << "layerable is not child of this layer" << reinterpret_cast<quintptr>(layerable);
 }
 
 
@@ -931,8 +932,8 @@ QCPLayerable::QCPLayerable(QCustomPlot *plot, QString targetLayer, QCPLayerable 
   {
     if (targetLayer.isEmpty())
       setLayer(mParentPlot->currentLayer());
-    else if (!setLayer(targetLayer))
-      qDebug() << Q_FUNC_INFO << "setting QCPlayerable initial layer to" << targetLayer << "failed.";
+	else if (!setLayer(targetLayer)) {}
+      //qDebug() << Q_FUNC_INFO << "setting QCPlayerable initial layer to" << targetLayer << "failed.";
   }
 }
 
@@ -978,7 +979,7 @@ bool QCPLayerable::setLayer(const QString &layerName)
 {
   if (!mParentPlot)
   {
-    qDebug() << Q_FUNC_INFO << "no parent QCustomPlot set";
+    //qDebug() << Q_FUNC_INFO << "no parent QCustomPlot set";
     return false;
   }
   if (QCPLayer *layer = mParentPlot->layer(layerName))
@@ -986,7 +987,7 @@ bool QCPLayerable::setLayer(const QString &layerName)
     return setLayer(layer);
   } else
   {
-    qDebug() << Q_FUNC_INFO << "there is no layer with name" << layerName;
+    //qDebug() << Q_FUNC_INFO << "there is no layer with name" << layerName;
     return false;
   }
 }
@@ -1083,12 +1084,12 @@ void QCPLayerable::initializeParentPlot(QCustomPlot *parentPlot)
 {
   if (mParentPlot)
   {
-    qDebug() << Q_FUNC_INFO << "called with mParentPlot already initialized";
+    //qDebug() << Q_FUNC_INFO << "called with mParentPlot already initialized";
     return;
   }
   
   if (!parentPlot)
-    qDebug() << Q_FUNC_INFO << "called with parentPlot zero";
+    //qDebug() << Q_FUNC_INFO << "called with parentPlot zero";
   
   mParentPlot = parentPlot;
   parentPlotInitialized(mParentPlot);
@@ -1122,12 +1123,12 @@ bool QCPLayerable::moveToLayer(QCPLayer *layer, bool prepend)
 {
   if (layer && !mParentPlot)
   {
-    qDebug() << Q_FUNC_INFO << "no parent QCustomPlot set";
+    //qDebug() << Q_FUNC_INFO << "no parent QCustomPlot set";
     return false;
   }
   if (layer && layer->parentPlot() != mParentPlot)
   {
-    qDebug() << Q_FUNC_INFO << "layer" << layer->name() << "is not in same QCustomPlot as this layerable";
+    //qDebug() << Q_FUNC_INFO << "layer" << layer->name() << "is not in same QCustomPlot as this layerable";
     return false;
   }
   
@@ -1618,8 +1619,8 @@ void QCPMarginGroup::addChild(QCP::MarginSide side, QCPLayoutElement *element)
 {
   if (!mChildren[side].contains(element))
     mChildren[side].append(element);
-  else
-    qDebug() << Q_FUNC_INFO << "element is already child of this margin group side" << reinterpret_cast<quintptr>(element);
+  else {}
+    //qDebug() << Q_FUNC_INFO << "element is already child of this margin group side" << reinterpret_cast<quintptr>(element);
 }
 
 /*! \internal
@@ -1630,8 +1631,8 @@ void QCPMarginGroup::addChild(QCP::MarginSide side, QCPLayoutElement *element)
 */
 void QCPMarginGroup::removeChild(QCP::MarginSide side, QCPLayoutElement *element)
 {
-  if (!mChildren[side].removeOne(element))
-    qDebug() << Q_FUNC_INFO << "element is not child of this margin group side" << reinterpret_cast<quintptr>(element);
+	if (!mChildren[side].removeOne(element)) {}
+    //qDebug() << Q_FUNC_INFO << "element is not child of this margin group side" << reinterpret_cast<quintptr>(element);
 }
 
 
@@ -2003,7 +2004,7 @@ double QCPLayoutElement::selectTest(const QPointF &pos, bool onlySelectable, QVa
       return mParentPlot->selectionTolerance()*0.99;
     else
     {
-      qDebug() << Q_FUNC_INFO << "parent plot not defined";
+      //qDebug() << Q_FUNC_INFO << "parent plot not defined";
       return -1;
     }
   } else
@@ -2288,8 +2289,9 @@ void QCPLayout::adoptElement(QCPLayoutElement *el)
     el->setParent(this);
     if (!el->parentPlot())
       el->initializeParentPlot(mParentPlot);
-  } else
-    qDebug() << Q_FUNC_INFO << "Null element passed";
+  }
+  else {}
+    //qDebug() << Q_FUNC_INFO << "Null element passed";
 }
 
 /*! \internal
@@ -2310,8 +2312,9 @@ void QCPLayout::releaseElement(QCPLayoutElement *el)
     el->setParentLayerable(0);
     el->setParent(mParentPlot);
     // Note: Don't initializeParentPlot(0) here, because layout element will stay in same parent plot
-  } else
-    qDebug() << Q_FUNC_INFO << "Null element passed";
+  }
+  else {}
+    //qDebug() << Q_FUNC_INFO << "Null element passed";
 }
 
 /*! \internal
@@ -2347,7 +2350,7 @@ QVector<int> QCPLayout::getSectionSizes(QVector<int> maxSizes, QVector<int> minS
 {
   if (maxSizes.size() != minSizes.size() || minSizes.size() != stretchFactors.size())
   {
-    qDebug() << Q_FUNC_INFO << "Passed vector sizes aren't equal:" << maxSizes << minSizes << stretchFactors;
+    //qDebug() << Q_FUNC_INFO << "Passed vector sizes aren't equal:" << maxSizes << minSizes << stretchFactors;
     return QVector<int>();
   }
   if (stretchFactors.isEmpty())
@@ -2416,8 +2419,9 @@ QVector<int> QCPLayout::getSectionSizes(QVector<int> maxSizes, QVector<int> minS
         unfinishedSections.clear();
       }
     }
-    if (innerIterations == sectionCount*2)
-      qDebug() << Q_FUNC_INFO << "Exceeded maximum expected inner iteration count, layouting aborted. Input was:" << maxSizes << minSizes << stretchFactors << totalSize;
+	if (innerIterations == sectionCount * 2)
+	{//qDebug() << Q_FUNC_INFO << "Exceeded maximum expected inner iteration count, layouting aborted. Input was:" << maxSizes << minSizes << stretchFactors << totalSize;
+	}
     
     // now check whether the resulting section sizes violate minimum restrictions:
     bool foundMinimumViolation = false;
@@ -2447,8 +2451,9 @@ QVector<int> QCPLayout::getSectionSizes(QVector<int> maxSizes, QVector<int> minS
         sectionSizes[unfinishedSections.at(i)] = 0;
     }
   }
-  if (outerIterations == sectionCount*2)
-    qDebug() << Q_FUNC_INFO << "Exceeded maximum expected outer iteration count, layouting aborted. Input was:" << maxSizes << minSizes << stretchFactors << totalSize;
+  if (outerIterations == sectionCount * 2)
+  {//qDebug() << Q_FUNC_INFO << "Exceeded maximum expected outer iteration count, layouting aborted. Input was:" << maxSizes << minSizes << stretchFactors << totalSize;
+  }
   
   QVector<int> result(sectionCount);
   for (int i=0; i<sectionCount; ++i)
@@ -2509,12 +2514,15 @@ QCPLayoutElement *QCPLayoutGrid::element(int row, int column) const
     {
       if (QCPLayoutElement *result = mElements.at(row).at(column))
         return result;
-      else
-        qDebug() << Q_FUNC_INFO << "Requested cell is empty. Row:" << row << "Column:" << column;
+	  else {
+        //qDebug() << Q_FUNC_INFO << "Requested cell is empty. Row:" << row << "Column:" << column; 
+	  }
     } else
-      qDebug() << Q_FUNC_INFO << "Invalid column. Row:" << row << "Column:" << column;
+	  { //qDebug() << Q_FUNC_INFO << "Invalid column. Row:" << row << "Column:" << column;
+	  }
   } else
-    qDebug() << Q_FUNC_INFO << "Invalid row. Row:" << row << "Column:" << column;
+	{//qDebug() << Q_FUNC_INFO << "Invalid row. Row:" << row << "Column:" << column; 
+	}
   return 0;
 }
 
@@ -2563,10 +2571,14 @@ bool QCPLayoutGrid::addElement(int row, int column, QCPLayoutElement *element)
       mElements[row][column] = element;
       adoptElement(element);
       return true;
-    } else
-      qDebug() << Q_FUNC_INFO << "There is already an element in the specified row/column:" << row << column;
-  } else
-    qDebug() << Q_FUNC_INFO << "Can't add null element to row/column:" << row << column;
+	}
+	else
+	{ //qDebug() << Q_FUNC_INFO << "There is already an element in the specified row/column:" << row << column;
+	}
+  }
+  else
+  {//qDebug() << Q_FUNC_INFO << "Can't add null element to row/column:" << row << column;
+  }
   return false;
 }
 
@@ -2601,10 +2613,13 @@ void QCPLayoutGrid::setColumnStretchFactor(int column, double factor)
   {
     if (factor > 0)
       mColumnStretchFactors[column] = factor;
-    else
-      qDebug() << Q_FUNC_INFO << "Invalid stretch factor, must be positive:" << factor;
-  } else
-    qDebug() << Q_FUNC_INFO << "Invalid column:" << column;
+	else
+	{//qDebug() << Q_FUNC_INFO << "Invalid stretch factor, must be positive:" << factor;
+	}
+  }
+  else
+  {//qDebug() << Q_FUNC_INFO << "Invalid column:" << column;
+  }
 }
 
 /*!
@@ -2627,12 +2642,14 @@ void QCPLayoutGrid::setColumnStretchFactors(const QList<double> &factors)
     {
       if (mColumnStretchFactors.at(i) <= 0)
       {
-        qDebug() << Q_FUNC_INFO << "Invalid stretch factor, must be positive:" << mColumnStretchFactors.at(i);
+        //qDebug() << Q_FUNC_INFO << "Invalid stretch factor, must be positive:" << mColumnStretchFactors.at(i);
         mColumnStretchFactors[i] = 1;
       }
     }
-  } else
-    qDebug() << Q_FUNC_INFO << "Column count not equal to passed stretch factor count:" << factors;
+  }
+  else
+  {//qDebug() << Q_FUNC_INFO << "Column count not equal to passed stretch factor count:" << factors;
+  }
 }
 
 /*!
@@ -2652,10 +2669,13 @@ void QCPLayoutGrid::setRowStretchFactor(int row, double factor)
   {
     if (factor > 0)
       mRowStretchFactors[row] = factor;
-    else
-      qDebug() << Q_FUNC_INFO << "Invalid stretch factor, must be positive:" << factor;
-  } else
-    qDebug() << Q_FUNC_INFO << "Invalid row:" << row;
+	else
+	{  //qDebug() << Q_FUNC_INFO << "Invalid stretch factor, must be positive:" << factor;
+	}
+  }
+  else
+  {//qDebug() << Q_FUNC_INFO << "Invalid row:" << row;
+  }
 }
 
 /*!
@@ -2678,12 +2698,14 @@ void QCPLayoutGrid::setRowStretchFactors(const QList<double> &factors)
     {
       if (mRowStretchFactors.at(i) <= 0)
       {
-        qDebug() << Q_FUNC_INFO << "Invalid stretch factor, must be positive:" << mRowStretchFactors.at(i);
+        //qDebug() << Q_FUNC_INFO << "Invalid stretch factor, must be positive:" << mRowStretchFactors.at(i);
         mRowStretchFactors[i] = 1;
       }
     }
-  } else
-    qDebug() << Q_FUNC_INFO << "Row count not equal to passed stretch factor count:" << factors;
+  }
+  else
+  {//qDebug() << Q_FUNC_INFO << "Row count not equal to passed stretch factor count:" << factors;
+  }
 }
 
 /*!
@@ -2843,7 +2865,7 @@ QCPLayoutElement *QCPLayoutGrid::takeAt(int index)
     return el;
   } else
   {
-    qDebug() << Q_FUNC_INFO << "Attempt to take invalid index:" << index;
+    //qDebug() << Q_FUNC_INFO << "Attempt to take invalid index:" << index;
     return 0;
   }
 }
@@ -2861,9 +2883,9 @@ bool QCPLayoutGrid::take(QCPLayoutElement *element)
         return true;
       }
     }
-    qDebug() << Q_FUNC_INFO << "Element not in this layout, couldn't take";
+    //qDebug() << Q_FUNC_INFO << "Element not in this layout, couldn't take";
   } else
-    qDebug() << Q_FUNC_INFO << "Can't take null element";
+    //qDebug() << Q_FUNC_INFO << "Can't take null element";
   return false;
 }
 
@@ -3096,7 +3118,7 @@ QCPLayoutInset::InsetPlacement QCPLayoutInset::insetPlacement(int index) const
     return mInsetPlacement.at(index);
   else
   {
-    qDebug() << Q_FUNC_INFO << "Invalid element index:" << index;
+    //qDebug() << Q_FUNC_INFO << "Invalid element index:" << index;
     return ipFree;
   }
 }
@@ -3111,7 +3133,7 @@ Qt::Alignment QCPLayoutInset::insetAlignment(int index) const
     return mInsetAlignment.at(index);
   else
   {
-    qDebug() << Q_FUNC_INFO << "Invalid element index:" << index;
+    //qDebug() << Q_FUNC_INFO << "Invalid element index:" << index;
     return 0;
   }
 }
@@ -3126,7 +3148,7 @@ QRectF QCPLayoutInset::insetRect(int index) const
     return mInsetRect.at(index);
   else
   {
-    qDebug() << Q_FUNC_INFO << "Invalid element index:" << index;
+    //qDebug() << Q_FUNC_INFO << "Invalid element index:" << index;
     return QRectF();
   }
 }
@@ -3141,7 +3163,8 @@ void QCPLayoutInset::setInsetPlacement(int index, QCPLayoutInset::InsetPlacement
   if (elementAt(index))
     mInsetPlacement[index] = placement;
   else
-    qDebug() << Q_FUNC_INFO << "Invalid element index:" << index;
+  { //qDebug() << Q_FUNC_INFO << "Invalid element index:" << index;
+  }
 }
 
 /*!
@@ -3157,7 +3180,8 @@ void QCPLayoutInset::setInsetAlignment(int index, Qt::Alignment alignment)
   if (elementAt(index))
     mInsetAlignment[index] = alignment;
   else
-    qDebug() << Q_FUNC_INFO << "Invalid element index:" << index;
+  {//qDebug() << Q_FUNC_INFO << "Invalid element index:" << index;
+  }
 }
 
 /*!
@@ -3176,7 +3200,8 @@ void QCPLayoutInset::setInsetRect(int index, const QRectF &rect)
   if (elementAt(index))
     mInsetRect[index] = rect;
   else
-    qDebug() << Q_FUNC_INFO << "Invalid element index:" << index;
+  {//qDebug() << Q_FUNC_INFO << "Invalid element index:" << index;
+  }
 }
 
 /* inherits documentation from base class */
@@ -3249,7 +3274,7 @@ QCPLayoutElement *QCPLayoutInset::takeAt(int index)
     return el;
   } else
   {
-    qDebug() << Q_FUNC_INFO << "Attempt to take invalid index:" << index;
+    //qDebug() << Q_FUNC_INFO << "Attempt to take invalid index:" << index;
     return 0;
   }
 }
@@ -3267,9 +3292,9 @@ bool QCPLayoutInset::take(QCPLayoutElement *element)
         return true;
       }
     }
-    qDebug() << Q_FUNC_INFO << "Element not in this layout, couldn't take";
+    //qDebug() << Q_FUNC_INFO << "Element not in this layout, couldn't take";
   } else
-    qDebug() << Q_FUNC_INFO << "Can't take null element";
+    //qDebug() << Q_FUNC_INFO << "Can't take null element";
   return false;
 }
 
@@ -3320,8 +3345,10 @@ void QCPLayoutInset::addElement(QCPLayoutElement *element, Qt::Alignment alignme
     mInsetAlignment.append(alignment);
     mInsetRect.append(QRectF(0.6, 0.6, 0.4, 0.4));
     adoptElement(element);
-  } else
-    qDebug() << Q_FUNC_INFO << "Can't add null element";
+  }
+  else
+  {//qDebug() << Q_FUNC_INFO << "Can't add null element";
+  }
 }
 
 /*!
@@ -3346,8 +3373,10 @@ void QCPLayoutInset::addElement(QCPLayoutElement *element, const QRectF &rect)
     mInsetAlignment.append(Qt::AlignRight|Qt::AlignTop);
     mInsetRect.append(rect);
     adoptElement(element);
-  } else
-    qDebug() << Q_FUNC_INFO << "Can't add null element";
+  }
+  else
+  {//qDebug() << Q_FUNC_INFO << "Can't add null element";
+  }
 }
 
 
@@ -3763,7 +3792,8 @@ void QCPGrid::applyDefaultAntialiasingHint(QCPPainter *painter) const
 */
 void QCPGrid::draw(QCPPainter *painter)
 {
-  if (!mParentAxis) { qDebug() << Q_FUNC_INFO << "invalid parent axis"; return; }
+  if (!mParentAxis) { //qDebug() << Q_FUNC_INFO << "invalid parent axis"; return; 
+  }
   
   if (mSubGridVisible)
     drawSubGridLines(painter);
@@ -3778,7 +3808,8 @@ void QCPGrid::draw(QCPPainter *painter)
 */
 void QCPGrid::drawGridLines(QCPPainter *painter) const
 {
-  if (!mParentAxis) { qDebug() << Q_FUNC_INFO << "invalid parent axis"; return; }
+  if (!mParentAxis) { //qDebug() << Q_FUNC_INFO << "invalid parent axis"; return;
+  }
   
   int lowTick = mParentAxis->mLowestVisibleTick;
   int highTick = mParentAxis->mHighestVisibleTick;
@@ -3852,7 +3883,8 @@ void QCPGrid::drawGridLines(QCPPainter *painter) const
 */
 void QCPGrid::drawSubGridLines(QCPPainter *painter) const
 {
-  if (!mParentAxis) { qDebug() << Q_FUNC_INFO << "invalid parent axis"; return; }
+  if (!mParentAxis) { //qDebug() << Q_FUNC_INFO << "invalid parent axis"; return; 
+  }
   
   applyAntialiasingHint(painter, mAntialiasedSubGrid, QCP::aeSubGrid);
   double t; // helper variable, result of coordinate-to-pixel transforms
@@ -4191,8 +4223,10 @@ void QCPAxis::setScaleLogBase(double base)
     mScaleLogBase = base;
     mScaleLogBaseLogInv = 1.0/qLn(mScaleLogBase); // buffer for faster baseLog() calculation
     mCachedMarginValid = false;
-  } else
-    qDebug() << Q_FUNC_INFO << "Invalid logarithmic scale base (must be greater 1):" << base;
+  }
+  else
+  {//qDebug() << Q_FUNC_INFO << "Invalid logarithmic scale base (must be greater 1):" << base;
+  }
 }
 
 /*!
@@ -4423,8 +4457,10 @@ void QCPAxis::setAutoTickCount(int approximateCount)
     {
       mAutoTickCount = approximateCount;
       mCachedMarginValid = false;
-    } else
-      qDebug() << Q_FUNC_INFO << "approximateCount must be greater than zero:" << approximateCount;
+	}
+	else
+	{//qDebug() << Q_FUNC_INFO << "approximateCount must be greater than zero:" << approximateCount;
+	}
   }
 }
 
@@ -4692,7 +4728,7 @@ void QCPAxis::setNumberFormat(const QString &formatCode)
 {
   if (formatCode.isEmpty())
   {
-    qDebug() << Q_FUNC_INFO << "Passed formatCode is empty";
+    //qDebug() << Q_FUNC_INFO << "Passed formatCode is empty";
     return;
   }
   mCachedMarginValid = false;
@@ -4704,7 +4740,7 @@ void QCPAxis::setNumberFormat(const QString &formatCode)
     mNumberFormatChar = QLatin1Char(formatCode.at(0).toLatin1());
   } else
   {
-    qDebug() << Q_FUNC_INFO << "Invalid number format code (first char not in 'eEfgG'):" << formatCode;
+    //qDebug() << Q_FUNC_INFO << "Invalid number format code (first char not in 'eEfgG'):" << formatCode;
     return;
   }
   if (formatCode.length() < 2)
@@ -4720,7 +4756,7 @@ void QCPAxis::setNumberFormat(const QString &formatCode)
     mNumberBeautifulPowers = true;
   } else
   {
-    qDebug() << Q_FUNC_INFO << "Invalid number format code (second char not 'b' or first char neither 'e' nor 'g'):" << formatCode;
+    //qDebug() << Q_FUNC_INFO << "Invalid number format code (second char not 'b' or first char neither 'e' nor 'g'):" << formatCode;
     return;
   }
   if (formatCode.length() < 3)
@@ -4738,7 +4774,7 @@ void QCPAxis::setNumberFormat(const QString &formatCode)
     mAxisPainter->numberMultiplyCross = false;
   } else
   {
-    qDebug() << Q_FUNC_INFO << "Invalid number format code (third char neither 'c' nor 'd'):" << formatCode;
+    //qDebug() << Q_FUNC_INFO << "Invalid number format code (third char neither 'c' nor 'd'):" << formatCode;
     return;
   }
 }
@@ -5189,8 +5225,10 @@ void QCPAxis::scaleRange(double factor, double center)
       newRange.upper = qPow(mRange.upper/center, factor)*center;
       if (QCPRange::validRange(newRange))
         mRange = newRange.sanitizedForLogScale();
-    } else
-      qDebug() << Q_FUNC_INFO << "Center of scaling operation doesn't lie in same logarithmic sign domain as range:" << center;
+	}
+	else
+	{//qDebug() << Q_FUNC_INFO << "Center of scaling operation doesn't lie in same logarithmic sign domain as range:" << center;
+	}
   }
   mCachedMarginValid = false;
   emit rangeChanged(mRange);
@@ -5485,7 +5523,7 @@ QCPAxis::AxisType QCPAxis::marginSideToAxisType(QCP::MarginSide side)
     case QCP::msBottom: return atBottom;
     default: break;
   }
-  qDebug() << Q_FUNC_INFO << "Invalid margin side passed:" << (int)side;
+  //qDebug() << Q_FUNC_INFO << "Invalid margin side passed:" << (int)side;
   return atLeft;
 }
 
@@ -5500,7 +5538,8 @@ QCPAxis::AxisType QCPAxis::opposite(QCPAxis::AxisType type)
     case atRight: return atLeft; break;
     case atBottom: return atTop; break;
     case atTop: return atBottom; break;
-    default: qDebug() << Q_FUNC_INFO << "invalid axis type"; return atLeft; break;
+    default: {//qDebug() << Q_FUNC_INFO << "invalid axis type"; return atLeft; break; 
+	}
   }
 }
 
@@ -5662,7 +5701,7 @@ void QCPAxis::generateAutoTicks()
     } else // invalid range for logarithmic scale, because lower and upper have different sign
     {
       mTickVector.clear();
-      qDebug() << Q_FUNC_INFO << "Invalid range for logarithmic plot: " << mRange.lower << "-" << mRange.upper;
+      //qDebug() << Q_FUNC_INFO << "Invalid range for logarithmic plot: " << mRange.lower << "-" << mRange.upper;
     }
   }
 }
@@ -6238,7 +6277,8 @@ void QCPAxisPainterPrivate::draw(QCPPainter *painter)
   if (mParentPlot)
     selectionTolerance = mParentPlot->selectionTolerance();
   else
-    qDebug() << Q_FUNC_INFO << "mParentPlot is null";
+  {  //qDebug() << Q_FUNC_INFO << "mParentPlot is null";
+  }
   int selAxisOutSize = qMax(qMax(tickLengthOut, subTickLengthOut), selectionTolerance);
   int selAxisInSize = selectionTolerance;
   int selTickLabelSize;
@@ -6852,10 +6892,12 @@ QCPAbstractPlottable::QCPAbstractPlottable(QCPAxis *keyAxis, QCPAxis *valueAxis)
   mSelectable(true),
   mSelected(false)
 {
-  if (keyAxis->parentPlot() != valueAxis->parentPlot())
-    qDebug() << Q_FUNC_INFO << "Parent plot of keyAxis is not the same as that of valueAxis.";
-  if (keyAxis->orientation() == valueAxis->orientation())
-    qDebug() << Q_FUNC_INFO << "keyAxis and valueAxis must be orthogonal to each other.";
+	if (keyAxis->parentPlot() != valueAxis->parentPlot())
+	{//qDebug() << Q_FUNC_INFO << "Parent plot of keyAxis is not the same as that of valueAxis.";
+	}
+	if (keyAxis->orientation() == valueAxis->orientation())
+	{ //qDebug() << Q_FUNC_INFO << "keyAxis and valueAxis must be orthogonal to each other.";
+	}
 }
 
 /*!
@@ -7050,7 +7092,8 @@ void QCPAbstractPlottable::rescaleAxes(bool onlyEnlarge) const
 void QCPAbstractPlottable::rescaleKeyAxis(bool onlyEnlarge) const
 {
   QCPAxis *keyAxis = mKeyAxis.data();
-  if (!keyAxis) { qDebug() << Q_FUNC_INFO << "invalid key axis"; return; }
+  if (!keyAxis) { //qDebug() << Q_FUNC_INFO << "invalid key axis"; return; 
+  }
   
   SignDomain signDomain = sdBoth;
   if (keyAxis->scaleType() == QCPAxis::stLogarithmic)
@@ -7090,7 +7133,8 @@ void QCPAbstractPlottable::rescaleKeyAxis(bool onlyEnlarge) const
 void QCPAbstractPlottable::rescaleValueAxis(bool onlyEnlarge) const
 {
   QCPAxis *valueAxis = mValueAxis.data();
-  if (!valueAxis) { qDebug() << Q_FUNC_INFO << "invalid value axis"; return; }
+  if (!valueAxis) { //qDebug() << Q_FUNC_INFO << "invalid value axis"; return; 
+  }
   
   SignDomain signDomain = sdBoth;
   if (valueAxis->scaleType() == QCPAxis::stLogarithmic)
@@ -7194,7 +7238,8 @@ void QCPAbstractPlottable::coordsToPixels(double key, double value, double &x, d
 {
   QCPAxis *keyAxis = mKeyAxis.data();
   QCPAxis *valueAxis = mValueAxis.data();
-  if (!keyAxis || !valueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return; }
+  if (!keyAxis || !valueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return;
+  }
   
   if (keyAxis->orientation() == Qt::Horizontal)
   {
@@ -7216,7 +7261,8 @@ const QPointF QCPAbstractPlottable::coordsToPixels(double key, double value) con
 {
   QCPAxis *keyAxis = mKeyAxis.data();
   QCPAxis *valueAxis = mValueAxis.data();
-  if (!keyAxis || !valueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return QPointF(); }
+  if (!keyAxis || !valueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return QPointF();
+  }
   
   if (keyAxis->orientation() == Qt::Horizontal)
     return QPointF(keyAxis->coordToPixel(key), valueAxis->coordToPixel(value));
@@ -7238,7 +7284,9 @@ void QCPAbstractPlottable::pixelsToCoords(double x, double y, double &key, doubl
 {
   QCPAxis *keyAxis = mKeyAxis.data();
   QCPAxis *valueAxis = mValueAxis.data();
-  if (!keyAxis || !valueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return; }
+  if (!keyAxis || !valueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; 
+	  return; 
+  }
   
   if (keyAxis->orientation() == Qt::Horizontal)
   {
@@ -7487,12 +7535,12 @@ QPointF QCPItemAnchor::pixelPoint() const
       return mParentItem->anchorPixelPoint(mAnchorId);
     } else
     {
-      qDebug() << Q_FUNC_INFO << "no valid anchor id set:" << mAnchorId;
+      //qDebug() << Q_FUNC_INFO << "no valid anchor id set:" << mAnchorId;
       return QPointF();
     }
   } else
   {
-    qDebug() << Q_FUNC_INFO << "no parent item set";
+    //qDebug() << Q_FUNC_INFO << "no parent item set";
     return QPointF();
   }
 }
@@ -7510,7 +7558,8 @@ void QCPItemAnchor::addChildX(QCPItemPosition *pos)
   if (!mChildrenX.contains(pos))
     mChildrenX.insert(pos);
   else
-    qDebug() << Q_FUNC_INFO << "provided pos is child already" << reinterpret_cast<quintptr>(pos);
+  {  //qDebug() << Q_FUNC_INFO << "provided pos is child already" << reinterpret_cast<quintptr>(pos);
+  }
 }
 
 /*! \internal
@@ -7521,8 +7570,9 @@ void QCPItemAnchor::addChildX(QCPItemPosition *pos)
 */
 void QCPItemAnchor::removeChildX(QCPItemPosition *pos)
 {
-  if (!mChildrenX.remove(pos))
-    qDebug() << Q_FUNC_INFO << "provided pos isn't child" << reinterpret_cast<quintptr>(pos);
+	if (!mChildrenX.remove(pos))
+	{  //qDebug() << Q_FUNC_INFO << "provided pos isn't child" << reinterpret_cast<quintptr>(pos);
+	}
 }
 
 /*! \internal
@@ -7538,7 +7588,8 @@ void QCPItemAnchor::addChildY(QCPItemPosition *pos)
   if (!mChildrenY.contains(pos))
     mChildrenY.insert(pos);
   else
-    qDebug() << Q_FUNC_INFO << "provided pos is child already" << reinterpret_cast<quintptr>(pos);
+  {  //qDebug() << Q_FUNC_INFO << "provided pos is child already" << reinterpret_cast<quintptr>(pos);
+  }
 }
 
 /*! \internal
@@ -7549,8 +7600,9 @@ void QCPItemAnchor::addChildY(QCPItemPosition *pos)
 */
 void QCPItemAnchor::removeChildY(QCPItemPosition *pos)
 {
-  if (!mChildrenY.remove(pos))
-    qDebug() << Q_FUNC_INFO << "provided pos isn't child" << reinterpret_cast<quintptr>(pos);
+	if (!mChildrenY.remove(pos))
+	{  //qDebug() << Q_FUNC_INFO << "provided pos isn't child" << reinterpret_cast<quintptr>(pos);
+	}
 }
 
 
@@ -7789,7 +7841,7 @@ bool QCPItemPosition::setParentAnchorX(QCPItemAnchor *parentAnchor, bool keepPix
   // make sure self is not assigned as parent:
   if (parentAnchor == this)
   {
-    qDebug() << Q_FUNC_INFO << "can't set self as parent anchor" << reinterpret_cast<quintptr>(parentAnchor);
+    //qDebug() << Q_FUNC_INFO << "can't set self as parent anchor" << reinterpret_cast<quintptr>(parentAnchor);
     return false;
   }
   // make sure no recursive parent-child-relationships are created:
@@ -7801,7 +7853,7 @@ bool QCPItemPosition::setParentAnchorX(QCPItemAnchor *parentAnchor, bool keepPix
       // is a QCPItemPosition, might have further parent, so keep iterating
       if (currentParentPos == this)
       {
-        qDebug() << Q_FUNC_INFO << "can't create recursive parent-child-relationship" << reinterpret_cast<quintptr>(parentAnchor);
+        //qDebug() << Q_FUNC_INFO << "can't create recursive parent-child-relationship" << reinterpret_cast<quintptr>(parentAnchor);
         return false;
       }
       currentParent = currentParentPos->parentAnchorX();
@@ -7812,7 +7864,7 @@ bool QCPItemPosition::setParentAnchorX(QCPItemAnchor *parentAnchor, bool keepPix
       // because they're both on the same item:
       if (currentParent->mParentItem == mParentItem)
       {
-        qDebug() << Q_FUNC_INFO << "can't set parent to be an anchor which itself depends on this position" << reinterpret_cast<quintptr>(parentAnchor);
+        //qDebug() << Q_FUNC_INFO << "can't set parent to be an anchor which itself depends on this position" << reinterpret_cast<quintptr>(parentAnchor);
         return false;
       }
       break;
@@ -7854,7 +7906,7 @@ bool QCPItemPosition::setParentAnchorY(QCPItemAnchor *parentAnchor, bool keepPix
   // make sure self is not assigned as parent:
   if (parentAnchor == this)
   {
-    qDebug() << Q_FUNC_INFO << "can't set self as parent anchor" << reinterpret_cast<quintptr>(parentAnchor);
+    //qDebug() << Q_FUNC_INFO << "can't set self as parent anchor" << reinterpret_cast<quintptr>(parentAnchor);
     return false;
   }
   // make sure no recursive parent-child-relationships are created:
@@ -7866,7 +7918,7 @@ bool QCPItemPosition::setParentAnchorY(QCPItemAnchor *parentAnchor, bool keepPix
       // is a QCPItemPosition, might have further parent, so keep iterating
       if (currentParentPos == this)
       {
-        qDebug() << Q_FUNC_INFO << "can't create recursive parent-child-relationship" << reinterpret_cast<quintptr>(parentAnchor);
+        //qDebug() << Q_FUNC_INFO << "can't create recursive parent-child-relationship" << reinterpret_cast<quintptr>(parentAnchor);
         return false;
       }
       currentParent = currentParentPos->parentAnchorY();
@@ -7877,7 +7929,7 @@ bool QCPItemPosition::setParentAnchorY(QCPItemAnchor *parentAnchor, bool keepPix
       // because they're both on the same item:
       if (currentParent->mParentItem == mParentItem)
       {
-        qDebug() << Q_FUNC_INFO << "can't set parent to be an anchor which itself depends on this position" << reinterpret_cast<quintptr>(parentAnchor);
+        //qDebug() << Q_FUNC_INFO << "can't set parent to be an anchor which itself depends on this position" << reinterpret_cast<quintptr>(parentAnchor);
         return false;
       }
       break;
@@ -7979,7 +8031,7 @@ QPointF QCPItemPosition::pixelPoint() const
         else
           result.rx() += mAxisRect.data()->left();
       } else
-        qDebug() << Q_FUNC_INFO << "Item position type x is ptAxisRectRatio, but no axis rect was defined";
+        //qDebug() << Q_FUNC_INFO << "Item position type x is ptAxisRectRatio, but no axis rect was defined";
       break;
     }
     case ptPlotCoords:
@@ -7989,7 +8041,7 @@ QPointF QCPItemPosition::pixelPoint() const
       else if (mValueAxis && mValueAxis.data()->orientation() == Qt::Horizontal)
         result.rx() = mValueAxis.data()->coordToPixel(mValue);
       else
-        qDebug() << Q_FUNC_INFO << "Item position type x is ptPlotCoords, but no axes were defined";
+        //qDebug() << Q_FUNC_INFO << "Item position type x is ptPlotCoords, but no axes were defined";
       break;
     }
   }
@@ -8023,7 +8075,7 @@ QPointF QCPItemPosition::pixelPoint() const
         else
           result.ry() += mAxisRect.data()->top();
       } else
-        qDebug() << Q_FUNC_INFO << "Item position type y is ptAxisRectRatio, but no axis rect was defined";
+        //qDebug() << Q_FUNC_INFO << "Item position type y is ptAxisRectRatio, but no axis rect was defined";
       break;
     }
     case ptPlotCoords:
@@ -8033,7 +8085,7 @@ QPointF QCPItemPosition::pixelPoint() const
       else if (mValueAxis && mValueAxis.data()->orientation() == Qt::Vertical)
         result.ry() = mValueAxis.data()->coordToPixel(mValue);
       else
-        qDebug() << Q_FUNC_INFO << "Item position type y is ptPlotCoords, but no axes were defined";
+        //qDebug() << Q_FUNC_INFO << "Item position type y is ptPlotCoords, but no axes were defined";
       break;
     }
   }
@@ -8104,7 +8156,7 @@ void QCPItemPosition::setPixelPoint(const QPointF &pixelPoint)
           x -= mAxisRect.data()->left();
         x /= (double)mAxisRect.data()->width();
       } else
-        qDebug() << Q_FUNC_INFO << "Item position type x is ptAxisRectRatio, but no axis rect was defined";
+        //qDebug() << Q_FUNC_INFO << "Item position type x is ptAxisRectRatio, but no axis rect was defined";
       break;
     }
     case ptPlotCoords:
@@ -8114,7 +8166,7 @@ void QCPItemPosition::setPixelPoint(const QPointF &pixelPoint)
       else if (mValueAxis && mValueAxis.data()->orientation() == Qt::Horizontal)
         y = mValueAxis.data()->pixelToCoord(x);
       else
-        qDebug() << Q_FUNC_INFO << "Item position type x is ptPlotCoords, but no axes were defined";
+        //qDebug() << Q_FUNC_INFO << "Item position type x is ptPlotCoords, but no axes were defined";
       break;
     }
   }
@@ -8146,7 +8198,7 @@ void QCPItemPosition::setPixelPoint(const QPointF &pixelPoint)
           y -= mAxisRect.data()->top();
         y /= (double)mAxisRect.data()->height();
       } else
-        qDebug() << Q_FUNC_INFO << "Item position type y is ptAxisRectRatio, but no axis rect was defined";
+        //qDebug() << Q_FUNC_INFO << "Item position type y is ptAxisRectRatio, but no axis rect was defined";
       break;
     }
     case ptPlotCoords:
@@ -8156,7 +8208,7 @@ void QCPItemPosition::setPixelPoint(const QPointF &pixelPoint)
       else if (mValueAxis && mValueAxis.data()->orientation() == Qt::Vertical)
         y = mValueAxis.data()->pixelToCoord(y);
       else
-        qDebug() << Q_FUNC_INFO << "Item position type y is ptPlotCoords, but no axes were defined";
+        //qDebug() << Q_FUNC_INFO << "Item position type y is ptPlotCoords, but no axes were defined";
       break;
     }
   }
@@ -8447,7 +8499,7 @@ QCPItemPosition *QCPAbstractItem::position(const QString &name) const
     if (mPositions.at(i)->name() == name)
       return mPositions.at(i);
   }
-  qDebug() << Q_FUNC_INFO << "position with name not found:" << name;
+  //qDebug() << Q_FUNC_INFO << "position with name not found:" << name;
   return 0;
 }
 
@@ -8468,7 +8520,7 @@ QCPItemAnchor *QCPAbstractItem::anchor(const QString &name) const
     if (mAnchors.at(i)->name() == name)
       return mAnchors.at(i);
   }
-  qDebug() << Q_FUNC_INFO << "anchor with name not found:" << name;
+  //qDebug() << Q_FUNC_INFO << "anchor with name not found:" << name;
   return 0;
 }
 
@@ -8611,7 +8663,7 @@ double QCPAbstractItem::rectSelectTest(const QRectF &rect, const QPointF &pos, b
 */
 QPointF QCPAbstractItem::anchorPixelPoint(int anchorId) const
 {
-  qDebug() << Q_FUNC_INFO << "called on item which shouldn't have any anchors (this method not reimplemented). anchorId" << anchorId;
+  //qDebug() << Q_FUNC_INFO << "called on item which shouldn't have any anchors (this method not reimplemented). anchorId" << anchorId;
   return QPointF();
 }
 
@@ -8631,8 +8683,9 @@ QPointF QCPAbstractItem::anchorPixelPoint(int anchorId) const
 */
 QCPItemPosition *QCPAbstractItem::createPosition(const QString &name)
 {
-  if (hasAnchor(name))
-    qDebug() << Q_FUNC_INFO << "anchor/position with name exists already:" << name;
+	if (hasAnchor(name))
+	{  //qDebug() << Q_FUNC_INFO << "anchor/position with name exists already:" << name;
+	}
   QCPItemPosition *newPosition = new QCPItemPosition(mParentPlot, this, name);
   mPositions.append(newPosition);
   mAnchors.append(newPosition); // every position is also an anchor
@@ -8665,8 +8718,9 @@ QCPItemPosition *QCPAbstractItem::createPosition(const QString &name)
 */
 QCPItemAnchor *QCPAbstractItem::createAnchor(const QString &name, int anchorId)
 {
-  if (hasAnchor(name))
-    qDebug() << Q_FUNC_INFO << "anchor/position with name exists already:" << name;
+	if (hasAnchor(name))
+	{  //qDebug() << Q_FUNC_INFO << "anchor/position with name exists already:" << name;
+	}
   QCPItemAnchor *newAnchor = new QCPItemAnchor(mParentPlot, this, name, anchorId);
   mAnchors.append(newAnchor);
   return newAnchor;
@@ -9461,7 +9515,7 @@ QCPAbstractPlottable *QCustomPlot::plottable(int index)
     return mPlottables.at(index);
   } else
   {
-    qDebug() << Q_FUNC_INFO << "index out of bounds:" << index;
+    //qDebug() << Q_FUNC_INFO << "index out of bounds:" << index;
     return 0;
   }
 }
@@ -9496,12 +9550,12 @@ bool QCustomPlot::addPlottable(QCPAbstractPlottable *plottable)
 {
   if (mPlottables.contains(plottable))
   {
-    qDebug() << Q_FUNC_INFO << "plottable already added to this QCustomPlot:" << reinterpret_cast<quintptr>(plottable);
+    //qDebug() << Q_FUNC_INFO << "plottable already added to this QCustomPlot:" << reinterpret_cast<quintptr>(plottable);
 //    return false; ADDED by Sassan Should be corrected
 	}
   if (plottable->parentPlot() != this)
   {
-    qDebug() << Q_FUNC_INFO << "plottable not created with this QCustomPlot as parent:" << reinterpret_cast<quintptr>(plottable);
+    //qDebug() << Q_FUNC_INFO << "plottable not created with this QCustomPlot as parent:" << reinterpret_cast<quintptr>(plottable);
 //    return false; ADDED by Sassan Should be corrected
   }
   
@@ -9528,7 +9582,7 @@ bool QCustomPlot::removePlottable(QCPAbstractPlottable *plottable)
 {
   if (!mPlottables.contains(plottable))
   {
-    qDebug() << Q_FUNC_INFO << "plottable not in list:" << reinterpret_cast<quintptr>(plottable);
+    //qDebug() << Q_FUNC_INFO << "plottable not in list:" << reinterpret_cast<quintptr>(plottable);
     return false;
   }
   
@@ -9553,7 +9607,7 @@ bool QCustomPlot::removePlottable(int index)
     return removePlottable(mPlottables[index]);
   else
   {
-    qDebug() << Q_FUNC_INFO << "index out of bounds:" << index;
+    //qDebug() << Q_FUNC_INFO << "index out of bounds:" << index;
     return false;
   }
 }
@@ -9661,7 +9715,7 @@ QCPGraph *QCustomPlot::graph(int index) const
     return mGraphs.at(index);
   } else
   {
-    qDebug() << Q_FUNC_INFO << "index out of bounds:" << index;
+    //qDebug() << Q_FUNC_INFO << "index out of bounds:" << index;
     return 0;
   }
 }
@@ -9700,12 +9754,12 @@ QCPGraph *QCustomPlot::addGraph(QCPAxis *keyAxis, QCPAxis *valueAxis)
   if (!valueAxis) valueAxis = yAxis;
   if (!keyAxis || !valueAxis)
   {
-    qDebug() << Q_FUNC_INFO << "can't use default QCustomPlot xAxis or yAxis, because at least one is invalid (has been deleted)";
+    //qDebug() << Q_FUNC_INFO << "can't use default QCustomPlot xAxis or yAxis, because at least one is invalid (has been deleted)";
     return 0;
   }
   if (keyAxis->parentPlot() != this || valueAxis->parentPlot() != this)
   {
-    qDebug() << Q_FUNC_INFO << "passed keyAxis or valueAxis doesn't have this QCustomPlot as parent";
+    //qDebug() << Q_FUNC_INFO << "passed keyAxis or valueAxis doesn't have this QCustomPlot as parent";
     return 0;
   }
   
@@ -9806,7 +9860,7 @@ QCPAbstractItem *QCustomPlot::item(int index) const
     return mItems.at(index);
   } else
   {
-    qDebug() << Q_FUNC_INFO << "index out of bounds:" << index;
+    //qDebug() << Q_FUNC_INFO << "index out of bounds:" << index;
     return 0;
   }
 }
@@ -9843,7 +9897,7 @@ bool QCustomPlot::addItem(QCPAbstractItem *item)
     return true;
   } else
   {
-    qDebug() << Q_FUNC_INFO << "item either already in list or not created with this QCustomPlot as parent:" << reinterpret_cast<quintptr>(item);
+    //qDebug() << Q_FUNC_INFO << "item either already in list or not created with this QCustomPlot as parent:" << reinterpret_cast<quintptr>(item);
     return false;
   }
 }
@@ -9864,7 +9918,7 @@ bool QCustomPlot::removeItem(QCPAbstractItem *item)
     return true;
   } else
   {
-    qDebug() << Q_FUNC_INFO << "item not in list:" << reinterpret_cast<quintptr>(item);
+    //qDebug() << Q_FUNC_INFO << "item not in list:" << reinterpret_cast<quintptr>(item);
     return false;
   }
 }
@@ -9879,7 +9933,7 @@ bool QCustomPlot::removeItem(int index)
     return removeItem(mItems[index]);
   else
   {
-    qDebug() << Q_FUNC_INFO << "index out of bounds:" << index;
+    //qDebug() << Q_FUNC_INFO << "index out of bounds:" << index;
     return false;
   }
 }
@@ -10002,7 +10056,7 @@ QCPLayer *QCustomPlot::layer(int index) const
     return mLayers.at(index);
   } else
   {
-    qDebug() << Q_FUNC_INFO << "index out of bounds:" << index;
+    //qDebug() << Q_FUNC_INFO << "index out of bounds:" << index;
     return 0;
   }
 }
@@ -10032,7 +10086,7 @@ bool QCustomPlot::setCurrentLayer(const QString &name)
     return setCurrentLayer(newCurrentLayer);
   } else
   {
-    qDebug() << Q_FUNC_INFO << "layer with name doesn't exist:" << name;
+    //qDebug() << Q_FUNC_INFO << "layer with name doesn't exist:" << name;
     return false;
   }
 }
@@ -10049,7 +10103,7 @@ bool QCustomPlot::setCurrentLayer(QCPLayer *layer)
 {
   if (!mLayers.contains(layer))
   {
-    qDebug() << Q_FUNC_INFO << "layer not a layer of this QCustomPlot:" << reinterpret_cast<quintptr>(layer);
+    //qDebug() << Q_FUNC_INFO << "layer not a layer of this QCustomPlot:" << reinterpret_cast<quintptr>(layer);
     return false;
   }
   
@@ -10086,12 +10140,12 @@ bool QCustomPlot::addLayer(const QString &name, QCPLayer *otherLayer, QCustomPlo
     otherLayer = mLayers.last();
   if (!mLayers.contains(otherLayer))
   {
-    qDebug() << Q_FUNC_INFO << "otherLayer not a layer of this QCustomPlot:" << reinterpret_cast<quintptr>(otherLayer);
+    //qDebug() << Q_FUNC_INFO << "otherLayer not a layer of this QCustomPlot:" << reinterpret_cast<quintptr>(otherLayer);
     return false;
   }
   if (layer(name))
   {
-    qDebug() << Q_FUNC_INFO << "A layer exists already with the name" << name;
+    //qDebug() << Q_FUNC_INFO << "A layer exists already with the name" << name;
     return false;
   }
     
@@ -10119,12 +10173,12 @@ bool QCustomPlot::removeLayer(QCPLayer *layer)
 {
   if (!mLayers.contains(layer))
   {
-    qDebug() << Q_FUNC_INFO << "layer not a layer of this QCustomPlot:" << reinterpret_cast<quintptr>(layer);
+    //qDebug() << Q_FUNC_INFO << "layer not a layer of this QCustomPlot:" << reinterpret_cast<quintptr>(layer);
     return false;
   }
   if (mLayers.size() < 2)
   {
-    qDebug() << Q_FUNC_INFO << "can't remove last layer";
+    //qDebug() << Q_FUNC_INFO << "can't remove last layer";
     return false;
   }
   
@@ -10165,12 +10219,12 @@ bool QCustomPlot::moveLayer(QCPLayer *layer, QCPLayer *otherLayer, QCustomPlot::
 {
   if (!mLayers.contains(layer))
   {
-    qDebug() << Q_FUNC_INFO << "layer not a layer of this QCustomPlot:" << reinterpret_cast<quintptr>(layer);
+    //qDebug() << Q_FUNC_INFO << "layer not a layer of this QCustomPlot:" << reinterpret_cast<quintptr>(layer);
     return false;
   }
   if (!mLayers.contains(otherLayer))
   {
-    qDebug() << Q_FUNC_INFO << "otherLayer not a layer of this QCustomPlot:" << reinterpret_cast<quintptr>(otherLayer);
+    //qDebug() << Q_FUNC_INFO << "otherLayer not a layer of this QCustomPlot:" << reinterpret_cast<quintptr>(otherLayer);
     return false;
   }
   
@@ -10214,7 +10268,7 @@ QCPAxisRect *QCustomPlot::axisRect(int index) const
     return rectList.at(index);
   } else
   {
-    qDebug() << Q_FUNC_INFO << "invalid axis rect index" << index;
+    //qDebug() << Q_FUNC_INFO << "invalid axis rect index" << index;
     return 0;
   }
 }
@@ -10385,7 +10439,7 @@ void QCustomPlot::replot(QCustomPlot::RefreshPriority refreshPriority)
     else
       update();
   } else // might happen if QCustomPlot has width or height zero
-    qDebug() << Q_FUNC_INFO << "Couldn't activate painter on buffer. This usually happens because QCustomPlot has width or height zero.";
+    //qDebug() << Q_FUNC_INFO << "Couldn't activate painter on buffer. This usually happens because QCustomPlot has width or height zero.";
   
   emit afterReplot();
   mReplotting = false;
@@ -10456,7 +10510,7 @@ bool QCustomPlot::savePdf(const QString &fileName, bool noCosmeticPen, int width
   Q_UNUSED(height)
   Q_UNUSED(pdfCreator)
   Q_UNUSED(pdfTitle)
-  qDebug() << Q_FUNC_INFO << "Qt was built without printer support (QT_NO_PRINTER). PDF not created.";
+  //qDebug() << Q_FUNC_INFO << "Qt was built without printer support (QT_NO_PRINTER). PDF not created.";
 #else
   int newWidth, newHeight;
   if (width == 0 || height == 0)
@@ -11095,7 +11149,7 @@ QPixmap QCustomPlot::toPixmap(int width, int height, double scale)
     painter.end();
   } else // might happen if pixmap has width or height zero
   {
-    qDebug() << Q_FUNC_INFO << "Couldn't activate painter on pixmap";
+    //qDebug() << Q_FUNC_INFO << "Couldn't activate painter on pixmap";
     return QPixmap();
   }
   return result;
@@ -11136,8 +11190,10 @@ void QCustomPlot::toPainter(QCPPainter *painter, int width, int height)
       painter->fillRect(mViewport, mBackgroundBrush);
     draw(painter);
     setViewport(oldViewport);
-  } else
-    qDebug() << Q_FUNC_INFO << "Passed painter is not active";
+  }
+  else
+  {//qDebug() << Q_FUNC_INFO << "Passed painter is not active";
+  }
 }
 
 
@@ -11204,7 +11260,7 @@ void QCPColorGradient::setLevelCount(int n)
 {
   if (n < 2)
   {
-    qDebug() << Q_FUNC_INFO << "n must be greater or equal 2 but was" << n;
+    //qDebug() << Q_FUNC_INFO << "n must be greater or equal 2 but was" << n;
     n = 2;
   }
   if (n != mLevelCount)
@@ -11295,12 +11351,12 @@ void QCPColorGradient::colorize(const double *data, const QCPRange &range, QRgb 
   // If you change something here, make sure to also adapt ::color()
   if (!data)
   {
-    qDebug() << Q_FUNC_INFO << "null pointer given as data";
+    //qDebug() << Q_FUNC_INFO << "null pointer given as data";
     return;
   }
   if (!scanLine)
   {
-    qDebug() << Q_FUNC_INFO << "null pointer given as scanLine";
+    //qDebug() << Q_FUNC_INFO << "null pointer given as scanLine";
     return;
   }
   if (mColorBufferInvalidated)
@@ -11800,7 +11856,7 @@ QCPAxis *QCPAxisRect::axis(QCPAxis::AxisType type, int index) const
     return ax.at(index);
   } else
   {
-    qDebug() << Q_FUNC_INFO << "Axis index out of bounds:" << index;
+    //qDebug() << Q_FUNC_INFO << "Axis index out of bounds:" << index;
     return 0;
   }
 }
@@ -11872,17 +11928,17 @@ QCPAxis *QCPAxisRect::addAxis(QCPAxis::AxisType type, QCPAxis *axis)
   {
     if (newAxis->axisType() != type)
     {
-      qDebug() << Q_FUNC_INFO << "passed axis has different axis type than specified in type parameter";
+      //qDebug() << Q_FUNC_INFO << "passed axis has different axis type than specified in type parameter";
       return 0;
     }
     if (newAxis->axisRect() != this)
     {
-      qDebug() << Q_FUNC_INFO << "passed axis doesn't have this axis rect as parent axis rect";
+      //qDebug() << Q_FUNC_INFO << "passed axis doesn't have this axis rect as parent axis rect";
       return 0;
     }
     if (axes().contains(newAxis))
     {
-      qDebug() << Q_FUNC_INFO << "passed axis is already owned by this axis rect";
+      //qDebug() << Q_FUNC_INFO << "passed axis is already owned by this axis rect";
       return 0;
     }
   }
@@ -11941,7 +11997,7 @@ bool QCPAxisRect::removeAxis(QCPAxis *axis)
       return true;
     }
   }
-  qDebug() << Q_FUNC_INFO << "Axis isn't in axis rect:" << reinterpret_cast<quintptr>(axis);
+  //qDebug() << Q_FUNC_INFO << "Axis isn't in axis rect:" << reinterpret_cast<quintptr>(axis);
   return false;
 }
 
@@ -12452,7 +12508,7 @@ void QCPAxisRect::updateAxesOffset(QCPAxis::AxisType type)
 int QCPAxisRect::calculateAutoMargin(QCP::MarginSide side)
 {
   if (!mAutoMargins.testFlag(side))
-    qDebug() << Q_FUNC_INFO << "Called with side that isn't specified as auto margin";
+    //qDebug() << Q_FUNC_INFO << "Called with side that isn't specified as auto margin";
   
   updateAxesOffset(QCPAxis::marginSideToAxisType(side));
   
@@ -13140,7 +13196,7 @@ void QCPLegend::setSelectedParts(const SelectableParts &selected)
   {
     if (!mSelectedParts.testFlag(spItems) && newSelected.testFlag(spItems)) // attempt to set spItems flag (can't do that)
     {
-      qDebug() << Q_FUNC_INFO << "spItems flag can not be set, it can only be unset with this function";
+      //qDebug() << Q_FUNC_INFO << "spItems flag can not be set, it can only be unset with this function";
       newSelected &= ~spItems;
     }
     if (mSelectedParts.testFlag(spItems) && !newSelected.testFlag(spItems)) // spItems flag was unset, so clear item selection
@@ -13829,7 +13885,7 @@ QString QCPColorScale::label() const
 {
   if (!mColorAxis)
   {
-    qDebug() << Q_FUNC_INFO << "internal color axis undefined";
+    //qDebug() << Q_FUNC_INFO << "internal color axis undefined";
     return QString();
   }
   
@@ -13841,7 +13897,7 @@ bool QCPColorScale::rangeDrag() const
 {
   if (!mAxisRect)
   {
-    qDebug() << Q_FUNC_INFO << "internal axis rect was deleted";
+    //qDebug() << Q_FUNC_INFO << "internal axis rect was deleted";
     return false;
   }
   
@@ -13855,7 +13911,7 @@ bool QCPColorScale::rangeZoom() const
 {
   if (!mAxisRect)
   {
-    qDebug() << Q_FUNC_INFO << "internal axis rect was deleted";
+    //qDebug() << Q_FUNC_INFO << "internal axis rect was deleted";
     return false;
   }
   
@@ -13875,7 +13931,7 @@ void QCPColorScale::setType(QCPAxis::AxisType type)
 {
   if (!mAxisRect)
   {
-    qDebug() << Q_FUNC_INFO << "internal axis rect was deleted";
+    //qDebug() << Q_FUNC_INFO << "internal axis rect was deleted";
     return;
   }
   if (mType != type)
@@ -13982,7 +14038,7 @@ void QCPColorScale::setLabel(const QString &str)
 {
   if (!mColorAxis)
   {
-    qDebug() << Q_FUNC_INFO << "internal color axis undefined";
+    //qDebug() << Q_FUNC_INFO << "internal color axis undefined";
     return;
   }
   
@@ -14008,7 +14064,7 @@ void QCPColorScale::setRangeDrag(bool enabled)
 {
   if (!mAxisRect)
   {
-    qDebug() << Q_FUNC_INFO << "internal axis rect was deleted";
+    //qDebug() << Q_FUNC_INFO << "internal axis rect was deleted";
     return;
   }
   
@@ -14028,7 +14084,7 @@ void QCPColorScale::setRangeZoom(bool enabled)
 {
   if (!mAxisRect)
   {
-    qDebug() << Q_FUNC_INFO << "internal axis rect was deleted";
+    //qDebug() << Q_FUNC_INFO << "internal axis rect was deleted";
     return;
   }
   
@@ -14124,7 +14180,7 @@ void QCPColorScale::update(UpdatePhase phase)
   QCPLayoutElement::update(phase);
   if (!mAxisRect)
   {
-    qDebug() << Q_FUNC_INFO << "internal axis rect was deleted";
+    //qDebug() << Q_FUNC_INFO << "internal axis rect was deleted";
     return;
   }
   
@@ -14165,7 +14221,7 @@ void QCPColorScale::mousePressEvent(QMouseEvent *event)
 {
   if (!mAxisRect)
   {
-    qDebug() << Q_FUNC_INFO << "internal axis rect was deleted";
+    //qDebug() << Q_FUNC_INFO << "internal axis rect was deleted";
     return;
   }
   mAxisRect.data()->mousePressEvent(event);
@@ -14176,7 +14232,7 @@ void QCPColorScale::mouseMoveEvent(QMouseEvent *event)
 {
   if (!mAxisRect)
   {
-    qDebug() << Q_FUNC_INFO << "internal axis rect was deleted";
+    //qDebug() << Q_FUNC_INFO << "internal axis rect was deleted";
     return;
   }
   mAxisRect.data()->mouseMoveEvent(event);
@@ -14187,7 +14243,7 @@ void QCPColorScale::mouseReleaseEvent(QMouseEvent *event)
 {
   if (!mAxisRect)
   {
-    qDebug() << Q_FUNC_INFO << "internal axis rect was deleted";
+    //qDebug() << Q_FUNC_INFO << "internal axis rect was deleted";
     return;
   }
   mAxisRect.data()->mouseReleaseEvent(event);
@@ -14198,7 +14254,7 @@ void QCPColorScale::wheelEvent(QWheelEvent *event)
 {
   if (!mAxisRect)
   {
-    qDebug() << Q_FUNC_INFO << "internal axis rect was deleted";
+    //qDebug() << Q_FUNC_INFO << "internal axis rect was deleted";
     return;
   }
   mAxisRect.data()->wheelEvent(event);
@@ -14518,7 +14574,7 @@ void QCPGraph::setData(QCPDataMap *data, bool copy)
 {
   if (mData == data)
   {
-    qDebug() << Q_FUNC_INFO << "The data pointer is already in (and owned by) this plottable" << reinterpret_cast<quintptr>(data);
+    //qDebug() << Q_FUNC_INFO << "The data pointer is already in (and owned by) this plottable" << reinterpret_cast<quintptr>(data);
     return;
   }
   if (copy)
@@ -14800,14 +14856,14 @@ void QCPGraph::setChannelFillGraph(QCPGraph *targetGraph)
   // prevent setting channel target to this graph itself:
   if (targetGraph == this)
   {
-    qDebug() << Q_FUNC_INFO << "targetGraph is this graph itself";
+    //qDebug() << Q_FUNC_INFO << "targetGraph is this graph itself";
     mChannelFillGraph = 0;
     return;
   }
   // prevent setting channel target to a graph not in the plot:
   if (targetGraph && targetGraph->mParentPlot != mParentPlot)
   {
-    qDebug() << Q_FUNC_INFO << "targetGraph not in same plot";
+    //qDebug() << Q_FUNC_INFO << "targetGraph not in same plot";
     mChannelFillGraph = 0;
     return;
   }
@@ -14980,7 +15036,8 @@ double QCPGraph::selectTest(const QPointF &pos, bool onlySelectable, QVariant *d
   Q_UNUSED(details)
   if ((onlySelectable && !mSelectable) || mData->isEmpty())
     return -1;
-  if (!mKeyAxis || !mValueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return -1; }
+  if (!mKeyAxis || !mValueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; 
+	  return -1; }
   
   if (mKeyAxis.data()->axisRect()->rect().contains(pos.toPoint()))
     return pointDistance(pos);
@@ -15015,7 +15072,8 @@ void QCPGraph::rescaleKeyAxis(bool onlyEnlarge, bool includeErrorBars) const
   if (mData->isEmpty()) return;
   
   QCPAxis *keyAxis = mKeyAxis.data();
-  if (!keyAxis) { qDebug() << Q_FUNC_INFO << "invalid key axis"; return; }
+  if (!keyAxis) { //qDebug() << Q_FUNC_INFO << "invalid key axis"; 
+	  return; }
 
   SignDomain signDomain = sdBoth;
   if (keyAxis->scaleType() == QCPAxis::stLogarithmic)
@@ -15051,7 +15109,8 @@ void QCPGraph::rescaleValueAxis(bool onlyEnlarge, bool includeErrorBars) const
   if (mData->isEmpty()) return;
   
   QCPAxis *valueAxis = mValueAxis.data();
-  if (!valueAxis) { qDebug() << Q_FUNC_INFO << "invalid value axis"; return; }
+  if (!valueAxis) { //qDebug() << Q_FUNC_INFO << "invalid value axis"; 
+	  return; }
 
   SignDomain signDomain = sdBoth;
   if (valueAxis->scaleType() == QCPAxis::stLogarithmic)
@@ -15076,7 +15135,8 @@ void QCPGraph::rescaleValueAxis(bool onlyEnlarge, bool includeErrorBars) const
 /* inherits documentation from base class */
 void QCPGraph::draw(QCPPainter *painter)
 {
-  if (!mKeyAxis || !mValueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return; }
+  if (!mKeyAxis || !mValueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; 
+	  return; }
   if (mKeyAxis.data()->range().size() <= 0 || mData->isEmpty()) return;
   if (mLineStyle == lsNone && mScatterStyle.isNone()) return;
   
@@ -15097,7 +15157,7 @@ void QCPGraph::draw(QCPPainter *painter)
     if (QCP::isInvalidData(it.value().key, it.value().value) ||
         QCP::isInvalidData(it.value().keyErrorPlus, it.value().keyErrorMinus) ||
         QCP::isInvalidData(it.value().valueErrorPlus, it.value().valueErrorPlus))
-      qDebug() << Q_FUNC_INFO << "Data point at" << it.key() << "invalid." << "Plottable name:" << name();
+      //qDebug() << Q_FUNC_INFO << "Data point at" << it.key() << "invalid." << "Plottable name:" << name();
   }
 #endif
 
@@ -15218,8 +15278,10 @@ void QCPGraph::getLinePlotData(QVector<QPointF> *linePixelData, QVector<QCPData>
 {
   QCPAxis *keyAxis = mKeyAxis.data();
   QCPAxis *valueAxis = mValueAxis.data();
-  if (!keyAxis || !valueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return; }
-  if (!linePixelData) { qDebug() << Q_FUNC_INFO << "null pointer passed as linePixelData"; return; }
+  if (!keyAxis || !valueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; 
+	  return; }
+  if (!linePixelData) { //qDebug() << Q_FUNC_INFO << "null pointer passed as linePixelData"; 
+	  return; }
   
   QVector<QCPData> lineData;
   getPreparedData(&lineData, scatterData);
@@ -15259,8 +15321,10 @@ void QCPGraph::getStepLeftPlotData(QVector<QPointF> *linePixelData, QVector<QCPD
 {
   QCPAxis *keyAxis = mKeyAxis.data();
   QCPAxis *valueAxis = mValueAxis.data();
-  if (!keyAxis || !valueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return; }
-  if (!linePixelData) { qDebug() << Q_FUNC_INFO << "null pointer passed as lineData"; return; }
+  if (!keyAxis || !valueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; 
+	  return; }
+  if (!linePixelData) { //qDebug() << Q_FUNC_INFO << "null pointer passed as lineData"; 
+	  return; }
   
   QVector<QCPData> lineData;
   getPreparedData(&lineData, scatterData);
@@ -15312,8 +15376,10 @@ void QCPGraph::getStepRightPlotData(QVector<QPointF> *linePixelData, QVector<QCP
 {
   QCPAxis *keyAxis = mKeyAxis.data();
   QCPAxis *valueAxis = mValueAxis.data();
-  if (!keyAxis || !valueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return; }
-  if (!linePixelData) { qDebug() << Q_FUNC_INFO << "null pointer passed as lineData"; return; }
+  if (!keyAxis || !valueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; 
+	  return; }
+  if (!linePixelData) { //qDebug() << Q_FUNC_INFO << "null pointer passed as lineData"; 
+	  return; }
   
   QVector<QCPData> lineData;
   getPreparedData(&lineData, scatterData);
@@ -15365,8 +15431,10 @@ void QCPGraph::getStepCenterPlotData(QVector<QPointF> *linePixelData, QVector<QC
 {
   QCPAxis *keyAxis = mKeyAxis.data();
   QCPAxis *valueAxis = mValueAxis.data();
-  if (!keyAxis || !valueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return; }
-  if (!linePixelData) { qDebug() << Q_FUNC_INFO << "null pointer passed as lineData"; return; }
+  if (!keyAxis || !valueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; 
+	  return; }
+  if (!linePixelData) { //qDebug() << Q_FUNC_INFO << "null pointer passed as lineData"; 
+	  return; }
   
   QVector<QCPData> lineData;
   getPreparedData(&lineData, scatterData);
@@ -15430,8 +15498,10 @@ void QCPGraph::getImpulsePlotData(QVector<QPointF> *linePixelData, QVector<QCPDa
 {
   QCPAxis *keyAxis = mKeyAxis.data();
   QCPAxis *valueAxis = mValueAxis.data();
-  if (!keyAxis || !valueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return; }
-  if (!linePixelData) { qDebug() << Q_FUNC_INFO << "null pointer passed as linePixelData"; return; }
+  if (!keyAxis || !valueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; 
+	  return; }
+  if (!linePixelData) { //qDebug() << Q_FUNC_INFO << "null pointer passed as linePixelData"; 
+	  return; }
   
   QVector<QCPData> lineData;
   getPreparedData(&lineData, scatterData);
@@ -15514,7 +15584,8 @@ void QCPGraph::drawScatterPlot(QCPPainter *painter, QVector<QCPData> *scatterDat
 {
   QCPAxis *keyAxis = mKeyAxis.data();
   QCPAxis *valueAxis = mValueAxis.data();
-  if (!keyAxis || !valueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return; }
+  if (!keyAxis || !valueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; 
+	  return; }
   
   // draw error bars:
   if (mErrorType != etNone)
@@ -15662,7 +15733,8 @@ void QCPGraph::getPreparedData(QVector<QCPData> *lineData, QVector<QCPData> *sca
 {
   QCPAxis *keyAxis = mKeyAxis.data();
   QCPAxis *valueAxis = mValueAxis.data();
-  if (!keyAxis || !valueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return; }
+  if (!keyAxis || !valueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; 
+	  return; }
   // get visible data range:
   QCPDataMap::const_iterator lower, upper; // note that upper is the actual upper point, and not 1 step after the upper point
   getVisibleDataBounds(lower, upper);
@@ -15852,7 +15924,8 @@ void QCPGraph::drawError(QCPPainter *painter, double x, double y, const QCPData 
     return;
   QCPAxis *keyAxis = mKeyAxis.data();
   QCPAxis *valueAxis = mValueAxis.data();
-  if (!keyAxis || !valueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return; }
+  if (!keyAxis || !valueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; 
+	  return; }
   
   double a, b; // positions of error bar bounds in pixels
   double barWidthHalf = mErrorBarSize*0.5;
@@ -15959,7 +16032,8 @@ void QCPGraph::drawError(QCPPainter *painter, double x, double y, const QCPData 
 */
 void QCPGraph::getVisibleDataBounds(QCPDataMap::const_iterator &lower, QCPDataMap::const_iterator &upper) const
 {
-  if (!mKeyAxis) { qDebug() << Q_FUNC_INFO << "invalid key axis"; return; }
+  if (!mKeyAxis) { //qDebug() << Q_FUNC_INFO << "invalid key axis"; 
+	  return; }
   if (mData->isEmpty())
   {
     lower = mData->constEnd();
@@ -16018,8 +16092,10 @@ int QCPGraph::countDataInBounds(const QCPDataMap::const_iterator &lower, const Q
 */
 void QCPGraph::addFillBasePoints(QVector<QPointF> *lineData) const
 {
-  if (!mKeyAxis) { qDebug() << Q_FUNC_INFO << "invalid key axis"; return; }
-  if (!lineData) { qDebug() << Q_FUNC_INFO << "passed null as lineData"; return; }
+  if (!mKeyAxis) { //qDebug() << Q_FUNC_INFO << "invalid key axis"; 
+	  return; }
+  if (!lineData) { //qDebug() << Q_FUNC_INFO << "passed null as lineData"; 
+	  return; }
   if (lineData->isEmpty()) return;
   
   // append points that close the polygon fill at the key axis:
@@ -16042,7 +16118,8 @@ void QCPGraph::addFillBasePoints(QVector<QPointF> *lineData) const
 */
 void QCPGraph::removeFillBasePoints(QVector<QPointF> *lineData) const
 {
-  if (!lineData) { qDebug() << Q_FUNC_INFO << "passed null as lineData"; return; }
+  if (!lineData) { //qDebug() << Q_FUNC_INFO << "passed null as lineData"; 
+	  return; }
   if (lineData->isEmpty()) return;
   
   lineData->remove(lineData->size()-2, 2);
@@ -16066,7 +16143,8 @@ QPointF QCPGraph::lowerFillBasePoint(double lowerKey) const
 {
   QCPAxis *keyAxis = mKeyAxis.data();
   QCPAxis *valueAxis = mValueAxis.data();
-  if (!keyAxis || !valueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return QPointF(); }
+  if (!keyAxis || !valueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; 
+	  return QPointF(); }
   
   QPointF point;
   if (valueAxis->scaleType() == QCPAxis::stLinear)
@@ -16131,7 +16209,8 @@ QPointF QCPGraph::upperFillBasePoint(double upperKey) const
 {
   QCPAxis *keyAxis = mKeyAxis.data();
   QCPAxis *valueAxis = mValueAxis.data();
-  if (!keyAxis || !valueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return QPointF(); }
+  if (!keyAxis || !valueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; 
+	  return QPointF(); }
   
   QPointF point;
   if (valueAxis->scaleType() == QCPAxis::stLinear)
@@ -16194,8 +16273,10 @@ const QPolygonF QCPGraph::getChannelFillPolygon(const QVector<QPointF> *lineData
   
   QCPAxis *keyAxis = mKeyAxis.data();
   QCPAxis *valueAxis = mValueAxis.data();
-  if (!keyAxis || !valueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return QPolygonF(); }
-  if (!mChannelFillGraph.data()->mKeyAxis) { qDebug() << Q_FUNC_INFO << "channel fill target key axis invalid"; return QPolygonF(); }
+  if (!keyAxis || !valueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; 
+	  return QPolygonF(); }
+  if (!mChannelFillGraph.data()->mKeyAxis) { //qDebug() << Q_FUNC_INFO << "channel fill target key axis invalid"; 
+	  return QPolygonF(); }
   
   if (mChannelFillGraph.data()->mKeyAxis.data()->orientation() != keyAxis->orientation())
     return QPolygonF(); // don't have same axis orientation, can't fill that (Note: if keyAxis fits, valueAxis will fit too, because it's always orthogonal to keyAxis)
@@ -16842,7 +16923,7 @@ void QCPCurve::setData(QCPCurveDataMap *data, bool copy)
 {
   if (mData == data)
   {
-    qDebug() << Q_FUNC_INFO << "The data pointer is already in (and owned by) this plottable" << reinterpret_cast<quintptr>(data);
+    //qDebug() << Q_FUNC_INFO << "The data pointer is already in (and owned by) this plottable" << reinterpret_cast<quintptr>(data);
     return;
   }
   if (copy)
@@ -17059,7 +17140,8 @@ double QCPCurve::selectTest(const QPointF &pos, bool onlySelectable, QVariant *d
   Q_UNUSED(details)
   if ((onlySelectable && !mSelectable) || mData->isEmpty())
     return -1;
-  if (!mKeyAxis || !mValueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return -1; }
+  if (!mKeyAxis || !mValueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; 
+	  return -1; }
   
   if (mKeyAxis.data()->axisRect()->rect().contains(pos.toPoint()))
     return pointDistance(pos);
@@ -17085,7 +17167,7 @@ void QCPCurve::draw(QCPPainter *painter)
   {
     if (QCP::isInvalidData(it.value().t) ||
         QCP::isInvalidData(it.value().key, it.value().value))
-      qDebug() << Q_FUNC_INFO << "Data point at" << it.key() << "invalid." << "Plottable name:" << name();
+      //qDebug() << Q_FUNC_INFO << "Data point at" << it.key() << "invalid." << "Plottable name:" << name();
   }
 #endif
   
@@ -17222,7 +17304,8 @@ void QCPCurve::getCurveData(QVector<QPointF> *lineData) const
 {
   QCPAxis *keyAxis = mKeyAxis.data();
   QCPAxis *valueAxis = mValueAxis.data();
-  if (!keyAxis || !valueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return; }
+  if (!keyAxis || !valueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; 
+	  return; }
   
   // add margins to rect to compensate for stroke width
   double strokeMargin = qMax(qreal(1.0), qreal(mainPen().widthF()*0.75)); // stroke radius + 50% safety
@@ -17916,7 +17999,7 @@ double QCPCurve::pointDistance(const QPointF &pixelPoint) const
 {
   if (mData->isEmpty())
   {
-    qDebug() << Q_FUNC_INFO << "requested point distance on curve" << mName << "without data";
+    //qDebug() << Q_FUNC_INFO << "requested point distance on curve" << mName << "without data";
     return 500;
   }
   if (mData->size() == 1)
@@ -18132,7 +18215,7 @@ QCPBars *QCPBarsGroup::bars(int index) const
     return mBars.at(index);
   } else
   {
-    qDebug() << Q_FUNC_INFO << "index out of bounds:" << index;
+    //qDebug() << Q_FUNC_INFO << "index out of bounds:" << index;
     return 0;
   }
 }
@@ -18158,14 +18241,15 @@ void QCPBarsGroup::append(QCPBars *bars)
 {
   if (!bars)
   {
-    qDebug() << Q_FUNC_INFO << "bars is 0";
+    //qDebug() << Q_FUNC_INFO << "bars is 0";
     return;
   }
     
   if (!mBars.contains(bars))
     bars->setBarsGroup(this);
   else
-    qDebug() << Q_FUNC_INFO << "bars plottable is already in this bars group:" << reinterpret_cast<quintptr>(bars);
+  {  //qDebug() << Q_FUNC_INFO << "bars plottable is already in this bars group:" << reinterpret_cast<quintptr>(bars);
+  }
 }
 
 /*!
@@ -18181,7 +18265,7 @@ void QCPBarsGroup::insert(int i, QCPBars *bars)
 {
   if (!bars)
   {
-    qDebug() << Q_FUNC_INFO << "bars is 0";
+    //qDebug() << Q_FUNC_INFO << "bars is 0";
     return;
   }
   
@@ -18201,14 +18285,16 @@ void QCPBarsGroup::remove(QCPBars *bars)
 {
   if (!bars)
   {
-    qDebug() << Q_FUNC_INFO << "bars is 0";
+    //qDebug() << Q_FUNC_INFO << "bars is 0";
     return;
   }
   
   if (mBars.contains(bars))
     bars->setBarsGroup(0);
   else
-    qDebug() << Q_FUNC_INFO << "bars plottable is not in this bars group:" << reinterpret_cast<quintptr>(bars);
+  {
+	  //qDebug() << Q_FUNC_INFO << "bars plottable is not in this bars group:" << reinterpret_cast<quintptr>(bars);
+  }
 }
 
 /*! \internal
@@ -18549,7 +18635,7 @@ void QCPBars::setData(QCPBarDataMap *data, bool copy)
 {
   if (mData == data)
   {
-    qDebug() << Q_FUNC_INFO << "The data pointer is already in (and owned by) this plottable" << reinterpret_cast<quintptr>(data);
+    //qDebug() << Q_FUNC_INFO << "The data pointer is already in (and owned by) this plottable" << reinterpret_cast<quintptr>(data);
     return;
   }
   if (copy)
@@ -18601,7 +18687,7 @@ void QCPBars::moveBelow(QCPBars *bars)
   if (bars == this) return;
   if (bars && (bars->keyAxis() != mKeyAxis.data() || bars->valueAxis() != mValueAxis.data()))
   {
-    qDebug() << Q_FUNC_INFO << "passed QCPBars* doesn't have same key and value axis as this QCPBars";
+    //qDebug() << Q_FUNC_INFO << "passed QCPBars* doesn't have same key and value axis as this QCPBars";
     return;
   }
   // remove from stacking:
@@ -18634,7 +18720,7 @@ void QCPBars::moveAbove(QCPBars *bars)
   if (bars == this) return;
   if (bars && (bars->keyAxis() != mKeyAxis.data() || bars->valueAxis() != mValueAxis.data()))
   {
-    qDebug() << Q_FUNC_INFO << "passed QCPBars* doesn't have same key and value axis as this QCPBars";
+    //qDebug() << Q_FUNC_INFO << "passed QCPBars* doesn't have same key and value axis as this QCPBars";
     return;
   }
   // remove from stacking:
@@ -18762,7 +18848,8 @@ double QCPBars::selectTest(const QPointF &pos, bool onlySelectable, QVariant *de
   Q_UNUSED(details)
   if (onlySelectable && !mSelectable)
     return -1;
-  if (!mKeyAxis || !mValueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return -1; }
+  if (!mKeyAxis || !mValueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; 
+	  return -1; }
   
   if (mKeyAxis.data()->axisRect()->rect().contains(pos.toPoint()))
   {
@@ -18779,7 +18866,8 @@ double QCPBars::selectTest(const QPointF &pos, bool onlySelectable, QVariant *de
 /* inherits documentation from base class */
 void QCPBars::draw(QCPPainter *painter)
 {
-  if (!mKeyAxis || !mValueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return; }
+  if (!mKeyAxis || !mValueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; 
+	  return; }
   if (mData->isEmpty()) return;
   
   QCPBarDataMap::const_iterator it, lower, upperEnd;
@@ -18789,7 +18877,7 @@ void QCPBars::draw(QCPPainter *painter)
     // check data validity if flag set:
 #ifdef QCUSTOMPLOT_CHECK_DATA
     if (QCP::isInvalidData(it.value().key, it.value().value))
-      qDebug() << Q_FUNC_INFO << "Data point at" << it.key() << "of drawn range invalid." << "Plottable name:" << name();
+      //qDebug() << Q_FUNC_INFO << "Data point at" << it.key() << "of drawn range invalid." << "Plottable name:" << name();
 #endif
     QPolygonF barPolygon = getBarPolygon(it.key(), it.value().value);
     // draw bar fill:
@@ -18839,7 +18927,8 @@ void QCPBars::drawLegendIcon(QCPPainter *painter, const QRectF &rect) const
 */
 void QCPBars::getVisibleDataBounds(QCPBarDataMap::const_iterator &lower, QCPBarDataMap::const_iterator &upperEnd) const
 {
-  if (!mKeyAxis) { qDebug() << Q_FUNC_INFO << "invalid key axis"; return; }
+  if (!mKeyAxis) { //qDebug() << Q_FUNC_INFO << "invalid key axis"; 
+	  return; }
   if (mData->isEmpty())
   {
     lower = mData->constEnd();
@@ -18895,7 +18984,8 @@ QPolygonF QCPBars::getBarPolygon(double key, double value) const
 {
   QCPAxis *keyAxis = mKeyAxis.data();
   QCPAxis *valueAxis = mValueAxis.data();
-  if (!keyAxis || !valueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return QPolygonF(); }
+  if (!keyAxis || !valueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; 
+	  return QPolygonF(); }
   
   QPolygonF result;
   double lowerPixelWidth, upperPixelWidth;
@@ -18955,7 +19045,7 @@ void QCPBars::getPixelWidth(double key, double &lower, double &upper) const
         if (mKeyAxis && (mKeyAxis.data()->rangeReversed() ^ (mKeyAxis.data()->orientation() == Qt::Vertical)))
           qSwap(lower, upper);
       } else
-        qDebug() << Q_FUNC_INFO << "No key axis or axis rect defined";
+        //qDebug() << Q_FUNC_INFO << "No key axis or axis rect defined";
       break;
     }
     case wtPlotCoords:
@@ -18968,7 +19058,7 @@ void QCPBars::getPixelWidth(double key, double &lower, double &upper) const
         // no need to qSwap(lower, higher) when range reversed, because higher/lower are gained by
         // coordinate transform which includes range direction
       } else
-        qDebug() << Q_FUNC_INFO << "No key axis defined";
+        //qDebug() << Q_FUNC_INFO << "No key axis defined";
       break;
     }
   }
@@ -19380,7 +19470,8 @@ double QCPStatisticalBox::selectTest(const QPointF &pos, bool onlySelectable, QV
   Q_UNUSED(details)
   if (onlySelectable && !mSelectable)
     return -1;
-  if (!mKeyAxis || !mValueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return -1; }
+  if (!mKeyAxis || !mValueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; 
+	  return -1; }
   
   if (mKeyAxis.data()->axisRect()->rect().contains(pos.toPoint()))
   {
@@ -19402,17 +19493,18 @@ double QCPStatisticalBox::selectTest(const QPointF &pos, bool onlySelectable, QV
 /* inherits documentation from base class */
 void QCPStatisticalBox::draw(QCPPainter *painter)
 {
-  if (!mKeyAxis || !mValueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return; }
+  if (!mKeyAxis || !mValueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; 
+	  return; }
 
   // check data validity if flag set:
 #ifdef QCUSTOMPLOT_CHECK_DATA
   if (QCP::isInvalidData(mKey, mMedian) ||
       QCP::isInvalidData(mLowerQuartile, mUpperQuartile) ||
       QCP::isInvalidData(mMinimum, mMaximum))
-    qDebug() << Q_FUNC_INFO << "Data point at" << mKey << "of drawn range has invalid data." << "Plottable name:" << name();
+    //qDebug() << Q_FUNC_INFO << "Data point at" << mKey << "of drawn range has invalid data." << "Plottable name:" << name();
   for (int i=0; i<mOutliers.size(); ++i)
     if (QCP::isInvalidData(mOutliers.at(i)))
-      qDebug() << Q_FUNC_INFO << "Data point outlier at" << mKey << "of drawn range invalid." << "Plottable name:" << name();
+      //qDebug() << Q_FUNC_INFO << "Data point outlier at" << mKey << "of drawn range invalid." << "Plottable name:" << name();
 #endif
   
   QRectF quartileBox;
@@ -19733,8 +19825,10 @@ void QCPColorMapData::setSize(int keySize, int valueSize)
 #endif
       if (mData)
         fill(0);
-      else
-        qDebug() << Q_FUNC_INFO << "out of memory for data dimensions "<< mKeySize << "*" << mValueSize;
+	  else
+	  {
+		  //qDebug() << Q_FUNC_INFO << "out of memory for data dimensions "<< mKeySize << "*" << mValueSize;
+	  }
     } else
       mData = 0;
     mDataModified = true;
@@ -20102,7 +20196,7 @@ void QCPColorMap::setData(QCPColorMapData *data, bool copy)
 {
   if (mMapData == data)
   {
-    qDebug() << Q_FUNC_INFO << "The data pointer is already in (and owned by) this plottable" << reinterpret_cast<quintptr>(data);
+    //qDebug() << Q_FUNC_INFO << "The data pointer is already in (and owned by) this plottable" << reinterpret_cast<quintptr>(data);
     return;
   }
   if (copy)
@@ -20313,7 +20407,8 @@ double QCPColorMap::selectTest(const QPointF &pos, bool onlySelectable, QVariant
   Q_UNUSED(details)
   if (onlySelectable && !mSelectable)
     return -1;
-  if (!mKeyAxis || !mValueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return -1; }
+  if (!mKeyAxis || !mValueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; 
+	  return -1; }
   
   if (mKeyAxis.data()->axisRect()->rect().contains(pos.toPoint()))
   {
@@ -20672,7 +20767,7 @@ void QCPFinancial::setData(QCPFinancialDataMap *data, bool copy)
 {
   if (mData == data)
   {
-    qDebug() << Q_FUNC_INFO << "The data pointer is already in (and owned by) this plottable" << reinterpret_cast<quintptr>(data);
+    //qDebug() << Q_FUNC_INFO << "The data pointer is already in (and owned by) this plottable" << reinterpret_cast<quintptr>(data);
     return;
   }
   if (copy)
@@ -20928,7 +21023,8 @@ double QCPFinancial::selectTest(const QPointF &pos, bool onlySelectable, QVarian
   Q_UNUSED(details)
   if (onlySelectable && !mSelectable)
     return -1;
-  if (!mKeyAxis || !mValueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return -1; }
+  if (!mKeyAxis || !mValueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; 
+	  return -1; }
   
   if (mKeyAxis.data()->axisRect()->rect().contains(pos.toPoint()))
   {
@@ -21170,7 +21266,8 @@ void QCPFinancial::drawOhlcPlot(QCPPainter *painter, const QCPFinancialDataMap::
 {
   QCPAxis *keyAxis = mKeyAxis.data();
   QCPAxis *valueAxis = mValueAxis.data();
-  if (!keyAxis || !valueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return; }
+  if (!keyAxis || !valueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; 
+	  return; }
   
   QPen linePen;
   
@@ -21231,7 +21328,8 @@ void QCPFinancial::drawCandlestickPlot(QCPPainter *painter, const QCPFinancialDa
 {
   QCPAxis *keyAxis = mKeyAxis.data();
   QCPAxis *valueAxis = mValueAxis.data();
-  if (!keyAxis || !valueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return; }
+  if (!keyAxis || !valueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; 
+	  return; }
   
   QPen linePen;
   QBrush boxBrush;
@@ -21322,7 +21420,8 @@ double QCPFinancial::ohlcSelectTest(const QPointF &pos, const QCPFinancialDataMa
 {
   QCPAxis *keyAxis = mKeyAxis.data();
   QCPAxis *valueAxis = mValueAxis.data();
-  if (!keyAxis || !valueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return -1; }
+  if (!keyAxis || !valueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; 
+	  return -1; }
 
   double minDistSqr = std::numeric_limits<double>::max();
   QCPFinancialDataMap::const_iterator it;
@@ -21360,7 +21459,8 @@ double QCPFinancial::candlestickSelectTest(const QPointF &pos, const QCPFinancia
 {
   QCPAxis *keyAxis = mKeyAxis.data();
   QCPAxis *valueAxis = mValueAxis.data();
-  if (!keyAxis || !valueAxis) { qDebug() << Q_FUNC_INFO << "invalid key or value axis"; return -1; }
+  if (!keyAxis || !valueAxis) { //qDebug() << Q_FUNC_INFO << "invalid key or value axis"; 
+	  return -1; }
 
   double minDistSqr = std::numeric_limits<double>::max();
   QCPFinancialDataMap::const_iterator it;
@@ -21434,7 +21534,8 @@ double QCPFinancial::candlestickSelectTest(const QPointF &pos, const QCPFinancia
 */
 void QCPFinancial::getVisibleDataBounds(QCPFinancialDataMap::const_iterator &lower, QCPFinancialDataMap::const_iterator &upper) const
 {
-  if (!mKeyAxis) { qDebug() << Q_FUNC_INFO << "invalid key axis"; return; }
+  if (!mKeyAxis) { //qDebug() << Q_FUNC_INFO << "invalid key axis"; 
+	  return; }
   if (mData->isEmpty())
   {
     lower = mData->constEnd();
@@ -22153,7 +22254,7 @@ QPointF QCPItemRect::anchorPixelPoint(int anchorId) const
     case aiLeft:        return (rect.topLeft()+rect.bottomLeft())*0.5;
   }
   
-  qDebug() << Q_FUNC_INFO << "invalid anchorId" << anchorId;
+  //qDebug() << Q_FUNC_INFO << "invalid anchorId" << anchorId;
   return QPointF();
 }
 
@@ -22450,7 +22551,7 @@ QPointF QCPItemText::anchorPixelPoint(int anchorId) const
     case aiLeft:        return (rectPoly.at(3)+rectPoly.at(0))*0.5;
   }
   
-  qDebug() << Q_FUNC_INFO << "invalid anchorId" << anchorId;
+  //qDebug() << Q_FUNC_INFO << "invalid anchorId" << anchorId;
   return QPointF();
 }
 
@@ -22657,7 +22758,7 @@ void QCPItemEllipse::draw(QCPPainter *painter)
 #ifdef __EXCEPTIONS
     } catch (...)
     {
-      qDebug() << Q_FUNC_INFO << "Item too large for memory, setting invisible";
+      //qDebug() << Q_FUNC_INFO << "Item too large for memory, setting invisible";
       setVisible(false);
     }
 #endif
@@ -22681,7 +22782,7 @@ QPointF QCPItemEllipse::anchorPixelPoint(int anchorId) const
     case aiCenter:         return (rect.topLeft()+rect.bottomRight())*0.5;
   }
   
-  qDebug() << Q_FUNC_INFO << "invalid anchorId" << anchorId;
+  //qDebug() << Q_FUNC_INFO << "invalid anchorId" << anchorId;
   return QPointF();
 }
 
@@ -22761,7 +22862,8 @@ void QCPItemPixmap::setPixmap(const QPixmap &pixmap)
   mPixmap = pixmap;
   mScaledPixmapInvalidated = true;
   if (mPixmap.isNull())
-    qDebug() << Q_FUNC_INFO << "pixmap is null";
+  {  //qDebug() << Q_FUNC_INFO << "pixmap is null";
+  }
 }
 
 /*!
@@ -22851,7 +22953,7 @@ QPointF QCPItemPixmap::anchorPixelPoint(int anchorId) const
     case aiLeft:        return (rect.topLeft()+rect.bottomLeft())*0.5;;
   }
   
-  qDebug() << Q_FUNC_INFO << "invalid anchorId" << anchorId;
+  //qDebug() << Q_FUNC_INFO << "invalid anchorId" << anchorId;
   return QPointF();
 }
 
@@ -23092,8 +23194,10 @@ void QCPItemTracer::setGraph(QCPGraph *graph)
       position->setAxes(graph->keyAxis(), graph->valueAxis());
       mGraph = graph;
       updatePosition();
-    } else
-      qDebug() << Q_FUNC_INFO << "graph isn't in same QCustomPlot instance as this item";
+	}
+	else
+	{//qDebug() << Q_FUNC_INFO << "graph isn't in same QCustomPlot instance as this item";
+	}
   } else
   {
     mGraph = 0;
@@ -23287,10 +23391,14 @@ void QCPItemTracer::updatePosition()
       {
         QCPDataMap::const_iterator it = mGraph->data()->constBegin();
         position->setCoords(it.key(), it.value().value);
-      } else
-        qDebug() << Q_FUNC_INFO << "graph has no data";
-    } else
-      qDebug() << Q_FUNC_INFO << "graph not contained in QCustomPlot instance (anymore)";
+	  }
+	  else
+	  {//qDebug() << Q_FUNC_INFO << "graph has no data";
+	  }
+	}
+	else
+	{ //qDebug() << Q_FUNC_INFO << "graph not contained in QCustomPlot instance (anymore)";
+	}
   }
 }
 
@@ -23537,7 +23645,7 @@ QPointF QCPItemBracket::anchorPixelPoint(int anchorId) const
     case aiCenter:
       return centerVec.toPointF();
   }
-  qDebug() << Q_FUNC_INFO << "invalid anchorId" << anchorId;
+  //qDebug() << Q_FUNC_INFO << "invalid anchorId" << anchorId;
   return QPointF();
 }
 

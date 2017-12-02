@@ -28,16 +28,16 @@ CMedium::~CMedium(void)
 	ANS_constituents.clear();
 	ANS_obs.clear();
 	ANS_obs_noise.clear();
-	qDebug() << "Deleting Blocks";
+	//qDebug() << "Deleting Blocks";
 	Blocks.clear();
-	qDebug() << "Deleting Connectors";
+	//qDebug() << "Deleting Connectors";
 	Connector.clear();
-	qDebug() << "Connectors deleted";
+	//qDebug() << "Connectors deleted";
 	
 	parent = 0;
 	gw = 0;
 	runtimewindow = 0;
-	qDebug() << "Setting parents to Null";
+	//qDebug() << "Setting parents to Null";
 }
 
 CMedium::CMedium(const CMedium &M)
@@ -2397,9 +2397,9 @@ void CMedium::solve_fts_m2(double dt)
         if (iii%120==0)
             QCoreApplication::processEvents(QEventLoop::AllEvents,10*1000);
 	}
-	qDebug() << "Solution Ended!";
+	//qDebug() << "Solution Ended!";
 
-	qDebug() << "Making answers uniform";
+	//qDebug() << "Making answers uniform";
 
 	for (int i = 0; i < controllers().size(); i++)
 		ANS_control.BTC[i] = controllers()[i].output;
@@ -2408,11 +2408,11 @@ void CMedium::solve_fts_m2(double dt)
 	{
 		if (ANS.BTC[0].n)
 		{
-			qDebug() << "Making hydro answers uniform";
+			//qDebug() << "Making hydro answers uniform";
 			ANS = ANS.make_uniform(dt0, false);
-			qDebug() << "Making colloid answers uniform";
+			//qDebug() << "Making colloid answers uniform";
 			if (colloid_transport()) ANS_colloids = ANS_colloids.make_uniform(dt0, false);
-			qDebug() << "Making transport answers uniform";
+			//qDebug() << "Making transport answers uniform";
 			if (constituent_transport()) ANS_constituents = ANS_constituents.make_uniform(dt0, false);
 			ANS_obs.unif = false;
 			ANS_obs = ANS_obs.make_uniform(dt0, false);

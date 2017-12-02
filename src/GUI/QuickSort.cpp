@@ -170,7 +170,7 @@ vector<double> bubbleSort(const vector<double> &V)
 	} while (swapped);
 	clock_t t1 = clock() - t0;
 	float run_time = ((float)t1) / CLOCKS_PER_SEC;
-	qDebug() << "sorting finished in" << run_time << " sec";
+	//qDebug() << "sorting finished in" << run_time << " sec";
 	return A;
 }
 vector<int> bubbleSort(const vector<int> &V)

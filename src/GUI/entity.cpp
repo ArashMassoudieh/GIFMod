@@ -475,7 +475,7 @@ Entity* Entity::unCompact(QMap<QString, QVariant> n, GraphWidget *gwidget, bool 
 
 Entity* Entity::unCompact10(QMap<QString, QVariant> n, GraphWidget *gwidget)
 {
-	qDebug() << "FUNCTION CANCELED!";
+	//qDebug() << "FUNCTION CANCELED!";
 	/*
 	Entity *entity = new Entity(n["Type"].toString(), n["Name"].toString(), gwidget);
 
@@ -567,12 +567,12 @@ QString Entity::experimentName() const
 		solidAqueousExchangeParameters->operator[](experimentName) = solidAqueousExchangeParameters->operator[](parent->firstExperimentName());
 	else
 		solidAqueousExchangeParameters->operator[](experimentName) = QList<SolidAqueousExchangeParameterItem>();
-	//qDebug() << "particleInitialCondition const exit";
+	////qDebug() << "particleInitialCondition const exit";
 	return solidAqueousExchangeParameters->operator[](experimentName);
 }
 QList<SolidAqueousExchangeParameterItem> &Entity::solidAqueousExchangeParameter(QString experimentName)
 {
-	//qDebug() << "particleInitialCondition";
+	////qDebug() << "particleInitialCondition";
 	if (experimentName == "")
 		experimentName = parent->experimentName();
 	if (experimentName != "Global")
@@ -590,7 +590,7 @@ QList<SolidAqueousExchangeParameterItem> &Entity::solidAqueousExchangeParameter(
 		solidAqueousExchangeParameters->operator[](experimentName) = solidAqueousExchangeParameters->operator[](parent->firstExperimentName());
 	else
 		solidAqueousExchangeParameters->operator[](experimentName) = QList<SolidAqueousExchangeParameterItem>();
-	//qDebug() << "particleInitialCondition exit";
+	////qDebug() << "particleInitialCondition exit";
 	return solidAqueousExchangeParameters->operator[](experimentName);
 }
 */

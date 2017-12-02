@@ -457,10 +457,12 @@ void GraphWidget::mousePressEvent(QMouseEvent *event)
 	tableProp->setModel(0);
 	Node *node = qgraphicsitem_cast<Node*> (itemAt(event->pos())); //Get the item at the position
 	if (node)
-		qDebug() << "Name: "<< node->Name()<<" Flag:" << node->flags() << "enabled:" << node->isEnabled() << "active:" << node->isActive();
+	{	//qDebug() << "Name: "<< node->Name()<<" Flag:" << node->flags() << "enabled:" << node->isEnabled() << "active:" << node->isActive();
+	}
 	Edge *edge = qgraphicsitem_cast<Edge*> (itemAt(event->pos())); //Get the item at the position
 	if (edge)
-		qDebug() << "Name: " << edge->Name() << " Flag:" << edge->flags() << "enabled:" << edge->isEnabled() << "active:" << edge->isActive();
+	{	//qDebug() << "Name: " << edge->Name() << " Flag:" << edge->flags() << "enabled:" << edge->isEnabled() << "active:" << edge->isActive();
+	}
 
 	if (event->buttons() == Qt::MiddleButton && Operation_Mode == Operation_Modes::NormalMode)
 	{
@@ -521,7 +523,7 @@ void GraphWidget::mousePressEvent(QMouseEvent *event)
 }
 void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 {
-	//	qDebug() << "Mouse MOVE, button: " << event->button() << ", modifier: " << event->modifiers() << ", buttons: " << event->buttons();
+	//	//qDebug() << "Mouse MOVE, button: " << event->button() << ", modifier: " << event->modifiers() << ", buttons: " << event->buttons();
 	_x = mapToScene(event->pos()).x();
 	_y = mapToScene(event->pos()).y();
 	int xx = _x;// mapToScene(event->pos()).x();
@@ -539,7 +541,7 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 	if (event->buttons() == Qt::LeftButton && Operation_Mode == Operation_Modes::NormalMode && dragMode() == DragMode::RubberBandDrag)
 	{
 		QGraphicsView::mouseMoveEvent(event);
-		qDebug() << event->x() << rubberBandRect().x();
+		//qDebug() << event->x() << rubberBandRect().x();
 		if (event->x() > rubberBandRect().x()) //Dragging to the right
 		{
             for (Edge* item : edges(items(rubberBandRect())))
@@ -612,7 +614,7 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 																	   if (edge)
 																	   {
 																	   setCursor(Qt::ForbiddenCursor);
-																	   qDebug() << edge->dist(mapToScene(event->pos()));
+																	   //qDebug() << edge->dist(mapToScene(event->pos()));
 																	   }
 																	   */
 		if (node)
@@ -690,9 +692,9 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 }
 void GraphWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-//	qDebug() << "Mouse RELEASE, button: " << event->button() << ", modifier: " << event->modifiers() << ", buttons: " << event->buttons()<<", dragMode: "<< dragMode();
+//	//qDebug() << "Mouse RELEASE, button: " << event->button() << ", modifier: " << event->modifiers() << ", buttons: " << event->buttons()<<", dragMode: "<< dragMode();
     for (Edge * item : selectedEdges())
-		qDebug() << item->Name();
+		//qDebug() << item->Name();
 	if (event->button() == Qt::LeftButton && Operation_Mode == Operation_Modes::NormalMode && dragMode() == DragMode::RubberBandDrag)
 	{
         for (Node* item : Nodes())
@@ -1039,7 +1041,7 @@ void GraphWidget::add_to_undo_list(QList<QMap<QString, QVariant>> state)
 	else
 		undolist.append(state);
 	undo_counter = undolist.size(); 
-	qDebug() << "Undo Counter (added) :" << undolist.size() << undo_counter;	
+	//qDebug() << "Undo Counter (added) :" << undolist.size() << undo_counter;	
 }
 
 void GraphWidget::undo()
@@ -1053,7 +1055,7 @@ void GraphWidget::undo()
 	}
 	undo_counter = counter;
 	//	refresh();
-	qDebug() << undolist.size() << undo_counter;
+	//qDebug() << undolist.size() << undo_counter;
 	trackingUndo= true;
 }
 
@@ -1068,7 +1070,7 @@ void GraphWidget::redo()
 	}
 	//	refresh();
 	undo_counter = counter;
-	qDebug() << undolist.size() << undo_counter;
+	//qDebug() << undolist.size() << undo_counter;
 	trackingUndo = true;
 
 }
@@ -1381,7 +1383,7 @@ QList<QMap<QString, QVariant>> GraphWidget::compact() const// QDataStream &out, 
 	r["hasResults"] = hasResults;
 	
 
-//	qDebug() << r["GUI"].toString() << ", " << r["Name"].toString() << " saved.";
+//	//qDebug() << r["GUI"].toString() << ", " << r["Name"].toString() << " saved.";
 #ifdef GIFMOD
 	if (hasResults){
 		getTime();
@@ -1389,28 +1391,28 @@ QList<QMap<QString, QVariant>> GraphWidget::compact() const// QDataStream &out, 
 		{
 			QString expName = QString::fromStdString(modelSet->Medium[i].name);
 			r[QString("%1 ANS").arg(expName)] = relativePathFilename(QString::fromStdString(modelSet->Medium[i].detoutfilename_hydro), modelPathname());
-			qDebug() << QString("%1 ANS").arg(expName) << " " << getTime();
+			//qDebug() << QString("%1 ANS").arg(expName) << " " << getTime();
 
 			r[QString("%1 ANS_colloids").arg(expName)] = relativePathFilename(QString::fromStdString(modelSet->Medium[i].detoutfilename_prtcle), modelPathname());
-			qDebug() << QString("%1 ANS_colloids").arg(expName) << " " << getTime();
+			//qDebug() << QString("%1 ANS_colloids").arg(expName) << " " << getTime();
 
 			r[QString("%1 ANS_constituents").arg(expName)] = relativePathFilename(QString::fromStdString(modelSet->Medium[i].detoutfilename_wq), modelPathname());
-			qDebug() << QString("%1 ANS_constituents").arg(expName) << " " << getTime();
+			//qDebug() << QString("%1 ANS_constituents").arg(expName) << " " << getTime();
 			if (modelSet->SP.mass_balance_check)
 			{
 				r[QString("%1 ANS_MB").arg(expName)] = relativePathFilename(QString::fromStdString(modelSet->FI.outputpathname + "output_MB" + modelSet->Medium[i].name + ".txt"), modelPathname());
-				qDebug() << QString("%1 ANS_MB").arg(expName) << " " << getTime();
+				//qDebug() << QString("%1 ANS_MB").arg(expName) << " " << getTime();
 			}
 		}
 
 
 		r["ANS_obs"] = relativePathFilename(QString::fromStdString(modelSet->FI.detoutfilename_obs), modelPathname());
-		qDebug() << "ANS_obs" << " " << getTime();
+		//qDebug() << "ANS_obs" << " " << getTime();
 
 //		r["ANS_obs_noise"] = "";
 //		out << r2;
 //		modelSet->ANS_obs_noise.compact(out);
-//		qDebug() << "ANS_obs_noise" << " " << getTime();
+//		//qDebug() << "ANS_obs_noise" << " " << getTime();
 		list.append(r);
 	}
 
@@ -1421,10 +1423,10 @@ QList<QMap<QString, QVariant>> GraphWidget::compact() const// QDataStream &out, 
 		r["GUI"] = "Block Index";
 		for (int i = 0; i < modelSet->Medium[0].Blocks.size(); i++)
 			r[QString::fromStdString(modelSet->Medium[0].Blocks[i].ID)] = i;
-		qDebug() << "Block Index" << " " << getTime();
+		//qDebug() << "Block Index" << " " << getTime();
 
 		list.append(r);
-		qDebug() << "append to list" << " " << getTime();
+		//qDebug() << "append to list" << " " << getTime();
 	}
 	if (hasResults)
 	{
@@ -1435,9 +1437,9 @@ QList<QMap<QString, QVariant>> GraphWidget::compact() const// QDataStream &out, 
 		for (int i = 0; i < modelSet->Medium[0].Connector.size(); i++)
 			r[QString::fromStdString(modelSet->Medium[0].Connector[i].ID)] = i;
 #endif
-		qDebug() << "Connector Index" << " " << getTime();
+		//qDebug() << "Connector Index" << " " << getTime();
 		list.append(r);
-		qDebug() << "append to list" << " " << getTime();
+		//qDebug() << "append to list" << " " << getTime();
 	}
 	
 
@@ -1452,7 +1454,7 @@ QList<QMap<QString, QVariant>> GraphWidget::compact() const// QDataStream &out, 
 //			out << r;
 //		else
 //			list.append(r);
-//		qDebug() << "results + append to list" << " " << getTime();
+//		//qDebug() << "results + append to list" << " " << getTime();
 	}
 #endif
 
@@ -1460,34 +1462,34 @@ QList<QMap<QString, QVariant>> GraphWidget::compact() const// QDataStream &out, 
     for (Node *n : Nodes())
 	{
 		list.append(n->compact());
-	//	qDebug() << list.last()["GUI"].toString() << ", " << list.last()["Name"].toString() << " saved.";
+	//	//qDebug() << list.last()["GUI"].toString() << ", " << list.last()["Name"].toString() << " saved.";
 	}
-	qDebug() << "nodes append to list" << " " << getTime();
+	//qDebug() << "nodes append to list" << " " << getTime();
 
 
     for (Edge *e : Edges())
 	{
 		list.append(e->compact());
 
-	//	qDebug() << list.last()["GUI"].toString() << ", " << list.last()["Name"].toString() << " saved.";
+	//	//qDebug() << list.last()["GUI"].toString() << ", " << list.last()["Name"].toString() << " saved.";
 	}
-	qDebug() << "connectors append to list" << " " << getTime();
+	//qDebug() << "connectors append to list" << " " << getTime();
 
 
     for (Entity *e : Entities)
 	{
 		list.append(e->compact());
-		//qDebug() << list.last()["GUI"].toString() << ", " << list.last()["Name"].toString() << " saved.";
+		////qDebug() << list.last()["GUI"].toString() << ", " << list.last()["Name"].toString() << " saved.";
 	}
-	qDebug() << "entties append to list" << " " << getTime();
+	//qDebug() << "entties append to list" << " " << getTime();
 
 
     for (Process *p : Processes)
 	{
 		list.append(p->compact());
-		//qDebug() << list.last()["GUI"].toString() << ", " << list.last()["Name"].toString() << " saved.";
+		////qDebug() << list.last()["GUI"].toString() << ", " << list.last()["Name"].toString() << " saved.";
 	}
-	qDebug() << "processes append to list" << " " << getTime();
+	//qDebug() << "processes append to list" << " " << getTime();
 
 
 
@@ -1531,7 +1533,7 @@ void GraphWidget::clear()
 		resultsSet.clear();
 	if (modelSet)
 	{
-		qDebug() << "Deleting ModelSet";
+		//qDebug() << "Deleting ModelSet";
 		modelSet->clear();
 	}
 	if (model)
@@ -1539,7 +1541,7 @@ void GraphWidget::clear()
 		model->clear(); 
 		model = 0;
 	}
-	qDebug() << "Model Deleted...";
+	//qDebug() << "Model Deleted...";
 	model = 0; modelSet = 0; results = 0;
 	experimentsComboClear();
 	hasResults = false;
@@ -1591,7 +1593,7 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 		QString newpath = "";
 		if (list[i].value("GUI").toString() == "Graphic Widget")
 		{
-			qDebug() << list[i].value("GUI").toString() << " Added.";
+			//qDebug() << list[i].value("GUI").toString() << " Added.";
 			undo_counter = 0;// list[i].value("Undo Counter"].toInt();
 
 			ModelSpace.Model = list[i].value("Model Space").toString();
@@ -1702,7 +1704,7 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 		if (list[i].value("GUI").toString() == "Block Index")
 		{
 			//			r.remove ("GUI");
-			qDebug() << list[i].value("GUI").toString() << " Added.";
+			//qDebug() << list[i].value("GUI").toString() << " Added.";
             for (QString key : list[i].keys())
 				modelSet->blockIndex[key.toStdString()] = list[i].value(key).toInt();
 			QCoreApplication::processEvents();
@@ -1713,7 +1715,7 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 		if (list[i].value("GUI").toString() == "Connector Index")
 		{
 			//			r.remove("GUI");
-			qDebug() << list[i].value("GUI").toString() << " Added.";
+			//qDebug() << list[i].value("GUI").toString() << " Added.";
             for (QString key : list[i].keys())
 				modelSet->connectorIndex[key.toStdString()] = list[i].value(key).toInt();
 			QCoreApplication::processEvents();
@@ -1723,14 +1725,14 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 
 		if (list[i].value("GUI").toString() == "Results")
 		{
-//			qDebug() << list[i].value("GUI").toString() << " Added.";
+//			//qDebug() << list[i].value("GUI").toString() << " Added.";
 //			results = Results::unCompact(list[i]);
 //			QCoreApplication::processEvents();
 		}
 
 		if (list[i].value("GUI").toString() == "Block")
 		{
-			qDebug() << list[i].value("GUI").toString() << ", " << list[i].value("Name").toString() << " Added.";
+			//qDebug() << list[i].value("GUI").toString() << ", " << list[i].value("Name").toString() << " Added.";
 			Node::unCompact(list[i], this, oldVersion);
 			QCoreApplication::processEvents();
 			list[i] = QMap<QString, QVariant>();
@@ -1739,7 +1741,7 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 
 		if (list[i].value("GUI").toString() == "Connector")
 		{
-			qDebug() << list[i].value("GUI").toString() << ", " << list[i].value("Name").toString() << " Added.";
+			//qDebug() << list[i].value("GUI").toString() << ", " << list[i].value("Name").toString() << " Added.";
 			Edge::unCompact(list[i], this, oldVersion);
 			QCoreApplication::processEvents();
 			list[i] = QMap<QString, QVariant>();
@@ -1748,7 +1750,7 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 
 		if (list[i].value("GUI").toString() == "Entity")
 		{
-			qDebug() << list[i].value("GUI").toString() << ", " << list[i].value("Name").toString() << " Added.";
+			//qDebug() << list[i].value("GUI").toString() << ", " << list[i].value("Name").toString() << " Added.";
 			Entity::unCompact(list[i], this, oldVersion);
 			QCoreApplication::processEvents();
 			list[i] = QMap<QString, QVariant>();
@@ -1757,7 +1759,7 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 
 		if (list[i].value("GUI").toString() == "Process")
 		{
-			qDebug() << list[i].value("GUI").toString() << ", " << list[i].value("Name").toString() << " Added.";
+			//qDebug() << list[i].value("GUI").toString() << ", " << list[i].value("Name").toString() << " Added.";
 			Process::unCompact(list[i], this);
 			QCoreApplication::processEvents();
 			list[i] = QMap<QString, QVariant>();
@@ -1798,7 +1800,7 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 		in >> item;
 		if (item.value("GUI").toString() == "Graphic Widget")
 		{
-			qDebug() << item.value("GUI").toString() << " Added.";
+			//qDebug() << item.value("GUI").toString() << " Added.";
 			undo_counter = 0;// item.value("Undo Counter"].toInt();
 			ModelSpace.Model = item.value("Model Space").toString();
 			inflowFileNames = item.value("Inflow Filenames").toStringList();
@@ -1837,7 +1839,7 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 //		if (item.value("GUI").toString() == "BTC")
 		if ((item.value("GUI").toString() == "BTC"))// || item.value("GUI").toString() == "")
 			{
-			qDebug() << "trying to add " << item.value("GUI").toString();
+			//qDebug() << "trying to add " << item.value("GUI").toString();
 			for (int i = 0; i < modelSet->Medium.size(); i++)
 				if (modelSet->Medium[i].name != "all experiments")
 				{
@@ -1862,7 +1864,7 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 		if (item.value("GUI").toString() == "Block Index")
 		{
 			//			r.remove ("GUI");
-			qDebug() << item.value("GUI").toString() << " Added.";
+			//qDebug() << item.value("GUI").toString() << " Added.";
             for (QString key in item.keys())
 				modelSet->blockIndex[key.toStdString()] = item.value(key).toInt();
 			QCoreApplication::processEvents();
@@ -1873,7 +1875,7 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 		if (item.value("GUI").toString() == "Connector Index")
 		{
 			//			r.remove("GUI");
-			qDebug() << item.value("GUI").toString() << " Added.";
+			//qDebug() << item.value("GUI").toString() << " Added.";
             for (QString key in item.keys())
 				modelSet->connectorIndex[key.toStdString()] = item.value(key).toInt();
 			QCoreApplication::processEvents();
@@ -1883,14 +1885,14 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 
 		if (item.value("GUI").toString() == "Results")
 		{
-			qDebug() << item.value("GUI").toString() << " Added.";
+			//qDebug() << item.value("GUI").toString() << " Added.";
 			results = Results::unCompact(item);
 			QCoreApplication::processEvents();
 		}
 
 		if (item.value("GUI").toString() == "Block")
 		{
-			qDebug() << item.value("GUI").toString() << ", " << item.value("Name").toString() << " Added.";
+			//qDebug() << item.value("GUI").toString() << ", " << item.value("Name").toString() << " Added.";
 			Node::unCompact(item, this, oldVersion);
 			QCoreApplication::processEvents();
 			item = QMap<QString, QVariant>();
@@ -1899,7 +1901,7 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 
 		if (item.value("GUI").toString() == "Connector")
 		{
-			qDebug() << item.value("GUI").toString() << ", " << item.value("Name").toString() << " Added.";
+			//qDebug() << item.value("GUI").toString() << ", " << item.value("Name").toString() << " Added.";
 			Edge::unCompact(item, this, oldVersion);
 			QCoreApplication::processEvents();
 			item = QMap<QString, QVariant>();
@@ -1908,7 +1910,7 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 
 		if (item.value("GUI").toString() == "Entity")
 		{
-			qDebug() << item.value("GUI").toString() << ", " << item.value("Name").toString() << " Added.";
+			//qDebug() << item.value("GUI").toString() << ", " << item.value("Name").toString() << " Added.";
 			Entity::unCompact(item, this, oldVersion);
 			QCoreApplication::processEvents();
 			item = QMap<QString, QVariant>();
@@ -1917,7 +1919,7 @@ GraphWidget* GraphWidget::unCompact(QList<QMap<QString, QVariant>> &list, bool o
 
 		if (item.value("GUI").toString() == "Process")
 		{
-			qDebug() << item.value("GUI").toString() << ", " << item.value("Name").toString() << " Added.";
+			//qDebug() << item.value("GUI").toString() << ", " << item.value("Name").toString() << " Added.";
 			Process::unCompact(item, this);
 			QCoreApplication::processEvents();
 			item = QMap<QString, QVariant>();
@@ -1943,7 +1945,7 @@ GraphWidget* GraphWidget::unCompact12(QList<QMap<QString, QVariant>> &list, bool
 	{
 		if (list[i].value("GUI").toString() == "Graphic Widget")
 		{
-			qDebug() << list[i].value("GUI").toString() << " Added.";
+			//qDebug() << list[i].value("GUI").toString() << " Added.";
 			undo_counter = 0;// list[i].value("Undo Counter"].toInt();
 			ModelSpace.Model = list[i].value("Model Space").toString();
 			inflowFileNames = list[i].value("Inflow Filenames").toStringList();
@@ -1988,7 +1990,7 @@ GraphWidget* GraphWidget::unCompact12(QList<QMap<QString, QVariant>> &list, bool
 					if (list[i].value("GUI").toString() == "Block Index")
 					{
 						//          r.remove ("GUI");
-						qDebug() << list[i].value("GUI").toString() << " Added.";
+						//qDebug() << list[i].value("GUI").toString() << " Added.";
                         for (QString key : list[i].keys())
 							modelSet->blockIndex[key.toStdString()] = list[i].value(key).toInt();
 						QCoreApplication::processEvents();
@@ -1998,7 +2000,7 @@ GraphWidget* GraphWidget::unCompact12(QList<QMap<QString, QVariant>> &list, bool
 					if (list[i].value("GUI").toString() == "Connector Index")
 					{
 						//          r.remove("GUI");
-						qDebug() << list[i].value("GUI").toString() << " Added.";
+						//qDebug() << list[i].value("GUI").toString() << " Added.";
                         for (QString key : list[i].keys())
 							modelSet->connectorIndex[key.toStdString()] = list[i].value(key).toInt();
 						QCoreApplication::processEvents();
@@ -2008,7 +2010,7 @@ GraphWidget* GraphWidget::unCompact12(QList<QMap<QString, QVariant>> &list, bool
 #endif
 					if (list[i].value("GUI").toString() == "Results")
 					{
-						qDebug() << list[i].value("GUI").toString() << " Added.";
+						//qDebug() << list[i].value("GUI").toString() << " Added.";
 						results = Results::unCompact(list[i]);
 						QCoreApplication::processEvents();
 						list[i] = QMap<QString, QVariant>();
@@ -2017,7 +2019,7 @@ GraphWidget* GraphWidget::unCompact12(QList<QMap<QString, QVariant>> &list, bool
 
 					if (list[i].value("GUI").toString() == "Block")
 					{
-						qDebug() << list[i].value("GUI").toString() << ", " << list[i].value("Name").toString() << " Added.";
+						//qDebug() << list[i].value("GUI").toString() << ", " << list[i].value("Name").toString() << " Added.";
 						Node::unCompact(list[i], this, oldVersion);
 						QCoreApplication::processEvents();
 						list[i] = QMap<QString, QVariant>();
@@ -2026,7 +2028,7 @@ GraphWidget* GraphWidget::unCompact12(QList<QMap<QString, QVariant>> &list, bool
 
 					if (list[i].value("GUI").toString() == "Connector")
 					{
-						qDebug() << list[i].value("GUI").toString() << ", " << list[i].value("Name").toString() << " Added.";
+						//qDebug() << list[i].value("GUI").toString() << ", " << list[i].value("Name").toString() << " Added.";
 						Edge::unCompact(list[i], this, oldVersion);
 						QCoreApplication::processEvents();
 						list[i] = QMap<QString, QVariant>();
@@ -2035,7 +2037,7 @@ GraphWidget* GraphWidget::unCompact12(QList<QMap<QString, QVariant>> &list, bool
 
 					if (list[i].value("GUI").toString() == "Entity")
 					{
-						qDebug() << list[i].value("GUI").toString() << ", " << list[i].value("Name").toString() << " Added.";
+						//qDebug() << list[i].value("GUI").toString() << ", " << list[i].value("Name").toString() << " Added.";
 						Entity::unCompact(list[i], this, oldVersion);
 						QCoreApplication::processEvents();
 						list[i] = QMap<QString, QVariant>();
@@ -2044,7 +2046,7 @@ GraphWidget* GraphWidget::unCompact12(QList<QMap<QString, QVariant>> &list, bool
 
 					if (list[i].value("GUI").toString() == "Process")
 					{
-						qDebug() << list[i].value("GUI").toString() << ", " << list[i].value("Name").toString() << " Added.";
+						//qDebug() << list[i].value("GUI").toString() << ", " << list[i].value("Name").toString() << " Added.";
 						Process::unCompact(list[i], this);
 						QCoreApplication::processEvents();
 						list[i] = QMap<QString, QVariant>();
@@ -2075,7 +2077,7 @@ GraphWidget* GraphWidget::unCompact10(QList<QMap<QString, QVariant>> list) //, Q
 	{
 		if (r["GUI"].toString() == "Graphic Widget")
 		{
-			qDebug() << r["GUI"].toString() << " Added.";
+			//qDebug() << r["GUI"].toString() << " Added.";
 			undo_counter = 0;// r["Undo Counter"].toInt();
 			ModelSpace.Model = r["Model Space"].toString();
 			inflowFileNames = r["Inflow Filenames"].toStringList();
@@ -2086,7 +2088,7 @@ GraphWidget* GraphWidget::unCompact10(QList<QMap<QString, QVariant>> list) //, Q
 	{
 		if (r["GUI"].toString() == "Block")
 		{
-			qDebug() << r["GUI"].toString() << ", " << r["Name"].toString() << " Added.";
+			//qDebug() << r["GUI"].toString() << ", " << r["Name"].toString() << " Added.";
 			Node::unCompact10(r, this);
 			QCoreApplication::processEvents();
 		}
@@ -2095,7 +2097,7 @@ GraphWidget* GraphWidget::unCompact10(QList<QMap<QString, QVariant>> list) //, Q
 	{
 		if (r["GUI"].toString() == "Connector")
 		{
-			qDebug() << r["GUI"].toString() << ", " << r["Name"].toString() << " Added.";
+			//qDebug() << r["GUI"].toString() << ", " << r["Name"].toString() << " Added.";
 			Edge::unCompact10(r, this);
 			QCoreApplication::processEvents();
 		}
@@ -2104,7 +2106,7 @@ GraphWidget* GraphWidget::unCompact10(QList<QMap<QString, QVariant>> list) //, Q
 	{
 		if (r["GUI"].toString() == "Entity")
 		{
-			qDebug() << r["GUI"].toString() << ", " << r["Name"].toString() << " Added.";
+			//qDebug() << r["GUI"].toString() << ", " << r["Name"].toString() << " Added.";
 			Entity::unCompact10(r, this);
 			QCoreApplication::processEvents();
 		}
@@ -2113,7 +2115,7 @@ GraphWidget* GraphWidget::unCompact10(QList<QMap<QString, QVariant>> list) //, Q
 	{
 		if (r["GUI"].toString() == "Process")
 		{
-			qDebug() << r["GUI"].toString() << ", " << r["Name"].toString() << " Added.";
+			//qDebug() << r["GUI"].toString() << ", " << r["Name"].toString() << " Added.";
 			Process::unCompact(r, this);
 			QCoreApplication::processEvents();
 		}
@@ -2354,7 +2356,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 
 		}
 		
-		qDebug() << "Model->constituent_transport: " << model->constituent_transport() << entitiesByType("Constituent");
+		//qDebug() << "Model->constituent_transport: " << model->constituent_transport() << entitiesByType("Constituent");
 		if ((model->colloid_transport() && entitiesByType("Particle").count()) ||
 			(model->constituent_transport() && entitiesByType("Constituent").count()))
 		{
@@ -2697,7 +2699,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 
 				if (numberofRows >= 1 && numberofColumns >= 1)// && isnumber(deltaV) && isnumber (deltaH))
 				{
-					//qDebug() << QString("Creating %1x%2 grid, delta H=%3, delta V=%4.").arg(numberofRows).arg(numberofColumns).arg(deltaH).arg(deltaV);
+					////qDebug() << QString("Creating %1x%2 grid, delta H=%3, delta V=%4.").arg(numberofRows).arg(numberofColumns).arg(deltaH).arg(deltaV);
 					Node *n1;
 					QList<QList<Node*>> rows;
 					for (int rowIndex = 0; rowIndex < numberofRows; rowIndex++)
@@ -2735,7 +2737,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 								else
 									n1->setY(rows[rowIndex - 1][columnIndex]->y() + offsetY);
 
-								//qDebug() << QString("[%1,%2], x=%3, y=%4").arg(rowIndex).arg(columnIndex).arg(n1->x()).arg(n1->y());
+								////qDebug() << QString("[%1,%2], x=%3, y=%4").arg(rowIndex).arg(columnIndex).arg(n1->x()).arg(n1->y());
 								if (rowIndex != 0)
 									z0.setNum(rows[rowIndex - 1][columnIndex]->getValue(z0variableName).toFloat() +
 									(1.0 / (numberofRows - 1) * deltaV.toFloat(z0.unit)));
@@ -2851,7 +2853,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 
 				if (numberofRows >= 1 && numberofColumns >= 1)// && isnumber(deltaV) && isnumber (deltaH))
 				{
-					//qDebug() << QString("Creating %1x%2 grid, delta H=%3, delta V=%4.").arg(numberofRows).arg(numberofColumns).arg(deltaH).arg(deltaV);
+					////qDebug() << QString("Creating %1x%2 grid, delta H=%3, delta V=%4.").arg(numberofRows).arg(numberofColumns).arg(deltaH).arg(deltaV);
 					Node *n1;
 					QList<QList<Node*>> rows;
 					for (int rowIndex = 0; rowIndex < numberofRows; rowIndex++)
@@ -2889,7 +2891,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 								else
 									n1->setY(rows[rowIndex - 1][columnIndex]->y() + offsetY);
 
-								//qDebug() << QString("[%1,%2], x=%3, y=%4").arg(rowIndex).arg(columnIndex).arg(n1->x()).arg(n1->y());
+								////qDebug() << QString("[%1,%2], x=%3, y=%4").arg(rowIndex).arg(columnIndex).arg(n1->x()).arg(n1->y());
 								if (rowIndex != 0)
 									z0.setNum(rows[rowIndex - 1][columnIndex]->getValue(z0variableName).toFloat() +
 									(1.0 / (numberofRows - 1) * deltaV.toFloat(z0.unit)));
@@ -2961,7 +2963,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 
 				if (numberofRows >= 1 && numberofColumns >= 1)// && isnumber(deltaV) && isnumber (deltaH))
 				{
-					//qDebug() << QString("Creating %1x%2 grid, delta H=%3, delta V=%4.").arg(numberofRows).arg(numberofColumns).arg(deltaH).arg(deltaV);
+					////qDebug() << QString("Creating %1x%2 grid, delta H=%3, delta V=%4.").arg(numberofRows).arg(numberofColumns).arg(deltaH).arg(deltaV);
 					Node *n1;
 					QList<QList<Node*>> rows;
 					for (int rowIndex = 0; rowIndex < numberofRows; rowIndex++)
@@ -2995,7 +2997,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 								else
 									n1->setY(rows[rowIndex - 1][columnIndex]->y() + offsetY);
 
-								//qDebug() << QString("[%1,%2], x=%3, y=%4").arg(rowIndex).arg(columnIndex).arg(n1->x()).arg(n1->y());
+								////qDebug() << QString("[%1,%2], x=%3, y=%4").arg(rowIndex).arg(columnIndex).arg(n1->x()).arg(n1->y());
 								if (rowIndex != 0)
 									z0.setNum(rows[rowIndex - 1][columnIndex]->getValue(z0variableName).toFloat() +
 									(1.0 / (numberofRows - 1) * deltaHY.toFloat(z0.unit)));
@@ -4017,7 +4019,7 @@ QVariant GraphWidget::runCommand(CCommand command)
 				foreach(QString key, command.parameters.keys())
 					output += setprop(n, XString::reform(key), command.parameters[key], experiment);
 
-				qDebug() << int(n->getProp("x").toDouble());
+				//qDebug() << int(n->getProp("x").toDouble());
 				n->setProp("x", int(n->getProp("x").toDouble()));
 				n->setProp("y", int(n->getProp("y").toDouble()));
 				n->setX(int(n->getProp("x").toDouble()));

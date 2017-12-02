@@ -134,7 +134,7 @@ MainWindow::MainWindow(QWidget *parent, QString applicationName, QString shortNa
 	// ***
 	dockWidget->setWidget(dockWidgetContents);
 	this->addDockWidget(static_cast<Qt::DockWidgetArea>(1), dockWidget); //4
-	qDebug() << "1";
+	//qDebug() << "1";
 	dockProp = new QDockWidget(this);
 	dockProp->setWindowTitle("Properties");
 	dockProp->setObjectName(QStringLiteral("dockProp"));
@@ -153,18 +153,18 @@ MainWindow::MainWindow(QWidget *parent, QString applicationName, QString shortNa
 	verticalLayout_2->setObjectName(QStringLiteral("verticalLayout_2"));
 	dockProp->setWidget(dockPropContents);
 	dockProp->setMinimumWidth(size().width() / 2.5);
-	qDebug() << "1.1";
+	//qDebug() << "1.1";
 	dockProjectExplorer = new QDockWidget(this);
 	dockProjectExplorer->setWindowTitle("Project Explorer");
 	dockProjectExplorer->setObjectName(QStringLiteral("dockProjectExplorer"));
 	QSizePolicy sizePolicyPE(QSizePolicy::Expanding, QSizePolicy::Expanding);
 	sizePolicyPE.setHorizontalStretch(1);
-	qDebug() << "1.2";
+	//qDebug() << "1.2";
 	sizePolicyPE.setHeightForWidth(dockProjectExplorer->sizePolicy().hasHeightForWidth());
 	dockProjectExplorer->setSizePolicy(sizePolicyPE);
 	dockProjectExplorer->setFeatures(dockProjectExplorer->features());// | QDockWidget::DockWidgetVerticalTitleBar);
 	dockProjectExplorer->setAllowedAreas(Qt::AllDockWidgetAreas); // LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::TopDockWidgetArea);
-	qDebug() << "1.3";
+	//qDebug() << "1.3";
 	projectExplorerContents = new QWidget();
 	projectExplorerContents->setObjectName(QStringLiteral("projectExplorerContents"));
 	verticalLayout_1 = new QVBoxLayout(projectExplorerContents);
@@ -172,20 +172,20 @@ MainWindow::MainWindow(QWidget *parent, QString applicationName, QString shortNa
 	verticalLayout_1->setContentsMargins(0, 0, 0, 0);
 	verticalLayout_1->setObjectName(QStringLiteral("verticalLayout_1"));
 	dockProjectExplorer->setWidget(projectExplorerContents);
-	qDebug() << "1.4";
+	//qDebug() << "1.4";
 	dockProjectExplorer->setMinimumWidth(size().width() / 3.5);
-	qDebug() << "1.5";
+	//qDebug() << "1.5";
 	projectExplorer = new QTreeView(projectExplorerContents);
 	projectExplorer->setParent(this); 
 	projectExplorer->setGeometry(this->rect());
 	projectExplorer->setContextMenuPolicy(Qt::CustomContextMenu);
 
 	verticalLayout_1->addWidget(projectExplorer);
-	qDebug() << "1.6";
+	//qDebug() << "1.6";
 	dockProjectExplorer->setWidget(projectExplorerContents);
-	qDebug() << "1.9";
+	//qDebug() << "1.9";
 	this->addDockWidget(Qt::RightDockWidgetArea, dockProjectExplorer);
-	qDebug() << "2";
+	//qDebug() << "2";
 	tableProp = new QTableView(dockProp);
 	// ***
 	Delegate *mDelegate = new Delegate(this, mainGraphWidget);
@@ -198,9 +198,9 @@ MainWindow::MainWindow(QWidget *parent, QString applicationName, QString shortNa
 	//tableProp->setMouseTracking(true);
 
 	verticalLayout_2->addWidget(tableProp);
-	qDebug() << "3";
+	//qDebug() << "3";
 	dockProp->setWidget(dockPropContents);
-	qDebug() << 3.01;
+	//qDebug() << 3.01;
 	this->addDockWidget(static_cast<Qt::DockWidgetArea>(2), dockProp);
 	//	propModel = new PropModel();
 	//	tableProp->setModel(propModel);
@@ -208,37 +208,37 @@ MainWindow::MainWindow(QWidget *parent, QString applicationName, QString shortNa
 	//	projModel = new ProjModel(mainGraphWidget);
 
 	// ***
-	qDebug() << 3.02;
+	//qDebug() << 3.02;
 	projModel = new TreeModel(mainGraphWidget);
 	// ***
-	qDebug() << 3.03;
+	//qDebug() << 3.03;
 	projectExplorer->setObjectName(QStringLiteral("projectExplorer"));
 
-	qDebug() << 3.1;
+	//qDebug() << 3.1;
 	//	projectExplorer->setItemDelegate(mDelegate);
 
 	Qt::WindowFlags flags = this->windowFlags();
-	qDebug() << 3.2;
-	qDebug() << 3.3;
+	//qDebug() << 3.2;
+	//qDebug() << 3.3;
 	setWindowFlags(windowFlags() | Qt::WindowMaximizeButtonHint);
 
 	// ***
 	mainGraphWidget->setProjExp(projectExplorer);
 	mainGraphWidget->treeModel = projModel;
-	qDebug() << 3.4;
+	//qDebug() << 3.4;
 	//mainGraphWidget->setpropModel(propModel);
 	mainGraphWidget->settableProp(tableProp);
-	qDebug() << 3.5;
+	//qDebug() << 3.5;
 	mainGraphWidget->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
 	// ***
 	tableProp->setContextMenuPolicy(Qt::CustomContextMenu);
-	qDebug() << 3.6;
+	//qDebug() << 3.6;
 	connect(tableProp, SIGNAL(customContextMenuRequested(const QPoint&)),
 		this, SLOT(tablePropShowContextMenu(const QPoint&)));
-	qDebug() << 3.7;
+	//qDebug() << 3.7;
 	connect(mainGraphWidget, SIGNAL(changed()),
 		this, SLOT(gwidgetChanged()));
-	qDebug() << 4;
+	//qDebug() << 4;
 	//tableProp->setTextElideMode(Qt::ElideMiddle);
 	//tableProp->setWordWrap(true);
 	this->show();
@@ -249,7 +249,7 @@ MainWindow::MainWindow(QWidget *parent, QString applicationName, QString shortNa
 	centerWidget();
 	//	if (modelfilename != "")
 	//		loadModel(modelfilename);
-	qDebug() << 5;
+	//qDebug() << 5;
 	ui->setupUi(this);
 #ifdef GIFMOD
 	mainGraphWidget->experiments = new QComboBox(ui->experimentsToolbar);
@@ -296,7 +296,7 @@ MainWindow::MainWindow(QWidget *parent, QString applicationName, QString shortNa
 
 void MainWindow::readRecentFilesList()
 {
-//	qDebug() << localAppFolderAddress();
+//	//qDebug() << localAppFolderAddress();
 //	QString add = localAppFolderAddress();
 	ifstream file(localAppFolderAddress().toStdString()+RECENT);
 	int count = 0; 
@@ -321,7 +321,7 @@ void MainWindow::readRecentFilesList()
 			getline(file, line);
 			n++;
 			QString fileName = QString::fromStdString(line);
-			qDebug() << fileName; QString::fromStdString(line);
+			//qDebug() << fileName; QString::fromStdString(line);
 			if (n>count-max_num_recent_files)
 				addToRecentFiles(fileName, false);
 			
@@ -482,7 +482,7 @@ void MainWindow::on_actionNew_from_template_triggered()
 	fd.setFileMode(QFileDialog::ExistingFile);
 	QString folder = QDir::currentPath() + "/icons/wizards";
 //	fd.setDirectory(mainGraphWidget->defaultDir() + "/wizards"); // / Icons / Wizards");
-//	qDebug() << QDir::currentPath();
+//	//qDebug() << QDir::currentPath();
 	fd.setDirectory(folder);
 	fd.setViewMode(QFileDialog::List);
 	fd.setFilter(QDir::Files);
@@ -683,9 +683,9 @@ void MainWindow::on_actionSave_As_triggered()
 	Entity *e = mainGraphWidget->entityByName("Project settings (1)");
 	//	delete e;
 	mainGraphWidget->Entities.removeOne(e);
-	qDebug() << "**************************start saving model";
+	//qDebug() << "**************************start saving model";
 	saveModel(fileName);
-	qDebug() << "**************************model saved";
+	//qDebug() << "**************************model saved";
 	if (saveModel(fileName))
 	{
 		setModelFileName(fileName);
@@ -799,7 +799,7 @@ QString fileName =
 	if (fileName.isEmpty())
 		return;
 
-	qDebug() << fileName;
+	//qDebug() << fileName;
 */
 //	mainGraphWidget->add_nodes();
 /*	QList <mProp> QL;
@@ -827,7 +827,7 @@ void MainWindow::Mouse_Pos(int x, int y, QString str)
 	//this->statusBar()->showMessage(QString("X = %1 , Y = %2 ").arg(mainGraphWidget->_x).arg(mainGraphWidget->_y).append(str));
 	this->statusBar()->showMessage(QString("X = %1 , Y = %2 ").arg(x).arg(y).append(str));
 	
-	//qDebug() << ui->graphicsView->mx << ui->graphicsView->my;
+	////qDebug() << ui->graphicsView->mx << ui->graphicsView->my;
 	//emit Mouse_Pos();
 }
 void MainWindow::updateToolbarToggles(Operation_Modes OMode)
@@ -840,7 +840,7 @@ void MainWindow::updateToolbarToggles(Operation_Modes OMode)
 
 void MainWindow::on_dockWidget_dockLocationChanged(const Qt::DockWidgetArea &area)
 {
-	qDebug() << area;
+	//qDebug() << area;
 }
 
 void MainWindow::on_projectExplorer_clicked(const QModelIndex &index)
@@ -1231,7 +1231,7 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 }
 void MainWindow::on_actionmenuRecent_triggered()//QString fileName)
 {
-	qDebug() << "fileName";// act->text();
+	//qDebug() << "fileName";// act->text();
 }
 
 void MainWindow::tablePropShowContextMenu(const QPoint&pos)
@@ -1811,10 +1811,10 @@ void MainWindow::plotAgreementPlotDataforGroups(vector<CBTC> obs_modData, vector
 }
 void MainWindow::plotRealization(CBTCSet data, QString name)
 {
-	qDebug() << "called";
+	//qDebug() << "called";
 	static CBTCSet _data;
 	static QString _name;
-	qDebug() << data.nvars;
+	//qDebug() << data.nvars;
 	if (data.nvars)
 	{
 		_data = data;
@@ -1833,7 +1833,7 @@ void MainWindow::plotRealization(CBTCSet data, QString name)
 #endif
 		for (int i = 0; i < _data.nvars; i++)
 		{
-			qDebug() << QString::fromStdString(_data[i].name);
+			//qDebug() << QString::fromStdString(_data[i].name);
 			plot->addScatterPlot(_data[i], QString::fromStdString(_data[i].name), format);
 		}
 		plot->show();
@@ -2118,10 +2118,10 @@ void MainWindow::newfromtemplate()
 	wd->exec();
 	if (*template_name != "")
 	{
-		qDebug() << "before wizard dialog created" << endl;
-		qDebug() << "template_name: " << *template_name; 
+		//qDebug() << "before wizard dialog created" << endl;
+		//qDebug() << "template_name: " << *template_name; 
 		Wizard_Dialog *wiz_window = new Wizard_Dialog(template_name, this);
-		qDebug() << "now showing" << endl;
+		//qDebug() << "now showing" << endl;
 		wiz_window->show();
 	}
 }
@@ -2168,46 +2168,46 @@ bool MainWindow::saveModel(QString &fileName)
 			t1 = clock() - t0;		float run_time = ((float)t1) / CLOCKS_PER_SEC;		QString st = " sec";		if (run_time >= 60) { run_time /= 60; st = " min"; }
 			if (run_time >= 60) { run_time /= 60; st = " hr"; }		QString r = QString("%1 %2").arg(run_time).arg(st);
 
-//			qDebug() << "getWhole data " << r;
+//			//qDebug() << "getWhole data " << r;
 //			getTime();
 
-			qDebug() << "start to getWhole data ";
+			//qDebug() << "start to getWhole data ";
 			getTime();
 			out << mainGraphWidget->compact();
-			qDebug() << "write data to file " << getTime();
+			//qDebug() << "write data to file " << getTime();
 			file.flush();
-			qDebug() << "file flushed." << getTime();
+			//qDebug() << "file flushed." << getTime();
 
 //			setModelFileName(fileName);
 //			mainGraphWidget->changedState = false;
 
 			file.close();
-			qDebug() << "file closed." << getTime();
+			//qDebug() << "file closed." << getTime();
 /*			for (int i = tmp.size()-1; i >= 0; i--)
 			{
-				qDebug() << "is going to clear tmp[" << i << "]" << getTime();
+				//qDebug() << "is going to clear tmp[" << i << "]" << getTime();
 				if (i)
 					tmp[i].clear();
 				else
 				{
 					for each (QString key in tmp[i].keys())
 					{
-						qDebug() << "is going to remove " << key << getTime();
+						//qDebug() << "is going to remove " << key << getTime();
 						tmp[i].remove(key);
-						qDebug() <<  key << " removed" << getTime();
+						//qDebug() <<  key << " removed" << getTime();
 
 					}
 				}
-				qDebug() << "tmp [" << i << "] has been cleared." << getTime();
+				//qDebug() << "tmp [" << i << "] has been cleared." << getTime();
 			}
 
 			tmp.clear();
 			*/
-			qDebug() << "file size is " << file.size() << ", in " << getTime();
-			qDebug() << "end of Bracket " << getTime();
+			//qDebug() << "file size is " << file.size() << ", in " << getTime();
+			//qDebug() << "end of Bracket " << getTime();
 
 		}
-		qDebug() << "returning from save " << getTime();
+		//qDebug() << "returning from save " << getTime();
 
 		return true;
 	}

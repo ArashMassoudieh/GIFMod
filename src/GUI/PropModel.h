@@ -26,7 +26,7 @@ public:
 	QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
 	bool setData(const QModelIndex & index, const QVariant & value, int role = Qt::EditRole);
 	int rows(const QModelIndex & index = QModelIndex()) const{
-	//	qDebug() << "rows" <<  parent->getmList(parent->Filter()).size();
+	//	//qDebug() << "rows" <<  parent->getmList(parent->Filter()).size();
 		return parent->getmList(parent->Filter()).size();
 	};
 	int rowCount(const QModelIndex & index = QModelIndex()) const{

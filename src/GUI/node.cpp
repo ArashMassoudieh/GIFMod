@@ -171,7 +171,7 @@ QVariant Node::getProp(const QString &propName, const int role) const
 		if (getProp(propName, differentValuesRole).toBool())
 			return QVariant("Different values.");
 		if (mValue.VariableType == "filename"){
-			qDebug() << OnlyFilenames(getValue(propName));
+			//qDebug() << OnlyFilenames(getValue(propName));
 			return OnlyFilenames(getValue(propName));
 		}
 		else if (mValue.Delegate == "CheckBox")
@@ -283,7 +283,7 @@ QVariant Node::getProp(const QString &propName, const QList<Node*> nodes, const 
 		if (getProp(propName, nodes, differentValuesMultiObjectRole).toBool())
 			return QVariant("Different values.");
 		if (mValue.VariableType == "filename") {
-			qDebug() << OnlyFilenames(getValue(propName));
+			//qDebug() << OnlyFilenames(getValue(propName));
 			return OnlyFilenames(getValue(propName));
 		}
 		else if (mValue.Delegate == "CheckBox")
@@ -315,7 +315,7 @@ QVariant Node::getProp(const QString &propName, const QList<Node*> nodes, const 
 }
 XString Node::getValue(const QString& propName) const
 {
-	//qDebug() << "propName = " << propName;
+	////qDebug() << "propName = " << propName;
 	if (propName == "Name") return Name();
 	if (propName == "Type") return ObjectType().ObjectType;
 	if (propName == "SubType" || propName == "Distribution") return ObjectType().SubType;
@@ -826,7 +826,7 @@ QString Node::planthsc(QString experimentName) const
 
 QList<ParticleInitialConditionItem> &Node::particleInitialCondition(QString experimentName) const
 {
-	//qDebug() << "particleInitialCondition const";
+	////qDebug() << "particleInitialCondition const";
 	if (experimentName == "")
 		experimentName = parent->experimentName();
 	if (experimentName != "All experiments")
@@ -841,12 +841,12 @@ QList<ParticleInitialConditionItem> &Node::particleInitialCondition(QString expe
 		particleInitialConditions->operator[](experimentName) = particleInitialConditions->operator[](parent->firstExperimentName());
 	else
 		particleInitialConditions->operator[](experimentName) = QList<ParticleInitialConditionItem>();
-	//qDebug() << "particleInitialCondition const exit";
+	////qDebug() << "particleInitialCondition const exit";
 	return particleInitialConditions->operator[](experimentName);
 }
 QList<ParticleInitialConditionItem> &Node::particleInitialCondition(QString experimentName)
 {
-	//qDebug() << "particleInitialCondition";
+	////qDebug() << "particleInitialCondition";
 	if (experimentName == "")
 		experimentName = parent->experimentName();
 	if (experimentName != "All experiments")
@@ -861,13 +861,13 @@ QList<ParticleInitialConditionItem> &Node::particleInitialCondition(QString expe
 		particleInitialConditions->operator[](experimentName) = particleInitialConditions->operator[](parent->firstExperimentName());
 	else
 		particleInitialConditions->operator[](experimentName) = QList<ParticleInitialConditionItem>();
-	//qDebug() << "particleInitialCondition exit";
+	////qDebug() << "particleInitialCondition exit";
 	return particleInitialConditions->operator[](experimentName);
 }
 
 QList<ConstituentInitialConditionItem> &Node::constituentInitialCondition(QString experimentName) const
 {
-	//qDebug() << "constituentInitialCondition const";
+	////qDebug() << "constituentInitialCondition const";
 	if (experimentName == "")
 		experimentName = parent->experimentName();
 	if (experimentName != "All experiments")
@@ -882,13 +882,13 @@ QList<ConstituentInitialConditionItem> &Node::constituentInitialCondition(QStrin
 		constituentInitialConditions->operator[](experimentName) = constituentInitialConditions->operator[](parent->firstExperimentName());
 	else
 		constituentInitialConditions->operator[](experimentName) = QList<ConstituentInitialConditionItem>();
-	//qDebug() << "constituentInitialCondition const exit";
+	////qDebug() << "constituentInitialCondition const exit";
 	return constituentInitialConditions->operator[](experimentName);
 }
 
 QList<ConstituentInitialConditionItem> &Node::constituentInitialCondition(QString experimentName)
 {
-	//qDebug() << "constituentInitialCondition";
+	////qDebug() << "constituentInitialCondition";
 	if (experimentName == "")
 		experimentName = parent->experimentName();
 	if (experimentName != "All experiments")
@@ -903,13 +903,13 @@ QList<ConstituentInitialConditionItem> &Node::constituentInitialCondition(QStrin
 		constituentInitialConditions->operator[](experimentName) = constituentInitialConditions->operator[](parent->firstExperimentName());
 	else
 		constituentInitialConditions->operator[](experimentName) = QList<ConstituentInitialConditionItem>();
-	//qDebug() << "constituentInitialCondition exit";
+	////qDebug() << "constituentInitialCondition exit";
 	return constituentInitialConditions->operator[](experimentName);
 }
 
 QList<NutrientHalfSaturationConstantItem> &Node::NutrientHalfSaturationConstant(QString experimentName)
 {
-	//qDebug() << "constituentInitialCondition";
+	////qDebug() << "constituentInitialCondition";
 	if (experimentName == "")
 		experimentName = parent->experimentName();
 	if (experimentName != "All experiments")
@@ -924,13 +924,13 @@ QList<NutrientHalfSaturationConstantItem> &Node::NutrientHalfSaturationConstant(
 		NutrientHalfSaturationConstants->operator[](experimentName) = NutrientHalfSaturationConstants->operator[](parent->firstExperimentName());
 	else
 		NutrientHalfSaturationConstants->operator[](experimentName) = QList<NutrientHalfSaturationConstantItem>();
-	//qDebug() << "constituentInitialCondition exit";
+	////qDebug() << "constituentInitialCondition exit";
 	return NutrientHalfSaturationConstants->operator[](experimentName);
 }
 
 QList<NutrientHalfSaturationConstantItem> &Node::NutrientHalfSaturationConstant(QString experimentName) const
 {
-	//qDebug() << "constituentInitialCondition const";
+	////qDebug() << "constituentInitialCondition const";
 	if (experimentName == "")
 		experimentName = parent->experimentName();
 	if (experimentName != "All experiments")
@@ -945,7 +945,7 @@ QList<NutrientHalfSaturationConstantItem> &Node::NutrientHalfSaturationConstant(
 		NutrientHalfSaturationConstants->operator[](experimentName) = NutrientHalfSaturationConstants->operator[](parent->firstExperimentName());
 	else
 		NutrientHalfSaturationConstants->operator[](experimentName) = QList<NutrientHalfSaturationConstantItem>();
-	//qDebug() << "constituentInitialCondition const exit";
+	////qDebug() << "constituentInitialCondition const exit";
 	return NutrientHalfSaturationConstants->operator[](experimentName);
 }
 
@@ -1001,7 +1001,7 @@ XString Node::val(const QString & code) const
 
 QMap<QString, QVariant> Node::compact() const
 {
-//	qDebug() << "Compacting: " << name;
+//	//qDebug() << "Compacting: " << name;
 	QMap<QString, QVariant> r;
 	QStringList connectorNames;
     foreach (Edge * e , edgeList)
@@ -1044,7 +1044,7 @@ Node* Node::unCompact(QMap<QString, QVariant> n, GraphWidget *gwidget, bool oldV
 	Node *node = new Node(gwidget, n["Type"].toString(), n["Name"].toString(), -1, n["X"].toInt(), n["Y"].toInt(), n["Width"].toInt(), n["Height"].toInt());
 	node->setObjectSubType(n["SubType"].toString());
 	QStringList connectorNames = n["Connector Names"].toStringList();
-	qDebug() << "Node: " << n["Name"].toString() << ", " << node->Name();
+	//qDebug() << "Node: " << n["Name"].toString() << ", " << node->Name();
 	n.remove("Name");
 	n.remove("GUI");
 	n.remove("Type");
@@ -1108,11 +1108,11 @@ Node* Node::unCompact(QMap<QString, QVariant> n, GraphWidget *gwidget, bool oldV
 Node* Node::unCompact10(QMap<QString, QVariant> n, GraphWidget *gwidget)
 {
 
-	qDebug() << "FUNCTION CANCELED";
+	//qDebug() << "FUNCTION CANCELED";
 	/*Node *node = new Node(gwidget, n["Type"].toString(), n["Name"].toString(), -1, n["X"].toInt(), n["Y"].toInt(), n["Width"].toInt(), n["Height"].toInt());
 	node->setObjectSubType(n["SubType"].toString());
 	QStringList connectorNames = n["Connector Names"].toStringList();
-	qDebug() << "Node: " << n["Name"].toString() << ", " << node->Name();
+	//qDebug() << "Node: " << n["Name"].toString() << ", " << node->Name();
 	n.remove("Name");
 	n.remove("GUI");
 	n.remove("Type");

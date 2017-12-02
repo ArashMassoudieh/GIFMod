@@ -23,7 +23,7 @@ public:
 		return size();
 	}
 	T& operator[](int index){
-	//	qDebug() << "MV operator []" << index;
+	//	//qDebug() << "MV operator []" << index;
 		return values[index];
 	}
 	void push_back(T value){
@@ -33,13 +33,13 @@ public:
 		push_back(value);
 	}
 	T value(){
-		//qDebug() << "MV value()";
+		////qDebug() << "MV value()";
 		if (sameValues())
 			return values[0];
 		return T();
 	}
 	bool sameValues(){
-		//qDebug() << "MV sameValues()";
+		////qDebug() << "MV sameValues()";
 		if (!size())
 			return false;
 		if (size() == 1)

@@ -339,7 +339,7 @@ void Delegate::setModelData(QWidget *editor, QAbstractItemModel *model,
 	{
 		return;
 		QComboBox *comboBox = static_cast<QComboBox*>(editor);
-		qDebug() << comboBox->currentText();
+		//qDebug() << comboBox->currentText();
 		model->setData(index, comboBox->currentText(), Qt::EditRole);
 		return;
 	}
@@ -700,7 +700,7 @@ void Delegate::browserCheck(QString _fileName)
 	QString fileName = file;
 	if (!parent->inflowFileNames.contains(fileName)) parent->inflowFileNames.append(fileName);
 	parent->propModel()->setData(QModelIndex(), fileName, loadIndex);
-	qDebug() << "set to saved index." << fileName;
+	//qDebug() << "set to saved index." << fileName;
 	delete fileDialog;
 	return;
 }

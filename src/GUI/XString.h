@@ -177,7 +177,7 @@ public:
 
 	// value[unit] 100[m^2]
 	static XString fromQStringUnit(const QString &c) {
-		//qDebug() << c.indexOf('[') << c.indexOf(']') << c.lastIndexOf('[') << c.lastIndexOf(']');
+		////qDebug() << c.indexOf('[') << c.indexOf(']') << c.lastIndexOf('[') << c.lastIndexOf(']');
 		QString valueTxt = c.left(c.indexOf('['));
 		double value = valueTxt.toDouble();
 

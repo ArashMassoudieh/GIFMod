@@ -147,7 +147,7 @@ void runtimeWindow::setExperiment(CMedium *model)
 		if (vars.keys().contains("progress"))
 		{
 			ui->progressBar->setValue(vars["progress"].toInt());
-			qDebug() << "progress:" << vars["progress"].toInt();
+			//qDebug() << "progress:" << vars["progress"].toInt();
 		}
 
 		if (vars.keys().contains("mode"))
@@ -348,7 +348,7 @@ void runtimeWindow::realtimeDataSlot(double x, double y, bool secondPlot, QStrin
 		if (value0 < min[chartName]) min[chartName] = value0;
 		if (value0 > max[chartName]) max[chartName] = value0;
 
-	//qDebug() << Timemin << x << y;
+	////qDebug() << Timemin << x << y;
 
 	if (useStartFinishTimes) plot->xAxis->setRange(Timemin, Timemax);
 	

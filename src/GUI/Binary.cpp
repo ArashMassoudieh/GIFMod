@@ -168,7 +168,7 @@ void cross(CBinary &B1, CBinary &B2, vector<int> p)
 		{
 			if (i%2==0)
 			{
-                //qDebug()<<BT1[i];
+                ////qDebug()<<BT1[i];
 
                 B1[i] = BT1[i];
 				B2[i] = BT2[i];

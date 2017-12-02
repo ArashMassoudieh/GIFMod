@@ -91,7 +91,7 @@ QString wiz_entity::get_direction()
 XString wiz_entity::get_value(wiz_assigned_value x)
 {
 	XString X; 
-	qDebug() << x.entity << " count: " << parameters.count(x.entity) << endl; 
+	//qDebug() << x.entity << " count: " << parameters.count(x.entity) << endl; 
 	if (parameters.count(x.entity) > 0)
 	{
 		if (parameters[x.entity].value_param_expression == "value")

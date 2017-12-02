@@ -266,7 +266,7 @@ mPropList mPropList::filter(const mProp &mP) const
 	{
 		if (List[i] == mP) r.List.append(List[i]);
 	}
-//	qDebug() << "filter:" << counter++;
+//	//qDebug() << "filter:" << counter++;
 	return(r);
 }
 
@@ -283,7 +283,7 @@ mPropList mPropList::filter_abv(const mProp &mP) const
 	{
 		if (List[i] /= mP) r.List.append(List[i]);
 	}
-	//	qDebug() << "filter:" << counter++;
+	//	//qDebug() << "filter:" << counter++;
 	return(r);
 }
 
@@ -300,7 +300,7 @@ QStringList mPropList::extract_props_for_type(QString s)
 			outlist.append(List[i].Abbreviations);
 		}
 	}
-	//	qDebug() << "filter:" << counter++;
+	//	//qDebug() << "filter:" << counter++;
 	return(outlist);
 }
 
@@ -320,7 +320,7 @@ QString mPropList::get_proper_property(QString s, QString propname)
 				return List[i].VariableName;
 		}
 	}
-	//	qDebug() << "filter:" << counter++;
+	//	//qDebug() << "filter:" << counter++;
 	return QString();
 }
 
@@ -335,7 +335,7 @@ QStringList mPropList::extract_units_for_prop(QString type, QString property)
 			if (List[i].VariableName.toQString() == property)
 			outlist.append(List[i].VariableUnit);
 	}
-	//	qDebug() << "filter:" << counter++;
+	//	//qDebug() << "filter:" << counter++;
 	return(outlist);
 }
 

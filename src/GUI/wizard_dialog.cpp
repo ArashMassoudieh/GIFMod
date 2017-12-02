@@ -101,38 +101,38 @@ void Wizard_Dialog::set_wiz_parameters()
 		XString x(unittextedits[key]->text());
 		x.setUnit(unittextedits[key]->unit());
 		wiz.get_parameters()[key].set_value(x);
-		qDebug() << key << "was set to" << x.toQString() << endl;
+		//qDebug() << key << "was set to" << x.toQString() << endl;
 		
 	}
 	for (QString key : comboboxes.keys())
 	{
 		XString x(comboboxes[key]->currentText());
 		wiz.get_parameters()[key].set_value(x);
-		qDebug() << key << "was set to" << x.toQString() << endl;
+		//qDebug() << key << "was set to" << x.toQString() << endl;
 	}
 	for (QString key : filetextedits.keys())
 	{
 		XString x(filetextedits[key]->text());
 		wiz.get_parameters()[key].set_value(x);
-		qDebug() << key << "was set to" << x.toQString() << endl;
+		//qDebug() << key << "was set to" << x.toQString() << endl;
 	}
 	for (QString key : spinboxes.keys())
 	{
 		XString x(spinboxes[key]->text());
 		wiz.get_parameters()[key].set_value(x);
-		qDebug() << key << "was set to" << x.toQString() << endl;
+		//qDebug() << key << "was set to" << x.toQString() << endl;
 	}
 	for (QString key : checkboxes.keys())
 	{
 		XString x(checkboxes[key]->isChecked());
 		wiz.get_parameters()[key].set_value(x);
-		qDebug() << key << "was set to" << x.toQString() << endl;
+		//qDebug() << key << "was set to" << x.toQString() << endl;
 	}
 	for (QString key : datetimepickers.keys())
 	{
 		XString x(datetimepickers[key]->text());
 		wiz.get_parameters()[key].set_value(x);
-		qDebug() << key << "was set to" << x.toQString() << endl;
+		//qDebug() << key << "was set to" << x.toQString() << endl;
 	}
 
 
@@ -169,7 +169,7 @@ Wizard_Dialog::~Wizard_Dialog()
 
 void Wizard_Dialog::setup_form()
 {
-	qDebug() << "Inside setup_form()" << endl;
+	//qDebug() << "Inside setup_form()" << endl;
 	tabWidget = new QTabWidget();
 	tabWidget->setObjectName(QStringLiteral("tabWidget"));
 	ui.verticalLayout_2->addWidget(tabWidget);
@@ -182,11 +182,11 @@ void Wizard_Dialog::setup_form()
 	
 	for (QString e : wiz.get_parameter_groups().keys())
 	{
-		qDebug() << "key1: " << e << endl;
+		//qDebug() << "key1: " << e << endl;
 		QWidget* tab = new QWidget();
-		qDebug() << "desc " << wiz.get_parameter_groups()[e].get_description() << endl;
+		//qDebug() << "desc " << wiz.get_parameter_groups()[e].get_description() << endl;
 		tab->setObjectName(wiz.get_parameter_groups()[e].get_description());
-		qDebug() << "tab_added " << wiz.get_parameter_groups()[e].get_description() << endl;
+		//qDebug() << "tab_added " << wiz.get_parameter_groups()[e].get_description() << endl;
 		tabs[e] = tab;
 		
 		QString description = wiz.get_parameter_groups()[e].get_description();
@@ -200,7 +200,7 @@ void Wizard_Dialog::setup_form()
 		int i = 0;
 		for (QString p : wiz.get_parameter_groups()[e].get_parameters())
 		{
-			qDebug() << "key2: " << p << endl;
+			//qDebug() << "key2: " << p << endl;
 			i++;
 			QLabel *label = new QLabel(tab);
 			if (wiz.get_parameters()[p].get_role().toLower().trimmed() == "memo")
