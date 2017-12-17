@@ -2264,7 +2264,10 @@ void CMediumSet::solve(runtimeWindow *rtw)
 		ANS_obs.setname(i, measured_quan[i].name);
 	}
 	gw->log("Simulation ended.");
-
+	
+	QMessageBox::StandardButton reply;
+	QMessageBox::question(rtw, "Simulation Ended", "Simulation Finished!", QMessageBox::Ok);
+	
 }
 
 
@@ -2449,11 +2452,7 @@ void CMedium::updateProgress(bool finished)
 					runtimewindow->slndetails_append(QString::number(epoch_count) + ":" + solution_detail + " time step size: " + QString::number(dtt));
 		}
 		runtimewindow->update(vars);
-		if (finished)
-		{
-			QMessageBox::StandardButton reply;
-			QMessageBox::question(runtimewindow, "Simulation Ended", "Simulation Finished!", QMessageBox::Ok);
-		}
+		
 	}
 }
 #endif
