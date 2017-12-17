@@ -470,6 +470,9 @@ int CGA::optimize(runtimeWindow* rtw)
 		for (int k = 0; k<Ind[0].nParams; k++)
 			fprintf(FileOut, "%s, ", paramname[k].c_str());
 		fprintf(FileOut, "%s, %s, %s", "likelihood", "Fitness", "Rank");
+		
+		for (int i = 0; i < Sys.measured_quan.size(); i++)
+			fprintf(FileOut, ", MSE_%s" , Sys.measured_quan[i].name.c_str());
 		fprintf(FileOut, "\n");
 
 		for (int j1 = 0; j1<maxpop; j1++)
@@ -482,7 +485,9 @@ int CGA::optimize(runtimeWindow* rtw)
 				else
 					fprintf(FileOut, "%le, ", Ind[j1].x[k]);
 
-			fprintf(FileOut, "%le, %le, %i", Ind[j1].actual_fitness, Ind[j1].fitness, Ind[j1].rank);
+			fprintf(FileOut, "%le, %le, %i, ", Ind[j1].actual_fitness, Ind[j1].fitness, Ind[j1].rank);
+			for (int i = 0; i < Sys.measured_quan.size(); i++)
+				fprintf(FileOut, "%e, ", Sys1[j1].MSE_obs[i]);
 			fprintf(FileOut, "\n");
 		}
 		fclose(FileOut);
@@ -1133,8 +1138,13 @@ void CMediumSet::g_get_observed()
 			{
 				gw->newError(QString("Could not read observation data file %1 for %2").arg(QString::fromStdString(file)).arg(e->name));
 			}
-			else 
-				observed = _observed[0];
+			else
+			{
+				if (_observed.BTC.size())
+					observed = _observed[0];
+				else
+					gw->newError(QString("Could not read observation data file %1 for %2").arg(QString::fromStdString(file)).arg(e->name));
+			}
 			
 				
 		}
@@ -2258,13 +2268,22 @@ void CMediumSet::solve(runtimeWindow *rtw)
 	}
 
 	ANS_obs = CBTCSet(measured_quan.size());
+	MSE_obs.clear(); 
 	for (int i = 0; i < measured_quan.size(); i++)
 	{
-		ANS_obs.BTC[i] = Medium[lookup_medium(measured_quan[i].experiment)].ANS_obs.BTC[i];
-		ANS_obs.setname(i, measured_quan[i].name);
+		if (lookup_medium(measured_quan[i].experiment) != -1)
+		{
+			ANS_obs.BTC[i] = Medium[lookup_medium(measured_quan[i].experiment)].ANS_obs.BTC[i];
+			ANS_obs.setname(i, measured_quan[i].name);
+			calc_MSE(i);
+		}
+		else
+			gw->log(QString::fromStdString(measured_quan[i].experiment) + " does not exist!");
 	}
+	CVector(MSE_obs).writetofile(FI.outputpathname + "MSE.txt");
 	gw->log("Simulation ended.");
-
+	QMessageBox::StandardButton reply;
+	QMessageBox::question(rtw, "Simulation Ended", "Simulation Finished!", QMessageBox::Ok);
 }
 
 
@@ -2451,8 +2470,8 @@ void CMedium::updateProgress(bool finished)
 		runtimewindow->update(vars);
 		if (finished)
 		{
-			QMessageBox::StandardButton reply;
-			QMessageBox::question(runtimewindow, "Simulation Ended", "Simulation Finished!", QMessageBox::Ok);
+			//QMessageBox::StandardButton reply;
+			//QMessageBox::question(runtimewindow, "Simulation Ended", "Simulation Finished!", QMessageBox::Ok);
 		}
 	}
 }

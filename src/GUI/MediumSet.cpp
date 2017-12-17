@@ -93,6 +93,7 @@ CMediumSet::CMediumSet(const CMediumSet &M)
 	}
 	Control = M.Control;
 	ID = M.ID;
+	MSE_obs = M.MSE_obs;
 
 }
 
@@ -130,6 +131,7 @@ CMediumSet& CMediumSet::operator=(const CMediumSet &M)
 	ANS_obs = M.ANS_obs;
 	Control = M.Control;
 	ID = M.ID;
+	MSE_obs = M.MSE_obs;
 	return *this;
 }
 
@@ -340,9 +342,14 @@ void CMediumSet::solve()
 	ANS_obs = CBTCSet(measured_quan.size());
 	for (int i = 0; i < measured_quan.size(); i++)
 	{
-		ANS_obs.BTC[i] = Medium[lookup_medium(measured_quan[i].experiment)].ANS_obs.BTC[i];
-		ANS_obs.setname(i, measured_quan[i].name);
+		if (lookup_medium(measured_quan[i].experiment) != -1)
+		{
+			ANS_obs.BTC[i] = Medium[lookup_medium(measured_quan[i].experiment)].ANS_obs.BTC[i];
+			ANS_obs.setname(i, measured_quan[i].name);
+			calc_MSE(i);
+		}
 	}
+	CVector(MSE_obs).writetofile(FI.outputpathname + "MSE.txt");
 }
 
 void CMediumSet::set_default()
@@ -922,6 +929,7 @@ int CMediumSet::lookup_medium(string S)
 double CMediumSet::calc_log_likelihood() //calculate sum log likelihood for time series data ts
 {
 	double sum = 0;
+	MSE_obs.clear(); 
 	solve();
 	if (failed == true) return -1e30;
 
@@ -937,23 +945,60 @@ double CMediumSet::calc_log_likelihood(int i) //calculate sum log likelihood for
 	int k = measured_data.lookup(measured_quan[i].name);
 	if (k != -1)
 	{
+		double MSE; 
 		if (measured_quan[i].error_structure == 0)
 		{
 			int k = measured_data.lookup(measured_quan[i].name);
-			if (k != -1) sum -= diff(ANS_obs.BTC[i], measured_data.BTC[k]) / (2 * std[measured_quan[i].std_no] * std[measured_quan[i].std_no]);
+			if (k != -1)
+			{
+				qDebug() << "Calculating standard error" << QString::fromStdString(measured_quan[i].name); 
+				MSE = diff(ANS_obs.BTC[i], measured_data.BTC[k]);
+				sum -= MSE / (2 * std[measured_quan[i].std_no] * std[measured_quan[i].std_no]);
+				qDebug() << "Calculating standard error" << QString::fromStdString(measured_quan[i].name) << " Done!";
+			}
 
 		}
 		if (measured_quan[i].error_structure == 1)
 		{
 			int k = measured_data.lookup(measured_quan[i].name);
-			if (k != -1) sum -= diff(ANS_obs.BTC[i].Log(1e-4), measured_data.BTC[k].Log(1e-4)) / (2 * std[measured_quan[i].std_no] * std[measured_quan[i].std_no]);
+			if (k != -1)
+			{
+				MSE = diff(ANS_obs.BTC[i].Log(1e-4), measured_data.BTC[k].Log(1e-4));
+				sum -= MSE / (2 * std[measured_quan[i].std_no] * std[measured_quan[i].std_no]);
+			}
 
 		}
+		MSE_obs.push_back(MSE); 
 		sum -= measured_data.BTC[k].n*log(std[measured_quan[i].std_no]);
+		
 	}
 	
 
 	return sum;
+}
+
+double CMediumSet::calc_MSE(int i) 
+{
+	double sum = 0;
+	int k = measured_data.lookup(measured_quan[i].name);
+	double MSE;
+	if (k != -1)
+	{
+		if (measured_quan[i].error_structure == 0)
+		{
+			int k = measured_data.lookup(measured_quan[i].name);
+			if (k != -1) MSE = diff(ANS_obs.BTC[i], measured_data.BTC[k]);
+		}
+		if (measured_quan[i].error_structure == 1)
+		{
+			int k = measured_data.lookup(measured_quan[i].name);
+			if (k!=-1) MSE = diff(ANS_obs.BTC[i].Log(1e-4), measured_data.BTC[k].Log(1e-4));
+		}
+		MSE_obs.push_back(MSE);
+
+	}
+
+	return MSE;
 }
 
 
