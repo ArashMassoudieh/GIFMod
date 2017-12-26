@@ -3,20 +3,22 @@
 #include <vector>
 #include "Vector.h"
 
-class CBTCSet
+#define CBTCSet CTimeSeriesSet
+
+class CTimeSeriesSet
 {
 public:
-	CBTCSet(void);
-	CBTCSet(int n);
-	CBTCSet(int numberofBTCs, int sizeofBTCvector);
-	CBTCSet(const CBTCSet &BTC);
-	CBTCSet(const CBTC &BTC);
-	CBTCSet(string filename, bool varytime);
+	CTimeSeriesSet(void); //default constructor
+	CTimeSeriesSet(int n); //construction with number of variables (timeseries)
+	CTimeSeriesSet(int numberofBTCs, int sizeofBTCvector);
+	CTimeSeriesSet(const CTimeSeriesSet &BTC);
+	CTimeSeriesSet(const CTimeSeries &BTC);
+	CTimeSeriesSet(string filename, bool varytime);
 	int nvars;
-	vector<CBTC> BTC;
+	vector<CTimeSeries> BTC;
 	void writetofile(char outputfile[]);
 	int maxnumpoints();
-	CBTCSet& operator = (const CBTCSet &C);
+	CTimeSeriesSet& operator = (const CTimeSeriesSet &C);
 	vector<string> names;
 	bool unif;
 	void writetofile(string outputfile, bool writeColumnHeaders = false);
@@ -39,20 +41,20 @@ public:
 	vector<double> percentile(double x, int limit, vector<int> index);
 	vector<double> getrandom(int burnin);
 	void append(double t, vector<double> c);
-	CBTC add(vector<int> ii);
-	CBTC add_mult(vector<int> ii, vector<double> mult);
-	CBTC add_mult(vector<int> ii, CBTCSet &mult);
-	CBTC divide(int ii, int jj);
-	CBTCSet make_uniform(double increment, bool assgn_d=true);
-	CBTCSet getpercentiles(vector<double> percents);
+	CTimeSeries add(vector<int> ii);
+	CTimeSeries add_mult(vector<int> ii, vector<double> mult);
+	CTimeSeries add_mult(vector<int> ii, CTimeSeriesSet &mult);
+	CTimeSeries divide(int ii, int jj);
+	CTimeSeriesSet make_uniform(double increment, bool assgn_d=true);
+	CTimeSeriesSet getpercentiles(vector<double> percents);
 	CVector out_of_limit(double limit);
-	CBTCSet distribution(int n_bins, int n_columns, int limit);
-	CBTCSet add_noise(vector<double> std, bool logd);
+	CTimeSeriesSet distribution(int n_bins, int n_columns, int limit);
+	CTimeSeriesSet add_noise(vector<double> std, bool logd);
 	void clear();
 	vector<double> max_wiggle();
 	vector<double> max_wiggle_corr(int _n = 10);
 	vector<int> max_wiggle_sl(int ii, double tol);
-	CBTCSet getflow (double A);
+	CTimeSeriesSet getflow (double A);
 	void knockout(double t);
 	int lookup(string S);
 	vector<double> getrow(int a);
@@ -60,26 +62,26 @@ public:
 
 	//Sassan
 	bool file_not_found=false;
-	CBTC &operator[](int index);
-	CBTC &operator[](string BTCName);
-	CBTC &operator[](QString BTCName) {
+	CTimeSeries &operator[](int index);
+	CTimeSeries &operator[](string BTCName);
+	CTimeSeries &operator[](QString BTCName) {
 		return operator[](BTCName.toStdString());
 	}
-	CBTCSet(vector < vector<double>> &, int writeInterval = 1);
+	CTimeSeriesSet(vector < vector<double>> &, int writeInterval = 1);
 	int indexOf(const string& name) const;
 	void pushBackName(string name);
-	void append(CBTC &BTC, string name = "");
-	CBTCSet sort(int burnOut = 0);
+	void append(CTimeSeries &BTC, string name = "");
+	CTimeSeriesSet sort(int burnOut = 0);
 	void compact(QDataStream &data) const;
-	static CBTCSet unCompact(QDataStream &data);
-	~CBTCSet(void);
+	static CTimeSeriesSet unCompact(QDataStream &data);
+	~CTimeSeriesSet(void);
 };
 
-double diff(CBTCSet B1, CBTCSet B2);
-CBTCSet operator * (const CBTCSet &BTC, const double &C);
-CVector norm2dif(CBTCSet &A, CBTCSet &B);
-CBTCSet merge(CBTCSet A, const CBTCSet &B);
-CBTCSet merge(vector<CBTCSet> &A);
-CVector sum_interpolate(vector<CBTCSet> &BTC, double t);
-double sum_interpolate(vector<CBTCSet> &BTC, double t, string name);
-int max_n_vars(vector<CBTCSet> &BTC);
+double diff(CTimeSeriesSet B1, CTimeSeriesSet B2);
+CTimeSeriesSet operator * (const CTimeSeriesSet &BTC, const double &C);
+CVector norm2dif(CTimeSeriesSet &A, CTimeSeriesSet &B);
+CTimeSeriesSet merge(CTimeSeriesSet A, const CTimeSeriesSet &B);
+CTimeSeriesSet merge(vector<CTimeSeriesSet> &A);
+CVector sum_interpolate(vector<CTimeSeriesSet> &BTC, double t);
+double sum_interpolate(vector<CTimeSeriesSet> &BTC, double t, string name);
+int max_n_vars(vector<CTimeSeriesSet> &BTC);

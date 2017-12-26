@@ -11,44 +11,44 @@
 
 using namespace std;
 
-CBTCSet::CBTCSet(void)
+CTimeSeriesSet::CTimeSeriesSet(void)
 {
 	nvars = 0;
 	BTC.resize(nvars);
 	unif = true;
 }
 
-CBTCSet::~CBTCSet(void)
+CTimeSeriesSet::~CTimeSeriesSet(void)
 {
 
 }
 
-CBTCSet::CBTCSet(int n)
+CTimeSeriesSet::CTimeSeriesSet(int n)
 {
 	nvars = n;
 	BTC.resize(nvars);
 	names.resize(nvars);
-	for (int i=0; i<nvars; i++) BTC[i] = CBTC();
+	for (int i=0; i<nvars; i++) BTC[i] = CTimeSeries();
 	unif = true;
 }
-CBTCSet::CBTCSet(vector<vector<double>> &data, int writeInterval) :CBTCSet(data[0].size())
+CTimeSeriesSet::CTimeSeriesSet(vector<vector<double>> &data, int writeInterval) :CTimeSeriesSet(data[0].size())
 {
 	for (int i = 0; i<data.size(); i++)
 		if (i%writeInterval == 0) append(i, data[i]);
 }
-CBTCSet::CBTCSet(int numberofBTCs, int sizeofBTCvector)
+CTimeSeriesSet::CTimeSeriesSet(int numberofBTCs, int sizeofBTCvector)
 {
 	nvars = numberofBTCs;
 	BTC.resize(nvars);
 	names.resize(nvars);
 	for (int i = 0; i<nvars; i++) 
-		BTC[i] = CBTC(sizeofBTCvector);
+		BTC[i] = CTimeSeries(sizeofBTCvector);
 	unif = true;
 }
 
-CBTCSet merge(CBTCSet A, CBTCSet &B)
+CTimeSeriesSet merge(CTimeSeriesSet A, CTimeSeriesSet &B)
 {
-	CBTCSet C = A;
+	CTimeSeriesSet C = A;
 	for (int i=0; i<B.nvars; i++)
 	{	if (B.names.size()>i) C.names.push_back(B.names[i]);
 		C.BTC.push_back(B.BTC[i]);
@@ -57,15 +57,15 @@ CBTCSet merge(CBTCSet A, CBTCSet &B)
 	return C;
 }
 
-CBTCSet merge(vector<CBTCSet> &A)
+CTimeSeriesSet merge(vector<CTimeSeriesSet> &A)
 {
-	CBTCSet C = A[0];
+	CTimeSeriesSet C = A[0];
 	for (int i=1; i<A.size(); i++)
 		C = merge(C,A[i]);
 	return C;
 }
 
-void CBTCSet::writetofile(char outputfile[])
+void CTimeSeriesSet::writetofile(char outputfile[])
 {
 	FILE *Fil;
 	Fil = fopen(outputfile, "w");
@@ -91,7 +91,7 @@ void CBTCSet::writetofile(char outputfile[])
 
 }
 
-void CBTCSet::writetofile(string outputfile, bool writeColumnNameHeaders)
+void CTimeSeriesSet::writetofile(string outputfile, bool writeColumnNameHeaders)
 {
 	FILE *Fil;
 	Fil = fopen(outputfile.c_str() , "w");
@@ -123,7 +123,7 @@ void CBTCSet::writetofile(string outputfile, bool writeColumnNameHeaders)
 
 }
 
-void CBTCSet::writetofile(string outputfile, int outputwriteinterval)
+void CTimeSeriesSet::writetofile(string outputfile, int outputwriteinterval)
 {
 	FILE *Fil;
 	Fil = fopen(outputfile.c_str() , "w");
@@ -149,7 +149,7 @@ void CBTCSet::writetofile(string outputfile, int outputwriteinterval)
 
 }
 
-int CBTCSet::maxnumpoints()
+int CTimeSeriesSet::maxnumpoints()
 {
 	int m = 0;
 	for (int i=0; i<nvars; i++)
@@ -158,7 +158,7 @@ int CBTCSet::maxnumpoints()
 	return m;
 }
 
-CBTCSet::CBTCSet(const CBTCSet &B)
+CTimeSeriesSet::CTimeSeriesSet(const CTimeSeriesSet &B)
 {
 	nvars = B.nvars;
 	BTC.resize(nvars);
@@ -168,7 +168,7 @@ CBTCSet::CBTCSet(const CBTCSet &B)
 
 }
 
-CBTCSet::CBTCSet(const CBTC &B)
+CTimeSeriesSet::CTimeSeriesSet(const CTimeSeries &B)
 {
 	nvars = 1;
 	BTC.resize(1);
@@ -176,7 +176,7 @@ CBTCSet::CBTCSet(const CBTC &B)
 	BTC[0] = B; 
 }
 
-CBTCSet& CBTCSet::operator = (const CBTCSet &B)
+CTimeSeriesSet& CTimeSeriesSet::operator = (const CTimeSeriesSet &B)
 {
 	nvars = B.nvars;
 	BTC.resize(nvars);
@@ -188,7 +188,7 @@ CBTCSet& CBTCSet::operator = (const CBTCSet &B)
 
 }
 
-vector<double> CBTCSet::interpolate(double t)
+vector<double> CTimeSeriesSet::interpolate(double t)
 {
 	vector<double> out;
 	out.resize(nvars); 
@@ -198,7 +198,7 @@ vector<double> CBTCSet::interpolate(double t)
 	return out;
 }
 
-vector<double> CBTCSet::interpolate(double t, int fnvars)
+vector<double> CTimeSeriesSet::interpolate(double t, int fnvars)
 {
 	vector<double> out;
 	out.resize(fnvars); 
@@ -208,7 +208,7 @@ vector<double> CBTCSet::interpolate(double t, int fnvars)
 	return out;
 }
 
-CBTCSet::CBTCSet(string filename, bool varytime)
+CTimeSeriesSet::CTimeSeriesSet(string filename, bool varytime)
 {
 	unif = false;
 	vector<string> units;
@@ -304,7 +304,7 @@ CBTCSet::CBTCSet(string filename, bool varytime)
 
 
 
-void CBTCSet::getfromfile(string filename, bool varytime)
+void CTimeSeriesSet::getfromfile(string filename, bool varytime)
 {
 	unif = false;
 	vector<string> units;
@@ -378,19 +378,19 @@ void CBTCSet::getfromfile(string filename, bool varytime)
 	file.close();
 }
 
-double CBTCSet::maxtime()
+double CTimeSeriesSet::maxtime()
 {
 	return BTC[0].t[BTC[0].n-1];
 
 }
 
-double CBTCSet::mintime()
+double CTimeSeriesSet::mintime()
 {
 	return BTC[0].t[0];
 
 }
 
-double diff(CBTCSet B1, CBTCSet B2)
+double diff(CTimeSeriesSet B1, CTimeSeriesSet B2)
 {
 	double sum = 0;
 	for (int i=0; i<B1.nvars; i++)
@@ -400,14 +400,14 @@ double diff(CBTCSet B1, CBTCSet B2)
 
 }
 
-CBTCSet operator * (const CBTCSet &BTC, const double &C)
+CTimeSeriesSet operator * (const CTimeSeriesSet &BTC, const double &C)
 {
-	CBTCSet A = BTC;
+	CTimeSeriesSet A = BTC;
 	A.BTC[0] = A.BTC[0]*C;
 	return A;
 }
 
-vector<double> CBTCSet::getrandom()
+vector<double> CTimeSeriesSet::getrandom()
 {
 	int a = int(GetRndUniF(0,BTC[0].n));
 	vector<double> res(nvars);
@@ -417,7 +417,7 @@ vector<double> CBTCSet::getrandom()
 	return res;
 }
 
-vector<double> CBTCSet::getrandom(int burnin)
+vector<double> CTimeSeriesSet::getrandom(int burnin)
 {
 	int a = int(GetRndUniF(0,BTC[0].n-burnin));
 	vector<double> res(nvars);
@@ -428,7 +428,7 @@ vector<double> CBTCSet::getrandom(int burnin)
 }
 
 
-vector<double> CBTCSet::getrow(int a)
+vector<double> CTimeSeriesSet::getrow(int a)
 {
 
 	vector<double> res(nvars);
@@ -438,7 +438,7 @@ vector<double> CBTCSet::getrow(int a)
 	return res;
 }
 
-vector<double> CBTCSet::percentile(double x)
+vector<double> CTimeSeriesSet::percentile(double x)
 {
 	vector<double> v;
 	for (int i=0; i<nvars; i++)
@@ -447,7 +447,7 @@ vector<double> CBTCSet::percentile(double x)
 	return v;
 }
 
-vector<double> CBTCSet::mean(int limit)
+vector<double> CTimeSeriesSet::mean(int limit)
 {
 	vector<double> v;
 	for (int i=0; i<nvars; i++)
@@ -456,7 +456,7 @@ vector<double> CBTCSet::mean(int limit)
 
 }
 
-vector<double> CBTCSet::mean(int limit, vector<int> index)
+vector<double> CTimeSeriesSet::mean(int limit, vector<int> index)
 {
 	vector<double> v;
 	for (int i = 0; i<index.size(); i++)
@@ -465,7 +465,7 @@ vector<double> CBTCSet::mean(int limit, vector<int> index)
 
 }
 
-vector<double> CBTCSet::std(int limit)
+vector<double> CTimeSeriesSet::std(int limit)
 {
 	vector<double> v;
 	for (int i=0; i<nvars; i++)
@@ -474,7 +474,7 @@ vector<double> CBTCSet::std(int limit)
 
 }
 
-vector<double> CBTCSet::std(int limit, vector<int> index)
+vector<double> CTimeSeriesSet::std(int limit, vector<int> index)
 {
 	vector<double> v;
 	for (int i = 0; i<index.size(); i++)
@@ -483,7 +483,7 @@ vector<double> CBTCSet::std(int limit, vector<int> index)
 
 }
 
-CMatrix CBTCSet::correlation(int limit, int n)	
+CMatrix CTimeSeriesSet::correlation(int limit, int n)	
 {
 	CMatrix r_xy(n);
 
@@ -495,7 +495,7 @@ CMatrix CBTCSet::correlation(int limit, int n)
 
 }
 
-vector<double> CBTCSet::average()
+vector<double> CTimeSeriesSet::average()
 {
 	vector<double> v;
 	for (int i=0; i<nvars; i++)
@@ -504,7 +504,7 @@ vector<double> CBTCSet::average()
 
 }
 
-vector<double> CBTCSet::integrate()
+vector<double> CTimeSeriesSet::integrate()
 {
 	vector<double> v;
 	for (int i=0; i<nvars; i++)
@@ -513,7 +513,7 @@ vector<double> CBTCSet::integrate()
 
 }
 
-vector<double> CBTCSet::percentile(double x, int limit)
+vector<double> CTimeSeriesSet::percentile(double x, int limit)
 {
 	vector<double> v;
 	for (int i=0; i<nvars; i++)
@@ -522,7 +522,7 @@ vector<double> CBTCSet::percentile(double x, int limit)
 	return v;
 }
 
-vector<double> CBTCSet::percentile(double x, int limit, vector<int> index)
+vector<double> CTimeSeriesSet::percentile(double x, int limit, vector<int> index)
 {
 	vector<double> v;
 	for (int i = 0; i<index.size(); i++)
@@ -531,9 +531,9 @@ vector<double> CBTCSet::percentile(double x, int limit, vector<int> index)
 	return v;
 }
 
-CBTCSet CBTCSet::sort(int burnOut)
+CTimeSeriesSet CTimeSeriesSet::sort(int burnOut)
 {
-	CBTCSet r(nvars);
+	CTimeSeriesSet r(nvars);
 	if (burnOut < 0)
 		burnOut = 0;
 	vector<vector<double>> temp;
@@ -574,10 +574,10 @@ CBTCSet CBTCSet::sort(int burnOut)
 
 	return r;
 }
-CBTCSet CBTCSet::distribution(int n_bins, int n_columns, int limit)
+CTimeSeriesSet CTimeSeriesSet::distribution(int n_bins, int n_columns, int limit)
 {
 	//qDebug() << "Distribution bins, columns, limit" << n_bins << n_columns << limit;
-	CBTCSet A(n_columns);		
+	CTimeSeriesSet A(n_columns);		
 	for (int i = 0; i < n_columns; i++)
 	{
 		A.BTC[i] = BTC[i].distribution(n_bins, limit);
@@ -587,12 +587,12 @@ CBTCSet CBTCSet::distribution(int n_bins, int n_columns, int limit)
 	return A;
 }
 
-CVector norm2dif(CBTCSet &A, CBTCSet &B)
+CVector norm2dif(CTimeSeriesSet &A, CTimeSeriesSet &B)
 {
 	CVector res;
 	for (int i=0; i<min(A.nvars,B.nvars); i++)		
-    {	CBTC BTC1 = A.BTC[i].Log(1e-5);
-        CBTC BTC2 = B.BTC[i].Log(1e-5);
+    {	CTimeSeries BTC1 = A.BTC[i].Log(1e-5);
+        CTimeSeries BTC2 = B.BTC[i].Log(1e-5);
         res.append(diff_abs(BTC1,BTC2)/B.BTC[i].n);
 
     }
@@ -601,7 +601,7 @@ CVector norm2dif(CBTCSet &A, CBTCSet &B)
 
 }
 
-void CBTCSet::append(double t, vector<double> c)
+void CTimeSeriesSet::append(double t, vector<double> c)
 {	
 	for (int i=0; i<min(int(c.size()), nvars); i++)
 	{	BTC[i].structured = true;
@@ -612,9 +612,9 @@ void CBTCSet::append(double t, vector<double> c)
 	}
 }
 
-CBTC CBTCSet::add(vector<int> ii)
+CTimeSeries CTimeSeriesSet::add(vector<int> ii)
 {
-	CBTC A = BTC[ii[0]];
+	CTimeSeries A = BTC[ii[0]];
 	A.structured = BTC[ii[0]].structured;
 	for (int i=1; i<ii.size(); i++)
 	if (unif==false)	
@@ -629,20 +629,20 @@ CBTC CBTCSet::add(vector<int> ii)
 	return A;
 }
 
-CBTC CBTCSet::add_mult(vector<int> ii, vector<double> mult)
+CTimeSeries CTimeSeriesSet::add_mult(vector<int> ii, vector<double> mult)
 {
-	CBTC A;
+	CTimeSeries A;
 	if (ii.size()>0)
 	{	A = mult[0]*BTC[ii[0]];
 		A.structured = BTC[ii[0]].structured;
 		for (int i=1; i<ii.size(); i++)
 		if (unif==false)	
-        {	CBTC BTC1 = mult[i]*BTC[ii[i]];
+        {	CTimeSeries BTC1 = mult[i]*BTC[ii[i]];
             A+=BTC1;
 			A.structured = (A.structured && BTC[ii[i]].structured);
 		}
 		else
-        {	CBTC BTC1 = mult[i]*BTC[ii[i]];
+        {	CTimeSeries BTC1 = mult[i]*BTC[ii[i]];
             A%=BTC1;
 			A.structured = (A.structured && BTC[ii[i]].structured);
 		}
@@ -656,20 +656,20 @@ CBTC CBTCSet::add_mult(vector<int> ii, vector<double> mult)
 	return A;
 }
 
-CBTC CBTCSet::add_mult(vector<int> ii, CBTCSet &mult)
+CTimeSeries CTimeSeriesSet::add_mult(vector<int> ii, CTimeSeriesSet &mult)
 {
-	CBTC A;
+	CTimeSeries A;
 	if (ii.size()>0)
 	{	A = mult.BTC[0]*BTC[ii[0]];
 		A.structured = BTC[ii[0]].structured;
 		for (int i=1; i<ii.size(); i++)
 		if (unif==false)	
-        {	CBTC BTC1 = BTC[ii[i]]*mult.BTC[i];
+        {	CTimeSeries BTC1 = BTC[ii[i]]*mult.BTC[i];
             A+=BTC1;
 			A.structured = (A.structured && BTC[ii[i]].structured && mult.BTC[i].structured);
 		}
 		else
-        {	CBTC BTC1 = BTC[ii[i]]*mult.BTC[i];
+        {	CTimeSeries BTC1 = BTC[ii[i]]*mult.BTC[i];
             A%=BTC1;
 			A.structured = (A.structured && BTC[ii[i]].structured && mult.BTC[i].structured);
 		}
@@ -684,9 +684,9 @@ CBTC CBTCSet::add_mult(vector<int> ii, CBTCSet &mult)
 }
 
 
-CBTC CBTCSet::divide(int ii, int jj)
+CTimeSeries CTimeSeriesSet::divide(int ii, int jj)
 {
-	CBTC A;
+	CTimeSeries A;
 	A.structured = (BTC[ii].structured && BTC[jj].structured);
 	if (unif==false)	
 		A=BTC[ii]/BTC[jj];
@@ -698,10 +698,10 @@ CBTC CBTCSet::divide(int ii, int jj)
 
 }
 
-CBTCSet CBTCSet::make_uniform(double increment, bool assgn_d)
+CTimeSeriesSet CTimeSeriesSet::make_uniform(double increment, bool assgn_d)
 {
-	if (nvars==0) return CBTCSet();
-	CBTCSet out(nvars);
+	if (nvars==0) return CTimeSeriesSet();
+	CTimeSeriesSet out(nvars);
 	out.names = names;
 	
 	if (unif == true)
@@ -757,9 +757,9 @@ CBTCSet CBTCSet::make_uniform(double increment, bool assgn_d)
 
 }
 
-CBTCSet CBTCSet::getpercentiles(vector<double> percents)
+CTimeSeriesSet CTimeSeriesSet::getpercentiles(vector<double> percents)
 {
-	CBTCSet X(1+percents.size());
+	CTimeSeriesSet X(1+percents.size());
 	
 	X.names.clear();
 	char buffer[33];
@@ -797,7 +797,7 @@ CBTCSet CBTCSet::getpercentiles(vector<double> percents)
 	return X;
 }
 
-CVector CBTCSet::out_of_limit(double limit)
+CVector CTimeSeriesSet::out_of_limit(double limit)
 {
 	CVector v(nvars);
 	for (int i=0; i<nvars; i++)
@@ -814,16 +814,16 @@ CVector CBTCSet::out_of_limit(double limit)
 	return v;
 }
 
-CBTCSet CBTCSet::add_noise(vector<double> std, bool logd)
+CTimeSeriesSet CTimeSeriesSet::add_noise(vector<double> std, bool logd)
 {
-	CBTCSet X(nvars);
+	CTimeSeriesSet X(nvars);
 	for (int i=0; i<nvars; i++)
 		X.BTC[i] = BTC[i].add_noise(std[i],logd);
 
 	return X;
 }
 
-CVector sum_interpolate(vector<CBTCSet> &BTC, double t)
+CVector sum_interpolate(vector<CTimeSeriesSet> &BTC, double t)
 {
 	if (BTC.size()==0) return CVector(1); 
 	CVector sum(max(max_n_vars(BTC),2)); //Be chacked later?
@@ -835,7 +835,7 @@ CVector sum_interpolate(vector<CBTCSet> &BTC, double t)
 	return sum;
 }
 
-double sum_interpolate(vector<CBTCSet> &BTC, double t, string name)
+double sum_interpolate(vector<CTimeSeriesSet> &BTC, double t, string name)
 {
 	if (BTC.size() == 0) return 0;
 	double sum=0;
@@ -848,13 +848,13 @@ double sum_interpolate(vector<CBTCSet> &BTC, double t, string name)
 	return sum;
 }
 
-void CBTCSet::clear()
+void CTimeSeriesSet::clear()
 {
 	BTC.clear();
 	nvars = 0;
 }
 
-vector<double> CBTCSet::max_wiggle()
+vector<double> CTimeSeriesSet::max_wiggle()
 {
 	double max_wig=0;
 	int wiggle_id=-1;
@@ -870,7 +870,7 @@ vector<double> CBTCSet::max_wiggle()
 	return out;
 }
 
-vector<double> CBTCSet::max_wiggle_corr(int _n)
+vector<double> CTimeSeriesSet::max_wiggle_corr(int _n)
 {
 	double max_wig = 0;
 	int wiggle_id = -1;
@@ -887,7 +887,7 @@ vector<double> CBTCSet::max_wiggle_corr(int _n)
 	return out;
 }
 
-vector<int> CBTCSet::max_wiggle_sl(int ii, double tol)
+vector<int> CTimeSeriesSet::max_wiggle_sl(int ii, double tol)
 {
 	double max_wig = 0;
 	int wiggle_id = -1;
@@ -904,7 +904,7 @@ vector<int> CBTCSet::max_wiggle_sl(int ii, double tol)
 	return out;
 }
 
-int max_n_vars(vector<CBTCSet> &BTC)
+int max_n_vars(vector<CTimeSeriesSet> &BTC)
 {
 	int k = 0;
 	for (int i=0; i<BTC.size(); i++)
@@ -914,12 +914,12 @@ int max_n_vars(vector<CBTCSet> &BTC)
 	return k;
 }
 
-void CBTCSet::knockout(double t)
+void CTimeSeriesSet::knockout(double t)
 {
 	for (int i=0; i<nvars; i++) BTC[i].knock_out(t);
 }
 
-int CBTCSet::lookup(string S)
+int CTimeSeriesSet::lookup(string S)
 {
 	int out = -1;
 	for (int i = 0; i < names.size(); i++)
@@ -939,7 +939,7 @@ int CBTCSet::lookup(string S)
 
 	return out;
 }
-CBTC &CBTCSet::operator[](int index)
+CTimeSeries &CTimeSeriesSet::operator[](int index)
 {
 	while (names.size() < index+1)
 		names.push_back("");
@@ -952,23 +952,23 @@ CBTC &CBTCSet::operator[](int index)
 			names[index] = BTC[index].name;
 	return BTC[index];
 }
-CBTC &CBTCSet::operator[](string BTCName)
+CTimeSeries &CTimeSeriesSet::operator[](string BTCName)
 {
 	if (lookup(BTCName) != -1)
 		return BTC[lookup(BTCName)];
 	else
-    {	CBTC BTC1 = CBTC();
+    {	CTimeSeries BTC1 = CTimeSeries();
         return BTC1;
 
     }
 }
 
-void CBTCSet::pushBackName(string name)
+void CTimeSeriesSet::pushBackName(string name)
 {
 	names.push_back(name);
 	BTC[names.size() - 1].name = name;
 }
-void CBTCSet::append(CBTC &BTC, string name)
+void CTimeSeriesSet::append(CTimeSeries &BTC, string name)
 {
 	if (name != "")
 		 BTC.name = name;
@@ -978,7 +978,7 @@ void CBTCSet::append(CBTC &BTC, string name)
 }
 
 
-void CBTCSet::setname(int index, string name)
+void CTimeSeriesSet::setname(int index, string name)
 {
 	while (names.size() < BTC.size())
 		names.push_back("");
@@ -988,7 +988,7 @@ void CBTCSet::setname(int index, string name)
 
 }
 
-void CBTCSet::compact(QDataStream &data) const
+void CTimeSeriesSet::compact(QDataStream &data) const
 {
 	QMap<QString, QVariant> r;
 	r.insert("nvars",nvars);
@@ -1009,11 +1009,11 @@ for (int i = 0; i < nvars; i++)
 	return;
 	
 }
-CBTCSet CBTCSet::unCompact(QDataStream &data)
+CTimeSeriesSet CTimeSeriesSet::unCompact(QDataStream &data)
 {
 	QMap<QString, QVariant> r;
 	data >> r;
-	CBTCSet c;
+	CTimeSeriesSet c;
 	c.nvars = r["nvars"].toInt();
 	//c.BTC.resize(c.nvars);
 	
@@ -1028,7 +1028,7 @@ CBTCSet CBTCSet::unCompact(QDataStream &data)
 	for (int i = 0; i < c.nvars; i++)
 	{
 	//	QString code = QString("BTC %1").arg(i);
-		c.BTC.push_back(CBTC::unCompact(data));
+		c.BTC.push_back(CTimeSeries::unCompact(data));
 	}
 
 	return c;

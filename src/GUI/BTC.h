@@ -12,18 +12,18 @@
 #include "qmap.h"
 #include "qvariant.h"
 
-
+#define CBTC CTimeSeries
 
 using namespace std;
 
 
-class CBTC  
+class CTimeSeries  
 {
 public:
 	bool structured;
-	CBTC();
-	CBTC(int n);
-	virtual ~CBTC();
+	CTimeSeries();
+	CTimeSeries(int n);
+	virtual ~CTimeSeries();
 	int n;
 	vector<double> t;
 	vector<double> C;
@@ -37,20 +37,20 @@ public:
 	vector<double> D;
 
 	double interpol(double x); //interpolate at location x
-	CBTC MA_smooth(int span); //Moving average smoothing with span of 1+2*span
+	CTimeSeries MA_smooth(int span); //Moving average smoothing with span of 1+2*span
 	double interpol_D(double x); //interpolate the distance to the next non-zero data point
-	CBTC interpol(vector<double> x); //interpolate at each value in vector x
-	CBTC interpol(CBTC &x); //interpolate at times in the time axis of x
-	CBTC(const CBTC &C); 
-	CBTC(string Filename); //create BTC based on the filename
-	CBTC& operator = (const CBTC &C);
+	CTimeSeries interpol(vector<double> x); //interpolate at each value in vector x
+	CTimeSeries interpol(CTimeSeries &x); //interpolate at times in the time axis of x
+	CTimeSeries(const CTimeSeries &C); 
+	CTimeSeries(string Filename); //create BTC based on the filename
+	CTimeSeries& operator = (const CTimeSeries &C);
 	void readfile(string); //read the values from a text file
 	void writefile(string Filename); //writes the BTC contets into a fild
 	double maxC(); //returns the maximum value
 	double minC(); //returns the minimum value
 	void setnumpoints(int); //resize the timeseries
-	CBTC Log(); //take the log of all the data points
-	CBTC Log(double min); //log(min(min,C))
+	CTimeSeries Log(); //take the log of all the data points
+	CTimeSeries Log(double min); //log(min(min,C))
 	double std(); //standard deviation of C
 	double mean(); //mean of C
 	double percentile(double x); //x^th percentile of C
@@ -65,17 +65,17 @@ public:
 	double average(); //integral of time-series devided by the domail length
 	double average(double t); // integral to time t devided by domain length
 	double slope(double tt); //slope of time-series at time tt
-	CBTC distribution(int n_bins, int limit); //extract the histogram of values
+	CTimeSeries distribution(int n_bins, int limit); //extract the histogram of values
 	void append(double x); //appends a data point with value x
 	void append(double tt, double xx); //appends a datapoint with value xx at time tt
-	void append(CBTC &CC);// appends a time-series to the time-series
-	CBTC& operator+=(CBTC &v); //adds another time-series to the existing one
-	CBTC& operator%=(CBTC &v); //adds another time-series by corresponding indexes
-	CBTC make_uniform(double increment); //create a new time-series with uniformly distributed time-axis
-	CBTC extract(double t1, double t2); //extracts a sub time-series from t1 to t2.
+	void append(CTimeSeries &CC);// appends a time-series to the time-series
+	CTimeSeries& operator+=(CTimeSeries &v); //adds another time-series to the existing one
+	CTimeSeries& operator%=(CTimeSeries &v); //adds another time-series by corresponding indexes
+	CTimeSeries make_uniform(double increment); //create a new time-series with uniformly distributed time-axis
+	CTimeSeries extract(double t1, double t2); //extracts a sub time-series from t1 to t2.
 	vector<double> trend(); //calculate the slope based on regression
 	double mean_t(); //mean of t values of data point
-	CBTC add_noise(double std, bool); //adds Gaussian noise to values 
+	CTimeSeries add_noise(double std, bool); //adds Gaussian noise to values 
 	void assign_D(); //Assign distances to the next non-zero values
 	void clear(); // clears the time-series
 	double wiggle(); //calculate oscillation
@@ -86,58 +86,58 @@ public:
 	void knock_out(double t);
 	double AutoCor1(int i=0);
 	bool file_not_found = false;
-	CBTC getcummulative();
-	CBTC Exp();
-	CBTC fabs();
+	CTimeSeries getcummulative();
+	CTimeSeries Exp();
+	CTimeSeries fabs();
 	//GUI 
 	//QList <QMap <QVariant, QVariant>> compact() const;
-	CBTC(QList <QMap <QVariant, QVariant>> data);
-	CBTC(double a, double b, const vector<double>&x);
-	CBTC(double a, double b, const CBTC &btc);
-	CBTC(const vector<double> &t, const vector<double> &C);
-	CBTC(vector<double>&, int writeInterval = 1);
+	CTimeSeries(QList <QMap <QVariant, QVariant>> data);
+	CTimeSeries(double a, double b, const vector<double>&x);
+	CTimeSeries(double a, double b, const CTimeSeries &btc);
+	CTimeSeries(const vector<double> &t, const vector<double> &C);
+	CTimeSeries(vector<double>&, int writeInterval = 1);
 	bool error = false;
 
 	void compact(QDataStream &data) const;
-	static CBTC unCompact(QDataStream &data);
+	static CTimeSeries unCompact(QDataStream &data);
 
 };
 
-double diff(CBTC &BTC_p, CBTC &BTC_d);
-double diff_abs(CBTC &BTC_p, CBTC &BTC_d);
-double diff_log(CBTC &BTC_p, CBTC &BTC_d, double lowlim);
-double diff_norm(CBTC &BTC_p, CBTC &BTC_d);
-double diff(CBTC BTC_p, CBTC BTC_d, int scale);
-double diff(CBTC BTC_p, CBTC BTC_d, CBTC Q);
-double diff2(CBTC BTC_p, CBTC BTC_d);
-double diff_mixed(CBTC &BTC_p, CBTC &BTC_d, double lowlim, double std_n, double std_ln);
-double ADD(CBTC &BTC_p, CBTC &BTC_d);
-double diff_relative(CBTC &BTC_p, CBTC &BTC_d, double m);
-double R2(CBTC BTC_p, CBTC BTC_d);
-double R(CBTC BTC_p, CBTC BTC_d, int nlimit);
-CBTC operator*(double, CBTC&);
-CBTC operator*(CBTC&, double);
-CBTC operator*(CBTC&, CBTC&);
-CBTC operator/(CBTC&, CBTC&);
-CBTC operator+(CBTC&, CBTC&);
-CBTC operator-(CBTC&, CBTC&);
-CBTC operator%(CBTC&, CBTC&);
-CBTC operator&(CBTC&, CBTC&);
-CBTC operator/(CBTC &CBTC_T, double alpha);
-CBTC operator>(CBTC& BTC1, CBTC& BTC2);
-double XYbar(CBTC& BTC_p, CBTC &BTC_d);
-double X2bar(CBTC& BTC_p, CBTC &BTC_d);
-double Y2bar(CBTC& BTC_p, CBTC &BTC_d);
-double Ybar(CBTC &BTC_p, CBTC &BTC_d);
-double Xbar(CBTC &BTC_p, CBTC &BTC_d);
-CBTC operator+(CBTC &v1, CBTC &v2); 
+double diff(CTimeSeries &BTC_p, CTimeSeries &BTC_d);
+double diff_abs(CTimeSeries &BTC_p, CTimeSeries &BTC_d);
+double diff_log(CTimeSeries &BTC_p, CTimeSeries &BTC_d, double lowlim);
+double diff_norm(CTimeSeries &BTC_p, CTimeSeries &BTC_d);
+double diff(CTimeSeries BTC_p, CTimeSeries BTC_d, int scale);
+double diff(CTimeSeries BTC_p, CTimeSeries BTC_d, CTimeSeries Q);
+double diff2(CTimeSeries BTC_p, CTimeSeries BTC_d);
+double diff_mixed(CTimeSeries &BTC_p, CTimeSeries &BTC_d, double lowlim, double std_n, double std_ln);
+double ADD(CTimeSeries &BTC_p, CTimeSeries &BTC_d);
+double diff_relative(CTimeSeries &BTC_p, CTimeSeries &BTC_d, double m);
+double R2(CTimeSeries BTC_p, CTimeSeries BTC_d);
+double R(CTimeSeries BTC_p, CTimeSeries BTC_d, int nlimit);
+CTimeSeries operator*(double, CTimeSeries&);
+CTimeSeries operator*(CTimeSeries&, double);
+CTimeSeries operator*(CTimeSeries&, CTimeSeries&);
+CTimeSeries operator/(CTimeSeries&, CTimeSeries&);
+CTimeSeries operator+(CTimeSeries&, CTimeSeries&);
+CTimeSeries operator-(CTimeSeries&, CTimeSeries&);
+CTimeSeries operator%(CTimeSeries&, CTimeSeries&);
+CTimeSeries operator&(CTimeSeries&, CTimeSeries&);
+CTimeSeries operator/(CTimeSeries &CTimeSeries_T, double alpha);
+CTimeSeries operator>(CTimeSeries& BTC1, CTimeSeries& BTC2);
+double XYbar(CTimeSeries& BTC_p, CTimeSeries &BTC_d);
+double X2bar(CTimeSeries& BTC_p, CTimeSeries &BTC_d);
+double Y2bar(CTimeSeries& BTC_p, CTimeSeries &BTC_d);
+double Ybar(CTimeSeries &BTC_p, CTimeSeries &BTC_d);
+double Xbar(CTimeSeries &BTC_p, CTimeSeries &BTC_d);
+CTimeSeries operator+(CTimeSeries &v1, CTimeSeries &v2); 
 double prcntl(vector<double> C, double x);
 vector<double> prcntl(vector<double> C, vector<double> x);
 double sgn(double val);
 int sgn(int val);
-double sum_interpolate(vector<CBTC>, double t);
-double R2_c(CBTC BTC_p, CBTC BTC_d);
-double norm2(CBTC BTC1);
-CBTC max(CBTC A, double b);
+double sum_interpolate(vector<CTimeSeries>, double t);
+double R2_c(CTimeSeries BTC_p, CTimeSeries BTC_d);
+double norm2(CTimeSeries BTC1);
+CTimeSeries max(CTimeSeries A, double b);
 //GUI
 map<string, double> regression(vector<double> x, vector<double> y);
