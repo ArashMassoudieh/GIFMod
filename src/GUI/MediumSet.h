@@ -146,6 +146,7 @@ public:
     int lookup_medium(string S);
     double calc_log_likelihood(); //calculate sum log likelihood for time series data ts
     double calc_log_likelihood(int i); //calculate sum log likelihood for observed quantity i
+	double calc_MSE(int i); // calculates the mean squared error
 	bool failed;
     void finalize_set_param();
     int epoch_count();
@@ -173,7 +174,7 @@ public:
 	_control Control;
 	double elapsed_time(); // gets the total elapsed computational time from the start of the simulation of the mediumset. 
 	double progress_percentage(); // shows the overall progress percentage of the simulation
-
+	vector<double> MSE_obs; 
 
 	
 	
