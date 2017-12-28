@@ -141,7 +141,8 @@ HEADERS += ./src/GUI/Command.h \
     ./src/GUI/wizard_select_dialog.h \
     ./src/GUI/wizard_dialog.h \
     $$PWD/src/GUI/slndetailswindow.h \
-    $$PWD/src/GUI/imageviewer_window.h
+    $$PWD/src/GUI/imageviewer_window.h \
+    $$PWD/src/GUI/labelimage.h
 SOURCES += ./src/GUI/XString.cpp \
     ./src/GUI/BTC.cpp \
     ./src/GUI/BTCSet.cpp \

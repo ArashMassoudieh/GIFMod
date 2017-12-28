@@ -19,7 +19,7 @@ class ImageViewer : public QMainWindow
 
 public:
 	ImageViewer(bool menu=false);
-	bool loadFile(const QString &);
+    bool loadFile(const QString &, bool keepOriginalSize=false);
 	bool menu;
 
 	
@@ -45,7 +45,7 @@ private:
 	void createMenus();
 	void updateActions();
 	bool saveFile(const QString &fileName);
-	void setImage(const QImage &newImage);
+    void setImage(const QImage &newImage, bool keepOriginalSize);
 	void scaleImage(double factor);
 	void adjustScrollBar(QScrollBar *scrollBar, double factor);
 

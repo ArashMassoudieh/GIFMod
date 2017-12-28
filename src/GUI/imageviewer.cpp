@@ -7,17 +7,18 @@
 #endif
 
 #include "imageviewer.h"
+#include "labelimage.h"
 
 ImageViewer::ImageViewer(bool _menu)
-	: imageLabel(new QLabel)
+    : imageLabel(new LabelImage)
 	, scrollArea(new QScrollArea)
 	, scaleFactor(1)
 {
 	menu = _menu;
 	imageLabel->setBackgroundRole(QPalette::Base);
-	imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-	imageLabel->setScaledContents(true);
-	
+    imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    //imageLabel->setScaledContents(true);
+    imageLabel->setAlignment(Qt::AlignCenter);
 
 	scrollArea->setBackgroundRole(QPalette::Dark);
 	scrollArea->setWidget(imageLabel);
@@ -30,7 +31,7 @@ ImageViewer::ImageViewer(bool _menu)
 }
 
 
-bool ImageViewer::loadFile(const QString &fileName)
+bool ImageViewer::loadFile(const QString &fileName, bool keepOriginalSize)
 {
 	QImageReader reader(fileName);
 	reader.setAutoTransform(true);
@@ -42,7 +43,7 @@ bool ImageViewer::loadFile(const QString &fileName)
 		return false;
 	}
 
-	setImage(newImage);
+    setImage(newImage, keepOriginalSize);
 
 	setWindowFilePath(fileName);
 
@@ -55,11 +56,14 @@ bool ImageViewer::loadFile(const QString &fileName)
 	return true;
 }
 
-void ImageViewer::setImage(const QImage &newImage)
+void ImageViewer::setImage(const QImage &newImage, bool keepOriginalSize)
 {
 	image = newImage;
-	imageLabel->setPixmap(QPixmap::fromImage(image));
-	scaleFactor = 1.0;
+
+    ((LabelImage *)imageLabel)->setPixmap(QPixmap::fromImage(image), keepOriginalSize);
+    //imageLabel->setPixmap(QPixmap::fromImage(image));
+
+    scaleFactor = 1.0;
 
 	scrollArea->setVisible(true);
 	if (menu)
@@ -178,7 +182,7 @@ void ImageViewer::paste()
 		statusBar()->showMessage(tr("No image in clipboard"));
 	}
 	else {
-		setImage(newImage);
+        setImage(newImage, true);
 		setWindowFilePath(QString());
 		const QString message = tr("Obtained image from clipboard, %1x%2, Depth: %3")
 			.arg(newImage.width()).arg(newImage.height()).arg(newImage.depth());

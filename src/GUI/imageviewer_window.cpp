@@ -20,7 +20,7 @@ imageviewer_window::~imageviewer_window()
 
 void imageviewer_window::setimage(QString image_filename)
 {
-	image->loadFile(image_filename);
+    image->loadFile(image_filename, true);
 }
 
 void imageviewer_window::close()
