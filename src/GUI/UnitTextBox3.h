@@ -11,7 +11,8 @@ class UnitTextBox3 :
 {	
 //	Q_OBJECT
 public:
-	UnitTextBox3() {};
+    UnitTextBox3() {}
+
 	UnitTextBox3(const XString &X, QWidget * parent = 0) :QWidget(parent)
 	{
 		QHBoxLayout *layout = new QHBoxLayout(this);
@@ -26,15 +27,10 @@ public:
 		setLayout(layout);
 		validator = new QDoubleValidator(this);
 		textBox->setValidator(validator);
-//		Rect = option.rect;
-		Rect = QRect(0, 0, 300, 20);
+        setGeometry(QRect(0, 0, 300, 20));
 		setXString(X);
 		setFocusProxy(textBox);
-/*		unitBox->show();
-		textBox->show();
-		this->show();
-		*/
-	};
+    }
 
 	UnitTextBox3(const QStyleOptionViewItem &option, QWidget * parent = 0) :QWidget(parent)
 	{
@@ -42,64 +38,54 @@ public:
 		unitBox = new QComboBox(textBox);
 		validator = new QDoubleValidator(this);
 		textBox->setValidator(validator);
-		Rect = option.rect;
+        setGeometry(option.rect);
 		unitBox->show();
 		textBox->show();
 		this->show();
+    }
 
-		//		QObject::connect(textBox, SIGNAL(textChanged(const QString & text)), this, SIGNAL(editingFinished()));
-	};
-	~UnitTextBox3(){};
+    ~UnitTextBox3(){}
+
 	void paintEvent(QPaintEvent * event)
 	{
 		unitBox->show();
 		textBox->show();
 		this->show();
 
-		setGeometry(rect());
 		textBox->resize(rect().width(), rect().height());
 		QFont QF = font(); QF.setPointSize(QF.pointSize() - 1);
 		unitBox->setFont(QF);
 		unitBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
 		int w = (unitBox->rect().width() < rect().width() / 2) ? unitBox->rect().width() : rect().width() / 2;
 		unitBox->setGeometry(rect().width() - unitBox->rect().width(), 0, w, rect().height());
-	};
-	//XString value() const { return XString(text(), unit(), units()); };
-	void setXString(const XString &X)
+    }
+
+    void setXString(const XString &X)
 	{ 
 		setText(X.toQString()); 
 		setUnitsList(X.unitsList); 
 		setUnit(X.unit);
 		defaultUnit = X.defaultUnit;
 
-	};
-	void setText(const QString &T){ textBox->setText(T); };
-	void setUnit(const QString &U){ unitBox->setCurrentText(U); };
-	void setUnitsList(const QStringList &L){ for (int i = 0; unitBox->count(); i++) unitBox->clear(); unitBox->addItems(L); };
-	QString text() const { return textBox->text(); };
-	QString unit() const { return unitBox->currentText(); };
-	QStringList units() const { QStringList R; for (int i = 0; i < unitBox->count(); i++) R.append(unitBox->itemText(i)); return R; };
-	QStringList list() const { return QStringList() << text() << unit() << units() << defaultUnit; };
-	void setGeometry(const QRect &R) {Rect = R;};
-	QRect rect() const { return Rect; };
+    }
+
+    void setText(const QString &T){ textBox->setText(T); }
+    void setUnit(const QString &U){ unitBox->setCurrentText(U); }
+    void setUnitsList(const QStringList &L){ for (int i = 0; unitBox->count(); i++) unitBox->clear(); unitBox->addItems(L); }
+    QString text() const { return textBox->text(); }
+    QString unit() const { return unitBox->currentText(); }
+    QStringList units() const { QStringList R; for (int i = 0; i < unitBox->count(); i++) R.append(unitBox->itemText(i)); return R; }
+    QStringList list() const { return QStringList() << text() << unit() << units() << defaultUnit; }
+    QRect rect() const { return geometry(); }
 	QString defaultUnit;
+
 	XString toXString() {
 		XString(list());
 	}
+
 private:
 	QComboBox *unitBox;
-	QLineEdit *textBox;
-	QRect Rect;
+    QLineEdit *textBox;
 	QDoubleValidator *validator;
-/*public slots:
-signals:
-/*	
-	void	cursorPositionChanged(int old, int new1);
-	void	editingFinished();
-	void	returnPressed();
-	void	selectionChanged();
-	void	textChanged(const QString & text);
-	void	textEdited(const QString & text);
-	*/
 	};
 
