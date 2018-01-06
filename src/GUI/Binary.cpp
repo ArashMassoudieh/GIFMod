@@ -148,7 +148,7 @@ void cross(CBinary &B1, CBinary &B2, int p)
 			B1[i] = BT1[i];
 			B2[i] = BT2[i];
 		}
-		else
+        else
 		{	
 			B1[i] = BT2[i];
 			B2[i] = BT1[i];

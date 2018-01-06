@@ -10,8 +10,8 @@
 #include <QFileDialog>
 
 class UnitTextBox3 :
-	public QWidget
-{	
+    public QWidget
+{
     Q_OBJECT
 
 public:
@@ -22,15 +22,15 @@ public:
 
     UnitTextBox3(const QStyleOptionViewItem &option, bool openFileMenu = false, QWidget * parent = 0)
         :QWidget(parent)
-	{
-		textBox = new QLineEdit(this);
-		unitBox = new QComboBox(textBox);
-		validator = new QDoubleValidator(this);
-		textBox->setValidator(validator);
+    {
+        textBox = new QLineEdit(this);
+        unitBox = new QComboBox(textBox);
+        validator = new QDoubleValidator(this);
+        textBox->setValidator(validator);
         setGeometry(option.rect);
-		unitBox->show();
-		textBox->show();
-		this->show();
+        unitBox->show();
+        textBox->show();
+        this->show();
         updateContextMenu(openFileMenu);
     }
 
@@ -45,26 +45,26 @@ public:
         }
     }
 
-	void paintEvent(QPaintEvent * event)
-	{
-		unitBox->show();
-		textBox->show();
-		this->show();
+    void paintEvent(QPaintEvent * event)
+    {
+        unitBox->show();
+        textBox->show();
+        this->show();
 
-		textBox->resize(rect().width(), rect().height());
-		QFont QF = font(); QF.setPointSize(QF.pointSize() - 1);
-		unitBox->setFont(QF);
-		unitBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-		int w = (unitBox->rect().width() < rect().width() / 2) ? unitBox->rect().width() : rect().width() / 2;
-		unitBox->setGeometry(rect().width() - unitBox->rect().width(), 0, w, rect().height());
+        textBox->resize(rect().width(), rect().height());
+        QFont QF = font(); QF.setPointSize(QF.pointSize() - 1);
+        unitBox->setFont(QF);
+        unitBox->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+        int w = (unitBox->rect().width() < rect().width() / 2) ? unitBox->rect().width() : rect().width() / 2;
+        unitBox->setGeometry(rect().width() - unitBox->rect().width(), 0, w, rect().height());
     }
 
     void setXString(const XString &X)
-	{ 
-		setText(X.toQString()); 
-		setUnitsList(X.unitsList); 
-		setUnit(X.unit);
-		defaultUnit = X.defaultUnit;
+    {
+        setText(X.toQString());
+        setUnitsList(X.unitsList);
+        setUnit(X.unit);
+        defaultUnit = X.defaultUnit;
 
     }
 
@@ -76,11 +76,11 @@ public:
     QStringList units() const { QStringList R; for (int i = 0; i < unitBox->count(); i++) R.append(unitBox->itemText(i)); return R; }
     QStringList list() const { return QStringList() << text() << unit() << units() << defaultUnit; }
     QRect rect() const { return geometry(); }
-	QString defaultUnit;
+    QString defaultUnit;
 
-	XString toXString() {
-		XString(list());
-	}
+    XString toXString() {
+        XString(list());
+    }
 
 public slots:
     void showContextMenu(const QPoint &pt)
@@ -105,7 +105,7 @@ public slots:
 
 private:
     QString m_fileName;
-	QComboBox *unitBox;
+    QComboBox *unitBox;
     QLineEdit *textBox;
-	QDoubleValidator *validator;
-	};
+    QDoubleValidator *validator;
+    };
