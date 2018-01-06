@@ -9,9 +9,10 @@
 #include <fstream>
 #include "StringOP.h"
 #include "NormalDist.h"
+#ifdef QT_version
 #include "qfile.h"
 #include "qdatastream.h"
-
+#endif
 
 using namespace std;
 
@@ -46,7 +47,7 @@ CTimeSeries::CTimeSeries(vector<double> &data, int writeInterval)
 }
 void CTimeSeries::setnumpoints(int n1)
 {
-	
+
 	n = n1;
 	t.resize(n);
 	C.resize(n);
@@ -54,7 +55,7 @@ void CTimeSeries::setnumpoints(int n1)
 
 CTimeSeries::~CTimeSeries()
 {
-	
+
 }
 
 CTimeSeries::CTimeSeries(const CTimeSeries &CC)
@@ -73,7 +74,7 @@ CTimeSeries::CTimeSeries(const CTimeSeries &CC)
 	unitsList = CC.unitsList;
 	error = CC.error;
 	file_not_found = CC.file_not_found;
-	
+
 }
 
 CTimeSeries::CTimeSeries(string Filename)
@@ -110,11 +111,11 @@ CTimeSeries::CTimeSeries(string Filename)
 			if (t.size()>2)
 				if ((t[t.size()-1]-t[t.size()-2])!=(t[t.size()-2]-t[t.size()-3]))
 					structured = false;
-				
+
 		}
 	}
 	error = (n == 0) ? true : false;
-	file.close();	
+	file.close();
 }
 
 /*CTimeSeries CTimeSeries::operator = (const CTimeSeries &CC)
@@ -127,7 +128,7 @@ CTimeSeries::CTimeSeries(string Filename)
 		t[i] = CC.t[i];
 		C[i] = CC.C[i];
 	}
-	
+
 	return *this;
 }*/
 
@@ -178,7 +179,7 @@ double CTimeSeries::interpol(double x)
 	double r=0;
 	if (n>1)
 	{
-	
+
 		if (structured == false)
 		{	for (int i=0; i<n-1; i++)
 			{
@@ -207,14 +208,14 @@ double CTimeSeries::interpol(double x)
 
 CTimeSeries CTimeSeries::MA_smooth(int span)
 {
-	CTimeSeries out; 
+	CTimeSeries out;
 	for (int i = 0; i < n; i++)
 	{
-		double sum = 0; 
+		double sum = 0;
 		int span_1 = min(span, i);
 		span_1 = min(span_1, n - i - 1);
 		for (int j = i - span_1; j <= i + span_1; j++)
-		{ 
+		{
 			sum += C[j] / double(1 + 2 * span_1);
 		}
 		out.append(t[i], sum);
@@ -227,7 +228,7 @@ double CTimeSeries::interpol_D(double x)
 	double r=0;
 	if (n>1)
 	{
-	
+
 		if (structured == false)
 		{	for (int i=0; i<n-1; i++)
 			{
@@ -272,25 +273,25 @@ CTimeSeries CTimeSeries::interpol(CTimeSeries &x)
 
 double ADD(CTimeSeries &BTC_p, CTimeSeries &BTC_d)
 {
-	double sum = 0;	
+	double sum = 0;
 	for (int i=0; i<BTC_d.n; i++)
 		if (abs(BTC_d.C[i]) < 1e-3)
 			sum += abs(BTC_d.C[i] - BTC_p.interpol(BTC_d.t[i]));
 		else
-			sum += abs(BTC_d.C[i] - BTC_p.interpol(BTC_d.t[i])) /BTC_d.C[i];	
-		
+			sum += abs(BTC_d.C[i] - BTC_p.interpol(BTC_d.t[i])) /BTC_d.C[i];
+
 	return sum/BTC_d.n;
 }
 
 double diff_relative(CTimeSeries &BTC_A, CTimeSeries &BTC_B, double m)
 {
-	double sum = 0;	
+	double sum = 0;
 	for (int i=0; i<min(BTC_A.n,BTC_B.n); i++)
 		if (abs(BTC_A.C[i]) < m)
 			sum += abs(BTC_B.C[i] - BTC_A.interpol(BTC_B.t[i]));
 		else
-			sum += abs(BTC_B.C[i] - BTC_A.interpol(BTC_B.t[i])) /BTC_A.C[i];	
-		
+			sum += abs(BTC_B.C[i] - BTC_A.interpol(BTC_B.t[i])) /BTC_A.C[i];
+
 	return sum;
 }
 
@@ -313,23 +314,23 @@ double diff(CTimeSeries &BTC_p, CTimeSeries &BTC_d)
 	double sum = 0;
 	double a;
 	for (int i=0; i<BTC_d.n; i++)
-	{	
+	{
 		a = BTC_p.interpol(BTC_d.t[i]);
-		sum += pow(BTC_d.C[i] - a,2);	
+		sum += pow(BTC_d.C[i] - a,2);
 	}
-	
+
 	return sum;
 }
 
 double diff_abs(CTimeSeries &BTC_p, CTimeSeries &BTC_d)
 {
 	double sum = 0;
-	
+
 	for (int i=0; i<BTC_d.n; i++)
-	{	
-		sum += abs(BTC_d.C[i] - BTC_p.interpol(BTC_d.t[i]));	
+	{
+		sum += abs(BTC_d.C[i] - BTC_p.interpol(BTC_d.t[i]));
 	}
-	
+
 	return sum;
 }
 
@@ -338,27 +339,27 @@ double diff_log(CTimeSeries &BTC_p, CTimeSeries &BTC_d, double lowlim)
 	double sum = 0;
 	double a;
 	for (int i=0; i<BTC_d.n; i++)
-	{	
+	{
 		a = BTC_p.interpol(BTC_d.t[i]);
 		sum += pow(log(max(BTC_d.C[i],lowlim)) - log(max(a,lowlim)),2);
-	
+
 	}
-	
+
 	return sum;
 }
 
 double diff_mixed(CTimeSeries &BTC_p, CTimeSeries &BTC_d, double lowlim, double std_n, double std_ln)
 {
-	
+
 	CNormalDist ND;
 	double sum = 0;
 	double a;
 	for (int i=0; i<BTC_d.n; i++)
-	{	
+	{
 		a = BTC_p.interpol(BTC_d.t[i]);
 		sum += ND.likelihood_mixed(a,BTC_d.C[i],std_n,std_ln);
 	}
-	
+
 	return sum;
 }
 
@@ -368,7 +369,7 @@ double diff2(CTimeSeries BTC_p, CTimeSeries BTC_d)
 	double sum = 0;
 	double sumvar1 = 0;
 	for (int i=0; i<BTC_d.n; i++)
-	{	
+	{
 		sum += pow(BTC_d.C[i] - BTC_p.interpol(BTC_d.t[i]),2);
 		sumvar1 += BTC_d.C[i]*BTC_d.C[i];
 	}
@@ -389,7 +390,7 @@ double R2(CTimeSeries BTC_p, CTimeSeries BTC_d)
 		double x2 = BTC_p.interpol(BTC_d.t[i]);
 		sumcov += BTC_d.C[i]*x2/BTC_d.n;
 		sumvar1 += BTC_d.C[i]*BTC_d.C[i]/BTC_d.n;
-		sumvar2 += x2*x2/BTC_d.n;	
+		sumvar2 += x2*x2/BTC_d.n;
 		sum1 += BTC_d.C[i]/BTC_d.n;
 		sum2 += x2/BTC_d.n;
 	}
@@ -412,7 +413,7 @@ double R(CTimeSeries BTC_p, CTimeSeries BTC_d, int nlimit)
 		double x2 = BTC_p.C[i];
 		sumcov += x1*x2/N;
 		sumvar1 += x1*x1/N;
-		sumvar2 += x2*x2/N;	
+		sumvar2 += x2*x2/N;
 		sum1 += x1/N;
 		sum2 += x2/N;
 	}
@@ -434,7 +435,7 @@ double XYbar(CTimeSeries BTC_p, CTimeSeries BTC_d)
 		double x2 = BTC_p.interpol(BTC_d.t[i]);
 		sumcov += BTC_d.C[i]*x2/BTC_d.n;
 		sumvar1 += BTC_d.C[i]*BTC_d.C[i]/BTC_d.n;
-		sumvar2 += x2*x2/BTC_d.n;	
+		sumvar2 += x2*x2/BTC_d.n;
 		sum1 += BTC_d.C[i]/BTC_d.n;
 		sum2 += x2/BTC_d.n;
 	}
@@ -454,7 +455,7 @@ double X2bar(CTimeSeries BTC_p, CTimeSeries BTC_d)
 		double x2 = BTC_p.interpol(BTC_d.t[i]);
 		sumcov += BTC_d.C[i]*x2/BTC_d.n;
 		sumvar1 += BTC_d.C[i]*BTC_d.C[i]/BTC_d.n;
-		sumvar2 += x2*x2/BTC_d.n;	
+		sumvar2 += x2*x2/BTC_d.n;
 		sum1 += BTC_d.C[i]/BTC_d.n;
 		sum2 += x2/BTC_d.n;
 	}
@@ -474,7 +475,7 @@ double Y2bar(CTimeSeries BTC_p, CTimeSeries BTC_d)
 		double x2 = BTC_p.interpol(BTC_d.t[i]);
 		sumcov += BTC_d.C[i]*x2/BTC_d.n;
 		sumvar1 += BTC_d.C[i]*BTC_d.C[i]/BTC_d.n;
-		sumvar2 += x2*x2/BTC_d.n;	
+		sumvar2 += x2*x2/BTC_d.n;
 		sum1 += BTC_d.C[i]/BTC_d.n;
 		sum2 += x2/BTC_d.n;
 	}
@@ -494,7 +495,7 @@ double Ybar(CTimeSeries BTC_p, CTimeSeries BTC_d)
 		double x2 = BTC_p.interpol(BTC_d.t[i]);
 		sumcov += BTC_d.C[i]*x2/BTC_d.n;
 		sumvar1 += BTC_d.C[i]*BTC_d.C[i]/BTC_d.n;
-		sumvar2 += x2*x2/BTC_d.n;	
+		sumvar2 += x2*x2/BTC_d.n;
 		sum1 += BTC_d.C[i]/BTC_d.n;
 		sum2 += x2/BTC_d.n;
 	}
@@ -514,7 +515,7 @@ double Xbar(CTimeSeries BTC_p, CTimeSeries BTC_d)
 		double x2 = BTC_p.interpol(BTC_d.t[i]);
 		sumcov += BTC_d.C[i]*x2/BTC_d.n;
 		sumvar1 += BTC_d.C[i]*BTC_d.C[i]/BTC_d.n;
-		sumvar2 += x2*x2/BTC_d.n;	
+		sumvar2 += x2*x2/BTC_d.n;
 		sum1 += BTC_d.C[i]/BTC_d.n;
 		sum2 += x2/BTC_d.n;
 	}
@@ -529,7 +530,7 @@ double diff_norm(CTimeSeries &BTC_p, CTimeSeries &BTC_d)
 	double sumvar2 = 0;
 	double a;
 	for (int i=0; i<BTC_d.n; i++)
-	{	
+	{
 		a = BTC_p.interpol(BTC_d.t[i]);
 		sum += pow(BTC_d.C[i] - a,2)/BTC_d.n;
 		sumvar1 += BTC_d.C[i]*BTC_d.C[i]/BTC_d.n;
@@ -574,7 +575,7 @@ void CTimeSeries::readfile(string Filename)
 			if (t.size()>2)
 				if (t[t.size()-1]-t[t.size()-2]!=t[t.size()-2]-t[t.size()-3])
 					structured = false;
-				
+
 		}
 	}
 	file.close();
@@ -585,25 +586,25 @@ void CTimeSeries::readfile(string Filename)
 {
 	FILE *FILEBTC;
 	FILEBTC = fopen(Filename, "r");
-	if (FILEBTC == NULL) 
+	if (FILEBTC == NULL)
 		double e=1;
 	int numpoints = 0;
 	double tt, CC;
 	while (feof(FILEBTC)==false)
-	{	
+	{
 		fscanf(FILEBTC, "%lf, %lf\n", &tt, &CC);
 		numpoints++;
 	}
 	//numpoints--;
 	fclose(FILEBTC);
-	
+
 	n=numpoints;
 	t = new double[numpoints];
 	C = new double[numpoints];
 
 	FILEBTC = fopen(Filename, "r");
 	for (int i=0; i<numpoints; i++)
-	{	
+	{
 		fscanf(FILEBTC, "%lf, %lf", &t[i], &C[i]);
 	}
 	fclose(FILEBTC);
@@ -619,7 +620,7 @@ void CTimeSeries::writefile(string Filename)
 	fprintf(FILEBTC, "n %i, BTC size %i\n", n, C.size());
 	for (int i=0; i<n; i++)
 		fprintf(FILEBTC, "%lf, %le\n", t[i], C[i]);
-	
+
 	fclose(FILEBTC);
 
 }
@@ -630,7 +631,7 @@ void CTimeSeries::writefile(string Filename)
 	FILEBTC = fopen(Filename, "w");
 	for (int i=0; i<n; i++)
 		fprintf(FILEBTC, "%lf, %le\n", t[i], C[i]);
-	
+
 	fclose(FILEBTC);
 
 }*/
@@ -752,7 +753,7 @@ CTimeSeries operator&(CTimeSeries &BTC1, CTimeSeries &BTC2)
 	double sum = 0;
 	double sumflow = 0;
 	for (int i=0; i<n; i++)
-	{	
+	{
 		sum += C[i]*M.interpol(t[i]);
 		sumflow += M.interpol(t[i]);
 	}
@@ -767,11 +768,11 @@ double CTimeSeries::Calculate_load(CTimeSeries &M)
 	double sum = 0;
 	double sumflow = 0;
 	for (int i=0; i<n; i++)
-	{	
+	{
 		sum += C[i]*M.interpol(t[i])*(t[2]-t[1]);
-		
+
 	}
-	
+
 	return sum;
 }*/
 
@@ -789,7 +790,7 @@ double CTimeSeries::maxfabs()
 {
 	if (max_fabs>0)
 		return max_fabs;
-	else	
+	else
 	{
 		double max = -1e32;
 		for (int i=0; i<n; i++)
@@ -798,7 +799,7 @@ double CTimeSeries::maxfabs()
 		}
 		return max;
 	}
-	
+
 }
 
 double CTimeSeries::minC()
@@ -816,7 +817,7 @@ double CTimeSeries::std()
 	double sum = 0;
 	double m = mean();
 	for (int i=0; i<n; i++)
-	{	
+	{
 		sum+= pow(C[i]-m,2);
 	}
 	return sqrt(sum/n);
@@ -827,7 +828,7 @@ double CTimeSeries::std(int nlimit)
 	double sum = 0;
 	double m = mean(nlimit);
 	for (int i=nlimit; i<n; i++)
-	{	
+	{
 		sum+= pow(C[i]-m,2);
 	}
 	return sqrt(sum/n);
@@ -837,7 +838,7 @@ double CTimeSeries::mean()
 {
 	double sum = 0;
 	for (int i=0; i<n; i++)
-	{	
+	{
 		sum+= C[i];
 	}
 	if (n>0)
@@ -850,7 +851,7 @@ double CTimeSeries::integrate()
 {
 	double sum = 0;
 	for (int i=1; i<n; i++)
-	{	
+	{
 		sum+= (C[i]+C[i-1])/2.0*(t[i]-t[i-1]);
 	}
 	return sum;
@@ -965,8 +966,8 @@ void CTimeSeries::append(double tt, double xx)
 	n++;
 	t.push_back(tt);
 	C.push_back(xx);
-	if (n>2) 
-		if (t[n-1]-t[n-2]!=t[n-2]-t[n-3]) 
+	if (n>2)
+		if (t[n-1]-t[n-2]!=t[n-2]-t[n-3])
 			structured = false;
 	max_fabs = max(max_fabs,std::fabs(xx));
 }
@@ -991,7 +992,7 @@ CTimeSeries& CTimeSeries::operator%=(CTimeSeries &v)
 
 }
 
-CTimeSeries operator+(CTimeSeries &v1, CTimeSeries &v2) 
+CTimeSeries operator+(CTimeSeries &v1, CTimeSeries &v2)
 {
 	return v1 += v2;
 }
@@ -1042,7 +1043,7 @@ vector<double> prcntl(vector<double> C, vector<double> x)
 		int ii = int(x[j]*double(X.size()));
 		Xout[j] = X[ii];
 	}
-	
+
 	return Xout;
 }
 
@@ -1063,20 +1064,20 @@ CTimeSeries CTimeSeries::distribution(int n_bins, int limit)
 
 	CVector C1(C.size()-limit);
 	for (int i=0; i<C1.num; i++)
-		C1[i] = C[i+limit];	
-	
+		C1[i] = C[i+limit];
+
     double p_start = C1.min();
     double p_end = C1.max()*1.001;
 	double dp = abs(p_end - p_start)/n_bins;
 	if (dp == 0) return out;
-	out.t[0] = p_start - dp/2;	
+	out.t[0] = p_start - dp/2;
 	out.C[0] = 0;
 	for (int i=0; i<n_bins+1; i++)
 	{
 		out.t[i+1] = out.t[i] + dp;
 		out.C[i+1] = out.C[i];
 	}
-		
+
 	for (int i=0; i<C1.num; i++)
 		out.C[int((C1[i]-p_start)/dp)+1] += 1.0/C1.num/dp;
 
@@ -1177,7 +1178,7 @@ double CTimeSeries::wiggle()
 
 double CTimeSeries::wiggle_corr(int _n)
 {
-	if (n < _n) return 0; 
+	if (n < _n) return 0;
 	double sum=0;
 	double var = 0;
 	double C_m=0;
@@ -1210,14 +1211,14 @@ bool CTimeSeries::wiggle_sl(double tol)
 	if ((slope1*slope2 < 0) && (slope2*slope3 < 0))
 		return true;
 	else
-		return false; 
+		return false;
 }
 
 void CTimeSeries::knock_out(double tt)
 {
 	int i=n-1;
 	if (n>0)
-		while (t[i]>tt) 
+		while (t[i]>tt)
 		{	if (i<n);
 			{	t.pop_back();
 				C.pop_back();
@@ -1335,6 +1336,7 @@ CTimeSeries operator>(CTimeSeries BTC1, CTimeSeries BTC2)
 
 	return S;
 }
+#ifdef QT_version
 void CTimeSeries::compact(QDataStream &data) const
 {
 	QMap<QString, QVariant> r;
@@ -1352,7 +1354,7 @@ void CTimeSeries::compact(QDataStream &data) const
 	r.insert("UnitsList", uList);
 	r.insert("error", error);
 	data << r;
-	
+
 	QList<QVariant> tList;
 	for (int i = 0; i < t.size(); i++)
 		tList.append(t[i]);
@@ -1367,7 +1369,7 @@ void CTimeSeries::compact(QDataStream &data) const
 	for (int i = 0; i < D.size(); i++)
 		tList.append(D[i]);
 	data << DList;
-	
+
 	return;
 }
 
@@ -1412,3 +1414,4 @@ CTimeSeries CTimeSeries::unCompact(QDataStream &data)
 
 	return b;
 }
+#endif // QT_version

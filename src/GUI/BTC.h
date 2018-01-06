@@ -6,18 +6,20 @@
 #include <vector>
 #include "QuickSort.h"
 #include "NormalDist.h"
+#include <map>
 
-//GUI
+#ifdef QT_version
 #include "qlist.h"
 #include "qmap.h"
 #include "qvariant.h"
+#endif // QT_version
 
 #define CBTC CTimeSeries
 
 using namespace std;
 
 
-class CTimeSeries  
+class CTimeSeries
 {
 public:
 	bool structured;
@@ -27,13 +29,12 @@ public:
 	int n;
 	vector<double> t;
 	vector<double> C;
-	
+
 	string name = "";
 	string unit = "";
 	string defaultUnit = "";
 	vector<string> unitsList;
 
-	//MM
 	vector<double> D;
 
 	double interpol(double x); //interpolate at location x
@@ -41,7 +42,7 @@ public:
 	double interpol_D(double x); //interpolate the distance to the next non-zero data point
 	CTimeSeries interpol(vector<double> x); //interpolate at each value in vector x
 	CTimeSeries interpol(CTimeSeries &x); //interpolate at times in the time axis of x
-	CTimeSeries(const CTimeSeries &C); 
+	CTimeSeries(const CTimeSeries &C);
 	CTimeSeries(string Filename); //create BTC based on the filename
 	CTimeSeries& operator = (const CTimeSeries &C);
 	void readfile(string); //read the values from a text file
@@ -75,11 +76,11 @@ public:
 	CTimeSeries extract(double t1, double t2); //extracts a sub time-series from t1 to t2.
 	vector<double> trend(); //calculate the slope based on regression
 	double mean_t(); //mean of t values of data point
-	CTimeSeries add_noise(double std, bool); //adds Gaussian noise to values 
+	CTimeSeries add_noise(double std, bool); //adds Gaussian noise to values
 	void assign_D(); //Assign distances to the next non-zero values
 	void clear(); // clears the time-series
 	double wiggle(); //calculate oscillation
-	double wiggle_corr(int _n=10); 
+	double wiggle_corr(int _n=10);
 	bool wiggle_sl(double tol);
 	double maxfabs();
 	double max_fabs;
@@ -89,17 +90,22 @@ public:
 	CTimeSeries getcummulative();
 	CTimeSeries Exp();
 	CTimeSeries fabs();
-	//GUI 
+	//GUI
 	//QList <QMap <QVariant, QVariant>> compact() const;
+#ifdef QT_version
 	CTimeSeries(QList <QMap <QVariant, QVariant>> data);
+#endif
+
 	CTimeSeries(double a, double b, const vector<double>&x);
 	CTimeSeries(double a, double b, const CTimeSeries &btc);
 	CTimeSeries(const vector<double> &t, const vector<double> &C);
 	CTimeSeries(vector<double>&, int writeInterval = 1);
 	bool error = false;
 
+#ifdef QT_version
 	void compact(QDataStream &data) const;
 	static CTimeSeries unCompact(QDataStream &data);
+#endif // QT_verstion
 
 };
 
@@ -130,7 +136,7 @@ double X2bar(CTimeSeries& BTC_p, CTimeSeries &BTC_d);
 double Y2bar(CTimeSeries& BTC_p, CTimeSeries &BTC_d);
 double Ybar(CTimeSeries &BTC_p, CTimeSeries &BTC_d);
 double Xbar(CTimeSeries &BTC_p, CTimeSeries &BTC_d);
-CTimeSeries operator+(CTimeSeries &v1, CTimeSeries &v2); 
+CTimeSeries operator+(CTimeSeries &v1, CTimeSeries &v2);
 double prcntl(vector<double> C, double x);
 vector<double> prcntl(vector<double> C, vector<double> x);
 double sgn(double val);

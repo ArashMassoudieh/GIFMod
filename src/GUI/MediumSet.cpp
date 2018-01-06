@@ -17,15 +17,15 @@ CMediumSet::~CMediumSet()
 	ANS_obs.clear();
 	ANS_hyd.clear();
 	gw = NULL;
-	
+
 
 }
 
 CMediumSet::CMediumSet(string filename)
 {
-	
+
 	CLIDconfig lid(filename);
-	
+
 	int n_experiments = lid.lookupkeyword("n_experiments");
 	vector<string> names = lid.get_experiment_names();
 	if (lid.lookupkeyword("n_experiments") != -1)
@@ -34,7 +34,7 @@ CMediumSet::CMediumSet(string filename)
 		Medium.resize(names.size());
 	else
 		Medium.resize(1);
-	
+
 	for (int i = 0; i < Medium.size(); i++)
 	{
 		if (names.size() == 0)
@@ -54,13 +54,13 @@ CMediumSet::CMediumSet(string filename)
 	f_get_external_flux(lid);
 	f_get_evaporation_model(lid);
 
-	
+
 
 	vector<CLIDconfig> L = lid.extract_subsets();
-	
+
 	for (int i = 0; i < Medium.size(); i++)
 		Medium[i].create(L[i], this);
-	
+
 }
 
 CMediumSet::CMediumSet(const CMediumSet &M)
@@ -220,7 +220,7 @@ void CMediumSet::set_formulas()
 	formulas.const_area[Pond][Pond] = false;
 	formulas.const_area[Storage][Storage] = false;
 
-	
+
 	formulas.formulasQ[Soil][Storage] =   "(_frs[(f[50]*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]*(_pos(s[1]-_max(e[1]:s[5]))-_pos(e[1]-s[1]))/f[6]*f[2])";
 	formulas.formulasQ[Soil][Soil] =      "(_frs[(f[50]*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]*(s[1]-e[1])/f[6]*f[2])";
 	formulas.formulasQ[Soil][Pond] = "0";
@@ -295,7 +295,7 @@ void CMediumSet::set_formulas()
 	formulas.formulasQ2[Catchment][Stream] = "0";
 	formulas.formulasQ2[Catchment][Storage] = "0";
 	formulas.formulasQ2[Catchment][Soil] = "(f[50]*(s[1]-e[1])/f[6]*f[2])";
-	
+
 	formulas.formulasQ[Stream][Pond] = "f[85]/f[56]*((_sq2(_pos((s[1]-e[1])/f[6]):0.001)*_mon((s[1]-_max(s[5]:f[60])):0.01))-(_sq2(_pos((e[1]-s[1])/f[6]):0.001)*_mon((e[1]-_max(e[5]:f[60])):0.01)))*(((_pos(s[1]-_max(s[5]:f[60]))+_pos(e[1]-_max(e[5]:f[60])))/2)^1.66667)";
 	formulas.formulasQ[Stream][Catchment] = "0";
 
@@ -305,7 +305,7 @@ void CMediumSet::set_formulas()
 	formulas.formulasQ2[Soil][Plant] = "f[3]*f[50]*(s[1]-e[1])*(_max(_min(f[9]:0)^e[54])*f[2]*e[3]";
 
 	//formulas.formulasQ2[Storage][Catchment] = "(-f[55])/f[56]*_sqs((e[1]-s[1])/f[6])*_mon(_abs(s[1]-e[1])/f[6]:0.001)*((_pos(e[1]-e[5]-e[12])^(1+f[58]))";
-	
+
 
 	formulas.formulas[Normal] = "f[85]/f[56]*((_sq2(_pos((s[5]-e[5])/f[6]):0.001)*_mon((s[1]-s[5]):0.01))-(_sq2(_pos((e[5]-s[5])/f[6]):0.001)*_mon((e[1]-e[5]):0.01)))*(((_pos(s[1]-s[5])+_pos(e[1]-e[5]))/2)^(1+f[58])";
 	formulas.formulas[QDarcy] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
@@ -409,13 +409,13 @@ void CMediumSet::f_get_environmental_params(CLIDconfig &lid_config)
 		if (tolower(lid_config.keyword[i]) == "log_file") FI.log_file_name = FI.outputpathname + lid_config.value[i];
 		if (tolower(lid_config.keyword[i]) == "pe_info_filename") PE_info_filename = lid_config.value[i];
 		if (tolower(lid_config.keyword[i]) == "writeinterval") FI.write_interval = atoi(lid_config.value[i].c_str());
-		
+
 		if (tolower(lid_config.keyword[i]) == "pos_def_limit") SP.pos_def_limit = atoi(lid_config.value[i].c_str());
 		if (tolower(lid_config.keyword[i]) == "negative_concentration_allowed") SP.negative_concentration_allowed = atoi(lid_config.value[i].c_str());
 		if (tolower(lid_config.keyword[i]) == "minimum_acceptable_negative_conc") SP.minimum_acceptable_negative_conc = atof(lid_config.value[i].c_str());
 		if (tolower(lid_config.keyword[i]) == "steady_state_hydro") SP.steady_state_hydro = atoi(lid_config.value[i].c_str());
 		if (tolower(lid_config.keyword[i]) == "check_oscillation") SP.check_oscillation = atoi(lid_config.value[i].c_str());
-		
+
 		if (tolower(lid_config.keyword[i]) == "detout_obs_filename")
 		{
 			vector<string> names = split_curly_semicolon(lid_config.value[i]);
@@ -551,7 +551,7 @@ void CMediumSet::f_get_controller(CLIDconfig &lid_config)
 		if (tolower(lid_config.keyword[i]) == "controller")
 		{
 			CController M;
-			
+
 			M.name = lid_config.value[i];
 			for (int j = 0; j < lid_config.param_names[i].size(); j++)
 			{
@@ -652,7 +652,7 @@ void CMediumSet::f_get_constituents(CLIDconfig &lid_config)
 		}
 	}
 
-	set_features.constituents = true; 
+	set_features.constituents = true;
 }
 
 int CMediumSet::lookup_parameters(string S)
@@ -929,7 +929,7 @@ int CMediumSet::lookup_medium(string S)
 double CMediumSet::calc_log_likelihood() //calculate sum log likelihood for time series data ts
 {
 	double sum = 0;
-	MSE_obs.clear(); 
+	MSE_obs.clear();
 	solve();
 	if (failed == true) return -1e30;
 
@@ -945,16 +945,14 @@ double CMediumSet::calc_log_likelihood(int i) //calculate sum log likelihood for
 	int k = measured_data.lookup(measured_quan[i].name);
 	if (k != -1)
 	{
-		double MSE; 
+		double MSE;
 		if (measured_quan[i].error_structure == 0)
 		{
 			int k = measured_data.lookup(measured_quan[i].name);
 			if (k != -1)
 			{
-				qDebug() << "Calculating standard error" << QString::fromStdString(measured_quan[i].name); 
 				MSE = diff(ANS_obs.BTC[i], measured_data.BTC[k]);
 				sum -= MSE / (2 * std[measured_quan[i].std_no] * std[measured_quan[i].std_no]);
-				qDebug() << "Calculating standard error" << QString::fromStdString(measured_quan[i].name) << " Done!";
 			}
 
 		}
@@ -968,16 +966,16 @@ double CMediumSet::calc_log_likelihood(int i) //calculate sum log likelihood for
 			}
 
 		}
-		MSE_obs.push_back(MSE); 
+		MSE_obs.push_back(MSE);
 		sum -= measured_data.BTC[k].n*log(std[measured_quan[i].std_no]);
-		
+
 	}
-	
+
 
 	return sum;
 }
 
-double CMediumSet::calc_MSE(int i) 
+double CMediumSet::calc_MSE(int i)
 {
 	double sum = 0;
 	int k = measured_data.lookup(measured_quan[i].name);
@@ -1013,7 +1011,7 @@ int CMediumSet::epoch_count()
 	int out = 0;
 	for (int i = 0; i < Medium.size(); i++) out += Medium[i].epoch_count;
 
-	return out; 
+	return out;
 }
 
 void CMediumSet::clear()

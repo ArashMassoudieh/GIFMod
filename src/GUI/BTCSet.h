@@ -64,16 +64,20 @@ public:
 	bool file_not_found=false;
 	CTimeSeries &operator[](int index);
 	CTimeSeries &operator[](string BTCName);
+#ifdef QT_version
 	CTimeSeries &operator[](QString BTCName) {
 		return operator[](BTCName.toStdString());
 	}
+#endif // QT_version
 	CTimeSeriesSet(vector < vector<double>> &, int writeInterval = 1);
 	int indexOf(const string& name) const;
 	void pushBackName(string name);
 	void append(CTimeSeries &BTC, string name = "");
 	CTimeSeriesSet sort(int burnOut = 0);
+#ifdef QT_version
 	void compact(QDataStream &data) const;
 	static CTimeSeriesSet unCompact(QDataStream &data);
+#endif // QT_version
 	~CTimeSeriesSet(void);
 };
 

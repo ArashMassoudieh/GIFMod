@@ -50,10 +50,10 @@ public:
 
 int opertr(char a);
 bool isnumber(char S);
-vector<string> getline(ifstream&); 
-vector<vector<string>> getline_op(ifstream&,char del1);
-vector<vector<string>> getline_op(ifstream&,vector<char> del1);
-vector<string> split(const string &s, char del); 
+vector<string> getline(ifstream&);
+vector<vector<string> > getline_op(ifstream&,char del1);
+vector<vector<string> > getline_op(ifstream&,vector<char> del1);
+vector<string> split(const string &s, char del);
 vector<string> split(const string &s, const vector<char> &del);
 vector<string> split_curly_semicolon(string s);
 vector<vector<string>> getline_op_eqplus(ifstream&);
@@ -73,7 +73,7 @@ double Heavyside(double x);
 double Pos(double x);
 double pipe_poly(double x);
 double mon(double x, double y);
-vector<int> look_up(string s, char del); 
+vector<int> look_up(string s, char del);
 string numbertostring(double x);
 string numbertostring(int x);
 string numbertostring(vector<int> x);

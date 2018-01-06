@@ -6,7 +6,7 @@
 #include "math.h"
 #include <iostream>
 #include "DistributionNUnif.h"
-#include "qdebug.h"
+
 
 using namespace std;
 
@@ -43,7 +43,7 @@ CBinary::CBinary(int n, int preci)
 
 CBinary::~CBinary()
 {
-	
+
 }
 
 CBinary::CBinary(const CBinary &B)
@@ -61,7 +61,7 @@ CBinary CBinary::operator = (const CBinary &B)
 	precision = B.precision;
 	Digit.resize(nDigits);
 	Digit = B.Digit;
-	
+
 	sign = B.sign;
 	return *this;
 }
@@ -69,14 +69,14 @@ CBinary CBinary::operator = (const CBinary &B)
 
 double CBinary::decode(double minrange)
 {
-	
+
 	double sum=0;
 	for (int i=nDigits-1; i>=0; i--)
 	{
 		if (Digit[i] == true)
 			sum += pow(2.0,nDigits-i-1);
 	}
-	
+
 	return sum/pow(10.0,precision) + minrange;
 }
 
@@ -87,10 +87,10 @@ CBinary code(double x, double minrange, double maxrange, int precision)
 	int xi = static_cast<int>((x-minrange)*pow(10.0,precision));
 	CBinary B(n);
 	B.precision = precision;
-	
+
 	for (int i=0; i<n; i++)
 	{
-		if (xi%2 == 1) 
+		if (xi%2 == 1)
 			B.Digit[B.nDigits - i-1] = true;
 		else
 			B.Digit[B.nDigits - i-1] = false;
@@ -111,7 +111,7 @@ CBinary CBinary::operator + (const CBinary &B1)
 		else
 			B.Digit[i] = B1.Digit[i-nDigits];
 	}
-	
+
 	return B;
 }
 
@@ -149,7 +149,7 @@ void cross(CBinary &B1, CBinary &B2, int p)
 			B2[i] = BT2[i];
 		}
         else
-		{	
+		{
 			B1[i] = BT2[i];
 			B2[i] = BT1[i];
 		}
@@ -174,7 +174,7 @@ void cross(CBinary &B1, CBinary &B2, vector<int> p)
 				B2[i] = BT2[i];
 			}
 			else
-			{	
+			{
 				B1[i] = BT2[i];
 				B2[i] = BT1[i];
 			}
@@ -197,12 +197,12 @@ void cross2p(CBinary &B1, CBinary &B2, int p1, int p2)
 			B2[i] = BT2[i];
 		}
 		if ((i >= p1) && (i < p2))
-		{	
+		{
 			B1[i] = BT2[i];
 			B2[i] = BT1[i];
 		}
 		if ( i >= p2)
-		{	
+		{
 			B1[i] = BT1[i];
 			B2[i] = BT2[i];
 		}
@@ -216,7 +216,7 @@ void CBinary::show()
 	for (int i=0; i<nDigits; i++)
 		cout<<Digit[i];
 	cout<<endl;
-	
+
 
 }
 
