@@ -12,13 +12,17 @@
 class QVariant;
 //class QString;
 //class QList;
+#ifdef QT_version
 #include <QMap>
+#endif // QT_version
+
+
 #include "Matrix_arma.h"
 #include "Vector_arma.h"
 
 using namespace arma;
 class CVector;
-class CMatrix  
+class CMatrix
 {
 friend class D5Matrix;
 private:
@@ -70,11 +74,13 @@ public:
 	vector<string> toHtml(string format = "", vector<string> columnHeaders = vector<string>(), vector<string> rowHeaders = vector<string>());
     void setnumcolrows();
 
+#ifdef QT_version
     QMap<QString, QVariant> compact() const;
     static CMatrix unCompact(QMap<QString, QVariant>);
+#endif // QT_version
 
 };
-	
+
 double det(CMatrix &);
 CMatrix Log(CMatrix &M1);
 CMatrix Exp(CMatrix &M1);
