@@ -263,7 +263,7 @@ void Wizard_Dialog::setup_form()
 					xstr.defaultUnit = m.VariableUnits()[0].split(";").first();
 		
 				}
-				UnitTextBox3 *unittextEdit = new UnitTextBox3(xstr,tab);
+                UnitTextBox3 *unittextEdit = new UnitTextBox3(xstr,true,tab);
 				unittextEdit->setObjectName(wiz.get_parameters()[p].get_name());
 				unittextedits[p] = unittextEdit;
 				formLayout->setWidget(i, QFormLayout::FieldRole, unittextEdit);

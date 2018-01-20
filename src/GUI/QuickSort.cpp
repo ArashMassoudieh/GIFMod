@@ -3,7 +3,9 @@
 #include <algorithm>	// std::swap()
 #include <vector>
 #include "time.h"
+#ifdef QT_version
 #include "qdebug.h"
+#endif // QT_version
 using namespace std;
 
 CQuickSort::CQuickSort(void)

@@ -257,7 +257,8 @@ SOURCES += ./src/GUI/XString.cpp \
     ./src/GUI/tth_source.c \
     ./src/GUI/utility_funcs.cpp \
     $$PWD/src/GUI/slndetailswindow.cpp \
-    $$PWD/src/GUI/imageviewer_window.cpp
+    $$PWD/src/GUI/imageviewer_window.cpp \
+    $$PWD/src/GUI/UnitTextBox3.cpp
 FORMS += ./src/GUI/ConstituentWindow.ui \
     ./src/GUI/ConstituentWindowPlant.ui \
     ./src/GUI/ExchangeParametersWindow.ui \

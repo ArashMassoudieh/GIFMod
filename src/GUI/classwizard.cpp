@@ -267,7 +267,7 @@ PropertyPage::PropertyPage(wizardDataItem data, QWidget *parent)
 		for (int j = 0; j < data.labels[i].count(); j++)
 		{
 			layout->addWidget(labels[i][j], rowCounter, 0);
-			UnitTextBox3 * a = new UnitTextBox3(XString("XString"), this);
+            UnitTextBox3 * a = new UnitTextBox3(XString("XString"), true, this);
 			layout->addWidget(a, rowCounter, 1);
 			
 			a->show();

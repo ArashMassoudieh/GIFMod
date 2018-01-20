@@ -15,13 +15,13 @@ class QVariant;
 //#include "QMap"
 using namespace arma;
 class CVector_arma;
-class CMatrix_arma  
+class CMatrix_arma
 {
 
 private:
 	int numrows;
 	int numcols;
-	
+
 public:
 	mat matr;
 	CMatrix_arma(int, int);
@@ -62,7 +62,7 @@ public:
 	friend void write_to_file(vector<CMatrix_arma> M, string filename);
 	friend CMatrix_arma Average(vector<CMatrix_arma> M);
     CVector_arma diag_ratio();
-    vector<vector<bool>> non_posdef_elems(double tol = 1);
+    vector<vector<bool> > non_posdef_elems(double tol = 1);
     CMatrix_arma non_posdef_elems_m(double tol = 1);
     CMatrix_arma Preconditioner(double tol = 1);
 	vector<string> toString(string format = "", vector<string> columnHeaders = vector<string>(), vector<string> rowHeaders = vector<string>());
@@ -73,9 +73,9 @@ public:
     void setcol(int i, CVector_arma V);
     void setcol(int i, CVector V);
 
-	
+
 };
-	
+
 double det(CMatrix_arma &);
 CMatrix_arma Log(CMatrix_arma &M1);
 CMatrix_arma Exp(CMatrix_arma &M1);

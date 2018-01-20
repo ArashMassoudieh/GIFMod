@@ -4,10 +4,14 @@
 #include "Sensor.h"
 #include "Controller.h"
 //GUI
+#ifdef QT_version
 #include "GWidget.h"
+#include "qmap.h"
+#endif // QT_version
+
 class GraphWidget;
 class runtimeWindow;
-#include "qmap.h"
+
 #include "StringOP.h"
 #include "ObjectiveFunction.h"
 
@@ -32,12 +36,12 @@ struct  Solver_parameters
 	int epoch_limit;
 	double avg_dt_limit;
 	int restore_interval;
-	bool pos_def_limit; 
+	bool pos_def_limit;
 	bool negative_concentration_allowed; //if set equal to true the calculated concentrations will be prevented from becomming negative
 	bool steady_state_hydro = false; // the hydro will be solved assuming a steady-state condition
 	bool check_oscillation=true; //whether oscillation in the solution is limited by the solver
-	double maximum_run_time=30*86400; //This is the maximum time that a single simulation should take. The solver gives up when this time limit is reached and "failed" will be returned. 
-	double minimum_acceptable_negative_conc = 1e-13; //this parameter determines the absolute value of a negative concentration to be accepted. If a negative concentration with absolute value smaller than this criteria is calculated the program will replace it with a zero concentration. 
+	double maximum_run_time=30*86400; //This is the maximum time that a single simulation should take. The solver gives up when this time limit is reached and "failed" will be returned.
+	double minimum_acceptable_negative_conc = 1e-13; //this parameter determines the absolute value of a negative concentration to be accepted. If a negative concentration with absolute value smaller than this criteria is calculated the program will replace it with a zero concentration.
 	double max_dt; // maximum allowable time step
 };
 
@@ -51,8 +55,8 @@ struct  file_info
 	bool write_details;
 	bool uniformoutput;
 	string log_file_name;
-	
-	
+
+
 };
 
 struct _formulas
@@ -71,7 +75,7 @@ struct _formulas
 struct _set_features
 {
 	bool reactions = false;
-	bool solids = false; 
+	bool solids = false;
 	bool environmental_vars = false;
 	bool observed = false;
 	bool parameters = false;
@@ -84,9 +88,9 @@ struct _set_features
 
 struct _control
 {
-	vector<CObjectiveFunction> ObjectiveFunctions; 
-	vector<CSensor> Sensors; 
-	vector<CController> Controllers; 
+	vector<CObjectiveFunction> ObjectiveFunctions;
+	vector<CSensor> Sensors;
+	vector<CController> Controllers;
 };
 
 class CMediumSet
@@ -151,7 +155,7 @@ public:
     void finalize_set_param();
     int epoch_count();
 	void clear();
-	string ID; 
+	string ID;
 //GUI
 	GraphWidget *gw = 0;
 	void g_get_controllers();
@@ -169,15 +173,21 @@ public:
 	void g_get_external_flux();
 	void g_get_evapotranspiration();
 	void solve(runtimeWindow *rtw);
+#ifdef QT_version
 	QMap<string, int> blockIndex;
 	QMap<string, int> connectorIndex;
-	_control Control;
-	double elapsed_time(); // gets the total elapsed computational time from the start of the simulation of the mediumset. 
-	double progress_percentage(); // shows the overall progress percentage of the simulation
-	vector<double> MSE_obs; 
+#else
+    map<string, int> blockIndex;
+	map<string, int> connectorIndex;
+#endif // QT_version
 
-	
-	
+	_control Control;
+	double elapsed_time(); // gets the total elapsed computational time from the start of the simulation of the mediumset.
+	double progress_percentage(); // shows the overall progress percentage of the simulation
+	vector<double> MSE_obs;
+
+
+
 
 
 };

@@ -21,8 +21,9 @@
 #include "Matrix_arma.h"
 
 
-//Sassan 
+#ifdef QT_version
 #include "qstring.h"
+#endif // QT_version
 
 class GraphWidget;
 class QProgressBar;
@@ -41,12 +42,12 @@ struct measured_chrc //Properties of observed data
 	int std_no;
 	int error_structure; //0: normal-additive, 1:lognormal-multiplicative
 	int std_to_param;
-	string experiment; 
+	string experiment;
 };
 
 class CMediumSet;
 
-enum formulas 
+enum formulas
 	{
 		Pipe1, Pipe2, QDarcy, Vapor, Normal, Rating_curve
 	};
@@ -91,7 +92,7 @@ public:
     void setS_star(const CVector &X);
     void setS_star(CVector_arma &X);
     void set_G_star(const CVector &X);
-	
+
     void setH_star();
     void setH();
     void setQ_star();
@@ -148,7 +149,7 @@ public:
 	vector<int> infnan_H_blocks();
 
 	vector<int> infnan_H_flows();
-	
+
     void onestepsolve_flow_ar(double dt);
     void onestepsolve_colloid_ar(double dt);
     void onestepsolve_const_ar(double dtt);
@@ -185,7 +186,7 @@ public:
 	vector<CController>& controllers(); //propoerties of controllers;
 	vector<CObjectiveFunction>& objective_functions(); //objective functions for control;
     void getparams(string filename);
-	vector<measured_chrc>& measured_quan(); 
+	vector<measured_chrc>& measured_quan();
 	vector<double>& std(); // the vector of measured error standard deviations
 	CBTCSet& measured_data(); //measured data
 	string& pathname(); //pathname of where the files are saved
@@ -204,20 +205,20 @@ public:
 	string& detoutfilename_obs(); ////file name where the deterministic outputs corresponding to the observed data is saved
 	int& writeinterval(); //the interval at which the output are save in output files (default = 1)
 	string& realizeparamfilename(); //output file name for Monte-Carlo realizations
-	double& minimum_acceptable_negative_conc(); //returns the minimum acceptable negative concentration criteria 
+	double& minimum_acceptable_negative_conc(); //returns the minimum acceptable negative concentration criteria
 	double t; // time
 	int counter_flow, counter_colloid, counter_const; // counter for number of iteration
     void Blocksmassbalance();
 	vector<string> Precipitation_filename;
 	vector<CPrecipitation> Precipitation;
-	
+
 	//vector<string> Evaporation_filename;
 	//vector<CBTC> Evaporation;
-	
+
 	int& nr_iteration_treshold_max();
 	int &nr_iteration_treshold_min();
 	double& dt_change_rate();
-	double& dt_change_failure(); 
+	double& dt_change_failure();
 	int& nr_failure_criteria();
 	bool &sorption();
 	int n_default_phases; //number of aquesous/soil matrix phases =1 for solely aqueous =2 when sorption to soil matrix occures
@@ -238,14 +239,14 @@ public:
 	int& max_J_interval();
 	double cr;
 	double dt0;
-	vector<string>& formulas(); 
-	vector<string>& formulasH(); 
-	vector<vector<string>>& formulasQ(); 
-	vector<vector<string>>& formulasQ2(); 
+	vector<string>& formulas();
+	vector<string>& formulasH();
+	vector<vector<string>>& formulasQ();
+	vector<vector<string>>& formulasQ2();
 	vector<vector<string>>& formulasA();
 	vector<vector<bool>>& const_area();
 	vector<bool>& air_phase();
-	vector<vector<bool>>& vaporTransport(); 
+	vector<vector<bool>>& vaporTransport();
 	vector<vector<bool>>& settling();
     void get_funcs();
     void evaluate_functions();
@@ -267,7 +268,7 @@ public:
     void evaluate_capacity_c();
     void evaluate_capacity_c_star();
     void evaluate_area(bool all=false);
-	
+
     void correct_S(double dtt);
 	bool failed_colloid;
 	bool failed_const;
@@ -279,13 +280,13 @@ public:
 	bool& constituent_transport();
 	bool& forward();
 	int& epoch_limit();
-	
+
 	int epoch_count;
 	double& avg_dt_limit();
 	CMatrix M;
 	CMatrix_arma M_arma;
 	string fail_reason;
-	
+
     void write_state(string filename);
     void read_state(string filename);
 	int& restore_interval();
@@ -320,10 +321,10 @@ public:
     void f_set_default_block_expressions();
     void f_load_inflows();
     void f_make_uniform_inflows();
-	
-	
+
+
     CVector get_rxn_chng_rate();
-	
+
 	vector<CBuildup>& buildup();
 	vector<CEnvExchange>& externalflux();
 	vector<CEvaporation>& evaporation_model();
@@ -334,7 +335,7 @@ public:
 	double pos_def_mult;
 	double pos_def_mult_Q;
 	double max_wiggle, wiggle_dt_mult, dt_fail, max_wiggle_id;
-	
+
     int lookup_external_flux(string S);
     int lookup_particle_type(string S);
     int lookup_buildup(string S);
@@ -344,7 +345,7 @@ public:
     int lookup_controllers(string S);
     int lookup_objective_functions(string S);
 //	int lookup_observation(string S);
-	
+
     void writetolog(string S);
 	CMatrix Preconditioner_Q;
 	CMatrix Preconditioner_C;
@@ -356,7 +357,7 @@ public:
 	double& maximum_run_time();
     bool& check_oscillation();
 	bool& negative_concentration_allowed();
-	
+
     CRestoreInfo getrestoreinfo();
     void doredo(CRestoreInfo &R);
 	vector<CBTC> temperature;
@@ -378,11 +379,14 @@ public:
 	void update_wind_humidity();
 	double get_nextcontrolinterval(double _t);
 	void set_control_params(int);
-	QString solution_detail; 
+#ifdef QT_version
+	QString solution_detail;
+#else
+	string solution_detail;
+#endif // QT_version
 	void clear(); //clear the model
 
-//Sassan
-
+#ifdef QT_version
 //	void g_get_params();
 //	void g_get_observed();
     void g_get_environmental_params();
@@ -400,11 +404,14 @@ public:
 
 	//CMedium(GraphWidget *, runtimeWindow * = 0);
 	GraphWidget *gw;
+#endif // QT_version
     bool solve();
 	bool solved() { return !this->failed; }
+#ifdef QT_version
     int get_member_no(QString block_name, QString solid_name, QString phase_name);
     int get_member_no(QString block_name, QString solid_name, QString phase_name, QString const_name);
     void updateProgress(bool finished = false);
+#endif // QT_version
 	runtimeWindow * runtimewindow = 0;
 	bool stop_triggered = false;
     vector<string> get_everything_from_id(int x);
@@ -430,6 +437,8 @@ public:
 
 };
 
+#ifdef QT_version
 QString Export(const QString& s);
+#endif // QT_version
 
 #endif
