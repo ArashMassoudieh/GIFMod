@@ -55,7 +55,7 @@ enum formulas
 class CMedium
 {
 public:
-	bool use_arma = true;
+	
 	string name;
 	CMediumSet *parent;
 	CMedium(void);
@@ -67,8 +67,7 @@ public:
 	double& w(); //current time weight for CN solution
     CMedium& operator=(const CMedium &BB); //equal operator
 	void get_state(const CMedium & M);
-	vector<CConnection> Connector;
-	vector<CMBBlock> Blocks;
+	
 	vector<CSolid_Phase>& Solid_phase();
     void add_Richards_medium(int n, double dz, int id=-1);
     void add_Darcy_medium(int n, double dz,  int id=-1);
@@ -336,7 +335,9 @@ public:
 	double pos_def_mult_Q;
 	double max_wiggle, wiggle_dt_mult, dt_fail, max_wiggle_id;
 
-    int lookup_external_flux(string S);
+	int lookup_blocks(string S);
+	int lookup_connectors(string S);
+	int lookup_external_flux(string S);
     int lookup_particle_type(string S);
     int lookup_buildup(string S);
     int lookup_evaporation(string S);
@@ -431,10 +432,55 @@ public:
     vector<int> get_relevant_measured_quans();
     int lookup_experiment(string S);
 
+	int blocks_count() { return (int)Blocks.size(); };
+	int connectors_count() { return (int)Connectors.size(); };
+	CMBBlock& Block(int i)
+	{
+		if (Blocks.size() > i) 
+			return Blocks[i]; 
+		else 
+			error = error + "Block " + numbertostring(i) + " was not found";
+	
+	}
 
+	CConnection& Connector(int i)
+	{
+		if (Connectors.size() > i)
+			return Connectors[i];
+		else
+			error = error + "Connector " + numbertostring(i) + " was not found";
+
+	}
+
+	CMBBlock& Block(string blockname)
+	{
+		int out = lookup_blocks(blockname);
+		if (out == -1)
+			error = error + "Block " + blockname + " does not exist";
+		else
+			return Blocks[out];
+
+	}
+
+	CConnection& Connector(string connectorname)
+	{
+		int out = lookup_connectors(connectorname);
+		if (out == -1)
+			error = error + "Connector " + connectorname + " does not exist";
+		else
+			return Connectors[out];
+
+	}
+
+	void clear_blocks() { Blocks.clear(); };
+	void clear_connectors() { Connectors.clear(); };
 	// Control
     double calc_obj_function(double time_interval);
-
+private:
+	bool use_arma = true;
+	vector<CConnection> Connectors;
+	vector<CMBBlock> Blocks;
+	string error; 
 };
 
 #ifdef QT_version
