@@ -1433,9 +1433,9 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 		B.set_val("a", n->val("a").toFloat());
 		B.set_val("v", n->val("v").toFloat());
 
-		if (B.get_val(basic_properties::_V) == 0) //&& (lookup(lid_config.param_names[i], "depth") != -1))
+		if (B.get_val(basic_properties::V) == 0) //&& (lookup(lid_config.param_names[i], "depth") != -1))
 		{
-			B.set_val("v", B.get_val(basic_properties::_A)*n->val("depth").toFloat());
+			B.set_val("v", B.get_val(basic_properties::A)*n->val("depth").toFloat());
 		}
 
 		QStringList codes = n->codes();
@@ -2156,7 +2156,7 @@ void CMedium::g_set_default_connector_expressions()
 		if (Connectors[ii].flow_expression.terms.size() == 0)
 		{
 
-			if (Blocks[getblocksq(Connectors[ii].Block1ID)].get_val(basic_properties::_z0) >= Blocks[getblocksq(Connectors[ii].Block2ID)].get_val(basic_properties::_z0))
+			if (Blocks[getblocksq(Connectors[ii].Block1ID)].get_val(basic_properties::z0) >= Blocks[getblocksq(Connectors[ii].Block2ID)].get_val(basic_properties::z0))
 			{
 				if (vaporTransport()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] == true)
 				{
@@ -2381,7 +2381,7 @@ void CMedium::g_load_inflows()
 		{
 			if (Blocks[i].precipitation_swch == true)
 				for (int j = 0; j<Precipitation.size(); j++)
-					Blocks[i].inflow.push_back(Precipitation[j].getflow(Blocks[i].get_val(basic_properties::_A),1.0/24.0/4));
+					Blocks[i].inflow.push_back(Precipitation[j].getflow(Blocks[i].get_val(basic_properties::A),1.0/24.0/4));
 		}
 	}
 

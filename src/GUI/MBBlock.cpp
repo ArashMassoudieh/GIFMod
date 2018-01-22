@@ -223,16 +223,16 @@ double CMBBlock::get_val(int i, vector<int> ii)
 	Reaction parameters: 2000-2999
 	*/
 
-	if (i==basic_properties::_H) return H;
-	if (i== basic_properties::_A) return A;
-	if (i== basic_properties::_V) return V;
-	if (i== basic_properties::_S) return S;
-	if (i== basic_properties::_z0) return z0;
-	if (i== basic_properties::_depth) return V/A;    // blocks don't have d
+	if (i==basic_properties::H) return H;
+	if (i== basic_properties::A) return A;
+	if (i== basic_properties::V) return V;
+	if (i== basic_properties::S) return S;
+	if (i== basic_properties::z0) return z0;
+	if (i== basic_properties::depth) return V/A;    // blocks don't have d
 	if (i==7) return 0;
-	if (i== basic_properties::_q) return q;
+	if (i== basic_properties::q) return q;
 
-	if (i== basic_properties::_relative_saturation)
+	if (i== basic_properties::relative_saturation)
 	{ if ((indicator != Soil) && (indicator!=Darcy))
 			return (Heavyside(S/V)*S/V - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);
 		else
@@ -240,7 +240,7 @@ double CMBBlock::get_val(int i, vector<int> ii)
 
 	}
 
-	if (i==basic_properties::_moisture_content)
+	if (i==basic_properties::moisture_content)
 	{
 		if ((indicator != Soil) && (indicator != Darcy))
 			if (S>0) return S/(S+1e-5*A); else return 0;
@@ -249,10 +249,10 @@ double CMBBlock::get_val(int i, vector<int> ii)
 	}
 
 
-	if (i==basic_properties::_depression_storage) return DS;
-	if (i==basic_properties::_vapor_diffusion) return vapor_diffusion;
-	if (i==basic_properties::_bulk_density) return bulk_density;
-	if (i == basic_properties::_air_volume)
+	if (i==basic_properties::depression_storage) return DS;
+	if (i==basic_properties::vapor_diffusion) return vapor_diffusion;
+	if (i==basic_properties::bulk_density) return bulk_density;
+	if (i == basic_properties::air_volume)
 	{
 		if (air_phase == 0)
 			return 0;
