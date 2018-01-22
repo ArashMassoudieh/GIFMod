@@ -332,7 +332,7 @@ void CMediumSet::solve()
 	for (int i = 0; i < Medium.size(); i++)
 	{
 		Medium[i].solve();
-		failed = failed || Medium[i].failed;
+		failed = failed || Medium[i].was_failed();
 		ANS_hyd.push_back(&Medium[i].ANS);
 		ANS_colloids.push_back(&Medium[i].ANS_colloids);
 		ANS_constituents.push_back(&Medium[i].ANS_constituents);

@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <map>
 
 class CRxnNetwork;
 
@@ -80,6 +81,7 @@ string numbertostring(vector<int> x);
 string numbertostring(vector<double> x);
 bool isintegernumber(string S);
 int quan(string S);
+map<string, double> string_to_map(string s);
 string tail(string const& source, size_t const length); // tail
 //template<class _Ty> _Ty min(_Ty _X, _Ty _Y);
 //template<class _Ty> _Ty max(_Ty _X, _Ty _Y);

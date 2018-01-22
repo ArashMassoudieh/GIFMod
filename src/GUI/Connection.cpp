@@ -85,6 +85,16 @@ CConnection::CConnection(const CConnection &CC)
 	controller_id = CC.controller_id;
 }
 
+CConnection::CConnection(string name, string _Block1ID, string _Block2ID, string _props)
+{
+	ID = name; 
+	Block1ID = _Block1ID; 
+	Block2ID = _Block2ID;
+	map<string, double> props = string_to_map(_props);
+	for (map<string, double>::iterator it = props.begin(); it != props.end(); ++it) set_val(it->first, it->second);
+
+}
+
 CConnection& CConnection::operator=(const CConnection &CC)
 {
 	Block1ID = CC.Block1ID;
@@ -534,28 +544,28 @@ double CConnection::get_val(int i, int ii)
 
 	if (i==1)
 	{	if (Q>0)
-			return Block1->H;
+			return Block1->get_val("h");
 		else
-			return Block2->H;
+			return Block2->get_val("h");
 	}
 	if (i==2) return A;
 	if (i==3)
 	{	if (Q>0)
-		return Block1->V;
+		return Block1->get_val("v");
 	else
-		return Block2->V;
+		return Block2->get_val("v");
 	}
 	if (i==4)
 	{	if (Q>0)
-		return Block1->S;
+		return Block1->get_val("s");
 	else
-		return Block2->S;
+		return Block2->get_val("s");
 	}
 	if (i==5)
 	{	if (Q>0)
-		return Block1->z0;
+		return Block1->get_val("z0");
 	else
-		return Block2->z0;
+		return Block2->get_val("z0");
 	}
 	if (i==6) return d;
 	if (i==7) return Q;
@@ -629,28 +639,28 @@ double CConnection::get_val_star(int i, int ii)
 
 	if (i==1)
 	{	if (Q>0)
-			return Block1->H_star;
+			return Block1->get_val_star(i);
 		else
-			return Block2->H_star;
+			return Block2->get_val_star(i);
 	}
 	if (i==2) return A_star;
 	if (i==3)
 	{	if (Q>0)
-		return Block1->V;
+		return Block1->get_val_star(i);
 	else
-		return Block2->V;
+		return Block2->get_val_star(i);
 	}
 	if (i==4)
 	{	if (Q>0)
-		return Block1->S_star;
+		return Block1->get_val_star(i);
 	else
-		return Block2->S_star;
+		return Block2->get_val_star(i);
 	}
 	if (i==5)
 	{	if (Q>0)
-		return Block1->z0;
+		return Block1->get_val(i);
 	else
-		return Block2->z0;
+		return Block2->get_val(i);
 	}
 	if (i==6) return d;
 	if (i==7) return Q_star;
@@ -806,8 +816,8 @@ void CConnection::get_funcs(CStringOP &term)  //Works w/o reference(&)
 			XX.Expression = term;
 			XX.Expression.function=false;
 			XX.var_id = 1;
-			XX._min = -0.3*max(Block1->V,Block2->V);
-			XX._max = 1.3*max(Block1->V,Block2->V);
+			XX._min = -0.3*max(Block1->get_val("v"),Block2->get_val("v"));
+			XX._max = 1.3*max(Block1->get_val("v"),Block2->get_val("v"));
 			funcs.push_back(XX);
 		}
 
@@ -888,31 +898,31 @@ double CConnection::get_val(string S)
 	if (tolower(S) == "h")
 	{
 		if (Q>0)
-			return Block1->H;
+			return Block1->get_val("h");
 		else
-			return Block2->H;
+			return Block2->get_val("h");
 	}
 	if (tolower(S) == "a") return A;
 	if (tolower(S) == "volume")
 	{
 		if (Q>0)
-			return Block1->V;
+			return Block1->get_val("v");
 		else
-			return Block2->V;
+			return Block2->get_val("v");
 	}
 	if (tolower(S) == "s")
 	{
 		if (Q>0)
-			return Block1->S;
+			return Block1->get_val("s");
 		else
-			return Block2->S;
+			return Block2->get_val("s");
 	}
 	if (tolower(S) == "z0")
 	{
 		if (Q>0)
-			return Block1->z0;
+			return Block1->get_val("z0");
 		else
-			return Block2->z0;
+			return Block2->get_val("z0");
 	}
 	if (tolower(S) == "d") return d;
 	if (tolower(S) == "q") return Q*flow_factor;;

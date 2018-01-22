@@ -138,7 +138,7 @@ QGraphicsView* colorScheme::showColorandLegend(colorlegend &legend, QString titl
 			gwidget->legendSliderTime = new QSlider(centralwidget);
 			gwidget->legendSliderTime->setObjectName(QStringLiteral("horizontalSlider"));
 			gwidget->legendSliderTime->setOrientation(Qt::Horizontal);
-			int value = (legend.time - gwidget->model->Timemin) / gwidget->model->dt() + 0.5;
+			int value = (legend.time - gwidget->model->get_time_min()) / gwidget->model->dt() + 0.5;
 			gwidget->legendSliderTime->setValue(value);
 			verticalLayout->addWidget(gwidget->legendSliderTime);
 			if (legend.nodeNames.size())
@@ -193,7 +193,7 @@ QGraphicsView* colorScheme::showColorandLegend(colorlegend &legend, QString titl
 	//legend.view->show();
 //	QObject::connect(legend.view, SIGNAL(destroyed()), gwidget, SLOT(colorSchemeLegend_closed()));
 	gwidget->legendSliderTime->setMinimum(0);
-	gwidget->legendSliderTime->setMaximum((gwidget->model->Timemax - gwidget->model->Timemin) / gwidget->model->dt());
+	gwidget->legendSliderTime->setMaximum((gwidget->model->get_time_max() - gwidget->model->get_time_min()) / gwidget->model->dt());
 	//legend.view->setParent(legend.window);
 	//gwidget->legendSliderTime->setParent(legend.window);
 	//gwidget->legendSliderTime->show();

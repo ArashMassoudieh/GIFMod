@@ -64,110 +64,17 @@ public:
 	CMedium(string filename, CMediumSet *P = 0);
 	CMedium(CLIDconfig _lid_config, CMediumSet *_parent = 0);
     void create(CLIDconfig _lid_config, CMediumSet *_parent);
-	double& w(); //current time weight for CN solution
+	
     CMedium& operator=(const CMedium &BB); //equal operator
 	void get_state(const CMedium & M);
 	
 	vector<CSolid_Phase>& Solid_phase();
-    void add_Richards_medium(int n, double dz, int id=-1);
-    void add_Darcy_medium(int n, double dz,  int id=-1);
-    void add_stream_medium(int n, double z0, double slope, double lenght, int id=-1);
-    void add_catchment_medium(int n, double z0, double slope, double lenght, int id=-1);
-    void add_KW_medium(int n, double dz, vector<double> params);
-    void add_KW_medium(int n, double dz);
-    void set_num_phases(int n);
-    void set_num_constituents(int n);
-    void set_var(int i, double v);
-    void set_var(const string &S, const double &v);
-    void set_var(const string &S, const vector<double> &v);
-    void set_var(const string &S, const double &v, const int&, const int&);
-    void set_var(const string &S, const vector<double> &v, const int&, const int&);
-    void set_var(const string &S, const double &v, const int&);
-    void set_var(const string &S, const vector<double> &v, const int&);
-    void set_var(const string &S, int i, const double &v);
-    void set_z0(double down, double up);
-    void set_z0(double down);
-    void set_z0(int id, int n, double z0, double dz);
-    void setS_star(const CVector &X);
-    void setS_star(CVector_arma &X);
-    void set_G_star(const CVector &X);
-
-    void setH_star();
-    void setH();
-    void setQ_star();
-    void setQ();
-    void setQ(const CVector &X);
-    void setQ0();
-    double get_var(int i, string j, int k); //i: type (i.e. connector vs. block), j: ID, k: variable ID
-    double get_var(int i, string j, string k); //i: ID, j: type (i.e. connector vs. block), k: variable
-    CVector get_val(string I, int j);
-    double get_var(int i, vector<string> j, int k);
-    double get_var(int i, vector<string> j, string k);
-    double calc_term(int i, string loc_id, CStringOP k);
-    double calc_term_star(int i, string loc_id, CStringOP k);
-    CVector getS();
-    CVector getres_S(const CVector &X, double dt);
-    CVector getres_C(const CVector &X, double dt);
-    CVector getres_Q(const CVector &X, double dtt);
-
-    CMatrix Jacobian_S(const CVector &X, double dt, bool);
-    CVector Jacobian_S(const CVector &V, int &i, double &dt);
-    CVector Jacobian_S(const CVector &V, CVector &F0, int i, double dt);
-    CMatrix Jacobian_C(const CVector &X, double dt, bool base=true);
-    CVector Jacobian_C(const CVector &V, const int i, double dt);
-    CVector Jacobian_C(const CVector &V, const CVector &F0, int i, double dt);
-    CMatrix Jacobian_Q(const CVector &X, double dt, bool base=true);
-    CVector Jacobian_Q(const CVector &V, int i, double dt);
-    CVector Jacobian_Q(const CVector &V, const CVector &F0, int i, double dt);
-
-	CVector getLAI();
-
-	CVector getV();
-
-	//use arma
-    CVector_arma getres_S(CVector_arma &X, double dt);
-    CVector_arma getres_C(CVector_arma &X, double dt);
-    CVector_arma getres_Q(CVector_arma &X, double dtt);
-    CMatrix_arma Jacobian_S(CVector_arma &X, double dt, bool);
-    CVector_arma Jacobian_S(CVector_arma &V, int &i, double &dt);
-    CVector_arma Jacobian_S(CVector_arma &V, CVector_arma &F0, int i, double dt);
-    CMatrix_arma Jacobian_C(CVector_arma &X, double dt, bool base = true);
-    CVector_arma Jacobian_C(CVector_arma &V, const int i, double dt);
-    CVector_arma Jacobian_C(CVector_arma &V, const CVector_arma &F0, int i, double dt);
-    CMatrix_arma Jacobian_Q(CVector_arma &X, double dt, bool base = true);
-    CVector_arma Jacobian_Q(CVector_arma &V, int i, double dt);
-    CVector_arma Jacobian_Q(CVector_arma &V, const CVector_arma &F0, int i, double dt);
-
-    void set_CG_star(CVector_arma &X);
-    void set_CG(CVector_arma &X);
-    void set_G(CVector_arma &X);
-    void set_G_star(CVector_arma &X);
-
+    
+	void addblock(const CMBBlock& B);
+	void addconnector(const CConnection& C);
+	
 	void write_flows(string filename);
 
-	vector<int> infnan_H_blocks();
-
-	vector<int> infnan_H_flows();
-
-    void onestepsolve_flow_ar(double dt);
-    void onestepsolve_colloid_ar(double dt);
-    void onestepsolve_const_ar(double dtt);
-	//use arma
-
-    CVector getH(const CVector &X);
-    CVector getQ(const CVector &X);
-    void onestepsolve_flow(double dt);
-    void onestepsolve_colloid(double dt);
-    void onestepsolve_const(double dtt);
-	void do_plant_growth(double dtt);
-    void solve_fts_m2(double dt);
-
-//Sassan
-//	bool solve();
-    void renew();
-    void renew_G();
-    void renew_CG();
-    void initialize();
 	double& tol();
 	CBTCSet ANS; //Solution containing all the outputs
 	CBTCSet ANS_colloids; //Solution containing all the outputs for colloidal phases
@@ -177,8 +84,8 @@ public:
 	CBTCSet ANS_MB;//mass balance check timeseries
 	CBTCSet ANS_control; //control outputs
 	CBTCSet Solution_dt;
-	double Timemin,Timemax;
-	CLIDconfig lid_config;
+	
+	void set_default_params(); //set the value of the parameters to the default values
 	double& dt();
 	vector<range>& parameters(); // properties of unknown parameters
 	vector<CSensor>& sensors(); // properties of sensors
@@ -193,23 +100,15 @@ public:
     double calc_log_likelihood(); //calculate sum log likelihood
     double calc_log_likelihood(int i); //calculate sum log likelihood for observed quantity i
     void set_param(int param_no, double value); //set the value of an unknown parameter
-    void finalize_set_param();
-    void set_default_params(); //set the value of the parameters to the default values
+   
 	int& solution_method(); //0: Fixed timestep 1: variable timestep
 	string& PE_info_filename(); //file name containing parameter estimation configuration
-	string detoutfilename_hydro; //file name where the deterministic hydraulic output is saved
-	string detoutfilename_wq; //file name where the deterministic water quality output is saved
-	string detoutfilename_control; //file name where the controller values are saved
-	string detoutfilename_prtcle; //file name where the deterministic partcile output is saved
+	
 	string& detoutfilename_obs(); ////file name where the deterministic outputs corresponding to the observed data is saved
 	int& writeinterval(); //the interval at which the output are save in output files (default = 1)
 	string& realizeparamfilename(); //output file name for Monte-Carlo realizations
 	double& minimum_acceptable_negative_conc(); //returns the minimum acceptable negative concentration criteria
-	double t; // time
-	int counter_flow, counter_colloid, counter_const; // counter for number of iteration
-    void Blocksmassbalance();
-	vector<string> Precipitation_filename;
-	vector<CPrecipitation> Precipitation;
+	
 
 	//vector<string> Evaporation_filename;
 	//vector<CBTC> Evaporation;
@@ -220,37 +119,9 @@ public:
 	double& dt_change_failure();
 	int& nr_failure_criteria();
 	bool &sorption();
-	int n_default_phases; //number of aquesous/soil matrix phases =1 for solely aqueous =2 when sorption to soil matrix occures
-	bool failed;
-	CMatrix InvJ1; //Inverse Jacobian Matrix
-	CMatrix InvJ2; //Inverse Jacobian Matrix
-	CMatrix InvJ_C;
-	CMatrix InvJ_Q;
-
-	//arma
-	CMatrix_arma InvJ1_arma; //Inverse Jacobian Matrix
-	CMatrix_arma InvJ2_arma; //Inverse Jacobian Matrix
-	CMatrix_arma InvJ_C_arma;
-	CMatrix_arma InvJ_Q_arma;
-	//arma
-
-	bool J_update,J_update_C, J_update_Q;
+	
 	int& max_J_interval();
-	double cr;
-	double dt0;
-	vector<string>& formulas();
-	vector<string>& formulasH();
-	vector<vector<string>>& formulasQ();
-	vector<vector<string>>& formulasQ2();
-	vector<vector<string>>& formulasA();
-	vector<vector<bool>>& const_area();
-	vector<bool>& air_phase();
-	vector<vector<bool>>& vaporTransport();
-	vector<vector<bool>>& settling();
-    void get_funcs();
-    void evaluate_functions();
-    int getblocksq(string id);
-    int getconnectorsq(string id);
+
 	bool& write_details();
     bool is_there_any_fixed_connectors();
 	double& wiggle_tolerance();
@@ -282,18 +153,12 @@ public:
 
 	int epoch_count;
 	double& avg_dt_limit();
-	CMatrix M;
-	CMatrix_arma M_arma;
 	string fail_reason;
 
     void write_state(string filename);
     void read_state(string filename);
 	int& restore_interval();
-	double dtt;
-	double base_dtt;
-	int where_base_dtt_changed = 0;
-	double avg_redo_dtt=0;
-	int redo_count = 0;
+
     int get_member_no(int solid_id, int phase_no);
     int get_member_no(int block_no, int solid_id, int phase_no);
     int get_member_no(int block_no, int solid_id, int phase_no, int const_no);
@@ -301,17 +166,8 @@ public:
     double get_capacity_star(int block_no, int phase_no, int particle_no);
     vector<int> get_phase_solid_id(int i);
 	CRxnNetwork& RXN();
-    void evaluate_const_dispersion();
-    void set_CG_star(const CVector &X);
-    void set_CG(const CVector &X);
-    void set_G(const CVector &X);
-    CVector get_X_from_CG();
-    CVector get_X_from_G();
+ 
     void set_default();
-	CMatrix M_Q;
-	CMatrix M_C;
-	CMatrix_arma M_Q_arma;
-	CMatrix_arma M_C_arma;
 	string& log_file_name();
 
     void f_get_environmental_params();
@@ -328,13 +184,6 @@ public:
 	vector<CEnvExchange>& externalflux();
 	vector<CEvaporation>& evaporation_model();
 
-	double dtt_J_h1, dtt_J_h2, dtt_J_q, dtt_J_c;
-	int J_h_update_count, J_q_update_count, J_c_update_count;
-    void writedetails();
-	double pos_def_mult;
-	double pos_def_mult_Q;
-	double max_wiggle, wiggle_dt_mult, dt_fail, max_wiggle_id;
-
 	int lookup_blocks(string S);
 	int lookup_connectors(string S);
 	int lookup_external_flux(string S);
@@ -348,38 +197,13 @@ public:
 //	int lookup_observation(string S);
 
     void writetolog(string S);
-	CMatrix Preconditioner_Q;
-	CMatrix Preconditioner_C;
-	CMatrix Preconditioner_S;
-	CMatrix_arma Preconditioner_Q_arma;
-	CMatrix_arma Preconditioner_C_arma;
-	CMatrix_arma Preconditioner_S_arma;
+	
 	bool& pos_def_limit();
 	double& maximum_run_time();
     bool& check_oscillation();
 	bool& negative_concentration_allowed();
 
-    CRestoreInfo getrestoreinfo();
-    void doredo(CRestoreInfo &R);
-	vector<CBTC> temperature;
-	vector<string> temperature_filename;
-	vector<CBTC> light;
-	vector<string> light_filename;
-	vector<CBTC> wind;
-	vector<string> wind_filename;
-	vector<CBTC> r_humidity;
-	vector<string> r_humidity_filename;
-
-
-	void update_rxn_params();
-	double current_light;
-	double current_temperature;
-	double current_wind;
-	double current_relative_humidity;
-	void update_light_temperature();
-	void update_wind_humidity();
-	double get_nextcontrolinterval(double _t);
-	void set_control_params(int);
+ 
 #ifdef QT_version
 	QString solution_detail;
 #else
@@ -476,15 +300,220 @@ public:
 	void clear_connectors() { Connectors.clear(); };
 	// Control
     double calc_obj_function(double time_interval);
+	double& get_time_min() { return Timemin; };
+	double& get_time_max() { return Timemax; };
+	void finalize_set_param();
+	string detoutfilename_hydro; //file name where the deterministic hydraulic output is saved
+	string detoutfilename_wq; //file name where the deterministic water quality output is saved
+	string detoutfilename_control; //file name where the controller values are saved
+	string detoutfilename_prtcle; //file name where the deterministic partcile output is saved
+	void get_funcs();
+	bool was_failed() { return failed; };
+	double get_time() { return t; };
+	void set_control_params(int);
+
+#ifdef QT_version
+	QString Export(const QString& s);
+#endif // QT_version
+
 private:
 	bool use_arma = true;
 	vector<CConnection> Connectors;
 	vector<CMBBlock> Blocks;
 	string error; 
+	double& w(); //current time weight for CN solution
+	void set_num_phases(int n);
+	void set_num_constituents(int n);
+	void set_var(int i, double v);
+	void set_var(const string &S, const double &v);
+	void set_var(const string &S, const vector<double> &v);
+	void set_var(const string &S, const double &v, const int&, const int&);
+	void set_var(const string &S, const vector<double> &v, const int&, const int&);
+	void set_var(const string &S, const double &v, const int&);
+	void set_var(const string &S, const vector<double> &v, const int&);
+	void set_var(const string &S, int i, const double &v);
+	void set_z0(double down, double up);
+	void set_z0(double down);
+	void set_z0(int id, int n, double z0, double dz);
+	void setS_star(const CVector &X);
+	void setS_star(CVector_arma &X);
+	void set_G_star(const CVector &X);
+
+	void setH_star();
+	void setH();
+	void setQ_star();
+	void setQ();
+	void setQ(const CVector &X);
+	void setQ0();
+	double get_var(int i, string j, int k); //i: type (i.e. connector vs. block), j: ID, k: variable ID
+	double get_var(int i, string j, string k); //i: ID, j: type (i.e. connector vs. block), k: variable
+	CVector get_val(string I, int j);
+	double get_var(int i, vector<string> j, int k);
+	double get_var(int i, vector<string> j, string k);
+	double calc_term(int i, string loc_id, CStringOP k);
+	double calc_term_star(int i, string loc_id, CStringOP k);
+	CVector getS();
+	CVector getres_S(const CVector &X, double dt);
+	CVector getres_C(const CVector &X, double dt);
+	CVector getres_Q(const CVector &X, double dtt);
+
+	CMatrix Jacobian_S(const CVector &X, double dt, bool);
+	CVector Jacobian_S(const CVector &V, int &i, double &dt);
+	CVector Jacobian_S(const CVector &V, CVector &F0, int i, double dt);
+	CMatrix Jacobian_C(const CVector &X, double dt, bool base = true);
+	CVector Jacobian_C(const CVector &V, const int i, double dt);
+	CVector Jacobian_C(const CVector &V, const CVector &F0, int i, double dt);
+	CMatrix Jacobian_Q(const CVector &X, double dt, bool base = true);
+	CVector Jacobian_Q(const CVector &V, int i, double dt);
+	CVector Jacobian_Q(const CVector &V, const CVector &F0, int i, double dt);
+
+	CVector getLAI();
+
+	CVector getV();
+
+	//use arma
+	CVector_arma getres_S(CVector_arma &X, double dt);
+	CVector_arma getres_C(CVector_arma &X, double dt);
+	CVector_arma getres_Q(CVector_arma &X, double dtt);
+	CMatrix_arma Jacobian_S(CVector_arma &X, double dt, bool);
+	CVector_arma Jacobian_S(CVector_arma &V, int &i, double &dt);
+	CVector_arma Jacobian_S(CVector_arma &V, CVector_arma &F0, int i, double dt);
+	CMatrix_arma Jacobian_C(CVector_arma &X, double dt, bool base = true);
+	CVector_arma Jacobian_C(CVector_arma &V, const int i, double dt);
+	CVector_arma Jacobian_C(CVector_arma &V, const CVector_arma &F0, int i, double dt);
+	CMatrix_arma Jacobian_Q(CVector_arma &X, double dt, bool base = true);
+	CVector_arma Jacobian_Q(CVector_arma &V, int i, double dt);
+	CVector_arma Jacobian_Q(CVector_arma &V, const CVector_arma &F0, int i, double dt);
+
+	void set_CG_star(CVector_arma &X);
+	void set_CG(CVector_arma &X);
+	void set_G(CVector_arma &X);
+	void set_G_star(CVector_arma &X);
+	vector<int> infnan_H_blocks();
+
+	vector<int> infnan_H_flows();
+
+	void onestepsolve_flow_ar(double dt);
+	void onestepsolve_colloid_ar(double dt);
+	void onestepsolve_const_ar(double dtt);
+	//use arma
+
+	CVector getH(const CVector &X);
+	CVector getQ(const CVector &X);
+	void onestepsolve_flow(double dt);
+	void onestepsolve_colloid(double dt);
+	void onestepsolve_const(double dtt);
+	void do_plant_growth(double dtt);
+	void solve_fts_m2(double dt);
+
+	void renew();
+	void renew_G();
+	void renew_CG();
+	void initialize();
+
+	double Timemin, Timemax;
+	CLIDconfig lid_config;
+	
+	
+
+	int n_default_phases; //number of aquesous/soil matrix phases =1 for solely aqueous =2 when sorption to soil matrix occures
+	bool failed;
+	CMatrix InvJ1; //Inverse Jacobian Matrix
+	CMatrix InvJ2; //Inverse Jacobian Matrix
+	CMatrix InvJ_C;
+	CMatrix InvJ_Q;
+
+	//arma
+	CMatrix_arma InvJ1_arma; //Inverse Jacobian Matrix
+	CMatrix_arma InvJ2_arma; //Inverse Jacobian Matrix
+	CMatrix_arma InvJ_C_arma;
+	CMatrix_arma InvJ_Q_arma;
+	//arma
+
+	bool J_update, J_update_C, J_update_Q;
+	
+
+	double cr;
+	double dt0;
+	vector<string>& formulas();
+	vector<string>& formulasH();
+	vector<vector<string>>& formulasQ();
+	vector<vector<string>>& formulasQ2();
+	vector<vector<string>>& formulasA();
+	vector<vector<bool>>& const_area();
+	vector<bool>& air_phase();
+	vector<vector<bool>>& vaporTransport();
+	vector<vector<bool>>& settling();
+	
+	void evaluate_functions();
+	int getblocksq(string id);
+	int getconnectorsq(string id);
+
+	double t; // time
+	int counter_flow, counter_colloid, counter_const; // counter for number of iteration
+	void Blocksmassbalance();
+	vector<string> Precipitation_filename;
+	vector<CPrecipitation> Precipitation;
+
+	CRestoreInfo getrestoreinfo();
+	void doredo(CRestoreInfo &R);
+	vector<CBTC> temperature;
+	vector<string> temperature_filename;
+	vector<CBTC> light;
+	vector<string> light_filename;
+	vector<CBTC> wind;
+	vector<string> wind_filename;
+	vector<CBTC> r_humidity;
+	vector<string> r_humidity_filename;
+
+
+	void update_rxn_params();
+	double current_light;
+	double current_temperature;
+	double current_wind;
+	double current_relative_humidity;
+	void update_light_temperature();
+	void update_wind_humidity();
+	double get_nextcontrolinterval(double _t);
+	
+
+	CMatrix Preconditioner_Q;
+	CMatrix Preconditioner_C;
+	CMatrix Preconditioner_S;
+	CMatrix_arma Preconditioner_Q_arma;
+	CMatrix_arma Preconditioner_C_arma;
+	CMatrix_arma Preconditioner_S_arma;
+
+	double dtt;
+	double base_dtt;
+	int where_base_dtt_changed = 0;
+	double avg_redo_dtt = 0;
+	int redo_count = 0;
+
+	double dtt_J_h1, dtt_J_h2, dtt_J_q, dtt_J_c;
+	int J_h_update_count, J_q_update_count, J_c_update_count;
+	void writedetails();
+	double pos_def_mult;
+	double pos_def_mult_Q;
+	double max_wiggle, wiggle_dt_mult, dt_fail, max_wiggle_id;
+
+	CMatrix M_Q;
+	CMatrix M_C;
+	CMatrix_arma M_Q_arma;
+	CMatrix_arma M_C_arma;
+	CMatrix M;
+	CMatrix_arma M_arma;
+
+	void evaluate_const_dispersion();
+	void set_CG_star(const CVector &X);
+	void set_CG(const CVector &X);
+	void set_G(const CVector &X);
+	CVector get_X_from_CG();
+	CVector get_X_from_G();
+
+	
 };
 
-#ifdef QT_version
-QString Export(const QString& s);
-#endif // QT_version
+
 
 #endif
