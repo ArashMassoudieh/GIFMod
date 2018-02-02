@@ -40,14 +40,14 @@ Edge::Edge(Node *sourceNode, Node *destNode, GraphWidget *_parent)
     dest->addEdge(this);
     adjust();
 	GUI = "Connector";
-	itemType = Object_Types::Connector;
+    itemType = Object_Types::Connector;
 //	sourceID = source->ID;
 //	destID = dest->ID;
 
 	setFlag(ItemIsSelectable);
-	setFlag(ItemSendsGeometryChanges);
-	setCacheMode(DeviceCoordinateCache);
-	setZValue(1);
+    setFlag(ItemSendsGeometryChanges);
+    setCacheMode(DeviceCoordinateCache);
+    setZValue(1);
 	parent = _parent;
 	objectType = parent->ModelSpace; // mProp('*');
 	objectType.GuiObject = "Connector";
@@ -163,10 +163,11 @@ QRectF Edge::boundingRect() const
     qreal penWidth = 1;
     qreal extra = (penWidth + arrowSize) / 8.0;
 
-    return QRectF(sourcePoint, QSizeF(destPoint.x() - sourcePoint.x(),
-                                      destPoint.y() - sourcePoint.y()))
-        .normalized()
-        .adjusted(-extra, -extra, extra, extra);
+    QRectF rt = QRectF(sourcePoint, QSizeF(destPoint.x() - sourcePoint.x(),
+                                         destPoint.y() - sourcePoint.y()))
+           .normalized()
+           .adjusted(-extra, -extra, extra, extra);
+    return rt;
 }
 
 void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
@@ -255,7 +256,9 @@ int Edge::dist(const QPointF point)
 	int y2 = destPoint.y();
 	int x0 = point.x();
 	int y0 = point.y();
-	int dist = abs(x0*(y2 - y1) - y0*(x2 - x1) + x2*y1 - y2*x1) / sqrt((y2 - y1) ^ 2 + (x2 - x1) ^ 2);
+    int n = abs(x0*(y2 - y1) - y0*(x2 - x1) + x2*y1 - y2*x1);
+    int m = sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1));
+    int dist = n / m;
 	return dist;
 }
 mPropList Edge::getmList(const mProp &_filter) const

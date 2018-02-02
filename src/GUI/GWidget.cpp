@@ -455,14 +455,26 @@ void GraphWidget::update(bool fast)
 void GraphWidget::mousePressEvent(QMouseEvent *event)
 {
 	tableProp->setModel(0);
-	Node *node = qgraphicsitem_cast<Node*> (itemAt(event->pos())); //Get the item at the position
+    QList<QGraphicsItem *> itemList = items(event->pos());
+    Node *node = NULL;
+    Edge *edge = NULL;
+    foreach (QGraphicsItem *item, itemList)
+    {
+        Node *node1 = qgraphicsitem_cast<Node*> (item);
+        if (node1 != NULL)
+            node = node1;
+        Edge *edge1 = qgraphicsitem_cast<Edge*> (item);
+        if (edge1 != NULL)
+            edge = edge1;
+    }
+    /*node = qgraphicsitem_cast<Node*> (itemAt(event->pos())); //Get the item at the position
 	if (node)
 	{	//qDebug() << "Name: "<< node->Name()<<" Flag:" << node->flags() << "enabled:" << node->isEnabled() << "active:" << node->isActive();
 	}
-	Edge *edge = qgraphicsitem_cast<Edge*> (itemAt(event->pos())); //Get the item at the position
+    edge = qgraphicsitem_cast<Edge*> (itemAt(event->pos())); //Get the item at the position
 	if (edge)
 	{	//qDebug() << "Name: " << edge->Name() << " Flag:" << edge->flags() << "enabled:" << edge->isEnabled() << "active:" << edge->isActive();
-	}
+    }*/
 
 	if (event->buttons() == Qt::MiddleButton && Operation_Mode == Operation_Modes::NormalMode)
 	{
@@ -750,8 +762,8 @@ void GraphWidget::mouseReleaseEvent(QMouseEvent *event)
 							node->setFlag(QGraphicsItem::ItemIsMovable, false);
 				if (edge)
 				{
-					if (edge->dist(mapToScene(event->pos())) < 120) 
-						edge->setSelected(true);
+                    if (edge->dist(mapToScene(event->pos())) < 5)
+                        edge->setSelected(true);
 				}
 				//if (!node && !edge) deselectAll();
 			}
@@ -3236,6 +3248,8 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 
 void GraphWidget::edgeContextMenuRequested(Edge* e, QPointF pos, QMenu *menu)
 {
+    if (e->dist(pos) > 5)
+        return;
 	QAction *deleteAction;
 	bool called_by_clicking_on_graphical_object = false;
 	if (!menu) {
