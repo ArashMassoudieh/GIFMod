@@ -11,10 +11,12 @@
 #define n_flow_params 40
 #endif
 
-enum physical_params_Q
-{
-	diameter=2, width=35, n_manning=6, flow_exponent=8, pipe_c=17, z1=10, z2=11, rating_curve_coeff=12, rating_curve_power=13, rating_curve_datum=14
-};
+namespace connector_properties {
+	enum physical_params_Q
+	{
+		diameter = 2, width = 35, n_manning = 6, flow_exponent = 8, pipe_c = 17, z1 = 10, z2 = 11, rating_curve_coeff = 12, rating_curve_power = 13, rating_curve_datum = 14
+	};
+}; 
 
 
 

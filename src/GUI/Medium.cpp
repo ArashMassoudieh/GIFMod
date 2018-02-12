@@ -271,13 +271,13 @@ void CMedium::f_get_model_configuration()
 		{
 			CMBBlock B;
 
-			if (tolower(lid_config.value[i]) == "soil") { B.indicator = Block_types::Soil; } // 0
-			if (tolower(lid_config.value[i]) == "pond") { B.indicator = Block_types::Pond; } //1
-			if (tolower(lid_config.value[i]) == "storage") { B.indicator = Block_types::Storage; } //2
-			if (tolower(lid_config.value[i]) == "catchment") { B.indicator = Block_types::Catchment; } //3
-			if (tolower(lid_config.value[i]) == "manhole") { B.indicator = Block_types::Manhole; } //4
-			if (tolower(lid_config.value[i]) == "darcy") { B.indicator = Block_types::Darcy; } //5
-			if (tolower(lid_config.value[i]) == "stream") { B.indicator = Block_types::Stream; } //6
+			if (tolower(lid_config.value[i]) == "soil") { B.indicator = Block_type::Soil; } // 0
+			if (tolower(lid_config.value[i]) == "pond") { B.indicator = Block_type::Pond; } //1
+			if (tolower(lid_config.value[i]) == "storage") { B.indicator = Block_type::Storage; } //2
+			if (tolower(lid_config.value[i]) == "catchment") { B.indicator = Block_type::Catchment; } //3
+			if (tolower(lid_config.value[i]) == "manhole") { B.indicator = Block_type::Manhole; } //4
+			if (tolower(lid_config.value[i]) == "darcy") { B.indicator = Block_type::Darcy; } //5
+			if (tolower(lid_config.value[i]) == "stream") { B.indicator = Block_type::Stream; } //6
 
 			B.ID = to_string(Blocks.size());
 
@@ -322,12 +322,12 @@ void CMedium::f_get_model_configuration()
 			{
 				C.flow_params.resize(n_flow_params);
 
-				if (tolower(lid_config.value[i]) == "darcy") C.flow_expression = CStringOP(formulas()[Darcy]);
-				if (tolower(lid_config.value[i]) == "pipe1") C.flow_expression = CStringOP(formulas()[Pipe1]);
-				if (tolower(lid_config.value[i]) == "pipe2") C.flow_expression = CStringOP(formulas()[Pipe2]);
-				if (tolower(lid_config.value[i]) == "pipe") C.flow_expression = CStringOP(formulas()[Pipe2]);
-				if (tolower(lid_config.value[i]) == "normal") C.flow_expression = CStringOP(formulas()[Normal]);
-				if (tolower(lid_config.value[i]) == "rating_curve") C.flow_expression = CStringOP(formulas()[Rating_curve]);
+				if (tolower(lid_config.value[i]) == "darcy") C.flow_expression = CStringOP(formulas()[Block_type::Darcy]);
+				if (tolower(lid_config.value[i]) == "pipe1") C.flow_expression = CStringOP(formulas()[special_connectors::Pipe1]);
+				if (tolower(lid_config.value[i]) == "pipe2") C.flow_expression = CStringOP(formulas()[special_connectors::Pipe2]);
+				if (tolower(lid_config.value[i]) == "pipe") C.flow_expression = CStringOP(formulas()[special_connectors::Pipe2]);
+				if (tolower(lid_config.value[i]) == "normal") C.flow_expression = CStringOP(formulas()[special_connectors::Normal]);
+				if (tolower(lid_config.value[i]) == "rating_curve") C.flow_expression = CStringOP(formulas()[special_connectors::Rating_curve]);
 
 				C.set_val(lid_config.param_names[i][j],atof(lid_config.param_vals[i][j].c_str()));  //sets all values except theta (theta was removed in input file)
 				if (tolower(lid_config.param_names[i][j])=="flow_expression") {C.flow_expression = CStringOP(lid_config.param_vals[i][j]); C.flow_expression_strng = lid_config.param_vals[i][j]; }
@@ -449,7 +449,7 @@ void CMedium::f_load_inflows()
 			Blocks[i].inflow.push_back(CBTCSet(pathname() + Blocks[i].inflow_filename[j], 1));
 
 
-		if ((Blocks[i].indicator == Pond) || (Blocks[i].indicator == Catchment) || (Blocks[i].indicator == Stream))
+		if ((Blocks[i].indicator == Block_type::Pond) || (Blocks[i].indicator == Block_type::Catchment) || (Blocks[i].indicator == Block_type::Stream))
 		{
 			if (Blocks[i].precipitation_swch == true)
 				for (int j = 0; j<Precipitation_filename.size(); j++)
@@ -510,8 +510,8 @@ void CMedium::f_set_default_connector_expressions()
 			if (Blocks[getblocksq(Connector(ii).Block1ID)].get_val("z0") >= Blocks[getblocksq(Connector(ii).Block2ID)].get_val("z0"))
 			{
 				if (vaporTransport()[Blocks[getblocksq(Connector(ii).Block1ID)].indicator][Blocks[getblocksq(Connector(ii).Block2ID)].indicator] == true)
-				{	Connector(ii).flow_expression = CStringOP(formulasQ()[Blocks[getblocksq(Connector(ii).Block1ID)].indicator][Blocks[getblocksq(Connector(ii).Block2ID)].indicator]+ "+" + formulas()[Vapor]) ;
-					Connector(ii).flow_expression_strng = formulasQ()[Blocks[getblocksq(Connector(ii).Block1ID)].indicator][Blocks[getblocksq(Connector(ii).Block2ID)].indicator]+ "+" + formulas()[Vapor] ;
+				{	Connector(ii).flow_expression = CStringOP(formulasQ()[Blocks[getblocksq(Connector(ii).Block1ID)].indicator][Blocks[getblocksq(Connector(ii).Block2ID)].indicator]+ "+" + formulas()[special_connectors::Vapor]) ;
+					Connector(ii).flow_expression_strng = formulasQ()[Blocks[getblocksq(Connector(ii).Block1ID)].indicator][Blocks[getblocksq(Connector(ii).Block2ID)].indicator]+ "+" + formulas()[special_connectors::Vapor] ;
 
 				}
 				else
@@ -524,8 +524,8 @@ void CMedium::f_set_default_connector_expressions()
 			{
 				if (vaporTransport()[Blocks[getblocksq(Connector(ii).Block1ID)].indicator][Blocks[getblocksq(Connector(ii).Block2ID)].indicator] == true)
 				{
-					Connector(ii).flow_expression = CStringOP(formulasQ2()[Blocks[getblocksq(Connector(ii).Block1ID)].indicator][Blocks[getblocksq(Connector(ii).Block2ID)].indicator] + "+" + formulas()[Vapor]);
-					Connector(ii).flow_expression_strng = formulasQ2()[Blocks[getblocksq(Connector(ii).Block1ID)].indicator][Blocks[getblocksq(Connector(ii).Block2ID)].indicator] + "+" + formulas()[Vapor];
+					Connector(ii).flow_expression = CStringOP(formulasQ2()[Blocks[getblocksq(Connector(ii).Block1ID)].indicator][Blocks[getblocksq(Connector(ii).Block2ID)].indicator] + "+" + formulas()[special_connectors::Vapor]);
+					Connector(ii).flow_expression_strng = formulasQ2()[Blocks[getblocksq(Connector(ii).Block1ID)].indicator][Blocks[getblocksq(Connector(ii).Block2ID)].indicator] + "+" + formulas()[special_connectors::Vapor];
 				}
 				else
 				{	Connector(ii).flow_expression = CStringOP(formulasQ2()[Blocks[getblocksq(Connector(ii).Block1ID)].indicator][Blocks[getblocksq(Connector(ii).Block2ID)].indicator]) ;
@@ -534,8 +534,8 @@ void CMedium::f_set_default_connector_expressions()
 			}
 			if (vaporTransport()[Blocks[getblocksq(Connector(ii).Block1ID)].indicator][Blocks[getblocksq(Connector(ii).Block2ID)].indicator])
 			{
-				Connector(ii).flow_expression_v = CStringOP(formulas()[Vapor]);
-				Connector(ii).flow_expression_strng_v = formulas()[Vapor];
+				Connector(ii).flow_expression_v = CStringOP(formulas()[special_connectors::Vapor]);
+				Connector(ii).flow_expression_strng_v = formulas()[special_connectors::Vapor];
 			}
 		}
 	}
@@ -1517,7 +1517,7 @@ void CMedium::initialize()
 void CMedium::do_plant_growth(double dtt)
 {
 	for (int i = 0; i < Blocks.size(); i++)
-		if (Blocks[i].indicator == Plant)
+		if (Blocks[i].indicator == Block_type::Plant)
 		{
 			Blocks[i].set_val_star(basic_properties::V , max(Blocks[i].get_val(basic_properties::V) + 0.5*(Blocks[i].calc(Blocks[i].plant_prop.plant_growth_rate_expression) + Blocks[i].calc_star(Blocks[i].plant_prop.plant_growth_rate_expression))*dtt,1e-6));
 			Blocks[i].plant_prop.LAI = max(Blocks[i].plant_prop.LAI + 0.5*(Blocks[i].calc(Blocks[i].plant_prop.LAI_growth_rate_expression)+ Blocks[i].calc_star(Blocks[i].plant_prop.LAI_growth_rate_expression))*dtt,1e-5);
@@ -2309,10 +2309,10 @@ void CMedium::finalize_set_param()
 			if (Connector(i).flow_params[j]==0)
 			{
 
-				if (((Blocks[getblocksq(Connector(i).Block1ID)].indicator == Soil) || (Blocks[getblocksq(Connector(i).Block1ID)].indicator == Darcy)) && ((Blocks[getblocksq(Connector(i).Block2ID)].indicator == Pond) || (Blocks[getblocksq(Connector(i).Block2ID)].indicator == Stream)))
+				if (((Blocks[getblocksq(Connector(i).Block1ID)].indicator == Block_type::Soil) || (Blocks[getblocksq(Connector(i).Block1ID)].indicator == Block_type::Darcy)) && ((Blocks[getblocksq(Connector(i).Block2ID)].indicator == Block_type::Pond) || (Blocks[getblocksq(Connector(i).Block2ID)].indicator == Block_type::Stream)))
 					Connector(i).flow_params[j] = Blocks[getblocksq(Connector(i).Block1ID)].fs_params[j];
 
-				if (((Blocks[getblocksq(Connector(i).Block2ID)].indicator == Soil) || (Blocks[getblocksq(Connector(i).Block2ID)].indicator == Darcy)) && ((Blocks[getblocksq(Connector(i).Block1ID)].indicator == Pond) || (Blocks[getblocksq(Connector(i).Block1ID)].indicator == Stream)))
+				if (((Blocks[getblocksq(Connector(i).Block2ID)].indicator == Block_type::Soil) || (Blocks[getblocksq(Connector(i).Block2ID)].indicator == Block_type::Darcy)) && ((Blocks[getblocksq(Connector(i).Block1ID)].indicator == Block_type::Pond) || (Blocks[getblocksq(Connector(i).Block1ID)].indicator == Block_type::Stream)))
 					Connector(i).flow_params[j] = Blocks[getblocksq(Connector(i).Block2ID)].fs_params[j];
 
 
@@ -2331,9 +2331,9 @@ void CMedium::finalize_set_param()
 				{
 					if (Blocks[getblocksq(Connector(i).Block1ID)].indicator == Blocks[getblocksq(Connector(i).Block2ID)].indicator)
 						Connector(i).A = Connector(i).A_star = 0.5*(Blocks[getblocksq(Connector(i).Block1ID)].get_val(basic_properties::A) + Blocks[getblocksq(Connector(i).Block2ID)].get_val(basic_properties::A));
-					else if (Blocks[getblocksq(Connector(i).Block1ID)].indicator == Soil)
+					else if (Blocks[getblocksq(Connector(i).Block1ID)].indicator == Block_type::Soil)
 						Connector(i).A = Connector(i).A_star = Blocks[getblocksq(Connector(i).Block1ID)].get_val(basic_properties::A);
-					else if (Blocks[getblocksq(Connector(i).Block2ID)].indicator == Soil)
+					else if (Blocks[getblocksq(Connector(i).Block2ID)].indicator == Block_type::Soil)
 						Connector(i).A = Connector(i).A_star = Blocks[getblocksq(Connector(i).Block2ID)].get_val(basic_properties::A);
 				}
 			}
@@ -2348,7 +2348,7 @@ void CMedium::finalize_set_param()
 					Connector(i).d=Blocks[getblocksq(Connector(i).Block2ID)].get_val(basic_properties::V) /Blocks[getblocksq(Connector(i).Block2ID)].get_val(basic_properties::A) /2.0;
 			}
 
-			if ((Blocks[getblocksq(Connector(i).Block1ID)].indicator == Catchment) && (Blocks[getblocksq(Connector(i).Block2ID)].indicator == Catchment))
+			if ((Blocks[getblocksq(Connector(i).Block1ID)].indicator == Block_type::Catchment) && (Blocks[getblocksq(Connector(i).Block2ID)].indicator == Block_type::Catchment))
 				if (Connector(i).flow_params[7] == 0) Connector(i).flow_params[7] = 0.667;
 
 			Connector(i).c_dispersion.resize(Connector(i).Solid_phase.size());
@@ -2365,7 +2365,7 @@ void CMedium::finalize_set_param()
 
 	//setting the formulas for LAI and biomass growth for plant blocks
 	for (int i = 0; i < Blocks.size(); i++)
-		if (Blocks[i].indicator == Plant)
+		if (Blocks[i].indicator == Block_type::Plant)
 			Blocks[i].set_up_plant_growth_expressions();
 }
 

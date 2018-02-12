@@ -18,12 +18,12 @@ CMBBlock::CMBBlock(void)
 	outflow_corr_factor = 1;
 	q = 0;
 	fs_params.resize(n_flow_params);
-	fs_params[storativity] = 0.01;
-	fs_params[theta_s] = 1;
+	fs_params[physical_properties::storativity] = 0.01;
+	fs_params[physical_properties::theta_s] = 1;
 
-	fs_params[storage_epsilon] = 0.01;
-	fs_params[storage_n] = 2;
-	fs_params[maximum_bio_volume] = 1e6;
+	fs_params[physical_properties::storage_epsilon] = 0.01;
+	fs_params[physical_properties::storage_n] = 2;
+	fs_params[physical_properties::maximum_bio_volume] = 1e6;
 
 	vapor_diffusion=0;
 	DS = 0;
@@ -233,16 +233,16 @@ double CMBBlock::get_val(int i, vector<int> ii)
 	if (i== basic_properties::q) return q;
 
 	if (i== basic_properties::relative_saturation)
-	{ if ((indicator != Soil) && (indicator!=Darcy))
-			return (Heavyside(S/V)*S/V - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);
+	{ if ((indicator != Block_type::Soil) && (indicator!= Block_type::Darcy))
+			return (Heavyside(S/V)*S/V - fs_params[physical_properties::theta_r])/(fs_params[physical_properties::theta_s]-fs_params[physical_properties::theta_r]);
 		else
-			return (S/V - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);   //allow s to be above 1
+			return (S/V - fs_params[physical_properties::theta_r])/(fs_params[physical_properties::theta_s]-fs_params[physical_properties::theta_r]);   //allow s to be above 1
 
 	}
 
 	if (i==basic_properties::moisture_content)
 	{
-		if ((indicator != Soil) && (indicator != Darcy))
+		if ((indicator != Block_type::Soil) && (indicator != Block_type::Darcy))
 			if (S>0) return S/(S+1e-5*A); else return 0;
 		else
 			return S/V;   //allow s to be above 1
@@ -260,22 +260,22 @@ double CMBBlock::get_val(int i, vector<int> ii)
 			return Pos(V*fs_params[1] - S);
 	}
 
-	if (i == physical_params::light)
+	if (i == physical_properties::light)
 		return *current_light*light_reduction_factor;
 
-	if (i == physical_params::temperature)
+	if (i == physical_properties::temperature)
 		return *current_temperature;
 
-	if (i == physical_params::vapor_pressure)
+	if (i == physical_properties::vapor_pressure)
 		return 611 * exp(17.27*(*current_temperature) / ((*current_temperature) + 237.3));
 
-	if (i == physical_params::latent_heat_of_evaporation)
+	if (i == physical_properties::latent_heat_of_evaporation)
 		return 2.501e6 - 2370*(*current_temperature);
 
-	if (i == physical_params::LAI)
+	if (i == physical_properties::LAI)
 		return plant_prop.LAI;
 
-	if (i == physical_params::pan_evaporation_rate)
+	if (i == physical_properties::pan_evaporation_rate)
 		return get_evaporation(parent->get_time());
 
 	if (i>=50 && i<100) return fs_params[i-50];
@@ -338,9 +338,9 @@ double CMBBlock::get_val(string SS)
 		if (tolower(trim(s[0])) == "lai") return plant_prop.LAI;
 		if (tolower(trim(s[0]))=="se")
 		{	if (indicator!=0)
-			return (Heavyside(S/V)*S/V - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);
+			return (Heavyside(S/V)*S/V - fs_params[physical_properties::theta_r])/(fs_params[physical_properties::theta_s]-fs_params[physical_properties::theta_r]);
 		else
-			return (S/V - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);   //allow s to be above 1
+			return (S/V - fs_params[physical_properties::theta_r])/(fs_params[physical_properties::theta_s]-fs_params[physical_properties::theta_r]);   //allow s to be above 1
 		}
 		if (tolower(trim(s[0]))=="theta")
 		{	if (indicator!=0)
@@ -349,21 +349,21 @@ double CMBBlock::get_val(string SS)
 			return S/V;   //allow s to be above 1
 		}
 
-		if (tolower(trim(s[0]))=="porosity") return fs_params[theta_s];
+		if (tolower(trim(s[0]))=="porosity") return fs_params[physical_properties::theta_s];
 		if (tolower(trim(s[0]))=="depression") return DS;
 		if (tolower(trim(s[0]))=="vapor_diff") return vapor_diffusion;
 
-		if (tolower(trim(s[0]))=="ks") return fs_params[ks];
-		if (tolower(trim(s[0]))=="theta_s") return fs_params[theta_s];
-		if (tolower(trim(s[0]))=="theta_r") return fs_params[theta_r];
-		if (tolower(trim(s[0]))=="vg_alpha") return fs_params[vg_alpha];
-		if (tolower(trim(s[0]))=="vg_n") return fs_params[vg_n];
-		if (tolower(trim(s[0]))=="vg_m") return fs_params[vg_m];
-		if (tolower(trim(s[0]))=="lambda") return fs_params[lambda];
-		if ((tolower(trim(s[0]))=="sc") || (tolower(trim(s[0]))=="storativity")) return fs_params[storativity];
+		if (tolower(trim(s[0]))=="ks") return fs_params[physical_properties::ks];
+		if (tolower(trim(s[0]))=="theta_s") return fs_params[physical_properties::theta_s];
+		if (tolower(trim(s[0]))=="theta_r") return fs_params[physical_properties::theta_r];
+		if (tolower(trim(s[0]))=="vg_alpha") return fs_params[physical_properties::vg_alpha];
+		if (tolower(trim(s[0]))=="vg_n") return fs_params[physical_properties::vg_n];
+		if (tolower(trim(s[0]))=="vg_m") return fs_params[physical_properties::vg_m];
+		if (tolower(trim(s[0]))=="lambda") return fs_params[physical_properties::lambda];
+		if ((tolower(trim(s[0]))=="sc") || (tolower(trim(s[0]))=="storativity")) return fs_params[physical_properties::storativity];
 		if ((tolower(trim(s[0]))=="bulk_density") || (tolower(trim(s[0]))=="bd")) return bulk_density;
-		if (tolower(trim(s[0]))=="storage_epsilon") return fs_params[storage_epsilon];
-		if (tolower(trim(s[0]))=="storage_n") return fs_params[storage_n];
+		if (tolower(trim(s[0]))=="storage_epsilon") return fs_params[physical_properties::storage_epsilon];
+		if (tolower(trim(s[0]))=="storage_n") return fs_params[physical_properties::storage_n];
 		if (tolower(trim(s[0])) == "light") return (*current_light)*light_reduction_factor;
 		if (tolower(trim(s[0])) == "temperature") return *current_temperature;
 		if (tolower(trim(s[0])) == "light_reduction_factor") return light_reduction_factor;
@@ -374,14 +374,14 @@ double CMBBlock::get_val(string SS)
 		if (tolower(trim(s[0])) == "e") return get_evaporation(parent->get_time());
 		if (tolower(trim(s[0]))=="se*")
 		{
-			if ((indicator != Soil) && (indicator != Darcy))
-			return (Heavyside(S_star/V)*S_star/V - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);
+			if ((indicator != Block_type::Soil) && (indicator != Block_type::Darcy))
+			return (Heavyside(S_star/V)*S_star/V - fs_params[physical_properties::theta_r])/(fs_params[physical_properties::theta_s]-fs_params[physical_properties::theta_r]);
 		else
-			return (S_star/V - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);   //allow s to be above 1
+			return (S_star/V - fs_params[physical_properties::theta_r])/(fs_params[physical_properties::theta_s]-fs_params[physical_properties::theta_r]);   //allow s to be above 1
 		}
 		if (tolower(trim(s[0]))=="theta*")
 		{
-			if ((indicator != Soil) && (indicator != Darcy))
+			if ((indicator != Block_type::Soil) && (indicator != Block_type::Darcy))
 			if (S_star>0) return S_star/(S_star+1e-5*A); else return 0;
 		else
 			return S_star/V;   //allow s to be above 1
@@ -456,17 +456,17 @@ double CMBBlock::get_val_star(int i, vector<int> ii)
 	if (i==8) return q;
 	if (i==9)
 	{
-		if ((indicator != Soil) && (indicator != Darcy))
-			return (Heavyside(S_star/V_star)*S_star/V_star - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);
+		if ((indicator != Block_type::Soil) && (indicator != Block_type::Darcy))
+			return (Heavyside(S_star/V_star)*S_star/V_star - fs_params[physical_properties::theta_r])/(fs_params[physical_properties::theta_s]-fs_params[physical_properties::theta_r]);
 		else
-			return (S_star/V_star - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);   //allow s to be above 1
+			return (S_star/V_star - fs_params[physical_properties::theta_r])/(fs_params[physical_properties::theta_s]-fs_params[physical_properties::theta_r]);   //allow s to be above 1
 		}
 	//if (i==12) return DS;
 	if (i==13) return vapor_diffusion;
 
 	if (i==10)
 	{
-		if ((indicator != Soil) && (indicator != Darcy))
+		if ((indicator != Block_type::Soil) && (indicator != Block_type::Darcy))
 			if (S_star>0) return S_star/(S_star+1e-5*A); else return 0;
 		else
 			return S_star/V;   //allow s to be above 1
@@ -477,31 +477,31 @@ double CMBBlock::get_val_star(int i, vector<int> ii)
 		if (air_phase == 0)
 			return 0;
 		else
-			return Pos(V*fs_params[theta_s] - S);
+			return Pos(V*fs_params[physical_properties::theta_s] - S);
 
 	}
-	if (i == physical_params::light)
+	if (i == physical_properties::light)
 		return (*current_light)*light_reduction_factor;
 
-	if (i == physical_params::temperature)
+	if (i == physical_properties::temperature)
 		return *current_temperature;
 
-	if (i == physical_params::wind)
+	if (i == physical_properties::wind)
 		return *current_wind;
 
-	if (i == physical_params::humidity)
+	if (i == physical_properties::humidity)
 		return *current_humidity;
 
-	if (i == physical_params::vapor_pressure)
+	if (i == physical_properties::vapor_pressure)
 		return 611 * exp(17.27*(*current_temperature) / ((*current_temperature) + 237.3));
 
-	if (i == physical_params::latent_heat_of_evaporation)
+	if (i == physical_properties::latent_heat_of_evaporation)
 		return 2.501e6 - 2370 * (*current_temperature);
 
-	if (i == physical_params::LAI)
+	if (i == physical_properties::LAI)
 		return plant_prop.LAI;
 
-	if (i == physical_params::pan_evaporation_rate)
+	if (i == physical_properties::pan_evaporation_rate)
 		return get_evaporation(parent->get_time());
 
 	if (i>=50 && i<100) return fs_params[i-50];
@@ -643,47 +643,47 @@ double CMBBlock::calc(CStringOP &term, vector<int> ii)  //Works w/o reference(&)
 
 	}
 	if (term.function==true)
-	{	if (term.number == exp_)
+	{	if (term.number == functions::exp_)
 			return exp(out);
-		if (term.number == hsd_)
+		if (term.number == functions::hsd_)
 			return Heavyside(out);
-		if (term.number == min_)
+		if (term.number == functions::min_)
 			return min(calc(term.terms[0],ii), calc(term.terms[1],ii));
-		if (term.number == max_)
+		if (term.number == functions::max_)
 			return max(calc(term.terms[0],ii), calc(term.terms[1],ii));
-		if (term.number == lne_)
+		if (term.number == functions::lne_)
 			return log(out);
-		if (term.number == lnt_)
+		if (term.number == functions::lnt_)
 			return log10(out);
-		if (term.number == sgm_)
+		if (term.number == functions::sgm_)
 			return 1.0/(1.0+exp(-out));
-		if (term.number == pos_)
+		if (term.number == functions::pos_)
 			return 0.5*(fabs(out)+out);
-		if (term.number == sq1_)
+		if (term.number == functions::sq1_)
 			return 0.5/calc(term.terms[1],ii)*(calc(term.terms[0],ii)*calc(term.terms[1],ii)+sqrt(pow(calc(term.terms[0],ii)*calc(term.terms[1],ii),2)+1));
-		if (term.number == sqr_)
+		if (term.number == functions::sqr_)
 			return sqrt(out);
-		if (term.number == frs_)
+		if (term.number == functions::frs_)
 			return funcs[0].evaluate(get_val("se"));
-		if (term.number == fas_)
+		if (term.number == functions::fas_)
 			return funcs[0].evaluate(get_val("s"));
-		if (term.number == ply_)
+		if (term.number == functions::ply_)
 			return pipe_poly(out);
-		if (term.number == mon_)
+		if (term.number == functions::mon_)
 			return mon(calc(term.terms[0],ii),calc(term.terms[1],ii));
-		if (term.number == sq2_)
+		if (term.number == functions::sq2_)
 		{	double term1 = calc(term.terms[0],ii);
 			double term2 = calc(term.terms[1],ii);
 			return pow(term1,(0.5*term1+term2)/(term1+term2));
 		}
-		if (term.number==abs_)
+		if (term.number== functions::abs_)
 			return fabs(out);
-		if (term.number==sqs_)
+		if (term.number== functions::sqs_)
 			if (out!=0)
 				return out/fabs(out)*sqrt(fabs(out));
 			else
 				return 0;
-		if (term.number == sig_)
+		if (term.number == functions::sig_)
 		{
 			return exp(out) / (1 + exp(out));
 		}
@@ -811,47 +811,47 @@ double CMBBlock::calc_star(CStringOP &term, vector<int> ii)
 
 	}
 	if (term.function==true)
-	{	if (term.number == exp_)
+	{	if (term.number == functions::exp_)
 			return exp(out);
-		if (term.number == hsd_)
+		if (term.number == functions::hsd_)
 			return Heavyside(out);
-		if (term.number == min_)
+		if (term.number == functions::min_)
 			return min(calc_star(term.terms[0],ii), calc_star(term.terms[1],ii));
-		if (term.number == max_)
+		if (term.number == functions::max_)
 			return max(calc_star(term.terms[0],ii), calc_star(term.terms[1],ii));
-		if (term.number == lne_)
+		if (term.number == functions::lne_)
 			return log(out);
-		if (term.number == lnt_)
+		if (term.number == functions::lnt_)
 			return log10(out);
-		if (term.number == sgm_)
+		if (term.number == functions::sgm_)
 			return 1.0/(1.0+exp(-out));
-		if (term.number == pos_)
+		if (term.number == functions::pos_)
 			return 0.5*(fabs(out)+out);
-		if (term.number == sq1_)
+		if (term.number == functions::sq1_)
 			return 0.5/calc_star(term.terms[1],ii)*(calc_star(term.terms[0],ii)*calc_star(term.terms[1],ii)+sqrt(pow(calc_star(term.terms[0],ii)*calc_star(term.terms[1],ii),2)+1));
-		if (term.number == sqr_)
+		if (term.number == functions::sqr_)
 			return sqrt(out);
-		if (term.number == frs_)
+		if (term.number == functions::frs_)
 			return funcs[0].evaluate(get_val("se*"));
-		if (term.number == fas_)
+		if (term.number == functions::fas_)
 			return funcs[0].evaluate(get_val("s*"));
-		if (term.number == ply_)
+		if (term.number == functions::ply_)
 			return pipe_poly(out);
-		if (term.number == mon_)
+		if (term.number == functions::mon_)
 			return mon(calc_star(term.terms[0],ii),calc_star(term.terms[1],ii));
-		if (term.number == sq2_)
+		if (term.number == functions::sq2_)
 		{	double term1 = calc_star(term.terms[0],ii);
 			double term2 = calc_star(term.terms[1],ii);
 			return pow(term1,(0.5*term1+term2)/(term1+term2));
 		}
-		if (term.number==abs_)
+		if (term.number== functions::abs_)
 			return fabs(out);
-		if (term.number==sqs_)
+		if (term.number== functions::sqs_)
 			if (out!=0)
 				return out/fabs(out)*sqrt(fabs(out));
 			else
 				return 0;
-		if (term.number == sig_)
+		if (term.number == functions::sig_)
 		{
 			return exp(out) / (1 + exp(out));
 		}
@@ -868,7 +868,7 @@ void CMBBlock::set_val(int i, double val)
 	if (i==3) V = val;
 	if (i==4) S = val;
 	if (i==5) z0 = val;
-	if (i==9) S = V*(val*(fs_params[theta_s]-fs_params[theta_r]) + fs_params[theta_r]);
+	if (i==9) S = V*(val*(fs_params[physical_properties::theta_s]-fs_params[physical_properties::theta_r]) + fs_params[physical_properties::theta_r]);
 	if (i==10) S = V*val;
 	if (i==13) vapor_diffusion=val;
 	if (i==14) bulk_density = val;
@@ -887,7 +887,7 @@ void CMBBlock::set_val_star(int i, double val)
 	if (i==3) V = val;
 	if (i==4) S_star = val;
 	if (i==5) z0 = val;
-	if (i==9) S_star = V*(val*(fs_params[theta_s]-fs_params[theta_r]) + fs_params[theta_r]);
+	if (i==9) S_star = V*(val*(fs_params[physical_properties::theta_s]-fs_params[physical_properties::theta_r]) + fs_params[physical_properties::theta_r]);
 	if (i==10) S_star = V*val;
 	if (i==13) vapor_diffusion=val;
 	if (i==14) bulk_density = val;
@@ -914,36 +914,36 @@ void CMBBlock::set_val(const string &SS, double val)
 		if (tolower(trim(s[0]))=="v") V = val;
 		if (tolower(trim(s[0]))=="s") S = val;
 		if (tolower(trim(s[0]))=="z0") z0 = val;
-		if (tolower(trim(s[0]))=="se") S = V*(val*(fs_params[theta_s]-fs_params[theta_r]) + fs_params[theta_r]);
+		if (tolower(trim(s[0]))=="se") S = V*(val*(fs_params[physical_properties::theta_s]-fs_params[physical_properties::theta_r]) + fs_params[physical_properties::theta_r]);
 		if (tolower(trim(s[0]))=="theta") S = V*val;
 		if (tolower(trim(s[0]))=="vapor_diffusion") vapor_diffusion=val;
 		if ((tolower(trim(s[0]))=="bulk_density") || (tolower(trim(s[0]))=="bd")) bulk_density = val;
 
 		if (tolower(trim(s[0]))=="depth") V = A*val;
-		if (tolower(trim(s[0]))=="h0") S = A*val*fs_params[theta_s];   //fs_params[1] must be read earlier than h0
-		if (tolower(trim(s[0]))=="porosity") fs_params[theta_s] = val;
-		if (tolower(trim(s[0]))=="depression") fs_params[depression_storage]=val;
+		if (tolower(trim(s[0]))=="h0") S = A*val*fs_params[physical_properties::theta_s];   //fs_params[1] must be read earlier than h0
+		if (tolower(trim(s[0]))=="porosity") fs_params[physical_properties::theta_s] = val;
+		if (tolower(trim(s[0]))=="depression") fs_params[physical_properties::depression_storage]=val;
 
-		if (tolower(trim(s[0]))=="ks") fs_params[ks] = val;
-		if (tolower(trim(s[0]))=="theta_s") fs_params[theta_s] = val;
-		if (tolower(trim(s[0]))=="theta_r") fs_params[theta_r] = val;
-		if (tolower(trim(s[0]))=="vg_alpha") fs_params[vg_alpha] = val;
-		if (tolower(trim(s[0]))=="vg_n") fs_params[vg_n] = val;
-		if (tolower(trim(s[0]))=="vg_m") fs_params[vg_m] = val;
-		if (tolower(trim(s[0]))=="lambda") fs_params[lambda] = val;
-		if ((tolower(trim(s[0]))=="sc") || (tolower(trim(s[0]))=="storativity")) fs_params[storativity] = val;
-		if (tolower(trim(s[0]))=="storage_epsilon") fs_params[storage_epsilon] = val;
-		if (tolower(trim(s[0]))=="storage_n") fs_params[storage_n] = val;
+		if (tolower(trim(s[0]))=="ks") fs_params[physical_properties::ks] = val;
+		if (tolower(trim(s[0]))=="theta_s") fs_params[physical_properties::theta_s] = val;
+		if (tolower(trim(s[0]))=="theta_r") fs_params[physical_properties::theta_r] = val;
+		if (tolower(trim(s[0]))=="vg_alpha") fs_params[physical_properties::vg_alpha] = val;
+		if (tolower(trim(s[0]))=="vg_n") fs_params[physical_properties::vg_n] = val;
+		if (tolower(trim(s[0]))=="vg_m") fs_params[physical_properties::vg_m] = val;
+		if (tolower(trim(s[0]))=="lambda") fs_params[physical_properties::lambda] = val;
+		if ((tolower(trim(s[0]))=="sc") || (tolower(trim(s[0]))=="storativity")) fs_params[physical_properties::storativity] = val;
+		if (tolower(trim(s[0]))=="storage_epsilon") fs_params[physical_properties::storage_epsilon] = val;
+		if (tolower(trim(s[0]))=="storage_n") fs_params[physical_properties::storage_n] = val;
 		if (tolower(trim(s[0])) == "lai") plant_prop.LAI = val;
-		if (tolower(trim(s[0])) == "lai_max") fs_params[LAI_max] = val;
-		if (tolower(trim(s[0])) == "k_lai") fs_params[K_LAI] = val;
-		if (tolower(trim(s[0])) == "plant_growth_rate_coefficient") fs_params[plant_growth_rate_coefficient] = val;
-		if (tolower(trim(s[0])) == "temperature_base") fs_params[temperature_base] = val;
-		if (tolower(trim(s[0])) == "temperature_spread_factor") fs_params[temperature_spread_factor] = val;
-		if (tolower(trim(s[0])) == "plant_biomass_decay_factor") fs_params[plant_biomass_decay_factor] = val;
-		if (tolower(trim(s[0])) == "plant_leaf_decay_factor") fs_params[plant_leaf_decay_factor] = val;
-		if (tolower(trim(s[0])) == "optimal_temperature") fs_params[optimal_temperature] = val;
-		if (tolower(trim(s[0])) == "maximum_biovolume") fs_params[maximum_bio_volume] = val;
+		if (tolower(trim(s[0])) == "lai_max") fs_params[physical_properties::LAI_max] = val;
+		if (tolower(trim(s[0])) == "k_lai") fs_params[physical_properties::K_LAI] = val;
+		if (tolower(trim(s[0])) == "plant_growth_rate_coefficient") fs_params[physical_properties::plant_growth_rate_coefficient] = val;
+		if (tolower(trim(s[0])) == "temperature_base") fs_params[physical_properties::temperature_base] = val;
+		if (tolower(trim(s[0])) == "temperature_spread_factor") fs_params[physical_properties::temperature_spread_factor] = val;
+		if (tolower(trim(s[0])) == "plant_biomass_decay_factor") fs_params[physical_properties::plant_biomass_decay_factor] = val;
+		if (tolower(trim(s[0])) == "plant_leaf_decay_factor") fs_params[physical_properties::plant_leaf_decay_factor] = val;
+		if (tolower(trim(s[0])) == "optimal_temperature") fs_params[physical_properties::optimal_temperature] = val;
+		if (tolower(trim(s[0])) == "maximum_biovolume") fs_params[physical_properties::maximum_bio_volume] = val;
 
 
 		if (tolower(trim(s[0]))=="outflow_corr_factor") outflow_corr_factor = val;
@@ -953,7 +953,7 @@ void CMBBlock::set_val(const string &SS, double val)
 		if (tolower(trim(s[0]))=="h*") H_star = val;
 		if (tolower(trim(s[0]))=="v") V_star = val;
 		if (tolower(trim(s[0]))=="s*") S_star = val;
-		if (tolower(trim(s[0]))=="se*") S_star = V*(val*(fs_params[theta_s]-fs_params[theta_r]) + fs_params[theta_r]);
+		if (tolower(trim(s[0]))=="se*") S_star = V*(val*(fs_params[physical_properties::theta_s]-fs_params[physical_properties::theta_r]) + fs_params[physical_properties::theta_r]);
 		if (tolower(trim(s[0]))=="theta*") S_star = V*val;
 		if (tolower(trim(s[0])) == "light_reduction_factor") light_reduction_factor = val;
 

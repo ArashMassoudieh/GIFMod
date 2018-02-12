@@ -140,14 +140,14 @@ void CMediumSet::set_formulas()
 	formulas.formulasH.resize(10);
 
 
-	formulas.formulasH[Soil] = "_frs[(f[5]-(((1/f[53])*(((_max(_min(f[9]:1):0.001)^(f[54]/(1-f[54])))-1)^(1/f[54])))*((1-_min(f[9]:1))/(0.01+1-_min(f[9]:1))))+(_mon((f[9]-1):0.05)*(_pos(f[9]-1)*f[51]/f[57])))]";
-	formulas.formulasH[Darcy] = "f[6]+f[5]+((f[10]-f[51])/f[57])";
-	formulas.formulasH[Storage] = "f[5]+(_pos(f[4])/(f[2]*f[51]))+(_mon((f[9]-1):0.01)*(f[9]-1)*f[51]/f[57])-(f[65]/(f[9]^f[66]))";
-	formulas.formulasH[Pond] = "f[5]+(f[4]/f[2])";
-	formulas.formulasH[Catchment] = "f[5]+(f[4]/f[2])";
-	formulas.formulasH[Stream] = "f[5]+(f[4]/f[2])";
-	formulas.formulasH[Manhole] = "f[5]+(f[4]/f[2])";
-	formulas.formulasH[Plant] = "f[5]-((1/f[53])*((_min(_max(f[9]:0.00001):1)^(-f[54]))-1))+(_pos(f[9]-1)*f[51]/f[57])";
+	formulas.formulasH[Block_type::Soil] = "_frs[(f[5]-(((1/f[53])*(((_max(_min(f[9]:1):0.001)^(f[54]/(1-f[54])))-1)^(1/f[54])))*((1-_min(f[9]:1))/(0.01+1-_min(f[9]:1))))+(_mon((f[9]-1):0.05)*(_pos(f[9]-1)*f[51]/f[57])))]";
+	formulas.formulasH[Block_type::Darcy] = "f[6]+f[5]+((f[10]-f[51])/f[57])";
+	formulas.formulasH[Block_type::Storage] = "f[5]+(_pos(f[4])/(f[2]*f[51]))+(_mon((f[9]-1):0.01)*(f[9]-1)*f[51]/f[57])-(f[65]/(f[9]^f[66]))";
+	formulas.formulasH[Block_type::Pond] = "f[5]+(f[4]/f[2])";
+	formulas.formulasH[Block_type::Catchment] = "f[5]+(f[4]/f[2])";
+	formulas.formulasH[Block_type::Stream] = "f[5]+(f[4]/f[2])";
+	formulas.formulasH[Block_type::Manhole] = "f[5]+(f[4]/f[2])";
+	formulas.formulasH[Block_type::Plant] = "f[5]-((1/f[53])*((_min(_max(f[9]:0.00001):1)^(-f[54]))-1))+(_pos(f[9]-1)*f[51]/f[57])";
 
 	formulas.formulas.resize(10);
 	formulas.formulasQ.resize(10);
@@ -173,146 +173,148 @@ void CMediumSet::set_formulas()
 	formulas.settling.resize(10);
 	for (int i = 0; i <formulas.settling.size(); i++) formulas.settling[i].resize(10);
 
-	formulas.vaporTransport[Soil][Soil] = 1;
-	formulas.vaporTransport[Soil][Pond] = 1;
-	formulas.vaporTransport[Soil][Storage] = 1;
-	formulas.vaporTransport[Soil][Darcy] = 1;
-	formulas.vaporTransport[Soil][Stream] = 1;
-	formulas.vaporTransport[Soil][Catchment] = 1;
+	formulas.vaporTransport[Block_type::Soil][Block_type::Soil] = 1;
+	formulas.vaporTransport[Block_type::Soil][Block_type::Pond] = 1;
+	formulas.vaporTransport[Block_type::Soil][Block_type::Storage] = 1;
+	formulas.vaporTransport[Block_type::Soil][Block_type::Darcy] = 1;
+	formulas.vaporTransport[Block_type::Soil][Block_type::Stream] = 1;
+	formulas.vaporTransport[Block_type::Soil][Block_type::Catchment] = 1;
 
-	formulas.vaporTransport[Pond][Soil] = 1;
-	formulas.vaporTransport[Storage][Soil] = 1;
-	formulas.vaporTransport[Darcy][Soil] = 1;
-	formulas.vaporTransport[Stream][Soil] = 1;
-	formulas.vaporTransport[Catchment][Soil] = 1;
+	formulas.vaporTransport[Block_type::Pond][Block_type::Soil] = 1;
+	formulas.vaporTransport[Block_type::Storage][Block_type::Soil] = 1;
+	formulas.vaporTransport[Block_type::Darcy][Block_type::Soil] = 1;
+	formulas.vaporTransport[Block_type::Stream][Block_type::Soil] = 1;
+	formulas.vaporTransport[Block_type::Catchment][Block_type::Soil] = 1;
 
-	formulas.settling[Storage][Storage] = 1;
-	formulas.settling[Pond][Soil] = 1;
-	formulas.settling[Soil][Pond] = 1;
-	formulas.settling[Stream][Darcy] = 1;
-	formulas.settling[Darcy][Stream] = 1;
-	formulas.settling[Pond][Darcy] = 1;
-	formulas.settling[Darcy][Pond] = 1;
+	formulas.settling[Block_type::Storage][Block_type::Storage] = 1;
+	formulas.settling[Block_type::Pond][Block_type::Soil] = 1;
+	formulas.settling[Block_type::Soil][Block_type::Pond] = 1;
+	formulas.settling[Block_type::Stream][Block_type::Darcy] = 1;
+	formulas.settling[Block_type::Darcy][Block_type::Stream] = 1;
+	formulas.settling[Block_type::Pond][Block_type::Darcy] = 1;
+	formulas.settling[Block_type::Darcy][Block_type::Pond] = 1;
 
 	formulas.air_phase.resize(10);
 
-	formulas.air_phase[Soil] = 1;
+	formulas.air_phase[Block_type::Soil] = 1;
 
 	formulas.formulasQ2 = formulas.formulasQ;
 
-	formulas.formulasA[Catchment][Catchment] = "0.5*f[85]*((s[1]-s[5])+(e[1]-e[5]))";
-	formulas.formulasA[Catchment][Pond] = "f[85]*(s[1]-s[5])";
-	formulas.formulasA[Pond][Catchment] = "f[85]*(e[1]-e[5])";
-	formulas.formulasA[Catchment][Stream] = "f[85]*(s[1]-s[5])";
-	formulas.formulasA[Stream][Catchment] = "f[85]*(e[1]-e[5])";
-	formulas.formulasA[Stream][Stream] = "0.5*f[85] * (_pos(s[1] - _max(s[5]:f[60])) + _pos(e[1] - _max(e[5]:f[60])))";
-	formulas.formulasA[Stream][Pond] = "f[85]*_pos(s[1]-_max(s[5]:f[60]))";
-	formulas.formulasA[Pond][Pond] = "0.5*f[85]*(_pos(s[1]-_max(s[5]:f[60]))+_pos(e[1]-_max(e[5]:f[60])))";
-	formulas.formulasA[Storage][Storage] = "0.5*f[85]*((s[4]/(s[2]*s[51]))+(e[4]/(e[2]*e[51])))";
+	formulas.formulasA[Block_type::Catchment][Block_type::Catchment] = "0.5*f[85]*((s[1]-s[5])+(e[1]-e[5]))";
+	formulas.formulasA[Block_type::Catchment][Block_type::Pond] = "f[85]*(s[1]-s[5])";
+	formulas.formulasA[Block_type::Pond][Block_type::Catchment] = "f[85]*(e[1]-e[5])";
+	formulas.formulasA[Block_type::Catchment][Block_type::Stream] = "f[85]*(s[1]-s[5])";
+	formulas.formulasA[Block_type::Stream][Block_type::Catchment] = "f[85]*(e[1]-e[5])";
+	formulas.formulasA[Block_type::Stream][Block_type::Stream] = "0.5*f[85] * (_pos(s[1] - _max(s[5]:f[60])) + _pos(e[1] - _max(e[5]:f[60])))";
+	formulas.formulasA[Block_type::Stream][Block_type::Pond] = "f[85]*_pos(s[1]-_max(s[5]:f[60]))";
+	formulas.formulasA[Block_type::Pond][Block_type::Pond] = "0.5*f[85]*(_pos(s[1]-_max(s[5]:f[60]))+_pos(e[1]-_max(e[5]:f[60])))";
+	formulas.formulasA[Block_type::Storage][Block_type::Storage] = "0.5*f[85]*((s[4]/(s[2]*s[51]))+(e[4]/(e[2]*e[51])))";
 
-	formulas.const_area[Catchment][Catchment] = false;
-	formulas.const_area[Catchment][Pond] = false;
-	formulas.const_area[Pond][Catchment] = false;
-	formulas.const_area[Catchment][Stream] = false;
-	formulas.const_area[Stream][Catchment] = false;
-	formulas.const_area[Stream][Stream] = false;
-	formulas.const_area[Stream][Pond] = false;
-	formulas.const_area[Pond][Pond] = false;
-	formulas.const_area[Storage][Storage] = false;
-
-
-	formulas.formulasQ[Soil][Storage] =   "(_frs[(f[50]*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]*(_pos(s[1]-_max(e[1]:s[5]))-_pos(e[1]-s[1]))/f[6]*f[2])";
-	formulas.formulasQ[Soil][Soil] =      "(_frs[(f[50]*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]*(s[1]-e[1])/f[6]*f[2])";
-	formulas.formulasQ[Soil][Pond] = "0";
-	formulas.formulasQ[Soil][Darcy] = "(_frs[(f[50]*(_max(_min(f[9]:1):0)^s[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/s[55])))^s[55]))^2))]*(s[1]-e[1])/f[6]*f[2])";
-	formulas.formulasQ[Soil][Catchment] = "(_frs[(s[50]*(_max(_min(s[9]:1):0)^s[56])*((1-((1-(_max(_min(s[9]:1):0)^(1/s[55])))^s[55]))^2))]*(s[1]-e[1])/f[6]*f[2])";
-	formulas.formulasQ[Soil][Plant] = "f[3]*f[50]*(s[1]-e[1])";
+	formulas.const_area[Block_type::Catchment][Block_type::Catchment] = false;
+	formulas.const_area[Block_type::Catchment][Block_type::Pond] = false;
+	formulas.const_area[Block_type::Pond][Block_type::Catchment] = false;
+	formulas.const_area[Block_type::Catchment][Block_type::Stream] = false;
+	formulas.const_area[Block_type::Stream][Block_type::Catchment] = false;
+	formulas.const_area[Block_type::Stream][Block_type::Stream] = false;
+	formulas.const_area[Block_type::Stream][Block_type::Pond] = false;
+	formulas.const_area[Block_type::Pond][Block_type::Pond] = false;
+	formulas.const_area[Block_type::Storage][Block_type::Storage] = false;
 
 
-	formulas.formulasQ2[Soil][Soil] =    "(_frs[(f[50]*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]*(s[1]-e[1])/f[6]*f[2])";
-	formulas.formulasQ2[Soil][Storage] = "(_frs[(f[50]*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]*(s[1]-e[1])/f[6]*f[2])";
-	formulas.formulasQ2[Soil][Pond] = "0.5*(_frs[(-f[50]*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]-(f[50]))*(e[1]-s[1])/f[6]*f[2]";// *(_mon((e[4] / e[2]) : 0.001))";
-	formulas.formulasQ2[Soil][Darcy] = "(_frs[(f[50]*(_max(_min(f[9]:1):0)^s[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/s[55])))^s[55]))^2))]*(s[1]-e[1])/f[6]*f[2])";
+	formulas.formulasQ[Block_type::Soil][Block_type::Storage] =   "(_frs[(f[50]*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]*(_pos(s[1]-_max(e[1]:s[5]))-_pos(e[1]-s[1]))/f[6]*f[2])";
+	formulas.formulasQ[Block_type::Soil][Block_type::Soil] =      "(_frs[(f[50]*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]*(s[1]-e[1])/f[6]*f[2])";
+	formulas.formulasQ[Block_type::Soil][Block_type::Pond] = "0";
+	formulas.formulasQ[Block_type::Soil][Block_type::Darcy] = "(_frs[(f[50]*(_max(_min(f[9]:1):0)^s[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/s[55])))^s[55]))^2))]*(s[1]-e[1])/f[6]*f[2])";
+	formulas.formulasQ[Block_type::Soil][Block_type::Catchment] = "(_frs[(s[50]*(_max(_min(s[9]:1):0)^s[56])*((1-((1-(_max(_min(s[9]:1):0)^(1/s[55])))^s[55]))^2))]*(s[1]-e[1])/f[6]*f[2])";
+	formulas.formulasQ[Block_type::Soil][Block_type::Plant] = "f[3]*f[50]*(s[1]-e[1])";
+
+
+	formulas.formulasQ2[Block_type::Soil][Block_type::Soil] =    "(_frs[(f[50]*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]*(s[1]-e[1])/f[6]*f[2])";
+	formulas.formulasQ2[Block_type::Soil][Block_type::Storage] = "(_frs[(f[50]*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]*(s[1]-e[1])/f[6]*f[2])";
+	formulas.formulasQ2[Block_type::Soil][Block_type::Pond] = "0.5*(_frs[(-f[50]*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]-(f[50]))*(e[1]-s[1])/f[6]*f[2]";// *(_mon((e[4] / e[2]) : 0.001))";
+	formulas.formulasQ2[Block_type::Soil][Block_type::Darcy] = "(_frs[(f[50]*(_max(_min(f[9]:1):0)^s[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/s[55])))^s[55]))^2))]*(s[1]-e[1])/f[6]*f[2])";
 	//formulas.formulasQ2[Soil][Catchment] = "_frs[((-f[50])*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]*(e[1]-s[1])/f[6]*f[2]*(_mon((s[4]/s[2]):0.001))";
-	formulas.formulasQ2[Soil][Catchment] = "-(f[50]*(s[1]-e[1])/f[6]*f[2])";
-	formulas.formulasQ2[Soil][Plant] = "f[3]*f[50]*(s[1]-e[1])";
+	formulas.formulasQ2[Block_type::Soil][Block_type::Catchment] = "-(f[50]*(s[1]-e[1])/f[6]*f[2])";
+	formulas.formulasQ2[Block_type::Soil][Block_type::Plant] = "f[3]*f[50]*(s[1]-e[1])";
 
-	formulas.formulasQ[Pond][Pond] =  "f[85]/f[56]*((_sq2(_pos((s[1]-e[1])/f[6]):0.001)*_mon((s[1]-_max(s[5]:f[60])):0.01))-(_sq2(_pos((e[1]-s[1])/f[6]):0.001)*_mon((e[1]-_max(e[5]:f[60])):0.01)))*(((_pos(s[1]-_max(s[5]:f[60])-s[62])+_pos(e[1]-_max(e[5]:f[60])-s[62]))/2)^1.66667)";
-	formulas.formulasQ2[Pond][Pond] = "f[85]/f[56]*((_sq2(_pos((s[1]-e[1])/f[6]):0.001)*_mon((s[1]-_max(s[5]:f[60])):0.01))-(_sq2(_pos((e[1]-s[1])/f[6]):0.001)*_mon((e[1]-_max(e[5]:f[60])):0.01)))*(((_pos(s[1]-_max(s[5]:f[60])-s[62])+_pos(e[1]-_max(e[5]:f[60])-s[62]))/2)^1.66667)";
-	formulas.formulasQ[Pond][Soil] = "0.5*(_frs[(f[50]*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]+(f[50]))*(s[1]-e[1])/f[6]*f[2]";// *(_mon((s[4] / s[2]) : 0.001))";
-	formulas.formulasQ[Pond][Storage] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
-	formulas.formulasQ[Pond][Stream] = "f[85]/f[56]*((_sq2(_pos((s[1]-e[1])/f[6]):0.001)*_mon((s[1]-_max(s[5]:f[60])):0.01))-(_sq2(_pos((e[1]-s[1])/f[6]):0.001)*_mon((e[1]-_max(e[5]:f[60])):0.01)))*(((_pos(s[1]-_max(s[5]:f[60]))+_pos(e[1]-_max(e[5]:f[60])))/2)^1.66667)";
-	formulas.formulasQ[Pond][Catchment] = "0";
+	formulas.formulasQ[Block_type::Pond][Block_type::Pond] =  "f[85]/f[56]*((_sq2(_pos((s[1]-e[1])/f[6]):0.001)*_mon((s[1]-_max(s[5]:f[60])):0.01))-(_sq2(_pos((e[1]-s[1])/f[6]):0.001)*_mon((e[1]-_max(e[5]:f[60])):0.01)))*(((_pos(s[1]-_max(s[5]:f[60])-s[62])+_pos(e[1]-_max(e[5]:f[60])-s[62]))/2)^1.66667)";
+	formulas.formulasQ2[Block_type::Pond][Block_type::Pond] = "f[85]/f[56]*((_sq2(_pos((s[1]-e[1])/f[6]):0.001)*_mon((s[1]-_max(s[5]:f[60])):0.01))-(_sq2(_pos((e[1]-s[1])/f[6]):0.001)*_mon((e[1]-_max(e[5]:f[60])):0.01)))*(((_pos(s[1]-_max(s[5]:f[60])-s[62])+_pos(e[1]-_max(e[5]:f[60])-s[62]))/2)^1.66667)";
+	formulas.formulasQ[Block_type::Pond][Block_type::Soil] = "0.5*(_frs[(f[50]*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]+(f[50]))*(s[1]-e[1])/f[6]*f[2]";// *(_mon((s[4] / s[2]) : 0.001))";
+	formulas.formulasQ[Block_type::Pond][Block_type::Storage] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
+	formulas.formulasQ[Block_type::Pond][Block_type::Stream] = "f[85]/f[56]*((_sq2(_pos((s[1]-e[1])/f[6]):0.001)*_mon((s[1]-_max(s[5]:f[60])):0.01))-(_sq2(_pos((e[1]-s[1])/f[6]):0.001)*_mon((e[1]-_max(e[5]:f[60])):0.01)))*(((_pos(s[1]-_max(s[5]:f[60]))+_pos(e[1]-_max(e[5]:f[60])))/2)^1.66667)";
+	formulas.formulasQ[Block_type::Pond][Block_type::Catchment] = "0";
 
-	formulas.formulasQ2[Pond][Stream] = "f[85]/f[56]*((_sq2(_pos((s[1]-e[1])/f[6]):0.001)*_mon((s[1]-_max(s[5]:f[60])):0.01))-(_sq2(_pos((e[1]-s[1])/f[6]):0.001)*_mon((e[1]-_max(e[5]:f[60])):0.01)))*(((_pos(s[1]-_max(s[5]:f[60]))+_pos(e[1]-_max(e[5]:f[60])))/2)^1.66667)";
-	formulas.formulasQ2[Pond][Darcy] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
-	formulas.formulasQ2[Pond][Storage] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
-	formulas.formulasQ2[Pond][Soil] = "0";
-	formulas.formulasQ2[Pond][Catchment] = "(-f[85])/f[56]*_sqs((e[1]-s[1])/f[6])*_mon((_abs(e[1]-s[1])/f[6]):0.0001)*((_pos(e[1]-e[5]-e[62])^(1+f[58]))";
-
-
-	formulas.formulasQ[Stream][Stream] = "f[85]/f[56]*((_sq2(_pos((s[1]-e[1])/f[6]):0.001)*_mon((s[1]-_max(s[5]:f[60])):0.01))-(_sq2(_pos((e[1]-s[1])/f[6]):0.001)*_mon((e[1]-_max(e[5]:f[60])):0.01)))*(((_pos(s[1]-_max(s[5]:f[60]))+_pos(e[1]-_max(e[5]:f[60])))/2)^1.66667)";
-	formulas.formulasQ[Stream][Darcy] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
-
-	formulas.formulasQ2[Stream][Stream] = "f[85]/f[56]*((_sq2(_pos((s[1]-e[1])/f[6]):0.001)*_mon((s[1]-_max(s[5]:f[60])):0.01))-(_sq2(_pos((e[1]-s[1])/f[6]):0.001)*_mon((e[1]-_max(e[5]:f[60])):0.01)))*(((_pos(s[1]-_max(s[5]:f[60]))+_pos(e[1]-_max(e[5]:f[60])))/2)^1.66667)";
-	formulas.formulasQ2[Stream][Pond] = "f[85]/f[56]*((_sq2(_pos((s[1]-e[1])/f[6]):0.001)*_mon((s[1]-_max(s[5]:f[60])):0.01))-(_sq2(_pos((e[1]-s[1])/f[6]):0.001)*_mon((e[1]-_max(e[5]:f[60])):0.01)))*(((_pos(s[1]-_max(s[5]:f[60]))+_pos(e[1]-_max(e[5]:f[60])))/2)^1.66667)";
+	formulas.formulasQ2[Block_type::Pond][Block_type::Stream] = "f[85]/f[56]*((_sq2(_pos((s[1]-e[1])/f[6]):0.001)*_mon((s[1]-_max(s[5]:f[60])):0.01))-(_sq2(_pos((e[1]-s[1])/f[6]):0.001)*_mon((e[1]-_max(e[5]:f[60])):0.01)))*(((_pos(s[1]-_max(s[5]:f[60]))+_pos(e[1]-_max(e[5]:f[60])))/2)^1.66667)";
+	formulas.formulasQ2[Block_type::Pond][Block_type::Darcy] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
+	formulas.formulasQ2[Block_type::Pond][Block_type::Storage] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
+	formulas.formulasQ2[Block_type::Pond][Block_type::Soil] = "0";
+	formulas.formulasQ2[Block_type::Pond][Block_type::Catchment] = "(-f[85])/f[56]*_sqs((e[1]-s[1])/f[6])*_mon((_abs(e[1]-s[1])/f[6]):0.0001)*((_pos(e[1]-e[5]-e[62])^(1+f[58]))";
 
 
-	formulas.formulasQ[Storage][Soil] = "(_frs[(f[50]*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]*(s[1]-e[1])/f[6]*f[2])";
-	formulas.formulasQ[Storage][Storage] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
-	formulas.formulasQ[Storage][Pond] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
-	formulas.formulasQ[Storage][Catchment] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
-	formulas.formulasQ[Storage][Catchment] = "0";
+	formulas.formulasQ[Block_type::Stream][Block_type::Stream] = "f[85]/f[56]*((_sq2(_pos((s[1]-e[1])/f[6]):0.001)*_mon((s[1]-_max(s[5]:f[60])):0.01))-(_sq2(_pos((e[1]-s[1])/f[6]):0.001)*_mon((e[1]-_max(e[5]:f[60])):0.01)))*(((_pos(s[1]-_max(s[5]:f[60]))+_pos(e[1]-_max(e[5]:f[60])))/2)^1.66667)";
+	formulas.formulasQ[Block_type::Stream][Block_type::Darcy] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
+	formulas.formulasQ[Block_type::Darcy][Block_type::Stream] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
 
-	formulas.formulasQ2[Storage][Storage] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
-	formulas.formulasQ2[Storage][Pond] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
-	formulas.formulasQ2[Storage][Catchment] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
-	formulas.formulasQ2[Storage][Soil] = "(_frs[((-f[50])*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]*(_pos(e[1]-_max(s[1]:e[5]))-_pos(s[1]-e[1]))/f[6]*f[2])";
+	formulas.formulasQ2[Block_type::Stream][Block_type::Stream] = "f[85]/f[56]*((_sq2(_pos((s[1]-e[1])/f[6]):0.001)*_mon((s[1]-_max(s[5]:f[60])):0.01))-(_sq2(_pos((e[1]-s[1])/f[6]):0.001)*_mon((e[1]-_max(e[5]:f[60])):0.01)))*(((_pos(s[1]-_max(s[5]:f[60]))+_pos(e[1]-_max(e[5]:f[60])))/2)^1.66667)";
+	formulas.formulasQ2[Block_type::Stream][Block_type::Pond] = "f[85]/f[56]*((_sq2(_pos((s[1]-e[1])/f[6]):0.001)*_mon((s[1]-_max(s[5]:f[60])):0.01))-(_sq2(_pos((e[1]-s[1])/f[6]):0.001)*_mon((e[1]-_max(e[5]:f[60])):0.01)))*(((_pos(s[1]-_max(s[5]:f[60]))+_pos(e[1]-_max(e[5]:f[60])))/2)^1.66667)";
 
 
-	formulas.formulasQ[Darcy][Darcy] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
-	formulas.formulasQ[Darcy][Pond] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
-	formulas.formulasQ[Darcy][Catchment] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
-	formulas.formulasQ[Darcy][Soil] = "(_frs[(f[50]*(_max(_min(f[9]:1):0)^e[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/e[55])))^e[55]))^2))]*(s[1]-e[1])/f[6]*f[2])";
+	formulas.formulasQ[Block_type::Storage][Block_type::Soil] = "(_frs[(f[50]*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]*(s[1]-e[1])/f[6]*f[2])";
+	formulas.formulasQ[Block_type::Storage][Block_type::Storage] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
+	formulas.formulasQ[Block_type::Storage][Block_type::Pond] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
+	formulas.formulasQ[Block_type::Storage][Block_type::Catchment] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
+	formulas.formulasQ[Block_type::Storage][Block_type::Catchment] = "0";
 
-	formulas.formulasQ2[Darcy][Stream] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
-	formulas.formulasQ2[Darcy][Catchment] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
-	formulas.formulasQ2[Darcy][Soil] = "(_frs[(f[50]*(_max(_min(f[9]:1):0)^e[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/e[55])))^e[55]))^2))]*(s[1]-e[1])/f[6]*f[2])";
+	formulas.formulasQ2[Block_type::Storage][Block_type::Storage] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
+	formulas.formulasQ2[Block_type::Storage][Block_type::Pond] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
+	formulas.formulasQ2[Block_type::Storage][Block_type::Catchment] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
+	formulas.formulasQ2[Block_type::Storage][Block_type::Soil] = "(_frs[((-f[50])*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]*(_pos(e[1]-_max(s[1]:e[5]))-_pos(s[1]-e[1]))/f[6]*f[2])";
 
-	formulas.formulasQ[Catchment][Storage] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
-	formulas.formulasQ[Catchment][Darcy] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
-	formulas.formulasQ[Catchment][Catchment] = "f[85]/f[56]*((_sq2(_pos((s[1]-e[1])/f[6]):0.001)*_mon((s[1]-s[5]):0.01))-(_sq2(_pos((e[1]-s[1])/f[6]):0.001)*_mon((e[1]-e[5]):0.01)))*(((_hsd(s[1]-e[1])*_pos(s[1]-s[5]-s[62]))+(_hsd(e[1]-s[1])*_pos(e[1]-e[5]-s[62])))^(1+f[58]))";
-	formulas.formulasQ[Catchment][Pond] = "f[85]/f[56]*_sqs((s[1]-e[1])/f[6])*_mon((_abs(s[1]-e[1])/f[6]):0.0001)*((_pos(s[1]-s[5]-s[62])^(1+f[58]))";
-	formulas.formulasQ[Catchment][Stream] = "f[85]/f[56]*_sqs((s[1]-e[1])/f[6])*_mon((_abs(s[1]-e[1])/f[6]):0.0001)*((_pos(s[1]-s[5]-s[62])^(1+f[58]))";
+
+	formulas.formulasQ[Block_type::Darcy][Block_type::Darcy] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
+	formulas.formulasQ[Block_type::Darcy][Block_type::Pond] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
+	formulas.formulasQ[Block_type::Darcy][Block_type::Catchment] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
+	formulas.formulasQ[Block_type::Darcy][Block_type::Soil] = "(_frs[(f[50]*(_max(_min(f[9]:1):0)^e[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/e[55])))^e[55]))^2))]*(s[1]-e[1])/f[6]*f[2])";
+
+	formulas.formulasQ2[Block_type::Darcy][Block_type::Stream] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
+	formulas.formulasQ2[Block_type::Stream][Block_type::Darcy] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
+	formulas.formulasQ2[Block_type::Darcy][Block_type::Catchment] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
+	formulas.formulasQ2[Block_type::Darcy][Block_type::Soil] = "(_frs[(f[50]*(_max(_min(f[9]:1):0)^e[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/e[55])))^e[55]))^2))]*(s[1]-e[1])/f[6]*f[2])";
+
+	formulas.formulasQ[Block_type::Catchment][Block_type::Storage] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
+	formulas.formulasQ[Block_type::Catchment][Block_type::Darcy] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
+	formulas.formulasQ[Block_type::Catchment][Block_type::Catchment] = "f[85]/f[56]*((_sq2(_pos((s[1]-e[1])/f[6]):0.001)*_mon((s[1]-s[5]):0.01))-(_sq2(_pos((e[1]-s[1])/f[6]):0.001)*_mon((e[1]-e[5]):0.01)))*(((_hsd(s[1]-e[1])*_pos(s[1]-s[5]-s[62]))+(_hsd(e[1]-s[1])*_pos(e[1]-e[5]-s[62])))^(1+f[58]))";
+	formulas.formulasQ[Block_type::Catchment][Block_type::Pond] = "f[85]/f[56]*_sqs((s[1]-e[1])/f[6])*_mon((_abs(s[1]-e[1])/f[6]):0.0001)*((_pos(s[1]-s[5]-s[62])^(1+f[58]))";
+	formulas.formulasQ[Block_type::Catchment][Block_type::Stream] = "f[85]/f[56]*_sqs((s[1]-e[1])/f[6])*_mon((_abs(s[1]-e[1])/f[6]):0.0001)*((_pos(s[1]-s[5]-s[62])^(1+f[58]))";
 	//formulas.formulasQ[Catchment][Storage] = "f[55]/f[56]*_sqs((s[1]-e[1])/f[6])*_mon(_abs(s[1]-e[1])/f[6]:0.001)*((_pos(s[1]-s[5]-s[12])^(1+f[58]))";
 	//formulas.formulasQ[Catchment][Soil] = "(_frs[(f[50]*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]*(s[1]-e[1])/f[6]*f[2]*(_mon((e[4]/e[2]):0.001)))";
-	formulas.formulasQ[Catchment][Soil] = "(f[50]*(s[1]-e[1])/f[6]*f[2])";
+	formulas.formulasQ[Block_type::Catchment][Block_type::Soil] = "(f[50]*(s[1]-e[1])/f[6]*f[2])";
 
-	formulas.formulasQ2[Catchment][Storage] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
-	formulas.formulasQ2[Catchment][Darcy] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
-	formulas.formulasQ2[Catchment][Catchment] = "f[85]/f[56]*((_sq2(_pos((s[1]-e[1])/f[6]):0.001)*_mon((s[1]-s[5]):0.01))-(_sq2(_pos((e[1]-s[1])/f[6]):0.001)*_mon((e[1]-e[5]):0.01)))*(((_hsd(s[1]-e[1])*_pos(s[1]-s[5]-s[12]))+(_hsd(e[1]-s[1])*_pos(e[1]-e[5]-s[12])))^(1+f[58]))";
-	formulas.formulasQ2[Catchment][Pond] = "0";
-	formulas.formulasQ2[Catchment][Stream] = "0";
-	formulas.formulasQ2[Catchment][Storage] = "0";
-	formulas.formulasQ2[Catchment][Soil] = "(f[50]*(s[1]-e[1])/f[6]*f[2])";
+	formulas.formulasQ2[Block_type::Catchment][Block_type::Storage] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
+	formulas.formulasQ2[Block_type::Catchment][Block_type::Darcy] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
+	formulas.formulasQ2[Block_type::Catchment][Block_type::Catchment] = "f[85]/f[56]*((_sq2(_pos((s[1]-e[1])/f[6]):0.001)*_mon((s[1]-s[5]):0.01))-(_sq2(_pos((e[1]-s[1])/f[6]):0.001)*_mon((e[1]-e[5]):0.01)))*(((_hsd(s[1]-e[1])*_pos(s[1]-s[5]-s[12]))+(_hsd(e[1]-s[1])*_pos(e[1]-e[5]-s[12])))^(1+f[58]))";
+	formulas.formulasQ2[Block_type::Catchment][Block_type::Pond] = "0";
+	formulas.formulasQ2[Block_type::Catchment][Block_type::Stream] = "0";
+	formulas.formulasQ2[Block_type::Catchment][Block_type::Storage] = "0";
+	formulas.formulasQ2[Block_type::Catchment][Block_type::Soil] = "(f[50]*(s[1]-e[1])/f[6]*f[2])";
 
-	formulas.formulasQ[Stream][Pond] = "f[85]/f[56]*((_sq2(_pos((s[1]-e[1])/f[6]):0.001)*_mon((s[1]-_max(s[5]:f[60])):0.01))-(_sq2(_pos((e[1]-s[1])/f[6]):0.001)*_mon((e[1]-_max(e[5]:f[60])):0.01)))*(((_pos(s[1]-_max(s[5]:f[60]))+_pos(e[1]-_max(e[5]:f[60])))/2)^1.66667)";
-	formulas.formulasQ[Stream][Catchment] = "0";
+	formulas.formulasQ[Block_type::Stream][Block_type::Pond] = "f[85]/f[56]*((_sq2(_pos((s[1]-e[1])/f[6]):0.001)*_mon((s[1]-_max(s[5]:f[60])):0.01))-(_sq2(_pos((e[1]-s[1])/f[6]):0.001)*_mon((e[1]-_max(e[5]:f[60])):0.01)))*(((_pos(s[1]-_max(s[5]:f[60]))+_pos(e[1]-_max(e[5]:f[60])))/2)^1.66667)";
+	formulas.formulasQ[Block_type::Stream][Block_type::Catchment] = "0";
 
-	formulas.formulasQ2[Stream][Catchment] = "(-f[85])/f[56]*_sqs((e[1]-s[1])/f[6])*_mon((_abs(s[1]-e[1])/f[6]):0.0001)*((_pos(e[1]-e[5]-e[62])^(1+f[58]))";
+	formulas.formulasQ2[Block_type::Stream][Block_type::Catchment] = "(-f[85])/f[56]*_sqs((e[1]-s[1])/f[6])*_mon((_abs(s[1]-e[1])/f[6]):0.0001)*((_pos(e[1]-e[5]-e[62])^(1+f[58]))";
 
-	formulas.formulasQ[Plant][Soil] = "f[3]*f[50]*(s[1]-e[1])*(_max(_min(f[9]:0)^s[54])*f[2]*s[3]";
-	formulas.formulasQ2[Soil][Plant] = "f[3]*f[50]*(s[1]-e[1])*(_max(_min(f[9]:0)^e[54])*f[2]*e[3]";
+	formulas.formulasQ[Block_type::Plant][Block_type::Soil] = "f[3]*f[50]*(s[1]-e[1])*(_max(_min(f[9]:0)^s[54])*f[2]*s[3]";
+	formulas.formulasQ2[Block_type::Soil][Block_type::Plant] = "f[3]*f[50]*(s[1]-e[1])*(_max(_min(f[9]:0)^e[54])*f[2]*e[3]";
 
 	//formulas.formulasQ2[Storage][Catchment] = "(-f[55])/f[56]*_sqs((e[1]-s[1])/f[6])*_mon(_abs(s[1]-e[1])/f[6]:0.001)*((_pos(e[1]-e[5]-e[12])^(1+f[58]))";
 
 
-	formulas.formulas[Normal] = "f[85]/f[56]*((_sq2(_pos((s[5]-e[5])/f[6]):0.001)*_mon((s[1]-s[5]):0.01))-(_sq2(_pos((e[5]-s[5])/f[6]):0.001)*_mon((e[1]-e[5]):0.01)))*(((_pos(s[1]-s[5])+_pos(e[1]-e[5]))/2)^(1+f[58])";
-	formulas.formulas[QDarcy] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
-	formulas.formulas[Vapor] = "(((e[13]+s[13])/2*(s[10]-e[10])/f[6]*f[2]*(_pos(s[51]-s[10])+_pos(e[51]-e[10]))/2))";
-	formulas.formulas[Pipe1] = "(f[52]^2.63)*23760*f[67]*((_pos(s[1]-f[61])/f[6])^0.54)*_hsd(s[1]-f[60])";
-	formulas.formulas[Pipe2] = "(f[52]^2.63)*23760*f[67]*_ply(_max(((e[1]-f[61])/f[52]):((s[1]-f[60])/f[52])))*_mo1(((((_pos(s[1]-_max(e[1]:f[61]))/f[6])^0.54))-(((_pos(e[1]-_max(s[1]:f[60]))/f[6])^0.54))):0.001)"; //Q in m3/d
-	formulas.formulas[Rating_curve] = "(_hsd(s[1]-e[1])*f[62]*(_pos(s[1]-f[64])^f[63]))-(_hsd(e[1]-s[1])*f[62]*(_pos(e[1]-f[64])^f[63]))";
+	formulas.formulas[special_connectors::Normal] = "f[85]/f[56]*((_sq2(_pos((s[5]-e[5])/f[6]):0.001)*_mon((s[1]-s[5]):0.01))-(_sq2(_pos((e[5]-s[5])/f[6]):0.001)*_mon((e[1]-e[5]):0.01)))*(((_pos(s[1]-s[5])+_pos(e[1]-e[5]))/2)^(1+f[58])";
+	formulas.formulas[special_connectors::QDarcy] = "f[50]*(s[1]-e[1])/f[6]*f[2]";
+	formulas.formulas[special_connectors::Vapor] = "(((e[13]+s[13])/2*(s[10]-e[10])/f[6]*f[2]*(_pos(s[51]-s[10])+_pos(e[51]-e[10]))/2))";
+	formulas.formulas[special_connectors::Pipe1] = "(f[52]^2.63)*23760*f[67]*((_pos(s[1]-f[61])/f[6])^0.54)*_hsd(s[1]-f[60])";
+	formulas.formulas[special_connectors::Pipe2] = "(f[52]^2.63)*23760*f[67]*_ply(_max(((e[1]-f[61])/f[52]):((s[1]-f[60])/f[52])))*_mo1(((((_pos(s[1]-_max(e[1]:f[61]))/f[6])^0.54))-(((_pos(e[1]-_max(s[1]:f[60]))/f[6])^0.54))):0.001)"; //Q in m3/d
+	formulas.formulas[special_connectors::Rating_curve] = "(_hsd(s[1]-e[1])*f[62]*(_pos(s[1]-f[64])^f[63]))-(_hsd(e[1]-s[1])*f[62]*(_pos(e[1]-f[64])^f[63]))";
 	set_features.formulas = true;
 }
 

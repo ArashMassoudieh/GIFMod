@@ -47,10 +47,12 @@ struct measured_chrc //Properties of observed data
 
 class CMediumSet;
 
-enum formulas
+namespace special_connectors {
+	enum formulas
 	{
 		Pipe1, Pipe2, QDarcy, Vapor, Normal, Rating_curve
 	};
+};
 
 class CMedium
 {

@@ -101,45 +101,45 @@ CStringOP::CStringOP(string S)
 			string a = S.substr(i+1,4);
 			int nn;
 			if (S.substr(i+1,3) == "exp")
-				nn = exp_;
+				nn = functions::exp_;
 			if (S.substr(i+1,3) == "hsd")
-				nn = hsd_;
+				nn = functions::hsd_;
 			if (S.substr(i+1,3) == "min")
-				nn = min_;
+				nn = functions::min_;
 			if (S.substr(i+1,3) == "max")
-				nn = max_;
+				nn = functions::max_;
 			if (S.substr(i+1,3) == "lne")
-				nn = lne_;
+				nn = functions::lne_;
 			if (S.substr(i+1,3) == "lnt")
-				nn = lnt_;
+				nn = functions::lnt_;
 			if (S.substr(i+1,3) == "sgm")
-				nn = sgm_;
+				nn = functions::sgm_;
 			if (S.substr(i+1,3) == "pos")
-				nn = pos_;
+				nn = functions::pos_;
 			if (S.substr(i+1,3) == "sq1")
-				nn = sq1_;
+				nn = functions::sq1_;
 			if (S.substr(i+1,3) == "sqr")
-				nn = sqr_;
+				nn = functions::sqr_;
 			if (S.substr(i+1,3) == "frs")
-				nn = frs_;
+				nn = functions::frs_;
 			if (S.substr(i+1,3) == "fas")
-				nn = fas_;
+				nn = functions::fas_;
 			if (S.substr(i+1,3) == "ply")
-				nn = ply_;
+				nn = functions::ply_;
 			if (S.substr(i+1,3) == "mon")
-				nn = mon_;
+				nn = functions::mon_;
 			if (S.substr(i+1,3) == "sq2")
-				nn = sq2_;
+				nn = functions::sq2_;
 			if (S.substr(i+1,3) == "abs")
-				nn = abs_;
+				nn = functions::abs_;
 			if (S.substr(i+1,3) == "sqs")
-				nn = sqs_;
+				nn = functions::sqs_;
 			if (S.substr(i + 1, 3) == "mo1")
-				nn = mo1_;
+				nn = functions::mo1_;
 			if (S.substr(i + 1, 3) == "sig")
-				nn = sig_;
+				nn = functions::sig_;
 			if (S.substr(i + 1, 3) == "toy")
-				nn = toy_;
+				nn = functions::toy_;
 
 			for (int j=i+4; j<S.size(); j++)
 			{
@@ -389,45 +389,45 @@ CStringOP::CStringOP(string S, CRxnNetwork *R)
 			string a = S.substr(i + 1, 4);
 			int nn;
 			if (S.substr(i + 1, 3) == "exp")
-				nn = exp_;
+				nn = functions::exp_;
 			if (S.substr(i + 1, 3) == "hsd")
-				nn = hsd_;
+				nn = functions::hsd_;
 			if (S.substr(i + 1, 3) == "min")
-				nn = min_;
+				nn = functions::min_;
 			if (S.substr(i + 1, 3) == "max")
-				nn = max_;
+				nn = functions::max_;
 			if (S.substr(i + 1, 3) == "lne")
-				nn = lne_;
+				nn = functions::lne_;
 			if (S.substr(i + 1, 3) == "lnt")
-				nn = lnt_;
+				nn = functions::lnt_;
 			if (S.substr(i + 1, 3) == "sgm")
-				nn = sgm_;
+				nn = functions::sgm_;
 			if (S.substr(i + 1, 3) == "pos")
-				nn = pos_;
+				nn = functions::pos_;
 			if (S.substr(i + 1, 3) == "sq1")
-				nn = sq1_;
+				nn = functions::sq1_;
 			if (S.substr(i + 1, 3) == "sqr")
-				nn = sqr_;
+				nn = functions::sqr_;
 			if (S.substr(i + 1, 3) == "frs")
-				nn = frs_;
+				nn = functions::frs_;
 			if (S.substr(i + 1, 3) == "fas")
-				nn = fas_;
+				nn = functions::fas_;
 			if (S.substr(i + 1, 3) == "ply")
-				nn = ply_;
+				nn = functions::ply_;
 			if (S.substr(i + 1, 3) == "mon")
-				nn = mon_;
+				nn = functions::mon_;
 			if (S.substr(i + 1, 3) == "sq2")
-				nn = sq2_;
+				nn = functions::sq2_;
 			if (S.substr(i + 1, 3) == "abs")
-				nn = abs_;
+				nn = functions::abs_;
 			if (S.substr(i + 1, 3) == "sqs")
-				nn = sqs_;
+				nn = functions::sqs_;
 			if (S.substr(i + 1, 3) == "mo1")
-				nn = mo1_;
+				nn = functions::mo1_;
 			if (S.substr(i + 1, 3) == "toy")
-				nn = toy_;
+				nn = functions::toy_;
 			if (S.substr(i + 1, 3) == "sig")
-				nn = sig_;
+				nn = functions::sig_;
 
 			for (int j = i + 4; j<S.size(); j++)
 			{
@@ -685,23 +685,23 @@ int quan(string S)
 	if (tolower(trim(S)) == "z0") return 5;
 	if (tolower(trim(S)) == "se") return 9;
 	if (tolower(trim(S)) == "theta") return 10;
-	if (tolower(trim(S)) == "porosity") return theta_s+50;
+	if (tolower(trim(S)) == "porosity") return physical_properties::theta_s+50;
 	if (tolower(trim(S)) == "depression") return 12;
 	if (tolower(trim(S)) == "vapor_diff") return 13;
 
-	if (tolower(trim(S)) == "ks") return ks+50;
-	if (tolower(trim(S)) == "theta_s") return theta_s+50;
-	if (tolower(trim(S)) == "theta_r") return theta_r+50;
-	if (tolower(trim(S)) == "vg_alpha") return vg_alpha+50;
-	if (tolower(trim(S)) == "vg_n") return vg_n+50;
-	if (tolower(trim(S)) == "vg_m") return vg_m+50;
-	if (tolower(trim(S)) == "lambda") return lambda+50;
-	if ((tolower(trim(S)) == "sc") || (tolower(trim(S)) == "storativity")) return storativity+50;
+	if (tolower(trim(S)) == "ks") return physical_properties::ks+50;
+	if (tolower(trim(S)) == "theta_s") return physical_properties::theta_s+50;
+	if (tolower(trim(S)) == "theta_r") return physical_properties::theta_r+50;
+	if (tolower(trim(S)) == "vg_alpha") return physical_properties::vg_alpha+50;
+	if (tolower(trim(S)) == "vg_n") return physical_properties::vg_n+50;
+	if (tolower(trim(S)) == "vg_m") return physical_properties::vg_m+50;
+	if (tolower(trim(S)) == "lambda") return physical_properties::lambda+50;
+	if ((tolower(trim(S)) == "sc") || (tolower(trim(S)) == "storativity")) return physical_properties::storativity+50;
 	if ((tolower(trim(S)) == "bulk_density") || (tolower(trim(S)) == "bd")) return 14;
-	if (tolower(trim(S)) == "storage_epsilon") return storage_epsilon+50;
-	if (tolower(trim(S)) == "storage_n") return storage_n+50;
-	if (tolower(trim(S)) == "temperature") return temperature;
-	if (tolower(trim(S)) == "light") return light;
+	if (tolower(trim(S)) == "storage_epsilon") return physical_properties::storage_epsilon+50;
+	if (tolower(trim(S)) == "storage_n") return physical_properties::storage_n+50;
+	if (tolower(trim(S)) == "temperature") return physical_properties::temperature;
+	if (tolower(trim(S)) == "light") return physical_properties::light;
 	return -1;
 }
 

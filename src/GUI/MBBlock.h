@@ -18,7 +18,7 @@
 
 using namespace std;
 
-enum Block_types { Soil, Pond, Storage, Catchment, Manhole, Darcy, Stream, Plant };
+namespace Block_type { enum Block_types { Soil, Pond, Storage, Catchment, Manhole, Darcy, Stream, Plant }; };
 namespace basic_properties { enum basic_props { H = 1, A = 2, V = 3, S = 4, z0 = 5, depth = 6, q = 8, relative_saturation = 9, moisture_content = 10, depression_storage = 12, vapor_diffusion = 13, bulk_density = 14, air_volume = 15, location_x = 20, location_y = 21, location_z = 22 }; };
 class CGWA;
 class CMedium;

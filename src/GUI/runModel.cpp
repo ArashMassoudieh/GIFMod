@@ -1422,14 +1422,14 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 	{
 		Node* n = nodes[gw->nodeNames().indexOf(nodenames_sorted[i])];
 		CMBBlock B;
-		if (n->objectType.ObjectType == "Soil") { B.indicator = Block_types::Soil; } // 0
-		if (n->objectType.ObjectType == "Pond") { B.indicator = Block_types::Pond; } //1
-		if (n->objectType.ObjectType == "Storage") { B.indicator = Block_types::Storage; } //2
-		if (n->objectType.ObjectType == "Catchment") { B.indicator = Block_types::Catchment; } //3
-		if (n->objectType.ObjectType == "Manhole") { B.indicator = Block_types::Manhole; } //4
-		if (n->objectType.ObjectType == "Darcy") { B.indicator = Block_types::Darcy; } //5
-		if (n->objectType.ObjectType == "Stream") { B.indicator = Block_types::Stream; } //6
-		if (n->objectType.ObjectType == "Plant") { B.indicator = Block_types::Plant; } //7
+		if (n->objectType.ObjectType == "Soil") { B.indicator = Block_type::Soil; } // 0
+		if (n->objectType.ObjectType == "Pond") { B.indicator = Block_type::Pond; } //1
+		if (n->objectType.ObjectType == "Storage") { B.indicator = Block_type::Storage; } //2
+		if (n->objectType.ObjectType == "Catchment") { B.indicator = Block_type::Catchment; } //3
+		if (n->objectType.ObjectType == "Manhole") { B.indicator = Block_type::Manhole; } //4
+		if (n->objectType.ObjectType == "Darcy") { B.indicator = Block_type::Darcy; } //5
+		if (n->objectType.ObjectType == "Stream") { B.indicator = Block_type::Stream; } //6
+		if (n->objectType.ObjectType == "Plant") { B.indicator = Block_type::Plant; } //7
 		B.set_val("a", n->val("a").toFloat());
 		B.set_val("v", n->val("v").toFloat());
 
@@ -1530,10 +1530,10 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 			C.flow_expression = CStringOP(e->val("flow_expression").toStdString());
 		else
 		{
-			if (type == "Darcy") C.flow_expression = formulas()[QDarcy];
-			if (type == "Pipe") C.flow_expression = CStringOP(formulas()[Pipe2]);
-			if (type == "Normal Flow") C.flow_expression = CStringOP(formulas()[Normal]);
-			if (type == "Rating Curve") C.flow_expression = CStringOP(formulas()[Rating_curve]);
+			if (type == "Darcy") C.flow_expression = formulas()[special_connectors::QDarcy];
+			if (type == "Pipe") C.flow_expression = CStringOP(formulas()[special_connectors::Pipe2]);
+			if (type == "Normal Flow") C.flow_expression = CStringOP(formulas()[special_connectors::Normal]);
+			if (type == "Rating Curve") C.flow_expression = CStringOP(formulas()[special_connectors::Rating_curve]);
 		}
 		if (!e->val("area_expression").isEmpty()) { C.area_expression = CStringOP(e->val("area_expression").toStdString()); C.const_area = false; }
 		if (!e->val("dispersion_expression").isEmpty()) C.dispersion_expression = CStringOP(e->val("dispersion_expression").toStdString());
@@ -2160,8 +2160,8 @@ void CMedium::g_set_default_connector_expressions()
 			{
 				if (vaporTransport()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] == true)
 				{
-					Connectors[ii].flow_expression = CStringOP(formulasQ()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] + "+" + formulas()[Vapor]);
-					Connectors[ii].flow_expression_strng = formulasQ()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] + "+" + formulas()[Vapor];
+					Connectors[ii].flow_expression = CStringOP(formulasQ()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] + "+" + formulas()[special_connectors::Vapor]);
+					Connectors[ii].flow_expression_strng = formulasQ()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] + "+" + formulas()[special_connectors::Vapor];
 
 				}
 				else
@@ -2175,8 +2175,8 @@ void CMedium::g_set_default_connector_expressions()
 			{
 				if (vaporTransport()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] == true)
 				{
-					Connectors[ii].flow_expression = CStringOP(formulasQ2()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] + "+" + formulas()[Vapor]);
-					Connectors[ii].flow_expression_strng = formulasQ2()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] + "+" + formulas()[Vapor];
+					Connectors[ii].flow_expression = CStringOP(formulasQ2()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] + "+" + formulas()[special_connectors::Vapor]);
+					Connectors[ii].flow_expression_strng = formulasQ2()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] + "+" + formulas()[special_connectors::Vapor];
 				}
 				else
 				{
@@ -2186,8 +2186,8 @@ void CMedium::g_set_default_connector_expressions()
 			}
 			if (vaporTransport()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator])
 			{
-				Connectors[ii].flow_expression_v = CStringOP(formulas()[Vapor]);
-				Connectors[ii].flow_expression_strng_v = formulas()[Vapor];
+				Connectors[ii].flow_expression_v = CStringOP(formulas()[special_connectors::Vapor]);
+				Connectors[ii].flow_expression_strng_v = formulas()[special_connectors::Vapor];
 			}
 		}
 	}
