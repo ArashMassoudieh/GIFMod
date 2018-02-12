@@ -120,6 +120,15 @@ CMBBlock::CMBBlock(const CMBBlock& BB)// copy constructor
 	evaporation_m = BB.evaporation_m;
 	light_reduction_factor = BB.light_reduction_factor;
 	perform_rxn = BB.perform_rxn;
+	real_location = BB.real_location;
+}
+
+CMBBlock::CMBBlock(string name, string params)
+{
+	ID = name; 
+	map<string, double> props = string_to_map(params); 
+	for (map<string, double>::iterator it = props.begin(); it != props.end(); ++it) set_val(it->first, it->second); 
+
 }
 
 CMBBlock& CMBBlock::operator=(const CMBBlock &BB)
@@ -189,11 +198,14 @@ CMBBlock& CMBBlock::operator=(const CMBBlock &BB)
 	evaporation_m = BB.evaporation_m;
 	light_reduction_factor = BB.light_reduction_factor;
 	perform_rxn = BB.perform_rxn;
+	real_location = BB.real_location;
 	return *this;
 }
 
 double CMBBlock::get_val(int i, vector<int> ii)
 {
+	
+	
 	/* variable codes:
 	H: 1 : Hydraulic Head
 	A: 2 : Area
@@ -211,16 +223,16 @@ double CMBBlock::get_val(int i, vector<int> ii)
 	Reaction parameters: 2000-2999
 	*/
 
-	if (i==1) return H;
-	if (i==2) return A;
-	if (i==3) return V;
-	if (i==4) return S;
-	if (i==5) return z0;
-	if (i==6) return V/A;    // blocks don't have d
+	if (i==basic_properties::H) return H;
+	if (i== basic_properties::A) return A;
+	if (i== basic_properties::V) return V;
+	if (i== basic_properties::S) return S;
+	if (i== basic_properties::z0) return z0;
+	if (i== basic_properties::depth) return V/A;    // blocks don't have d
 	if (i==7) return 0;
-	if (i==8) return q;
+	if (i== basic_properties::q) return q;
 
-	if (i==9)
+	if (i== basic_properties::relative_saturation)
 	{ if ((indicator != Soil) && (indicator!=Darcy))
 			return (Heavyside(S/V)*S/V - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);
 		else
@@ -228,7 +240,7 @@ double CMBBlock::get_val(int i, vector<int> ii)
 
 	}
 
-	if (i==10)
+	if (i==basic_properties::moisture_content)
 	{
 		if ((indicator != Soil) && (indicator != Darcy))
 			if (S>0) return S/(S+1e-5*A); else return 0;
@@ -237,10 +249,10 @@ double CMBBlock::get_val(int i, vector<int> ii)
 	}
 
 
-	if (i==12) return DS;
-	if (i==13) return vapor_diffusion;
-	if (i==14) return bulk_density;
-	if (i == 15)
+	if (i==basic_properties::depression_storage) return DS;
+	if (i==basic_properties::vapor_diffusion) return vapor_diffusion;
+	if (i==basic_properties::bulk_density) return bulk_density;
+	if (i == basic_properties::air_volume)
 	{
 		if (air_phase == 0)
 			return 0;
@@ -264,7 +276,7 @@ double CMBBlock::get_val(int i, vector<int> ii)
 		return plant_prop.LAI;
 
 	if (i == physical_params::pan_evaporation_rate)
-		return get_evaporation(parent->t);
+		return get_evaporation(parent->get_time());
 
 	if (i>=50 && i<100) return fs_params[i-50];
 	if (i>=100 && i<1000) return G[ii[0]][i];
@@ -282,7 +294,7 @@ double CMBBlock::get_val(int i, vector<int> ii)
 	if (i>=4000 && i<5000) return envexchange[ii[1]]->parameters[i-4000];
 	if (i >= 5000 && i<6000) return RXN->cons[ii[0]].get_val(i);
 	if (i >= 6000 && i<6500) return evaporation_m[ii[0]]->parameters[i - 6000];
-	if (i == 6501 && i<7000) return evaporation_m[ii[0]]->single_crop_coefficient.interpol(dayOfYear(parent->t));
+	if (i == 6501 && i<7000) return evaporation_m[ii[0]]->single_crop_coefficient.interpol(dayOfYear(parent->get_time()));
 	if (i >= 7000 && i < 8000) return
 		plant_prop.half_saturation_constants[i - 7000];
 	if (i >= 10000 && i<20000) return G[(i-10000)/1000][(i-10000)%1000];
@@ -359,7 +371,7 @@ double CMBBlock::get_val(string SS)
 		if (tolower(trim(s[0]))=="h*") return H_star;
 		if (tolower(trim(s[0]))=="v") return V_star;
 		if (tolower(trim(s[0]))=="s*") return S_star;
-		if (tolower(trim(s[0])) == "e") return get_evaporation(parent->t);
+		if (tolower(trim(s[0])) == "e") return get_evaporation(parent->get_time());
 		if (tolower(trim(s[0]))=="se*")
 		{
 			if ((indicator != Soil) && (indicator != Darcy))
@@ -490,7 +502,7 @@ double CMBBlock::get_val_star(int i, vector<int> ii)
 		return plant_prop.LAI;
 
 	if (i == physical_params::pan_evaporation_rate)
-		return get_evaporation(parent->t);
+		return get_evaporation(parent->get_time());
 
 	if (i>=50 && i<100) return fs_params[i-50];
 	if (i>=100 && i<1000) return G_star[ii[0]][i];
@@ -508,7 +520,7 @@ double CMBBlock::get_val_star(int i, vector<int> ii)
 	if (i>=4000 && i<5000) return envexchange[ii[1]]->parameters[i-4000];
 	if (i >= 5000 && i<6000) return RXN->cons[ii[0]].get_val(i);
 	if (i >= 6000 && i<6500) return evaporation_m[ii[0]]->parameters[i - 6000];
-	if (i == 6501 && i<7000) return evaporation_m[ii[0]]->single_crop_coefficient.interpol(dayOfYear(parent->t));
+	if (i == 6501 && i<7000) return evaporation_m[ii[0]]->single_crop_coefficient.interpol(dayOfYear(parent->get_time()));
 	if (i >= 7000 && 8000) return plant_prop.half_saturation_constants[i - 7000];
 	if (i >= 10000 && i<20000) return G_star[(i - 10000) / 1000][(i - 10000) % 1000];
 	if (i >= 100000 && i<200000) return CG_star[(i - 100000) / 10000][(i - 100000) % 10000];

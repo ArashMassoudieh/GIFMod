@@ -11,10 +11,10 @@ public:
 	CTimeSeriesSet(void); //default constructor
 	CTimeSeriesSet(int n); //construction with number of variables (timeseries)
 	CTimeSeriesSet(int numberofBTCs, int sizeofBTCvector);
-	CTimeSeriesSet(const CTimeSeriesSet &BTC);
-	CTimeSeriesSet(const CTimeSeries &BTC);
+	CTimeSeriesSet(const CTimeSeriesSet &BTC); //copy constructor
+	CTimeSeriesSet(const CTimeSeries &BTC); //build from a single timeseries
 	CTimeSeriesSet(string filename, bool varytime);
-	int nvars;
+	int nvars; //number of variables
 	vector<CTimeSeries> BTC;
 	void writetofile(char outputfile[]);
 	int maxnumpoints();
@@ -79,6 +79,7 @@ public:
 	static CTimeSeriesSet unCompact(QDataStream &data);
 #endif // QT_version
 	~CTimeSeriesSet(void);
+	int getnumvars() { return BTC.size(); };
 };
 
 double diff(CTimeSeriesSet B1, CTimeSeriesSet B2);

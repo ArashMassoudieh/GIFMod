@@ -23,6 +23,7 @@ class CConnection
 public:
 	CConnection(void);
 	CConnection(const CConnection &CC); // copy constructor (Creating a new Object as a copy of an existing object)//should be CConnection(const CConnection& CC); however, both are the same
+	CConnection(string name, string Block1ID, string Block2ID, string props); // create a connector based on the properties given; 
 	CConnection& operator=(const CConnection &CC);//equal operator
 	~CConnection(void);
 	string Block1ID, Block2ID;
@@ -32,41 +33,6 @@ public:
 	vector <double> flow_params; 
 	bool fixed;// fixed flow
 	double fixed_val; //the value of fixed flow
-	/*Richards: 
-		50: K_s: Saturated Hydraulic Conductivity
-		51: theta_s, saturated moisture content
-		52: theta_r, residual moisture content
-		53: alpha, van Genuchten alpha
-		54: n, van Genuchten n
-		55: m, van Genuchten m
-		56: L, van Genuchten L
-	Pipe (HW):
-		50: Roughness
-		51: Exponent
-	Kinematic Wave:
-		50: Roughness coefficient
-		51: Exponent
-	Saturated Flow:
-		50: Saturated Hydraulic Conductivity
-	*/
-	/* variable codes: 
-		H: 1
-		A: 2
-		V: 3
-		S: 4
-		z0: 5
-		d: 6
-		Q: 7
-		v: 8
-		s: 9 :effective saturation
-		theta: 10: volumetric water content 
-		Hydraulic Parameters: 50-99
-		G: 101-199
-		GS: 1000-1999
-		Reaction parameters: 2000-2999
-		Dispersion: 3000-3099
-		tr_alpha: 3100-3199
-	*/
 	double Q, Q_star; // flow rate: positive from block1 to block 2;
 	double Q_v, Q_v_star; // vapor diffusion flow rate: positive from block1 to block 2;
 	double d; //distance from centers of blocks //dz for richards equation

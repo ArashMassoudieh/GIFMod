@@ -19,6 +19,7 @@
 using namespace std;
 
 enum Block_types { Soil, Pond, Storage, Catchment, Manhole, Darcy, Stream, Plant };
+namespace basic_properties { enum basic_props { H = 1, A = 2, V = 3, S = 4, z0 = 5, depth = 6, q = 8, relative_saturation = 9, moisture_content = 10, depression_storage = 12, vapor_diffusion = 13, bulk_density = 14, air_volume = 15, location_x = 20, location_y = 21, location_z = 22 }; };
 class CGWA;
 class CMedium;
 
@@ -39,26 +40,39 @@ struct plant_props // plant properties
 
 };
 
+struct r_location
+{
+	double x;
+	double y;
+	double z;
+};
+
 class CMBBlock
 {
 public:
 	CMBBlock(void);// default constructor
 	~CMBBlock(void);
 	CMBBlock(const CMBBlock& BB);// copy constructor
+	CMBBlock(string name, string params); //builds a block and assigns the properties in the string
 	int n_constts; 	int n_phases; //number of chemical species, number of phases;
     void set_num_phases_constts(int n, int m);
     void set_num_phases(int n);
     void set_num_constts(int m);
     CMBBlock& operator=(const CMBBlock &BB); //equal operator
 	string ID; //Identification of the Mass Balance Block
-	double H, A, V, S;  //Head, Area, Volume, Storage
-	double q; // Darcy flux
-	double DS;  //Depression Storage (thickness)
-	double H_star, A_star, V_star, S_star; //Head, Area, Volume, Storage
-	double z0; //reference_elevation
-	double bulk_density;
-	int air_phase;
-	double porosity; //MM
+	void set_location(double x, double y=0, double z=0) { real_location.x = x, real_location.y = y, real_location.z = z; };
+	void set_location_x(double x) { real_location.x = x; };
+	void set_location_y(double y) { real_location.y = y; };
+	void set_location_z(double z) { real_location.z = z; };
+	double get_x() { return real_location.x; };
+	double get_y() { return real_location.y; };
+	double get_z() { return real_location.z; };
+	vector<double> get_location()
+	{
+		vector<double> out; out.push_back(real_location.x); out.push_back(real_location.y); out.push_back(real_location.z);
+		return out; 
+	}
+
 	vector<CSolid_Phase*> Solid_phase;
 	vector<vector<double>> G; //Solid phases G[i][j] i: solid_type_counter, j: phase identifier
 	vector<vector<double>> G_star; //Solid phases
@@ -99,7 +113,8 @@ public:
     void set_val_star(int i, double val); //set the value of physical properties, variables and parameters based on star values
     void set_val(const string &SS, double val); //set the value of physical properties, variables and parameters based on star values
 	vector<CBTCSet> inflow; //inflow time-series
-	
+	double& get_S() { return S; };
+	double& get_S_star() { return S_star; };
 	
 	vector<string> inflow_filename;
 	int indicator; //specify block medium 0: soil, 1: pond
@@ -116,20 +131,6 @@ public:
     double get_evaporation(double t);
     double get_evaporation(int j, double t);
 	vector<int> Solid_phase_id;
-	/* variable codes: 
-	H: 1
-	A: 2
-	V: 3
-	S: 4
-	z0: 5
-	d: 6
-	Q: 7
-	v: 8
-	Hydraulic Parameters: 50-99
-	G: 101-199
-	GS: 1000-1999
-	Reaction parameters: 2000-2999
-	*/
 	vector<CFunction> funcs;
 	double MBBlocks;  //MM
 	bool fixed;// fixed flow for connected connector
@@ -184,5 +185,18 @@ public:
 #ifdef GWA
 	CGWA *parent;
 #endif
+	int air_phase;
+
+
+private: 
+	double H, A, V, S;  //Head, Area, Volume, Storage
+	double q; // Darcy flux
+	double DS;  //Depression Storage (thickness)
+	double H_star, A_star, V_star, S_star; //Head, Area, Volume, Storage
+	double z0; //reference_elevation
+	double bulk_density;
+	double porosity;
+	r_location real_location; 
+
 };
 

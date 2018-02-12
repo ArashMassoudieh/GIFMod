@@ -455,14 +455,26 @@ void GraphWidget::update(bool fast)
 void GraphWidget::mousePressEvent(QMouseEvent *event)
 {
 	tableProp->setModel(0);
-	Node *node = qgraphicsitem_cast<Node*> (itemAt(event->pos())); //Get the item at the position
+    QList<QGraphicsItem *> itemList = items(event->pos());
+    Node *node = NULL;
+    Edge *edge = NULL;
+    foreach (QGraphicsItem *item, itemList)
+    {
+        Node *node1 = qgraphicsitem_cast<Node*> (item);
+        if (node1 != NULL)
+            node = node1;
+        Edge *edge1 = qgraphicsitem_cast<Edge*> (item);
+        if (edge1 != NULL)
+            edge = edge1;
+    }
+    /*node = qgraphicsitem_cast<Node*> (itemAt(event->pos())); //Get the item at the position
 	if (node)
 	{	//qDebug() << "Name: "<< node->Name()<<" Flag:" << node->flags() << "enabled:" << node->isEnabled() << "active:" << node->isActive();
 	}
-	Edge *edge = qgraphicsitem_cast<Edge*> (itemAt(event->pos())); //Get the item at the position
+    edge = qgraphicsitem_cast<Edge*> (itemAt(event->pos())); //Get the item at the position
 	if (edge)
 	{	//qDebug() << "Name: " << edge->Name() << " Flag:" << edge->flags() << "enabled:" << edge->isEnabled() << "active:" << edge->isActive();
-	}
+    }*/
 
 	if (event->buttons() == Qt::MiddleButton && Operation_Mode == Operation_Modes::NormalMode)
 	{
@@ -750,8 +762,8 @@ void GraphWidget::mouseReleaseEvent(QMouseEvent *event)
 							node->setFlag(QGraphicsItem::ItemIsMovable, false);
 				if (edge)
 				{
-					if (edge->dist(mapToScene(event->pos())) < 120) 
-						edge->setSelected(true);
+                    if (edge->dist(mapToScene(event->pos())) < 5)
+                        edge->setSelected(true);
 				}
 				//if (!node && !edge) deselectAll();
 			}
@@ -829,7 +841,7 @@ void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QStri
 			float factor = 1;
 			float shift = 0;
 			bool remove = false;
-			int index = model->getblocksq(nodeNames[i].toStdString());
+			int index = model->lookup_blocks(nodeNames[i].toStdString());
 			if (propertyName == "Storage") {
 				data.push_back(model->ANS[index]);
 			}
@@ -879,7 +891,7 @@ void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QStri
 	}
 
 	if (time == -1)
-		time = model->Timemin;
+		time = model->get_time_min();
 	//float t = QInputDialog::getDouble(qApp->activeWindow(), "Input Dialog Box", QString("Enter time between(%1-%2):").arg(model->Timemin).arg(model->Timemax), 0, model->Timemin, model->Timemax, 4);
 
 	colorScheme::colorandLegend(colors, time, "Blue-Red", false, 8);
@@ -905,7 +917,7 @@ void GraphWidget::updateNodesColorCodes_WaterQuality(QStringList property, bool 
 		{
 			float factor = 1;
 			float shift = 0;
-			int index = model->getblocksq(nodeNames[i].toStdString());
+			int index = model->lookup_blocks(nodeNames[i].toStdString());
 			if (property[0] == "Particle")
 			{
 				int index = model->get_member_no(nodeNames[i], property[1], property[3]);
@@ -929,7 +941,7 @@ void GraphWidget::updateNodesColorCodes_WaterQuality(QStringList property, bool 
 	}
 
 	if (time == -1)
-		time = model->Timemin;
+		time = model->get_time_min();
 	//float t = QInputDialog::getDouble(qApp->activeWindow(), "Input Dialog Box", QString("Enter time between(%1-%2):").arg(model->Timemin).arg(model->Timemax), 0, model->Timemin, model->Timemax, 4);
 
 	colorScheme::colorandLegend(colors, time, "Blue-Red", false, 8);
@@ -954,7 +966,7 @@ void GraphWidget::updateEdgesColorCodes(QString propertyName, bool logged, QStri
 		{
 			float factor = 1;
 			float shift = 0;
-			int index = model->getconnectorsq(edgeNames[i].toStdString());
+			int index = model->lookup_connectors(edgeNames[i].toStdString());
 			if (propertyName == "Flow") {
 				data.push_back(model->ANS[Nodes().count() + index].fabs());
 			}
@@ -984,7 +996,7 @@ void GraphWidget::updateEdgesColorCodes(QString propertyName, bool logged, QStri
 	}
 
 	if (time == -1)
-		time = model->Timemin;
+		time = model->get_time_min();
 	//float t = QInputDialog::getDouble(qApp->activeWindow(), "Input Dialog Box", QString("Enter time between(%1-%2):").arg(model->Timemin).arg(model->Timemax), 0, model->Timemin, model->Timemax, 4);
 
 	colorScheme::colorandLegend(colors, time, "Blue-Red", false, 8);
@@ -1421,8 +1433,8 @@ QList<QMap<QString, QVariant>> GraphWidget::compact() const// QDataStream &out, 
 	{
 		QMap<QString, QVariant> r;
 		r["GUI"] = "Block Index";
-		for (int i = 0; i < modelSet->Medium[0].Blocks.size(); i++)
-			r[QString::fromStdString(modelSet->Medium[0].Blocks[i].ID)] = i;
+		for (int i = 0; i < modelSet->Medium[0].blocks_count(); i++)
+			r[QString::fromStdString(modelSet->Medium[0].Block(i).ID)] = i;
 		//qDebug() << "Block Index" << " " << getTime();
 
 		list.append(r);
@@ -1434,8 +1446,8 @@ QList<QMap<QString, QVariant>> GraphWidget::compact() const// QDataStream &out, 
 
 		r["GUI"] = "Connector Index";
 #ifdef GIFMOD
-		for (int i = 0; i < modelSet->Medium[0].Connector.size(); i++)
-			r[QString::fromStdString(modelSet->Medium[0].Connector[i].ID)] = i;
+		for (int i = 0; i < modelSet->Medium[0].connectors_count(); i++)
+			r[QString::fromStdString(modelSet->Medium[0].Connector(i).ID)] = i;
 #endif
 		//qDebug() << "Connector Index" << " " << getTime();
 		list.append(r);
@@ -2371,7 +2383,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 					{
 						QStringList list;
 						list.append(("Particle"));
-						int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+						int BTCid = model->get_member_no(model->lookup_blocks(n->Name().toStdString()),
 							model->lookup_particle_type(p->Name().toStdString()), 0);
 						list.append(QString::number(BTCid));
 						menuKey[particleSubMenu->addAction("Mobile")] = list;
@@ -2380,13 +2392,13 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 					{
 						QStringList list;
 						list.append(("Particle"));
-						int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+						int BTCid = model->get_member_no(model->lookup_blocks(n->Name().toStdString()),
 							model->lookup_particle_type(p->Name().toStdString()), 0);
 						list.append(QString::number(BTCid));
 						menuKey[particleSubMenu->addAction("Mobile")] = list;
 						list.clear();
 						list.append(("Particle"));
-						BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+						BTCid = model->get_member_no(model->lookup_blocks(n->Name().toStdString()),
 							model->lookup_particle_type(p->Name().toStdString()), 1);
 						list.append(QString::number(BTCid));
 						menuKey[particleSubMenu->addAction("Attached")] = list;
@@ -2395,19 +2407,19 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 					{
 						QStringList list;
 						list.append(("Particle"));
-						int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+						int BTCid = model->get_member_no(model->lookup_blocks(n->Name().toStdString()),
 							model->lookup_particle_type(p->Name().toStdString()), 0);
 						list.append(QString::number(BTCid));
 						menuKey[particleSubMenu->addAction("Mobile")] = list;
 						list.clear();
 						list.append(("Particle"));
-						BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+						BTCid = model->get_member_no(model->lookup_blocks(n->Name().toStdString()),
 							model->lookup_particle_type(p->Name().toStdString()), 2);
 						list.append(QString::number(BTCid));
 						menuKey[particleSubMenu->addAction("Reversible attached")] = list;
 						list.clear();
 						list.append(("Particle"));
-						BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+						BTCid = model->get_member_no(model->lookup_blocks(n->Name().toStdString()),
 							model->lookup_particle_type(p->Name().toStdString()), 1);
 						list.append(QString::number(BTCid));
 						menuKey[particleSubMenu->addAction("Irreversible attached")] = list;
@@ -2426,7 +2438,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 					//QMenu *constituentSubMenu = waterQualitySubMenu->addMenu(e->Name());
 					QStringList list;
 					list.append("Constituent");
-					int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()), -2, 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
+					int BTCid = model->get_member_no(model->lookup_blocks(n->Name().toStdString()), -2, 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
 					list.append(QString::number(BTCid));
 					menuKey[waterQualitySubMenu->addAction(e->Name())] = list;
 				}
@@ -2437,7 +2449,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 					constituentSorbedSubMenu = sorbedSubMenu->addMenu(e->Name());
 					QStringList list;
 					list.append("Constituent");
-					int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()), -1, 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
+					int BTCid = model->get_member_no(model->lookup_blocks(n->Name().toStdString()), -1, 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
 					list.append(QString::number(BTCid));
 					menuKey[constituentSorbedSubMenu->addAction("Soil")] = list;
                     for (Entity *p : entitiesByType("Particle"))
@@ -2447,7 +2459,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 						{
 							QStringList list;
 							list.append("Constituent");
-							int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+							int BTCid = model->get_member_no(model->lookup_blocks(n->Name().toStdString()),
 								model->lookup_particle_type(p->Name().toStdString()), 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
 							list.append(QString::number(BTCid));
 							menuKey[particleSubMenu->addAction("Mobile")] = list;
@@ -2456,13 +2468,13 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 						{
 							QStringList list;
 							list.append("Constituent");
-							int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+							int BTCid = model->get_member_no(model->lookup_blocks(n->Name().toStdString()),
 								model->lookup_particle_type(p->Name().toStdString()), 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
 							list.append(QString::number(BTCid));
 							menuKey[particleSubMenu->addAction("Mobile")] = list;
 							list.clear();
 							list.append("Constituent");
-							BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+							BTCid = model->get_member_no(model->lookup_blocks(n->Name().toStdString()),
 								model->lookup_particle_type(p->Name().toStdString()), 1, model->RXN().look_up_constituent_no(e->Name().toStdString()));
 							list.append(QString::number(BTCid));
 							menuKey[particleSubMenu->addAction("Attached")] = list;
@@ -2471,19 +2483,19 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 						{
 							QStringList list;
 							list.append("Constituent");
-							int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+							int BTCid = model->get_member_no(model->lookup_blocks(n->Name().toStdString()),
 								model->lookup_particle_type(p->Name().toStdString()), 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
 							list.append(QString::number(BTCid));
 							menuKey[particleSubMenu->addAction("Mobile")] = list;
 							list.clear();
 							list.append("Constituent");
-							BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+							BTCid = model->get_member_no(model->lookup_blocks(n->Name().toStdString()),
 								model->lookup_particle_type(p->Name().toStdString()), 1, model->RXN().look_up_constituent_no(e->Name().toStdString()));
 							list.append(QString::number(BTCid));
 							menuKey[particleSubMenu->addAction("Reversible attached")] = list;
 							list.clear();
 							list.append("Constituent");
-							BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+							BTCid = model->get_member_no(model->lookup_blocks(n->Name().toStdString()),
 								model->lookup_particle_type(p->Name().toStdString()), 2, model->RXN().look_up_constituent_no(e->Name().toStdString()));
 							list.append(QString::number(BTCid));
 							menuKey[particleSubMenu->addAction("Irreversible attached")] = list;
@@ -2498,9 +2510,9 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 					//QMenu *constituentSubMenu = waterQualitySubMenu->addMenu(e->Name());
 					QStringList list;
 					list.append("Constituent Mass");
-					int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()), -2, 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
+					int BTCid = model->get_member_no(model->lookup_blocks(n->Name().toStdString()), -2, 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
 					list.append(QString::number(BTCid));
-					BTCid = model->getblocksq(n->Name().toStdString());
+					BTCid = model->lookup_blocks(n->Name().toStdString());
 					list.append(QString::number(BTCid));
 					menuKey[massesSubMenu->addAction(e->Name())] = list;
 				}
@@ -2511,9 +2523,9 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 					constituentSorbedmassSubMenu = sorbedmassSubMenu->addMenu(e->Name());
 					QStringList list;
 					list.append("Constituent Mass");
-					int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()), -1, 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
+					int BTCid = model->get_member_no(model->lookup_blocks(n->Name().toStdString()), -1, 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
 					list.append(QString::number(BTCid));
-					BTCid = model->getblocksq(n->Name().toStdString());
+					BTCid = model->lookup_blocks(n->Name().toStdString());
 					list.append(QString::number(BTCid));
 					menuKey[constituentSorbedSubMenu->addAction("Soil")] = list;
                     for (Entity *p : entitiesByType("Particle"))
@@ -2523,10 +2535,10 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 						{
 							QStringList list;
 							list.append("Constituent Mass");
-							int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+							int BTCid = model->get_member_no(model->lookup_blocks(n->Name().toStdString()),
 								model->lookup_particle_type(p->Name().toStdString()), 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
 							list.append(QString::number(BTCid));
-							BTCid = model->getblocksq(n->Name().toStdString());
+							BTCid = model->lookup_blocks(n->Name().toStdString());
 							list.append(QString::number(BTCid));
 							menuKey[particlemassSubMenu->addAction("Mobile")] = list;
 						}
@@ -2534,16 +2546,16 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 						{
 							QStringList list;
 							list.append("Constituent Mass");
-							int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+							int BTCid = model->get_member_no(model->lookup_blocks(n->Name().toStdString()),
 								model->lookup_particle_type(p->Name().toStdString()), 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
 							list.append(QString::number(BTCid));
 							menuKey[particlemassSubMenu->addAction("Mobile")] = list;
 							list.clear();
 							list.append("Constituent Mass");
-							BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+							BTCid = model->get_member_no(model->lookup_blocks(n->Name().toStdString()),
 								model->lookup_particle_type(p->Name().toStdString()), 1, model->RXN().look_up_constituent_no(e->Name().toStdString()));
 							list.append(QString::number(BTCid));
-							BTCid = model->getblocksq(n->Name().toStdString());
+							BTCid = model->lookup_blocks(n->Name().toStdString());
 							list.append(QString::number(BTCid));
 							menuKey[particlemassSubMenu->addAction("Attached")] = list;
 						}
@@ -2551,24 +2563,24 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 						{
 							QStringList list;
 							list.append("Constituent Mass");
-							int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+							int BTCid = model->get_member_no(model->lookup_blocks(n->Name().toStdString()),
 								model->lookup_particle_type(p->Name().toStdString()), 0, model->RXN().look_up_constituent_no(e->Name().toStdString()));
 							list.append(QString::number(BTCid));
 							menuKey[particlemassSubMenu->addAction("Mobile")] = list;
 							list.clear();
 							list.append("Constituent Mass");
-							BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+							BTCid = model->get_member_no(model->lookup_blocks(n->Name().toStdString()),
 								model->lookup_particle_type(p->Name().toStdString()), 1, model->RXN().look_up_constituent_no(e->Name().toStdString()));
 							list.append(QString::number(BTCid));
-							BTCid = model->getblocksq(n->Name().toStdString());
+							BTCid = model->lookup_blocks(n->Name().toStdString());
 							list.append(QString::number(BTCid));
 							menuKey[particlemassSubMenu->addAction("Reversible attached")] = list;
 							list.clear();
 							list.append("Constituent Mass");
-							BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
+							BTCid = model->get_member_no(model->lookup_blocks(n->Name().toStdString()),
 								model->lookup_particle_type(p->Name().toStdString()), 2, model->RXN().look_up_constituent_no(e->Name().toStdString()));
 							list.append(QString::number(BTCid));
-							BTCid = model->getblocksq(n->Name().toStdString());
+							BTCid = model->lookup_blocks(n->Name().toStdString());
 							list.append(QString::number(BTCid));
 							menuKey[particlemassSubMenu->addAction("Irreversible attached")] = list;
 						}
@@ -3038,7 +3050,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 			format.yAxisLabel.append("Storage (m^3)");
 			format.xAxisLabel.append("Time (day)");
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
-			plot->addScatterPlot(model->ANS, model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Storage"), 1, 0, format);
+			plot->addScatterPlot(model->ANS, model->lookup_blocks(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Storage"), 1, 0, format);
 			plot->show();
 		}
 		if (selectedAction->text() == "Plot Head")
@@ -3046,7 +3058,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
 			format.yAxisLabel.append("Head (m)");
 			format.xAxisLabel.append("Time (day)");
-			plot->addScatterPlot(model->ANS, Edges().count() + Nodes().count() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Head"), 1, 0, format);
+			plot->addScatterPlot(model->ANS, Edges().count() + Nodes().count() + model->lookup_blocks(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Head"), 1, 0, format);
 			plot->show();
 		}
 		if (selectedAction->text() == "Moisture Content")
@@ -3056,9 +3068,9 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 			format.yAxisLabel.append("Moisture Content");
 			format.xAxisLabel.append("Time (day)");
 			if (n->objectType.ObjectType=="Plant")
-				plot->addScatterPlot(model->ANS, model->getblocksq(n->Name().toStdString()), model->getblocksq(n->Name().toStdString()) + 3 * Edges().count() + 3 * Nodes().count() ,  QString("%1: %2").arg(n->Name()).arg("Moisture Content"), format);
+				plot->addScatterPlot(model->ANS, model->lookup_blocks(n->Name().toStdString()), model->lookup_blocks(n->Name().toStdString()) + 3 * Edges().count() + 3 * Nodes().count() ,  QString("%1: %2").arg(n->Name()).arg("Moisture Content"), format);
 			else
-				plot->addScatterPlot(model->ANS, model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Moisture Content"), 1.0 / volume, 0, format);
+				plot->addScatterPlot(model->ANS, model->lookup_blocks(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Moisture Content"), 1.0 / volume, 0, format);
 			plot->show();
 		}
 		if (selectedAction->text() == "Water Depth")
@@ -3067,7 +3079,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 			format.yAxisLabel.append("Depth (m)");
 			format.xAxisLabel.append("Time (day)");
 			double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
-			plot->addScatterPlot(model->ANS, Edges().count() + Nodes().count() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Water Depth"), 1, -z0, format);
+			plot->addScatterPlot(model->ANS, Edges().count() + Nodes().count() + model->lookup_blocks(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Water Depth"), 1, -z0, format);
 			plot->show();
 		}
 		if (selectedAction->text() == "Evapotranspiration Rate")
@@ -3076,7 +3088,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 			format.yAxisLabel.append("Evaporation rate (m^3/day)");
 			format.xAxisLabel.append("Time (day)");
 			double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
-			plot->addScatterPlot(model->ANS, Edges().count() + 2 * Nodes().count() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Evapotranspiration Rate"), 1, 0, format);
+			plot->addScatterPlot(model->ANS, Edges().count() + 2 * Nodes().count() + model->lookup_blocks(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Evapotranspiration Rate"), 1, 0, format);
 			plot->show();
 		}
 		if (selectedAction->text() == "Leaf Area Index")
@@ -3085,7 +3097,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 			format.yAxisLabel.append("Leaf Area Index");
 			format.xAxisLabel.append("Time (day)");
 			double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
-			plot->addScatterPlot(model->ANS, 3* Edges().count() + 4 * Nodes().count() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Leaf Area Index"), 1, 0, format);
+			plot->addScatterPlot(model->ANS, 3* Edges().count() + 4 * Nodes().count() + model->lookup_blocks(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Leaf Area Index"), 1, 0, format);
 			plot->show();
 		}
 
@@ -3095,7 +3107,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 			format.yAxisLabel.append("Bio-volume (m^3)");
 			format.xAxisLabel.append("Time (day)");
 			double z0 = n->val("z0").convertToDefaultUnit().toDouble();// model->Blocks[model->getblocksq(n->Name().toStdString())].z0;
-			plot->addScatterPlot(model->ANS, 3 * Edges().count() + 3 * Nodes().count() + model->getblocksq(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Bio-volume"), 1, 0, format);
+			plot->addScatterPlot(model->ANS, 3 * Edges().count() + 3 * Nodes().count() + model->lookup_blocks(n->Name().toStdString()), QString("%1: %2").arg(n->Name()).arg("Bio-volume"), 1, 0, format);
 			plot->show();
 		}
 
@@ -3236,6 +3248,8 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 
 void GraphWidget::edgeContextMenuRequested(Edge* e, QPointF pos, QMenu *menu)
 {
+    if (e->dist(pos) > 5)
+        return;
 	QAction *deleteAction;
 	bool called_by_clicking_on_graphical_object = false;
 	if (!menu) {
@@ -3283,7 +3297,7 @@ void GraphWidget::edgeContextMenuRequested(Edge* e, QPointF pos, QMenu *menu)
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
 			format.yAxisLabel.append(XString::reform(QString("Flow (m~^3/day)")));
 			format.xAxisLabel.append("Time (day)");
-			plot->addScatterPlot(model->ANS, Nodes().count() + model->getconnectorsq(e->Name().toStdString()), QString("%1: %2").arg(e->Name()).arg("Flow"),1,0,format);
+			plot->addScatterPlot(model->ANS, Nodes().count() + model->lookup_connectors(e->Name().toStdString()), QString("%1: %2").arg(e->Name()).arg("Flow"),1,0,format);
 			plot->show();
 		}
 		if (selectedAction->text() == "Velocity")
@@ -3294,8 +3308,8 @@ void GraphWidget::edgeContextMenuRequested(Edge* e, QPointF pos, QMenu *menu)
 			CBTC flow, area, velocity;
 			format.yAxisLabel.append(XString::reform(QString("Velocity (m/day)")));
 			format.xAxisLabel.append("Time (day)");
-			flow = model->ANS.BTC[Nodes().count() + model->getconnectorsq(e->Name().toStdString())];
-			area = model->ANS.BTC[Nodes().count() * 3 + Edges().count() + model->getconnectorsq(e->Name().toStdString())];
+			flow = model->ANS.BTC[Nodes().count() + model->lookup_connectors(e->Name().toStdString())];
+			area = model->ANS.BTC[Nodes().count() * 3 + Edges().count() + model->lookup_connectors(e->Name().toStdString())];
 			velocity = flow % area;
 
 			plot->addScatterPlot(velocity, QString("%1: %2").arg(e->Name()).arg("Velocity"), 1, 0, false, format);
@@ -3308,7 +3322,7 @@ void GraphWidget::edgeContextMenuRequested(Edge* e, QPointF pos, QMenu *menu)
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
 			format.yAxisLabel.append(XString::reform(QString("Flow (m~^2")));
 			format.xAxisLabel.append("Time (day)");
-			plot->addScatterPlot(model->ANS, Nodes().count() * 3 + Edges().size() + model->getconnectorsq(e->Name().toStdString()), QString("%1: %2").arg(e->Name()).arg("Area"));
+			plot->addScatterPlot(model->ANS, Nodes().count() * 3 + Edges().size() + model->lookup_connectors(e->Name().toStdString()), QString("%1: %2").arg(e->Name()).arg("Area"));
 			plot->show();
 		}
 		if (selectedAction->text() == "Vapor exchange rate")
@@ -3318,7 +3332,7 @@ void GraphWidget::edgeContextMenuRequested(Edge* e, QPointF pos, QMenu *menu)
 			plotWindow *plot = new plotWindow(this, QString("%1: %2").arg(experimentName()).arg(selectedAction->text().remove("Plot ")));
 			format.yAxisLabel.append(XString::reform(QString("Flow (m~^3/day)")));
 			format.xAxisLabel.append("Time (day)");
-			plot->addScatterPlot(model->ANS, Nodes().count() * 3 + 2 * Edges().size() + model->getconnectorsq(e->Name().toStdString()), QString("%1: %2").arg(e->Name()).arg("Vapor exchange rate"));
+			plot->addScatterPlot(model->ANS, Nodes().count() * 3 + 2 * Edges().size() + model->lookup_connectors(e->Name().toStdString()), QString("%1: %2").arg(e->Name()).arg("Vapor exchange rate"));
 			plot->show();
 		}
 
@@ -3804,13 +3818,13 @@ void GraphWidget::colorSchemeLegend_closed()
 }
 void GraphWidget::legendSliderChanged_Nodes(int value)
 {
-	double time = model->Timemin + value * model->dt();
+	double time = model->get_time_min() + value * model->dt();
 	colorScheme::colorandLegend(colors, time, "Blue-Red", false, 8);
 	applyColorstoNodes();
 }
 void GraphWidget::legendSliderChanged_Edges(int value)
 {
-	double time = model->Timemin + value * model->dt();
+	double time = model->get_time_min() + value * model->dt();
 	colorScheme::colorandLegend(colors, time, "Blue-Red", false, 8);
 	applyColorstoEdges();
 }

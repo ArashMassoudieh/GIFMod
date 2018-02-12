@@ -705,6 +705,20 @@ int quan(string S)
 	return -1;
 }
 
+map<string, double> string_to_map(string s)
+{
+	map<string, double> out;
+	vector<string> s1 = split(s, ',');
+	for (int i = 0; i < s.size(); i++)
+	{
+		vector<string> s2 = split(s1[i], '=');
+		double val = atof(s2[1].c_str());
+		out[s2[1]] = val; 
+	}
+	return out; 
+	
+}
+
 vector<string> getline(ifstream& file)
 {
 	string line;

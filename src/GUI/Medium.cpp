@@ -33,7 +33,7 @@ CMedium::~CMedium(void)
 	//qDebug() << "Deleting Blocks";
 	Blocks.clear();
 	//qDebug() << "Deleting Connectors";
-	Connector.clear();
+	Connectors.clear();
 	//qDebug() << "Connectors deleted";
 
 	parent = 0;
@@ -68,7 +68,7 @@ CMedium::CMedium(const CMedium &M)
 
 
 	Blocks = M.Blocks;
-	Connector = M.Connector;
+	Connectors = M.Connectors;
 
 	lid_config = M.lid_config;
 
@@ -86,11 +86,11 @@ CMedium::CMedium(const CMedium &M)
 
 	Solution_dt = M.Solution_dt;
 
-	for (int i=0; i<Connector.size(); i++)
+	for (int i=0; i<connectors_count(); i++)
 	{
-		Connector[i].Block1 = &Blocks[getblocksq(Connector[i].Block1ID)];
-		Connector[i].Block2 = &Blocks[getblocksq(Connector[i].Block2ID)];
-		Connector[i].RXN = &RXN();
+		Connector(i).Block1 = &Blocks[getblocksq(Connector(i).Block1ID)];
+		Connector(i).Block2 = &Blocks[getblocksq(Connector(i).Block2ID)];
+		Connector(i).RXN = &RXN();
 	}
 
 	for (int ii=0; ii<Blocks.size(); ii++)
@@ -146,7 +146,7 @@ CMedium& CMedium::operator=(const CMedium &M)
 
 
 	Blocks = M.Blocks;
-	Connector = M.Connector;
+	Connectors = M.Connectors;
 
 	lid_config = M.lid_config;
 
@@ -165,11 +165,11 @@ CMedium& CMedium::operator=(const CMedium &M)
 
 	Solution_dt = M.Solution_dt;
 
-	for (int i = 0; i<Connector.size(); i++)
+	for (int i = 0; i<connectors_count(); i++)
 	{
-		Connector[i].Block1 = &Blocks[getblocksq(Connector[i].Block1ID)];
-		Connector[i].Block2 = &Blocks[getblocksq(Connector[i].Block2ID)];
-		Connector[i].RXN = &RXN();
+		Connector(i).Block1 = &Blocks[getblocksq(Connector(i).Block1ID)];
+		Connector(i).Block2 = &Blocks[getblocksq(Connector(i).Block2ID)];
+		Connector(i).RXN = &RXN();
 	}
 
 	for (int ii = 0; ii<Blocks.size(); ii++)
@@ -204,7 +204,7 @@ void CMedium::get_state(const CMedium &M)
 	InvJ1 = M.InvJ1;
 	InvJ2 = M.InvJ2;
 	Blocks = M.Blocks;
-	Connector = M.Connector;
+	Connectors = M.Connectors;
 
 	failed = M.failed;
 	J_update = M.J_update;
@@ -267,116 +267,6 @@ void CMedium::f_get_model_configuration()
 {
 	for (int i=0; i<lid_config.keyword.size(); i++)
 	{
-		if (tolower(trim(lid_config.keyword[i]))=="medium")
-		{
-			if ((tolower(lid_config.value[i]) == "soil") || (tolower(lid_config.value[i]) == "darcy") || (tolower(lid_config.value[i]) == "stream") || (tolower(lid_config.value[i]) == "catchment"))
-			{
-				int n=1;
-				double dz = 1;
-				double slope = 0;
-				double z0 = 0;
-				double length = 0;
-				vector<int> s_phase_id;
-
-				if (lookup(lid_config.param_names[i],"n")!=-1)
-					n = atoi(lid_config.param_vals[i][lookup(lid_config.param_names[i],"n")].c_str());
-				if (lookup(lid_config.param_names[i],"dz")!=-1)
-					dz = atof(lid_config.param_vals[i][lookup(lid_config.param_names[i],"dz")].c_str());
-				else
-					dz=atof(lid_config.param_vals[i][lookup(lid_config.param_names[i],"depth")].c_str())/n;
-
-				if (lookup(lid_config.param_names[i], "slope") != -1)
-					slope = atof(lid_config.param_vals[i][lookup(lid_config.param_names[i], "slope")].c_str());
-				if (lookup(lid_config.param_names[i], "z0") != -1)
-					z0 = atof(lid_config.param_vals[i][lookup(lid_config.param_names[i], "z0")].c_str());
-				if (lookup(lid_config.param_names[i], "length") != -1)
-					length = atof(lid_config.param_vals[i][lookup(lid_config.param_names[i], "length")].c_str());
-
-				if (lookup(lid_config.param_names[i],"id")==-1)
-				{
-					if (tolower(lid_config.value[i])=="soil")
-						add_Richards_medium(n,dz);
-					else if (tolower(lid_config.value[i])=="darcy")
-						add_Darcy_medium(n,dz);
-					else if (tolower(lid_config.value[i]) == "stream")
-						add_stream_medium(n, z0, slope, length);
-					else if (tolower(lid_config.value[i]) == "catchment")
-						add_catchment_medium(n, z0, slope, length);
-				}
-				else
-				{
-					if (tolower(lid_config.value[i])=="soil")
-						add_Richards_medium(n,dz,atoi(lid_config.param_vals[i][lookup(lid_config.param_names[i],"id")].c_str()));
-					else if (tolower(lid_config.value[i])=="darcy")
-						add_Darcy_medium(n,dz,atoi(lid_config.param_vals[i][lookup(lid_config.param_names[i],"id")].c_str()));
-					else if (tolower(lid_config.value[i]) == "stream")
-						add_stream_medium(n, z0, slope, length,  atoi(lid_config.param_vals[i][lookup(lid_config.param_names[i], "id")].c_str()));
-					else if (tolower(lid_config.value[i]) == "catchment")
-						add_catchment_medium(n, z0, slope, length, atoi(lid_config.param_vals[i][lookup(lid_config.param_names[i], "id")].c_str()));
-				}
-
-				for (int j=0; j<lid_config.param_names[i].size(); j++)
-				{	set_var(lid_config.param_names[i][j],atof(lid_config.param_vals[i][j].c_str()), n);
-
-					//Following Are OverWritten to the previous set_var
-					if (tolower(lid_config.param_names[i][j])=="h_s_expression") for (int ii=Blocks.size()-n; ii<Blocks.size(); ii++) {Blocks[ii].H_S_expression = CStringOP(lid_config.param_vals[i][j]); Blocks[ii].H_S_expression_txt = lid_config.param_vals[i][j];}
-					if (tolower(lid_config.param_names[i][j])=="flow_expression") for (int ii=Connector.size()-(n-1); ii<Connector.size(); ii++)
-						{Connector[ii].flow_expression = CStringOP(lid_config.param_vals[i][j]); Connector[ii].flow_expression_strng = lid_config.param_vals[i][j];}
-					if (tolower(lid_config.param_names[i][j])=="dispersion_expression") for (int ii=Connector.size()-(n-1); ii<Connector.size(); ii++)
-						{Connector[ii].dispersion_expression = CStringOP(lid_config.param_vals[i][j]); Connector[ii].dispersion_strng = lid_config.param_vals[i][j];}
-					if (tolower(lid_config.param_names[i][j])=="z0")
-					{
-						if (lookup(lid_config.param_names[i],"id")==-1)
-							set_z0(atof(lid_config.param_vals[i][j].c_str()));
-						else
-							set_z0(Blocks.size()-n, n, atof(lid_config.param_vals[i][j].c_str()), dz);
-					}
-
-					if (tolower(lid_config.param_names[i][j])=="inflow") for (int ii=Blocks.size()-n; ii<Blocks.size(); ii++) Blocks[ii].inflow_filename.push_back(lid_config.param_vals[i][j]);
-					if ((tolower(lid_config.param_names[i][j])=="solid_phase") || (tolower(lid_config.param_names[i][j])=="particulate_phase"))
-					{	for (int ii=Blocks.size()-n; ii<Blocks.size(); ii++) Blocks[ii].Solid_phase_id.push_back(atoi(lid_config.param_vals[i][j].c_str()));
-						for (int ii=Connector.size()-(n-1); ii<Connector.size(); ii++) Connector[ii].Solid_phase_id.push_back(atoi(lid_config.param_vals[i][j].c_str()));
-					}
-					if ((tolower(lid_config.param_names[i][j]) == "externalflux") || (tolower(lid_config.param_names[i][j]) == "external_flux"))
-					{
-						for (int ii = Blocks.size() - n; ii<Blocks.size(); ii++) Blocks[ii].envexchange_id.push_back(lid_config.param_vals[i][j]);
-					}
-
-
-				}
-
-				if (lookup(lid_config.param_names[i],"V") == -1)
-				{	set_var("v",Blocks[Blocks.size()-n].A*dz, n);
-
-					for (int j=0; j<lid_config.param_names[i].size(); j++)
-					{
-						if (tolower(lid_config.param_names[i][j])=="se") set_var("s",Blocks[Blocks.size()-n].V*(atof(lid_config.param_vals[i][j].c_str())*(Blocks[Blocks.size()-n].fs_params[1]-Blocks[Blocks.size()-n].fs_params[2]) + Blocks[Blocks.size()-n].fs_params[2]), n);
-						if (tolower(lid_config.param_names[i][j])=="theta") set_var("s",Blocks[Blocks.size()-n].V*atof(lid_config.param_vals[i][j].c_str()), n);
-					}
-				}
-
-				for (int ii=0; ii<lid_config.est_param[i].size(); ii++)
-				{
-					for (int iii=Blocks.size()-n; iii<Blocks.size(); iii++)
-						if (lookup_parameters(lid_config.est_param[i][ii]) != -1) {
-							parameters()[lookup_parameters(lid_config.est_param[i][ii])].location.push_back(iii);
-							parameters()[lookup_parameters(lid_config.est_param[i][ii])].quan.push_back(lid_config.param_names[i][ii]);
-							parameters()[lookup_parameters(lid_config.est_param[i][ii])].location_type.push_back(0);
-							parameters()[lookup_parameters(lid_config.est_param[i][ii])].experiment_id.push_back(name);
-						}
-
-					for (int iii=Connector.size()-n+1; iii<Connector.size(); iii++)
-						if (lookup_parameters(lid_config.est_param[i][ii]) != -1) {
-							parameters()[lookup_parameters(lid_config.est_param[i][ii])].location.push_back(iii);
-							parameters()[lookup_parameters(lid_config.est_param[i][ii])].quan.push_back(lid_config.param_names[i][ii]);
-							parameters()[lookup_parameters(lid_config.est_param[i][ii])].location_type.push_back(1);
-							parameters()[lookup_parameters(lid_config.est_param[i][ii])].experiment_id.push_back(name);
-						}
-				}
-
-			}
-	}
-
 		if (tolower(lid_config.keyword[i])=="block")
 		{
 			CMBBlock B;
@@ -394,7 +284,7 @@ void CMedium::f_get_model_configuration()
 			B.set_val("a", atof(lid_config.param_vals[i][lookup(tolower(lid_config.param_names[i]), "a")].c_str()));
 
 			if ((lookup(lid_config.param_names[i], "V") == -1) && (lookup(lid_config.param_names[i], "depth") != -1))
-				B.set_val("v", B.A*atof(lid_config.param_vals[i][lookup(lid_config.param_names[i], "depth")].c_str()));
+				B.set_val("v", B.get_val("a")*atof(lid_config.param_vals[i][lookup(lid_config.param_names[i], "depth")].c_str()));
 
 			for (int j=0; j<lid_config.param_names[i].size(); j++)
 			{
@@ -456,12 +346,12 @@ void CMedium::f_get_model_configuration()
 					C.controller_id = lid_config.param_vals[i][j];
 				}
 			}
-			Connector.push_back(C);
+			Connectors.push_back(C);
 			for (int ii=0; ii<lid_config.est_param[i].size(); ii++)
 			{
 				if (lookup_parameters(lid_config.est_param[i][ii])!=-1)
 				{
-					parameters()[lookup_parameters(lid_config.est_param[i][ii])].location.push_back(Connector.size() - 1);
+					parameters()[lookup_parameters(lid_config.est_param[i][ii])].location.push_back(connectors_count() - 1);
 					parameters()[lookup_parameters(lid_config.est_param[i][ii])].quan.push_back(lid_config.param_names[i][ii]);
 					parameters()[lookup_parameters(lid_config.est_param[i][ii])].location_type.push_back(1);
 					parameters()[lookup_parameters(lid_config.est_param[i][ii])].experiment_id.push_back(name);
@@ -486,19 +376,19 @@ void CMedium::f_get_model_configuration()
 			int ID = atoi(lid_config.value[i].c_str());
 			for (int j=0; j<lid_config.param_names[i].size(); j++)
 			{
-				Connector[ID].set_val(lid_config.param_names[i][j],atof(lid_config.param_vals[i][j].c_str()));  //only sets d value
-				if (tolower(lid_config.param_names[i][j]) == "area_expression") { Connector[ID].area_expression = CStringOP(lid_config.param_vals[i][j]); Connector[ID].area_expression_strng = lid_config.param_vals[i][j]; Connector[ID].const_area = false; }
-				if (tolower(lid_config.param_names[i][j]) == "a") { Connector[ID].const_area = true; }
-				if (tolower(lid_config.param_names[i][j])=="flow_expression") {Connector[ID].flow_expression = CStringOP(lid_config.param_vals[i][j]); Connector[ID].flow_expression_strng =  lid_config.param_vals[i][j];} //flow-expression was fixed
-				if (tolower(lid_config.param_names[i][j]) == "area_expression") { Connector[ID].area_expression = CStringOP(lid_config.param_vals[i][j]); Connector[ID].area_expression_strng = lid_config.param_vals[i][j]; } //flow-expression was fixed
-				if (tolower(lid_config.param_names[i][j])=="block1") Connector[ID].Block1ID = atoi(lid_config.param_vals[i][j].c_str());
-				if (tolower(lid_config.param_names[i][j])=="block2") Connector[ID].Block2ID = atoi(lid_config.param_vals[i][j].c_str());
+				Connector(ID).set_val(lid_config.param_names[i][j],atof(lid_config.param_vals[i][j].c_str()));  //only sets d value
+				if (tolower(lid_config.param_names[i][j]) == "area_expression") { Connector(ID).area_expression = CStringOP(lid_config.param_vals[i][j]); Connector(ID).area_expression_strng = lid_config.param_vals[i][j]; Connector(ID).const_area = false; }
+				if (tolower(lid_config.param_names[i][j]) == "a") { Connector(ID).const_area = true; }
+				if (tolower(lid_config.param_names[i][j])=="flow_expression") {Connector(ID).flow_expression = CStringOP(lid_config.param_vals[i][j]); Connector(ID).flow_expression_strng =  lid_config.param_vals[i][j];} //flow-expression was fixed
+				if (tolower(lid_config.param_names[i][j]) == "area_expression") { Connector(ID).area_expression = CStringOP(lid_config.param_vals[i][j]); Connector(ID).area_expression_strng = lid_config.param_vals[i][j]; } //flow-expression was fixed
+				if (tolower(lid_config.param_names[i][j])=="block1") Connector(ID).Block1ID = atoi(lid_config.param_vals[i][j].c_str());
+				if (tolower(lid_config.param_names[i][j])=="block2") Connector(ID).Block2ID = atoi(lid_config.param_vals[i][j].c_str());
 
 			}
 		}
 	}
 
-	for (int i = 0; i<Connector.size(); i++) Connector[i].ID = Connector[i].Block1ID + "_" + Connector[i].Block2ID;
+	for (int i = 0; i<connectors_count(); i++) Connector(i).ID = Connector(i).Block1ID + "_" + Connector(i).Block2ID;
 }
 
 void CMedium::f_load_inflows()
@@ -563,14 +453,14 @@ void CMedium::f_load_inflows()
 		{
 			if (Blocks[i].precipitation_swch == true)
 				for (int j = 0; j<Precipitation_filename.size(); j++)
-					Blocks[i].inflow.push_back(Precipitation[j].getflow(Blocks[i].A, 1.0 / 24.0 / 4));
+					Blocks[i].inflow.push_back(Precipitation[j].getflow(Blocks[i].get_val("a"), 1.0 / 24.0 / 4));
 		}
 	}
 
-	for (int i = 0; i<Connector.size(); i++)
+	for (int i = 0; i<connectors_count(); i++)
 	{
-		if (Connector[i].pre_flow_filename != "") {
-			Connector[i].presc_flow = true; Connector[i].presc_flowrate = CBTC(pathname() + Connector[i].pre_flow_filename);
+		if (Connector(i).pre_flow_filename != "") {
+			Connector(i).presc_flow = true; Connector(i).presc_flowrate = CBTC(pathname() + Connector(i).pre_flow_filename);
 		}
 
 	}
@@ -600,9 +490,9 @@ void CMedium::f_make_uniform_inflows()
 	for (int i = 0; i<wind.size(); i++)
 		wind[i] = wind[i].make_uniform(dt());
 
-	for (int i = 0; i<Connector.size(); i++)
+	for (int i = 0; i<connectors_count(); i++)
 	{
-		if (Connector[i].presc_flow == true) Connector[i].presc_flowrate = Connector[i].presc_flowrate.make_uniform(dt());
+		if (Connector(i).presc_flow == true) Connector(i).presc_flowrate = Connector(i).presc_flowrate.make_uniform(dt());
 	}
 
 }
@@ -613,72 +503,72 @@ void CMedium::f_make_uniform_inflows()
 
 void CMedium::f_set_default_connector_expressions()
 {
-	for (int ii=0; ii<Connector.size(); ii++)
+	for (int ii=0; ii<connectors_count(); ii++)
 	{
-		if (Connector[ii].flow_expression.terms.size() == 0)
+		if (Connector(ii).flow_expression.terms.size() == 0)
 		{
-			if (Blocks[getblocksq(Connector[ii].Block1ID)].z0 >= Blocks[getblocksq(Connector[ii].Block2ID)].z0)
+			if (Blocks[getblocksq(Connector(ii).Block1ID)].get_val("z0") >= Blocks[getblocksq(Connector(ii).Block2ID)].get_val("z0"))
 			{
-				if (vaporTransport()[Blocks[getblocksq(Connector[ii].Block1ID)].indicator][Blocks[getblocksq(Connector[ii].Block2ID)].indicator] == true)
-				{	Connector[ii].flow_expression = CStringOP(formulasQ()[Blocks[getblocksq(Connector[ii].Block1ID)].indicator][Blocks[getblocksq(Connector[ii].Block2ID)].indicator]+ "+" + formulas()[Vapor]) ;
-					Connector[ii].flow_expression_strng = formulasQ()[Blocks[getblocksq(Connector[ii].Block1ID)].indicator][Blocks[getblocksq(Connector[ii].Block2ID)].indicator]+ "+" + formulas()[Vapor] ;
+				if (vaporTransport()[Blocks[getblocksq(Connector(ii).Block1ID)].indicator][Blocks[getblocksq(Connector(ii).Block2ID)].indicator] == true)
+				{	Connector(ii).flow_expression = CStringOP(formulasQ()[Blocks[getblocksq(Connector(ii).Block1ID)].indicator][Blocks[getblocksq(Connector(ii).Block2ID)].indicator]+ "+" + formulas()[Vapor]) ;
+					Connector(ii).flow_expression_strng = formulasQ()[Blocks[getblocksq(Connector(ii).Block1ID)].indicator][Blocks[getblocksq(Connector(ii).Block2ID)].indicator]+ "+" + formulas()[Vapor] ;
 
 				}
 				else
-				{	Connector[ii].flow_expression = CStringOP(formulasQ()[Blocks[getblocksq(Connector[ii].Block1ID)].indicator][Blocks[getblocksq(Connector[ii].Block2ID)].indicator]) ;
-					Connector[ii].flow_expression_strng = formulasQ()[Blocks[getblocksq(Connector[ii].Block1ID)].indicator][Blocks[getblocksq(Connector[ii].Block2ID)].indicator];
+				{	Connector(ii).flow_expression = CStringOP(formulasQ()[Blocks[getblocksq(Connector(ii).Block1ID)].indicator][Blocks[getblocksq(Connector(ii).Block2ID)].indicator]) ;
+					Connector(ii).flow_expression_strng = formulasQ()[Blocks[getblocksq(Connector(ii).Block1ID)].indicator][Blocks[getblocksq(Connector(ii).Block2ID)].indicator];
 
 				}
 			}
 			else
 			{
-				if (vaporTransport()[Blocks[getblocksq(Connector[ii].Block1ID)].indicator][Blocks[getblocksq(Connector[ii].Block2ID)].indicator] == true)
+				if (vaporTransport()[Blocks[getblocksq(Connector(ii).Block1ID)].indicator][Blocks[getblocksq(Connector(ii).Block2ID)].indicator] == true)
 				{
-					Connector[ii].flow_expression = CStringOP(formulasQ2()[Blocks[getblocksq(Connector[ii].Block1ID)].indicator][Blocks[getblocksq(Connector[ii].Block2ID)].indicator] + "+" + formulas()[Vapor]);
-					Connector[ii].flow_expression_strng = formulasQ2()[Blocks[getblocksq(Connector[ii].Block1ID)].indicator][Blocks[getblocksq(Connector[ii].Block2ID)].indicator] + "+" + formulas()[Vapor];
+					Connector(ii).flow_expression = CStringOP(formulasQ2()[Blocks[getblocksq(Connector(ii).Block1ID)].indicator][Blocks[getblocksq(Connector(ii).Block2ID)].indicator] + "+" + formulas()[Vapor]);
+					Connector(ii).flow_expression_strng = formulasQ2()[Blocks[getblocksq(Connector(ii).Block1ID)].indicator][Blocks[getblocksq(Connector(ii).Block2ID)].indicator] + "+" + formulas()[Vapor];
 				}
 				else
-				{	Connector[ii].flow_expression = CStringOP(formulasQ2()[Blocks[getblocksq(Connector[ii].Block1ID)].indicator][Blocks[getblocksq(Connector[ii].Block2ID)].indicator]) ;
-					Connector[ii].flow_expression_strng = formulasQ2()[Blocks[getblocksq(Connector[ii].Block1ID)].indicator][Blocks[getblocksq(Connector[ii].Block2ID)].indicator];
+				{	Connector(ii).flow_expression = CStringOP(formulasQ2()[Blocks[getblocksq(Connector(ii).Block1ID)].indicator][Blocks[getblocksq(Connector(ii).Block2ID)].indicator]) ;
+					Connector(ii).flow_expression_strng = formulasQ2()[Blocks[getblocksq(Connector(ii).Block1ID)].indicator][Blocks[getblocksq(Connector(ii).Block2ID)].indicator];
 				}
 			}
-			if (vaporTransport()[Blocks[getblocksq(Connector[ii].Block1ID)].indicator][Blocks[getblocksq(Connector[ii].Block2ID)].indicator])
+			if (vaporTransport()[Blocks[getblocksq(Connector(ii).Block1ID)].indicator][Blocks[getblocksq(Connector(ii).Block2ID)].indicator])
 			{
-				Connector[ii].flow_expression_v = CStringOP(formulas()[Vapor]);
-				Connector[ii].flow_expression_strng_v = formulas()[Vapor];
+				Connector(ii).flow_expression_v = CStringOP(formulas()[Vapor]);
+				Connector(ii).flow_expression_strng_v = formulas()[Vapor];
 			}
 		}
 	}
 
-	for (int ii = 0; ii < Connector.size(); ii++)
+	for (int ii = 0; ii < connectors_count(); ii++)
 	{
-		Connector[ii].area_expression = formulasA()[Blocks[getblocksq(Connector[ii].Block1ID)].indicator][Blocks[getblocksq(Connector[ii].Block2ID)].indicator];
-		Connector[ii].area_expression_strng = formulasA()[Blocks[getblocksq(Connector[ii].Block1ID)].indicator][Blocks[getblocksq(Connector[ii].Block2ID)].indicator];
-		if (Connector[ii].A == 0)
-			Connector[ii].const_area = const_area()[Blocks[getblocksq(Connector[ii].Block1ID)].indicator][Blocks[getblocksq(Connector[ii].Block2ID)].indicator];
+		Connector(ii).area_expression = formulasA()[Blocks[getblocksq(Connector(ii).Block1ID)].indicator][Blocks[getblocksq(Connector(ii).Block2ID)].indicator];
+		Connector(ii).area_expression_strng = formulasA()[Blocks[getblocksq(Connector(ii).Block1ID)].indicator][Blocks[getblocksq(Connector(ii).Block2ID)].indicator];
+		if (Connector(ii).A == 0)
+			Connector(ii).const_area = const_area()[Blocks[getblocksq(Connector(ii).Block1ID)].indicator][Blocks[getblocksq(Connector(ii).Block2ID)].indicator];
 		else
-			Connector[ii].const_area = true;
+			Connector(ii).const_area = true;
 	}
 
-	for (int ii = 0; ii < Connector.size(); ii++)
+	for (int ii = 0; ii < connectors_count(); ii++)
 	{
-		if (Connector[ii].settling == -1)
+		if (Connector(ii).settling == -1)
 		{
-			Connector[ii].settling = settling()[Blocks[getblocksq(Connector[ii].Block1ID)].indicator][Blocks[getblocksq(Connector[ii].Block2ID)].indicator];
+			Connector(ii).settling = settling()[Blocks[getblocksq(Connector(ii).Block1ID)].indicator][Blocks[getblocksq(Connector(ii).Block2ID)].indicator];
 		}
 	}
 
 
-	for (int i=0; i<Connector.size(); i++)
+	for (int i=0; i<connectors_count(); i++)
 	{
-		for (int j = 0;  j< Solid_phase().size(); j++)Connector[i].Solid_phase_id.push_back(j);
-		Connector[i].Block1 = &Blocks[getblocksq(Connector[i].Block1ID)];
-		Connector[i].Block2 = &Blocks[getblocksq(Connector[i].Block2ID)];
-		Blocks[getblocksq(Connector[i].Block1ID)].connectors.push_back(i);
-		Blocks[getblocksq(Connector[i].Block1ID)].connectors_se.push_back(0);
-		Blocks[getblocksq(Connector[i].Block2ID)].connectors.push_back(i);
-		Blocks[getblocksq(Connector[i].Block2ID)].connectors_se.push_back(1);
-		for (int ii=0; ii<Connector[i].Solid_phase_id.size(); ii++) Connector[i].Solid_phase.push_back(&(Solid_phase()[Connector[i].Solid_phase_id[ii]]));
+		for (int j = 0;  j< Solid_phase().size(); j++)Connector(i).Solid_phase_id.push_back(j);
+		Connector(i).Block1 = &Blocks[getblocksq(Connector(i).Block1ID)];
+		Connector(i).Block2 = &Blocks[getblocksq(Connector(i).Block2ID)];
+		Blocks[getblocksq(Connector(i).Block1ID)].connectors.push_back(i);
+		Blocks[getblocksq(Connector(i).Block1ID)].connectors_se.push_back(0);
+		Blocks[getblocksq(Connector(i).Block2ID)].connectors.push_back(i);
+		Blocks[getblocksq(Connector(i).Block2ID)].connectors_se.push_back(1);
+		for (int ii=0; ii<Connector(i).Solid_phase_id.size(); ii++) Connector(i).Solid_phase.push_back(&(Solid_phase()[Connector(i).Solid_phase_id[ii]]));
 
 	}
 }
@@ -708,34 +598,34 @@ CMedium::CMedium(string filename, CMediumSet *_parent)
 
 void CMedium::set_var(int i, double v)
 {
-	for (int j=0; j<Connector.size(); j++)
+	for (int j=0; j<connectors_count(); j++)
 	{
-		if (i==2) Connector[j].A = v;
-		if (i==6) Connector[j].d = v;
-		if (i==7) Connector[j].Q = v;
-		if (i==8) Connector[j].v = v;
-		if ((i>=50) && (i<100)) Connector[j].flow_params[i-50] = v;
+		if (i==2) Connectors[j].A = v;
+		if (i==6) Connectors[j].d = v;
+		if (i==7) Connectors[j].Q = v;
+		if (i==8) Connectors[j].v = v;
+		if ((i>=50) && (i<100)) Connectors[j].flow_params[i-50] = v;
 
 		//MM  ----------------->???
 		//if ((i>=3000) && (i<3100))
-		//	Connector[i].dispersion[i-3000] = v;
+		//	Connector(i).dispersion[i-3000] = v;
 		//if ((i>=3100) && (i<3199))
 		//	Connector[j].tr_alpha[i-3100] = v;
 		//if ((i>=3200) && (i<3299))
 		//	Connector[j].dispersivity[i-3200] = v;
-		if (i==4000)				Connector[j].c_dispersion;
-		if ((i>=5000) && (i<5100)) 	Connector[j].dispersion[i-5000];
+		if (i==4000)				Connectors[j].c_dispersion;
+		if ((i>=5000) && (i<5100)) 	Connectors[j].dispersion[i-5000];
 	}
 
 	for (int j=0; j<Blocks.size(); j++)
 	{
-		if (i==1) Blocks[j].H = v;
-		if (i==2) Blocks[j].A = v;
-		if (i==3) Blocks[j].V = v;
-		if (i==4) Blocks[j].S = v;
-		if (i==5) Blocks[j].z0 = v;
-		if (i==9) Blocks[j].S = Blocks[j].V*(v*(Blocks[j].fs_params[1]-Blocks[j].fs_params[2]) + Blocks[j].fs_params[2]);
-		if (i==10) Blocks[j].S = Blocks[j].V*v;
+		if (i== basic_properties::H) Blocks[j].set_val(basic_properties::H, v);
+		if (i== basic_properties::A) Blocks[j].set_val(basic_properties::A, v);
+		if (i== basic_properties::V) Blocks[j].set_val(basic_properties::V , v);
+		if (i== basic_properties::S) Blocks[j].set_val(basic_properties::S,  v);
+		if (i== basic_properties::z0) Blocks[j].set_val(basic_properties::z0, v);
+		if (i==9) Blocks[j].set_val(basic_properties::S, Blocks[j].get_val("v")*(v*(Blocks[j].fs_params[1]-Blocks[j].fs_params[2]) + Blocks[j].fs_params[2]));
+		if (i==10) Blocks[j].set_val(basic_properties::S , Blocks[j].get_val("v")*v);
 		if (i>=50 && i<100) Blocks[j].fs_params[i-50] = v;
 		if (i>=100 && i<200) Blocks[j].G[(i-100)/100][(i-100)%100] = v;
 		if (i>=1000 && i<2000) Blocks[j].CG[int((i-1000)/Blocks[j].n_phases)][(i-1000)%Blocks[j].n_phases] = v;
@@ -750,8 +640,8 @@ void CMedium::set_var(const string &S, const double &v)
 	if (S=="dtt") dtt = v;
 	if (S=="dt") dt() = v;
 
-	for (int j=0; j<Connector.size(); j++)
-		Connector[j].set_val(tolower(trim(S)), v);
+	for (int j=0; j<connectors_count(); j++)
+		Connectors[j].set_val(tolower(trim(S)), v);
 
 
 	for (int j=0; j<Blocks.size(); j++)
@@ -760,8 +650,8 @@ void CMedium::set_var(const string &S, const double &v)
 
 void CMedium::set_var(const string &S, int i, const double &v)
 {
-	for (int j=0; j<Connector.size(); j++)
-		Connector[j].set_val(tolower(trim(S)), v);
+	for (int j=0; j<connectors_count(); j++)
+		Connectors[j].set_val(tolower(trim(S)), v);
 
 	for (int j=0; j<Blocks.size(); j++)
 		Blocks[j].set_val(tolower(trim(S)), v);
@@ -776,7 +666,7 @@ void CMedium::set_var(const string &S, const vector<double> &v)
 void CMedium::set_var(const string &S, const double &v, const int &start, const int &end)
 {
 	for (int j=start; j<end-1; j++)
-		Connector[j].set_val(tolower(trim(S)), v);
+		Connectors[j].set_val(tolower(trim(S)), v);
 
 
 	for (int j=start; j<end; j++)
@@ -787,7 +677,7 @@ void CMedium::set_var(const string &S, const double &v, const int &start, const 
 void CMedium::set_var(const string &S, const vector<double> &v, const int &start, const int &end)
 {
 	for (int j=start; j<end-1; j++)
-		Connector[j].set_val(S, v[j]);
+		Connectors[j].set_val(S, v[j]);
 
 	for (int j=start; j<end; j++)
 		Blocks[j].set_val(S, v[j]);
@@ -796,8 +686,8 @@ void CMedium::set_var(const string &S, const vector<double> &v, const int &start
 
 void CMedium::set_var(const string &S, const double &v, const int &n)
 {
-	for (int j=Connector.size()-n+1; j<Connector.size(); j++)
-		Connector[j].set_val(tolower(trim(S)), v);
+	for (int j=connectors_count()-n+1; j<connectors_count(); j++)
+		Connectors[j].set_val(tolower(trim(S)), v);
 
 
 	for (int j=Blocks.size()-n; j<Blocks.size(); j++)
@@ -808,192 +698,13 @@ void CMedium::set_var(const string &S, const double &v, const int &n)
 
 void CMedium::set_var(const string &S, const vector<double> &v, const int &n)
 {
-	for (int j=Connector.size()-n+1; j<Connector.size(); j++)
-		Connector[j].set_val(S, v[j]);
+	for (int j=connectors_count()-n+1; j<connectors_count(); j++)
+		Connectors[j].set_val(S, v[j]);
 
 	for (int j=Blocks.size()-n; j<Blocks.size(); j++)
 		Blocks[j].set_val(S, v[j]);
 
 }
-
-
-
-void CMedium::add_Richards_medium(int n, double dz,  int id)
-{
-	/* van Genuchten parameters:
-	50: Ks
-	51: theta_s
-	52: theta_r
-	53: alpha
-	54: n
-	55: m
-	57: storitivity
-	*/
-	//Blocks.resize(n);
-	//Connector.resize(n-1);
-	if (id==-1) id=Blocks.size();
-
-	for (int i=0; i<n; i++)
-	{
-		CMBBlock B;
-		B.indicator = 0;
-
-		//                                         61       1 543     2      1       123  4 1       156
-		//                                     z0 -((1/alpha)*((( Se ^(n    /(1-n    )))-1)^(1/n    )))
-		//B.H_S_expression = CStringOP("f[5]-((1/f[53])*((f[9]^(f[54]/(1-f[54])))-1)^(1/f[54]))");   //z0+h=Total Head for botom of block
-		B.H_S_expression = CStringOP(formulasH()[Soil]);
-		B.H_S_expression_txt = formulasH()[Soil];
-		B.fs_params.resize(n_flow_params);
-		B.ID=to_string(id+i);
-		Blocks.push_back(B);
-	}
-
-	for (int i=0; i<n-1; i++)
-	{
-		CConnection C;
-
-		C.Block1ID = to_string(i+id);
-		C.Block2ID = to_string(i+id+1);
-		C.Block1 = &(Blocks[getblocksq(to_string(i+id))]);
-		C.Block2 = &(Blocks[getblocksq(to_string(i+id+1))]);
-		C.d = dz;
-		C.flow_params.resize(n_flow_params);  //0=Ks, 1=theta_s, 2=theta_r, 3=VG_alpha, 4=VG_n, 5=VG_m, 6=lambda
-		C.flow_expression = CStringOP(formulasQ()[Soil][Soil]);
-		C.flow_expression_strng = formulasQ()[Soil][Soil];
-		C.flow_expression_v = CStringOP(formulas()[Vapor]);
-		C.flow_expression_strng_v = formulas()[Vapor];
-		Connector.push_back(C);
-	}
-}
-
-void CMedium::add_Darcy_medium(int n, double dz,  int id)
-{
-	/* van Genuchten parameters:
-	50: Ks
-	51: theta_s
-	52: theta_r
-	53: alpha
-	54: n
-	55: m
-	57: storitivity
-	*/
-	//Blocks.resize(n);
-	//Connector.resize(n-1);
-	if (id==-1) id=Blocks.size();
-
-	for (int i=0; i<n; i++)
-	{
-		CMBBlock B;
-		B.indicator = 5;
-		B.H_S_expression = CStringOP(formulasH()[Darcy]);
-		B.H_S_expression_txt = formulasH()[Darcy];
-		B.fs_params.resize(n_flow_params);
-		B.ID=id+i;
-		Blocks.push_back(B);
-	}
-
-	for (int i=0; i<n-1; i++)
-	{
-		CConnection C;
-
-		C.Block1ID = to_string(i+id);
-		C.Block2ID = to_string(i+id+1);
-		C.Block1 = &(Blocks[getblocksq(to_string(i+id))]);
-		C.Block2 = &(Blocks[getblocksq(to_string(i+id+1))]);
-		C.d = dz;
-		C.flow_params.resize(n_flow_params);  //0=Ks, 1=theta_s, 2=theta_r, 3=VG_alpha, 4=VG_n, 5=VG_m, 6=lambda
-		C.flow_expression = CStringOP(formulasQ()[Darcy][Darcy]);
-		C.flow_expression_strng = formulasQ()[Darcy][Darcy];
-		Connector.push_back(C);
-	}
-}
-
-void CMedium::add_stream_medium(int n, double z0, double slope, double length, int id)
-{
-	/* van Genuchten parameters:
-	50: Ks
-	51: theta_s
-	52: theta_r
-	53: alpha
-	54: n
-	55: m
-	57: storitivity
-	*/
-	//Blocks.resize(n);
-	//Connector.resize(n-1);
-	if (id == -1) id = Blocks.size();
-
-	for (int i = 0; i<n; i++)
-	{
-		CMBBlock B;
-		B.indicator = 5;
-		B.H_S_expression = CStringOP(formulasH()[Stream]);
-		B.H_S_expression_txt = formulasH()[Stream];
-		B.fs_params.resize(n_flow_params);
-		B.ID = id + i;
-		B.z0 = z0 + length / double(n)*slope;
-		Blocks.push_back(B);
-	}
-
-	for (int i = 0; i<n - 1; i++)
-	{
-		CConnection C;
-
-		C.Block1ID = to_string(i + id);
-		C.Block2ID = to_string(i + id + 1);
-		C.Block1 = &(Blocks[getblocksq(to_string(i + id))]);
-		C.Block2 = &(Blocks[getblocksq(to_string(i + id + 1))]);
-		C.d = length/double(n);
-		C.flow_params.resize(n_flow_params);  //0=Ks, 1=theta_s, 2=theta_r, 3=VG_alpha, 4=VG_n, 5=VG_m, 6=lambda
-		C.flow_expression = CStringOP(formulasQ()[Stream][Stream]);
-		C.flow_expression_strng = formulasQ()[Stream][Stream];
-		Connector.push_back(C);
-	}
-}
-
-void CMedium::add_catchment_medium(int n, double z0, double slope, double length, int id)
-{
-	/* van Genuchten parameters:
-	50: Ks
-	51: theta_s
-	52: theta_r
-	53: alpha
-	54: n
-	55: m
-	57: storitivity
-	*/
-	//Blocks.resize(n);
-	//Connector.resize(n-1);
-	if (id == -1) id = Blocks.size();
-
-	for (int i = 0; i<n; i++)
-	{
-		CMBBlock B;
-		B.indicator = 5;
-		B.H_S_expression = CStringOP(formulasH()[Catchment]);
-		B.H_S_expression_txt = formulasH()[Catchment];
-		B.fs_params.resize(n_flow_params);
-		B.ID = id + i;
-		B.z0 = z0 + length / double(n)*slope;
-		Blocks.push_back(B);
-	}
-
-	for (int i = 0; i<n - 1; i++)
-	{
-		CConnection C;
-
-		C.Block1ID = to_string(i + id);
-		C.Block2ID = to_string(i + id + 1);
-		C.Block1 = &(Blocks[getblocksq(to_string(i + id))]);
-		C.Block2 = &(Blocks[getblocksq(to_string(i + id + 1))]);
-		C.d = length / double(n);
-		C.flow_params.resize(n_flow_params);  //0=Ks, 1=theta_s, 2=theta_r, 3=VG_alpha, 4=VG_n, 5=VG_m, 6=lambda
-		C.flow_expression = CStringOP(formulasQ()[Catchment][Catchment]);
-		C.flow_expression_strng = formulasQ()[Catchment][Catchment];
-		Connector.push_back(C);
-	}
-}
-
 
 
 void CMedium::set_z0(double down, double up)
@@ -1007,13 +718,12 @@ void CMedium::set_z0(double down)
 {
 	for (int i=0; i<Blocks.size(); i++)
 	{
-		Blocks[i].set_val("z0",down+i*Connector[0].d);   // Blocks[i].set_val("z0",down+(i+0.5)*Connector[0].d); to set z0 for center of block
+		Blocks[i].set_val("z0",down+i*Connectors[0].d);   // Blocks[i].set_val("z0",down+(i+0.5)*Connector[0].d); to set z0 for center of block
 	}
 
 }
 
 
-//MM
 void CMedium::set_z0(int id, int n, double z0, double dz)
 {
 	for (int i=0; i<n; i++)
@@ -1022,21 +732,6 @@ void CMedium::set_z0(int id, int n, double z0, double dz)
 	}
 }
 
-
-
-
-void CMedium::add_KW_medium(int n, double dz, vector<double> params)
-{
-
-
-}
-
-
-void CMedium::add_KW_medium(int n, double dz)
-{
-
-
-}
 
 
 void CMedium::set_num_phases(int n)
@@ -1063,38 +758,38 @@ CVector CMedium::getres_S(const CVector &X, double dt)
 	CVector X1 = X;
 
 	for (int i=0; i<Blocks.size(); i++)
-	{	if (Blocks[i].setzero==1) {dt=X.vec[i]; Blocks[i].S_star=0;}
-	if (Blocks[i].setzero==2) {Blocks[i].outflow_corr_factor=X1[i];	Blocks[i].S_star=0;}
+	{	if (Blocks[i].setzero==1) {dt=X.vec[i]; Blocks[i].set_val_star(basic_properties::S,0);}
+	if (Blocks[i].setzero==2) {Blocks[i].outflow_corr_factor=X1[i];	Blocks[i].set_val_star(basic_properties::S,0);}
 	if (Blocks[i].setzero!=0) X1[i]=0; else Blocks[i].outflow_corr_factor = 1;
 	}
-
+	
 
 	setH_star();      //Blocks[i].set_val("H*", Blocks[i].calc_star(Blocks[i].H_S_expression));
 	evaluate_area();  //Update connector areas;
-	setQ_star();      //Connector[i].set_val("Q*",Connector[i].calc_star(Connector[i].flow_expression));
+	setQ_star();      //Connector(i).set_val("Q*",Connector(i).calc_star(Connector(i).flow_expression));
 
 
 	for (int i=0; i<Blocks.size(); i++)
 	{
 		if  (Blocks[i].inflow.size()!=0)
-			F[i]= (X1[i]-Blocks[i].S)/dt-sum_interpolate(Blocks[i].inflow, t,"flow");
-		else F[i]= (X1[i]-Blocks[i].S)/dt;
+			F[i]= (X1[i]-Blocks[i].get_S())/dt-sum_interpolate(Blocks[i].inflow, t,"flow");
+		else F[i]= (X1[i]-Blocks[i].get_S())/dt;
 		F[i]+=Blocks[i].outflow_corr_factor*Blocks[i].get_evaporation(t);
 	}
 
 
 
 
-	for (int i=0; i<Connector.size(); i++)
+	for (int i=0; i<connectors_count(); i++)
 	{
-		if  (w()*Connector[i].Q + (1-w())*Connector[i].Q_star>0) Connector[i].flow_factor=Blocks[getblocksq(Connector[i].Block1ID)].outflow_corr_factor;
-		if  (w()*Connector[i].Q + (1-w())*Connector[i].Q_star<0) Connector[i].flow_factor=Blocks[getblocksq(Connector[i].Block2ID)].outflow_corr_factor;
+		if  (w()*Connector(i).Q + (1-w())*Connector(i).Q_star>0) Connector(i).flow_factor=Blocks[getblocksq(Connector(i).Block1ID)].outflow_corr_factor;
+		if  (w()*Connector(i).Q + (1-w())*Connector(i).Q_star<0) Connector(i).flow_factor=Blocks[getblocksq(Connector(i).Block2ID)].outflow_corr_factor;
 	}
 
-	for (int i=0; i<Connector.size(); i++)
+	for (int i=0; i<connectors_count(); i++)
 	{
-		F[getblocksq(Connector[i].Block1ID)] += (w()*Connector[i].Q + (1-w())*Connector[i].Q_star)*Connector[i].flow_factor;
-		F[getblocksq(Connector[i].Block2ID)] -= (w()*Connector[i].Q + (1-w())*Connector[i].Q_star)*Connector[i].flow_factor;
+		F[getblocksq(Connector(i).Block1ID)] += (w()*Connector(i).Q + (1-w())*Connector(i).Q_star)*Connector(i).flow_factor;
+		F[getblocksq(Connector(i).Block2ID)] -= (w()*Connector(i).Q + (1-w())*Connector(i).Q_star)*Connector(i).flow_factor;
 	}
 
 
@@ -1106,7 +801,7 @@ CVector CMedium::getres_S(const CVector &X, double dt)
 			bool all_out_flows_zero=true;
 			if (Blocks[i].get_evaporation(t) > 1e-30) all_out_flows_zero=false;
 			for (int k=0; k<Blocks[i].connectors.size(); k++)
-				if ((w()*Connector[Blocks[i].connectors[k]].Q + (1-w())*Connector[Blocks[i].connectors[k]].Q_star)*(Blocks[i].connectors_se[k]-0.5)<0)
+				if ((w()*Connectors[Blocks[i].connectors[k]].Q + (1-w())*Connectors[Blocks[i].connectors[k]].Q_star)*(Blocks[i].connectors_se[k]-0.5)<0)
 					all_out_flows_zero = false;
 			if (all_out_flows_zero==true)
 				F[i]=Blocks[i].outflow_corr_factor-1.1;
@@ -1125,35 +820,35 @@ CVector_arma CMedium::getres_S(CVector_arma &X, double dt)
 
 	for (int i = 0; i<Blocks.size(); i++)
 	{
-		if (Blocks[i].setzero == 1) { dt = X[i]; Blocks[i].S_star = 0; }
-		if (Blocks[i].setzero == 2) { Blocks[i].outflow_corr_factor = X1[i];	Blocks[i].S_star = 0; }
+		if (Blocks[i].setzero == 1) { dt = X[i]; Blocks[i].get_S_star() = 0; }
+		if (Blocks[i].setzero == 2) { Blocks[i].outflow_corr_factor = X1[i];	Blocks[i].get_S_star() = 0; }
 		if (Blocks[i].setzero != 0) X1[i] = 0; else Blocks[i].outflow_corr_factor = 1;
 	}
 
 
 	setH_star();      //Blocks[i].set_val("H*", Blocks[i].calc_star(Blocks[i].H_S_expression));
 	evaluate_area();  //Update connector areas;
-	setQ_star();      //Connector[i].set_val("Q*",Connector[i].calc_star(Connector[i].flow_expression));
+	setQ_star();      //Connector(i).set_val("Q*",Connector(i).calc_star(Connector(i).flow_expression));
 
 
 	for (int i = 0; i<Blocks.size(); i++)
 	{
 		if (Blocks[i].inflow.size() != 0)
-			F[i] = (X1[i] - Blocks[i].S) / dt - sum_interpolate(Blocks[i].inflow, t, "flow");
-		else F[i] = (X1[i] - Blocks[i].S) / dt;
+			F[i] = (X1[i] - Blocks[i].get_S()) / dt - sum_interpolate(Blocks[i].inflow, t, "flow");
+		else F[i] = (X1[i] - Blocks[i].get_S()) / dt;
 		F[i] += Blocks[i].outflow_corr_factor*Blocks[i].get_evaporation(t);
 	}
 
-	for (int i = 0; i<Connector.size(); i++)
+	for (int i = 0; i<connectors_count(); i++)
 	{
-		if (w()*Connector[i].Q + (1 - w())*Connector[i].Q_star>0) Connector[i].flow_factor = Blocks[getblocksq(Connector[i].Block1ID)].outflow_corr_factor;
-		if (w()*Connector[i].Q + (1 - w())*Connector[i].Q_star<0) Connector[i].flow_factor = Blocks[getblocksq(Connector[i].Block2ID)].outflow_corr_factor;
+		if (w()*Connector(i).Q + (1 - w())*Connector(i).Q_star>0) Connector(i).flow_factor = Blocks[getblocksq(Connector(i).Block1ID)].outflow_corr_factor;
+		if (w()*Connector(i).Q + (1 - w())*Connector(i).Q_star<0) Connector(i).flow_factor = Blocks[getblocksq(Connector(i).Block2ID)].outflow_corr_factor;
 	}
 
-	for (int i = 0; i<Connector.size(); i++)
+	for (int i = 0; i<connectors_count(); i++)
 	{
-		F[getblocksq(Connector[i].Block1ID)] += (w()*Connector[i].Q + (1 - w())*Connector[i].Q_star)*Connector[i].flow_factor;
-		F[getblocksq(Connector[i].Block2ID)] -= (w()*Connector[i].Q + (1 - w())*Connector[i].Q_star)*Connector[i].flow_factor;
+		F[getblocksq(Connector(i).Block1ID)] += (w()*Connector(i).Q + (1 - w())*Connector(i).Q_star)*Connector(i).flow_factor;
+		F[getblocksq(Connector(i).Block2ID)] -= (w()*Connector(i).Q + (1 - w())*Connector(i).Q_star)*Connector(i).flow_factor;
 	}
 
 	for (int i = 0; i<Blocks.size(); i++)
@@ -1163,7 +858,7 @@ CVector_arma CMedium::getres_S(CVector_arma &X, double dt)
 			bool all_out_flows_zero = true;
 			if (Blocks[i].get_evaporation(t) > 1e-30) all_out_flows_zero = false;
 			for (int k = 0; k<Blocks[i].connectors.size(); k++)
-				if ((w()*Connector[Blocks[i].connectors[k]].Q + (1 - w())*Connector[Blocks[i].connectors[k]].Q_star)*(Blocks[i].connectors_se[k] - 0.5)<0)
+				if ((w()*Connectors[Blocks[i].connectors[k]].Q + (1 - w())*Connectors[Blocks[i].connectors[k]].Q_star)*(Blocks[i].connectors_se[k] - 0.5)<0)
 					all_out_flows_zero = false;
 			if (all_out_flows_zero == true)
 				F[i] = Blocks[i].outflow_corr_factor - 1.1;
@@ -1246,23 +941,23 @@ double CMedium::calc_log_likelihood(int i) //calculate sum log likelihood for ob
 
 void CMedium::setQ_star()
 {
-	for (int i=0; i<Connector.size(); i++)
+	for (int i=0; i<connectors_count(); i++)
 	{
-		if (Connector[i].control)
+		if (Connector(i).control)
 		{
-			if (Connector[i].Controller->output.n>0)
-				Connector[i].set_val("q*", Connector[i].Controller->output.interpol(t));
+			if (Connector(i).Controller->output.n>0)
+				Connector(i).set_val("q*", Connector(i).Controller->output.interpol(t));
 			else
-				Connector[i].set_val("q*", Connector[i].Controller->value);
+				Connector(i).set_val("q*", Connector(i).Controller->value);
 		}
-		else if (!Connector[i].presc_flow)
-			Connector[i].set_val("q*", Connector[i].calc_star(Connector[i].flow_expression));
+		else if (!Connector(i).presc_flow)
+			Connector(i).set_val("q*", Connector(i).calc_star(Connector(i).flow_expression));
 		else
-			Connector[i].set_val("q*", Connector[i].presc_flowrate.interpol(t));
+			Connector(i).set_val("q*", Connector(i).presc_flowrate.interpol(t));
 
 
-		Connector[i].set_val("q_v*", Connector[i].calc_star(Connector[i].flow_expression_v));
-		Connector[i].flow_factor = 1;
+		Connector(i).set_val("q_v*", Connector(i).calc_star(Connector(i).flow_expression_v));
+		Connector(i).flow_factor = 1;
 
 	}
 
@@ -1271,32 +966,32 @@ void CMedium::setQ_star()
 void CMedium::setQ0()
 {
 	if (!steady_state_hydro())
-		for (int i = 0; i < Connector.size(); i++)
+		for (int i = 0; i < connectors_count(); i++)
 		{
-			if (!Connector[i].presc_flow)
-				Connector[i].set_val("q", Connector[i].calc(Connector[i].flow_expression));
+			if (!Connector(i).presc_flow)
+				Connector(i).set_val("q", Connector(i).calc(Connector(i).flow_expression));
 			else
-				Connector[i].set_val("q", Connector[i].presc_flowrate.interpol(t));
+				Connector(i).set_val("q", Connector(i).presc_flowrate.interpol(t));
 
 
-			Connector[i].set_val("q_v", Connector[i].calc(Connector[i].flow_expression_v));
-			Connector[i].flow_factor = 1;
+			Connector(i).set_val("q_v", Connector(i).calc(Connector(i).flow_expression_v));
+			Connector(i).flow_factor = 1;
 
 		}
 	else
 	{
 		CVector Q = hydro_steady_matrix_inv*get_steady_hydro_RHS();
-		for (int i = 0; i < Connector.size(); i++)
-			Connector[i].Q = Q[i];
+		for (int i = 0; i < connectors_count(); i++)
+			Connector(i).Q = Q[i];
 	}
 
 }
 
 void CMedium::setQ()
 {
-	for (int i=0; i<Connector.size(); i++)
-	{   Connector[i].set_val("q",Connector[i].Q_star);
-		Connector[i].set_val("q_v",Connector[i].Q_v_star);
+	for (int i=0; i<connectors_count(); i++)
+	{   Connector(i).set_val("q",Connector(i).Q_star);
+		Connector(i).set_val("q_v",Connector(i).Q_v_star);
 	}
 }
 
@@ -1306,10 +1001,10 @@ void CMedium::setQ(const CVector &X)
 	CVector X_Temp=getS();
 	set_var("S",X.vec);
 
-	for (int i=0; i<Connector.size(); i++)
-		if (Connector[i].fixed == false)
-		{	Connector[i].set_val("q",Connector[i].calc(Connector[i].flow_expression));
-	Connector[i].set_val("q_v",Connector[i].calc(Connector[i].flow_expression_v));
+	for (int i=0; i<connectors_count(); i++)
+		if (Connector(i).fixed == false)
+		{	Connector(i).set_val("q",Connector(i).calc(Connector(i).flow_expression));
+	Connector(i).set_val("q_v",Connector(i).calc(Connector(i).flow_expression_v));
 	}
 
 	set_var("S",X_Temp.vec);
@@ -1328,16 +1023,16 @@ CVector CMedium::getH(const CVector &X)
 
 CVector CMedium::getQ(const CVector &X)
 {
-	CVector H(Connector.size());
-	for (int i = 0; i < Connector.size(); i++)
+	CVector H(connectors_count());
+	for (int i = 0; i < connectors_count(); i++)
 	{
-		if (!Connector[i].presc_flow)
-			H[i] = Connector[i].calc_star(Connector[i].flow_expression);
+		if (!Connector(i).presc_flow)
+			H[i] = Connector(i).calc_star(Connector(i).flow_expression);
 		else
-			H[i] = Connector[i].presc_flowrate.interpol(t);
+			H[i] = Connector(i).presc_flowrate.interpol(t);
 
-		if (Connector[i].control)
-			H[i] = Connector[i].Controller->output.interpol(t);
+		if (Connector(i).control)
+			H[i] = Connector(i).Controller->output.interpol(t);
 	}
 	return H;
 }
@@ -1536,7 +1231,7 @@ CVector CMedium::getV()
 	//CVector X(Blocks.size()-2);
 	CVector X(Blocks.size());
 	for (int i = 0; i<Blocks.size(); i++)
-		X[i] = Blocks[i].V;
+		X[i] = Blocks[i].get_val(basic_properties::V);
 	return X;
 }
 
@@ -1547,7 +1242,7 @@ CVector CMedium::getS()
 	//CVector X(Blocks.size()-2);
 	CVector X(Blocks.size());
 	for (int i=0; i<Blocks.size(); i++)
-		X[i] = Blocks[i].S;
+		X[i] = Blocks[i].get_S();
 	return X;
 }
 
@@ -1720,7 +1415,7 @@ void CMedium::onestepsolve_flow(double dtt)
 				J_update=true;
 				indicator=1;
 				failed = true;
-				if (Blocks[i].S==0)
+				if (Blocks[i].get_val(basic_properties::S)==0)
 					Blocks[i].setzero=2;
 				else
 					Blocks[i].setzero=2;
@@ -1743,14 +1438,14 @@ void CMedium::Blocksmassbalance()
 {
 	for (int i=0; i<Blocks.size(); i++)
 	{
-		Blocks[i].MBBlocks =(Blocks[i].S_star-Blocks[i].S);
+		Blocks[i].MBBlocks =(Blocks[i].get_val_star(basic_properties::S)-Blocks[i].get_val(basic_properties::S));
 		Blocks[i].MBBlocks -= sum_interpolate(Blocks[i].inflow, t)[0]*dtt;
 		Blocks[i].MBBlocks +=Blocks[i].outflow_corr_factor*Blocks[i].get_evaporation(t)*dtt;
 	}
-	for (int i=0; i<Connector.size(); i++)
+	for (int i=0; i<connectors_count(); i++)
 	{
-		Blocks[getblocksq(Connector[i].Block1ID)].MBBlocks += (w()*Connector[i].Q + (1-w())*Connector[i].Q_star)*dtt*Connector[i].flow_factor;
-		Blocks[getblocksq(Connector[i].Block2ID)].MBBlocks -= (w()*Connector[i].Q + (1-w())*Connector[i].Q_star)*dtt*Connector[i].flow_factor;
+		Blocks[getblocksq(Connector(i).Block1ID)].MBBlocks += (w()*Connector(i).Q + (1-w())*Connector(i).Q_star)*dtt*Connector(i).flow_factor;
+		Blocks[getblocksq(Connector(i).Block2ID)].MBBlocks -= (w()*Connector(i).Q + (1-w())*Connector(i).Q_star)*dtt*Connector(i).flow_factor;
 	}
 
 
@@ -1763,20 +1458,21 @@ void CMedium::renew()
 {
 	for (int i=0; i<Blocks.size(); i++)
 	{
-		Blocks[i].A = Blocks[i].A_star;
+		Blocks[i].set_val(basic_properties::A , Blocks[i].get_val_star(basic_properties::A));
 		Blocks[i].CG = Blocks[i].CG_star;
 		Blocks[i].G = Blocks[i].G_star;
-		Blocks[i].H = Blocks[i].H_star;
-		Blocks[i].S = Blocks[i].S_star;
-		Blocks[i].V = Blocks[i].V_star;
+		Blocks[i].set_val(basic_properties::H, Blocks[i].get_val_star(basic_properties::H));
+		Blocks[i].set_val(basic_properties::S, Blocks[i].get_val_star(basic_properties::S));
+		Blocks[i].set_val(basic_properties::V, Blocks[i].get_val_star(basic_properties::V));
+		
 
 	}
 
-	for (int i=0; i<Connector.size(); i++)
+	for (int i=0; i<connectors_count(); i++)
 	{
-		Connector[i].A = Connector[i].A_star;
-		Connector[i].Q = Connector[i].Q_star;
-		Connector[i].v = Connector[i].v_star;
+		Connector(i).A = Connector(i).A_star;
+		Connector(i).Q = Connector(i).Q_star;
+		Connector(i).v = Connector(i).v_star;
 	}
 
 }
@@ -1799,20 +1495,21 @@ void CMedium::initialize()
 {
 	for (int i=0; i<Blocks.size(); i++)
 	{
-		Blocks[i].A_star = Blocks[i].A;
+		Blocks[i].set_val_star(basic_properties::A, Blocks[i].get_val(basic_properties::A));
 		Blocks[i].CG_star = Blocks[i].CG;
 		Blocks[i].G_star = Blocks[i].G;
-		Blocks[i].H_star = Blocks[i].H;
-		Blocks[i].S_star = Blocks[i].S;
-		Blocks[i].V_star = Blocks[i].V;
+		Blocks[i].set_val_star(basic_properties::H, Blocks[i].get_val(basic_properties::H));
+		Blocks[i].set_val_star(basic_properties::S, Blocks[i].get_val(basic_properties::S));
+		Blocks[i].set_val_star(basic_properties::V, Blocks[i].get_val(basic_properties::V));
+		
 		Blocks[i].G_star = Blocks[i].G;
 	}
 
-	for (int i=0; i<Connector.size(); i++)
+	for (int i=0; i<connectors_count(); i++)
 	{
-		Connector[i].A_star = Connector[i].A;
-		Connector[i].Q_star = Connector[i].Q;
-		Connector[i].v_star = Connector[i].v;
+		Connector(i).A_star = Connector(i).A;
+		Connector(i).Q_star = Connector(i).Q;
+		Connector(i).v_star = Connector(i).v;
 	}
 }
 
@@ -1822,7 +1519,7 @@ void CMedium::do_plant_growth(double dtt)
 	for (int i = 0; i < Blocks.size(); i++)
 		if (Blocks[i].indicator == Plant)
 		{
-			Blocks[i].V_star = max(Blocks[i].V + 0.5*(Blocks[i].calc(Blocks[i].plant_prop.plant_growth_rate_expression) + Blocks[i].calc_star(Blocks[i].plant_prop.plant_growth_rate_expression))*dtt,1e-6);
+			Blocks[i].set_val_star(basic_properties::V , max(Blocks[i].get_val(basic_properties::V) + 0.5*(Blocks[i].calc(Blocks[i].plant_prop.plant_growth_rate_expression) + Blocks[i].calc_star(Blocks[i].plant_prop.plant_growth_rate_expression))*dtt,1e-6));
 			Blocks[i].plant_prop.LAI = max(Blocks[i].plant_prop.LAI + 0.5*(Blocks[i].calc(Blocks[i].plant_prop.LAI_growth_rate_expression)+ Blocks[i].calc_star(Blocks[i].plant_prop.LAI_growth_rate_expression))*dtt,1e-5);
 		}
 }
@@ -1841,7 +1538,7 @@ void CMedium::solve_fts_m2(double dt)
 	Solution_dt.clear();
 	Solution_dt = CBTCSet(3);
 	dt_fail = 10000;
-	ANS = CBTCSet(5 * Blocks.size() + 3 * Connector.size());
+	ANS = CBTCSet(5 * Blocks.size() + 3 * connectors_count());
 	ANS_colloids = CBTCSet(Blocks.size()*Blocks[0].n_phases);
 	ANS_constituents = CBTCSet(Blocks.size()*(Blocks[0].n_phases + n_default_phases)*RXN().cons.size());
 	ANS_control = CBTCSet(controllers().size());
@@ -1863,11 +1560,11 @@ void CMedium::solve_fts_m2(double dt)
 	double redo_to_time = t;
 	int in_redo = false;
 	for (int i = 0; i < Blocks.size(); i++) ANS.pushBackName("S_" + Blocks[i].ID);
-	for (int i = 0; i < Connector.size(); i++) ANS.pushBackName("Q_" + Connector[i].ID);
+	for (int i = 0; i < connectors_count(); i++) ANS.pushBackName("Q_" + Connector(i).ID);
 	for (int i = 0; i < Blocks.size(); i++) ANS.pushBackName("H_" + Blocks[i].ID);
 	for (int i = 0; i < Blocks.size(); i++) ANS.pushBackName("E_" + Blocks[i].ID);
-	for (int i = 0; i < Connector.size(); i++) ANS.pushBackName("A_" + Connector[i].ID);
-	for (int i = 0; i < Connector.size(); i++) ANS.pushBackName("Qv_" + Connector[i].ID);
+	for (int i = 0; i < connectors_count(); i++) ANS.pushBackName("A_" + Connector(i).ID);
+	for (int i = 0; i < connectors_count(); i++) ANS.pushBackName("Qv_" + Connector(i).ID);
 	for (int i = 0; i < Blocks.size(); i++) ANS.pushBackName("V_" + Blocks[i].ID);
 	for (int i = 0; i < Blocks.size(); i++) ANS.pushBackName("LAI_" + Blocks[i].ID);
 
@@ -2312,28 +2009,28 @@ void CMedium::solve_fts_m2(double dt)
 		if (!redo)
 		{
 			for (int i = 0; i < Blocks.size(); i++)
-				ANS.BTC[i].append(t, Blocks[i].S);
+				ANS.BTC[i].append(t, Blocks[i].get_S());
 
-			for (int i = 0; i < Connector.size(); i++)
-				ANS.BTC[i + Blocks.size()].append(t, Connector[i].Q*Connector[i].flow_factor);
-
-			for (int i = 0; i < Blocks.size(); i++)
-				ANS.BTC[i + Blocks.size() + Connector.size()].append(t, Blocks[i].H);
+			for (int i = 0; i < connectors_count(); i++)
+				ANS.BTC[i + Blocks.size()].append(t, Connector(i).Q*Connector(i).flow_factor);
 
 			for (int i = 0; i < Blocks.size(); i++)
-				ANS.BTC[i + 2 * Blocks.size() + Connector.size()].append(t, Blocks[i].outflow_corr_factor*Blocks[i].get_evaporation(t));
-
-			for (int i = 0; i < Connector.size(); i++)
-				ANS.BTC[i + 3 * Blocks.size() + Connector.size()].append(t, Connector[i].A);
-
-			for (int i = 0; i < Connector.size(); i++)
-				ANS.BTC[i + 3 * Blocks.size() + 2 * Connector.size()].append(t, Connector[i].Q_v);
+				ANS.BTC[i + Blocks.size() + connectors_count()].append(t, Blocks[i].get_val(basic_properties::H));
 
 			for (int i = 0; i < Blocks.size(); i++)
-				ANS.BTC[i + 3 * Blocks.size() + 3* Connector.size()].append(t, Blocks[i].V);
+				ANS.BTC[i + 2 * Blocks.size() + connectors_count()].append(t, Blocks[i].outflow_corr_factor*Blocks[i].get_evaporation(t));
+
+			for (int i = 0; i < connectors_count(); i++)
+				ANS.BTC[i + 3 * Blocks.size() + connectors_count()].append(t, Connector(i).A);
+
+			for (int i = 0; i < connectors_count(); i++)
+				ANS.BTC[i + 3 * Blocks.size() + 2 * connectors_count()].append(t, Connector(i).Q_v);
 
 			for (int i = 0; i < Blocks.size(); i++)
-				ANS.BTC[i + 4 * Blocks.size() + 3 * Connector.size()].append(t, Blocks[i].plant_prop.LAI);
+				ANS.BTC[i + 3 * Blocks.size() + 3* connectors_count()].append(t, Blocks[i].get_val(basic_properties::V));
+
+			for (int i = 0; i < Blocks.size(); i++)
+				ANS.BTC[i + 4 * Blocks.size() + 3 * connectors_count()].append(t, Blocks[i].plant_prop.LAI);
 
 
 			for (int i = 0; i < measured_quan().size(); i++)
@@ -2467,7 +2164,7 @@ double CMedium::get_var(int i, string j, int k) //i: ID, j: type (i.e. connector
 	if (i==0)
 		return Blocks[getblocksq(j)].get_val(k);
 	else if (i==1)
-		return Connector[getconnectorsq(j)].get_val(k);
+		return Connectors[getconnectorsq(j)].get_val(k);
 }
 
 double CMedium::get_var(int i, string j, string k) //i: ID, j: type (i.e. connector vs. block), k: variable
@@ -2475,7 +2172,7 @@ double CMedium::get_var(int i, string j, string k) //i: ID, j: type (i.e. connec
 	if (i == 0)
 		return Blocks[getblocksq(j)].get_val(k);
 	else if (i == 1)
-		return Connector[getconnectorsq(j)].get_val(k);
+		return Connectors[getconnectorsq(j)].get_val(k);
 }
 
 CVector CMedium::get_val(string I, int j) //I: quantity name, j: type (i.e. connector vs. block)
@@ -2495,12 +2192,12 @@ void CMedium::set_param(int param_no, double _value)
 		if (parameters()[param_no].location_type[i] == 2)
 
 		{	Blocks[parameters()[param_no].location[i]].set_val(parameters()[param_no].quan[i],_value);
-			Connector[parameters()[param_no].location[i]].set_val(parameters()[param_no].quan[i],_value);
+			Connectors[parameters()[param_no].location[i]].set_val(parameters()[param_no].quan[i],_value);
 		}
 		else if (parameters()[param_no].location_type[i] == 0)
 			Blocks[parameters()[param_no].location[i]].set_val(parameters()[param_no].quan[i],_value);
 		else if (parameters()[param_no].location_type[i] == 1)
- 			Connector[parameters()[param_no].location[i]].set_val(parameters()[param_no].quan[i],_value);
+ 			Connectors[parameters()[param_no].location[i]].set_val(parameters()[param_no].quan[i],_value);
 
 	}
 
@@ -2555,7 +2252,7 @@ void CMedium::finalize_set_param()
 
 		Blocks[ii].CG.resize(RXN().cons.size());
 		Blocks[ii].CG_star.resize(RXN().cons.size());
-		Blocks[ii].CG_stored_mass.resize(RXN().cons.size());//newly added
+		Blocks[ii].CG_stored_mass.resize(RXN().cons.size());
 		for (int kk = 0; kk<RXN().cons.size(); kk++)
 		{
 
@@ -2606,61 +2303,61 @@ void CMedium::finalize_set_param()
 
 	}
 
-	for (int i=0; i<Connector.size(); i++)
+	for (int i=0; i<connectors_count(); i++)
 	{
-		for (int j=0; j<Connector[i].flow_params.size(); j++)
-			if (Connector[i].flow_params[j]==0)
+		for (int j=0; j<Connector(i).flow_params.size(); j++)
+			if (Connector(i).flow_params[j]==0)
 			{
 
-				if (((Blocks[getblocksq(Connector[i].Block1ID)].indicator == Soil) || (Blocks[getblocksq(Connector[i].Block1ID)].indicator == Darcy)) && ((Blocks[getblocksq(Connector[i].Block2ID)].indicator == Pond) || (Blocks[getblocksq(Connector[i].Block2ID)].indicator == Stream)))
-					Connector[i].flow_params[j] = Blocks[getblocksq(Connector[i].Block1ID)].fs_params[j];
+				if (((Blocks[getblocksq(Connector(i).Block1ID)].indicator == Soil) || (Blocks[getblocksq(Connector(i).Block1ID)].indicator == Darcy)) && ((Blocks[getblocksq(Connector(i).Block2ID)].indicator == Pond) || (Blocks[getblocksq(Connector(i).Block2ID)].indicator == Stream)))
+					Connector(i).flow_params[j] = Blocks[getblocksq(Connector(i).Block1ID)].fs_params[j];
 
-				if (((Blocks[getblocksq(Connector[i].Block2ID)].indicator == Soil) || (Blocks[getblocksq(Connector[i].Block2ID)].indicator == Darcy)) && ((Blocks[getblocksq(Connector[i].Block1ID)].indicator == Pond) || (Blocks[getblocksq(Connector[i].Block1ID)].indicator == Stream)))
-					Connector[i].flow_params[j] = Blocks[getblocksq(Connector[i].Block2ID)].fs_params[j];
+				if (((Blocks[getblocksq(Connector(i).Block2ID)].indicator == Soil) || (Blocks[getblocksq(Connector(i).Block2ID)].indicator == Darcy)) && ((Blocks[getblocksq(Connector(i).Block1ID)].indicator == Pond) || (Blocks[getblocksq(Connector(i).Block1ID)].indicator == Stream)))
+					Connector(i).flow_params[j] = Blocks[getblocksq(Connector(i).Block2ID)].fs_params[j];
 
 
-				if (Blocks[getblocksq(Connector[i].Block1ID)].indicator == Blocks[getblocksq(Connector[i].Block2ID)].indicator)
-					Connector[i].flow_params[j]=0.5*(Blocks[getblocksq(Connector[i].Block1ID)].fs_params[j] + Blocks[getblocksq(Connector[i].Block2ID)].fs_params[j]);
-				else if (Blocks[getblocksq(Connector[i].Block1ID)].indicator==0)
-					Connector[i].flow_params[j]=Blocks[getblocksq(Connector[i].Block1ID)].fs_params[j];
-				else if (Blocks[getblocksq(Connector[i].Block2ID)].indicator==0)
-					Connector[i].flow_params[j]=Blocks[getblocksq(Connector[i].Block2ID)].fs_params[j];
+				if (Blocks[getblocksq(Connector(i).Block1ID)].indicator == Blocks[getblocksq(Connector(i).Block2ID)].indicator)
+					Connector(i).flow_params[j]=0.5*(Blocks[getblocksq(Connector(i).Block1ID)].fs_params[j] + Blocks[getblocksq(Connector(i).Block2ID)].fs_params[j]);
+				else if (Blocks[getblocksq(Connector(i).Block1ID)].indicator==0)
+					Connector(i).flow_params[j]=Blocks[getblocksq(Connector(i).Block1ID)].fs_params[j];
+				else if (Blocks[getblocksq(Connector(i).Block2ID)].indicator==0)
+					Connector(i).flow_params[j]=Blocks[getblocksq(Connector(i).Block2ID)].fs_params[j];
 			}
 
 
-			if (Connector[i].A==0)
+			if (Connector(i).A==0)
 			{
-				if (Connector[i].const_area == true)
+				if (Connector(i).const_area == true)
 				{
-					if (Blocks[getblocksq(Connector[i].Block1ID)].indicator == Blocks[getblocksq(Connector[i].Block2ID)].indicator)
-						Connector[i].A = Connector[i].A_star = 0.5*(Blocks[getblocksq(Connector[i].Block1ID)].A + Blocks[getblocksq(Connector[i].Block2ID)].A);
-					else if (Blocks[getblocksq(Connector[i].Block1ID)].indicator == Soil)
-						Connector[i].A = Connector[i].A_star = Blocks[getblocksq(Connector[i].Block1ID)].A;
-					else if (Blocks[getblocksq(Connector[i].Block2ID)].indicator == Soil)
-						Connector[i].A = Connector[i].A_star = Blocks[getblocksq(Connector[i].Block2ID)].A;
+					if (Blocks[getblocksq(Connector(i).Block1ID)].indicator == Blocks[getblocksq(Connector(i).Block2ID)].indicator)
+						Connector(i).A = Connector(i).A_star = 0.5*(Blocks[getblocksq(Connector(i).Block1ID)].get_val(basic_properties::A) + Blocks[getblocksq(Connector(i).Block2ID)].get_val(basic_properties::A));
+					else if (Blocks[getblocksq(Connector(i).Block1ID)].indicator == Soil)
+						Connector(i).A = Connector(i).A_star = Blocks[getblocksq(Connector(i).Block1ID)].get_val(basic_properties::A);
+					else if (Blocks[getblocksq(Connector(i).Block2ID)].indicator == Soil)
+						Connector(i).A = Connector(i).A_star = Blocks[getblocksq(Connector(i).Block2ID)].get_val(basic_properties::A);
 				}
 			}
 
-			if (Connector[i].d==0)
+			if (Connector(i).d==0)
 
-			{	if (Blocks[getblocksq(Connector[i].Block1ID)].indicator == Blocks[getblocksq(Connector[i].Block2ID)].indicator)
-					Connector[i].d=fabs(Blocks[getblocksq(Connector[i].Block1ID)].z0 - Blocks[getblocksq(Connector[i].Block2ID)].z0);
-				else if (Blocks[getblocksq(Connector[i].Block1ID)].indicator==0)
-					Connector[i].d=Blocks[getblocksq(Connector[i].Block1ID)].V/Blocks[getblocksq(Connector[i].Block1ID)].A/2.0;
-				else if (Blocks[getblocksq(Connector[i].Block2ID)].indicator==0)
-					Connector[i].d=Blocks[getblocksq(Connector[i].Block2ID)].V/Blocks[getblocksq(Connector[i].Block2ID)].A/2.0;
+			{	if (Blocks[getblocksq(Connector(i).Block1ID)].indicator == Blocks[getblocksq(Connector(i).Block2ID)].indicator)
+					Connector(i).d=fabs(Blocks[getblocksq(Connector(i).Block1ID)].get_val(basic_properties::z0) - Blocks[getblocksq(Connector(i).Block2ID)].get_val(basic_properties::z0));
+				else if (Blocks[getblocksq(Connector(i).Block1ID)].indicator==0)
+					Connector(i).d=Blocks[getblocksq(Connector(i).Block1ID)].get_val(basic_properties::V)/Blocks[getblocksq(Connector(i).Block1ID)].get_val(basic_properties::A)/2.0;
+				else if (Blocks[getblocksq(Connector(i).Block2ID)].indicator==0)
+					Connector(i).d=Blocks[getblocksq(Connector(i).Block2ID)].get_val(basic_properties::V) /Blocks[getblocksq(Connector(i).Block2ID)].get_val(basic_properties::A) /2.0;
 			}
 
-			if ((Blocks[getblocksq(Connector[i].Block1ID)].indicator == Catchment) && (Blocks[getblocksq(Connector[i].Block2ID)].indicator == Catchment))
-				if (Connector[i].flow_params[7] == 0) Connector[i].flow_params[7] = 0.667;
+			if ((Blocks[getblocksq(Connector(i).Block1ID)].indicator == Catchment) && (Blocks[getblocksq(Connector(i).Block2ID)].indicator == Catchment))
+				if (Connector(i).flow_params[7] == 0) Connector(i).flow_params[7] = 0.667;
 
-			Connector[i].c_dispersion.resize(Connector[i].Solid_phase.size());
-			Connector[i].c_dispersion_star.resize(Connector[i].Solid_phase.size());
-			Connector[i].dispersion.resize(RXN().cons.size());
-			Connector[i].dispersion_star.resize(RXN().cons.size());
-			Connector[i].RXN = &RXN();
-			if ((lookup_controllers(Connector[i].controller_id) != -1) && Connector[i].control == true)
-				Connector[i].Controller = &controllers()[lookup_controllers(Connector[i].controller_id)];
+			Connector(i).c_dispersion.resize(Connector(i).Solid_phase.size());
+			Connector(i).c_dispersion_star.resize(Connector(i).Solid_phase.size());
+			Connector(i).dispersion.resize(RXN().cons.size());
+			Connector(i).dispersion_star.resize(RXN().cons.size());
+			Connector(i).RXN = &RXN();
+			if ((lookup_controllers(Connector(i).controller_id) != -1) && Connector(i).control == true)
+				Connector(i).Controller = &controllers()[lookup_controllers(Connector(i).controller_id)];
 	}
 
 	for (int i = 0; i < controllers().size(); i++)
@@ -2690,8 +2387,8 @@ void CMedium::set_default_params()
 			colloid_transport() = true;
 
 	if (steady_state_hydro())
-		for (int i = 0; i < Connector.size(); i++)
-			if (Connector[i].d == 0) Connector[i].d = 1;
+		for (int i = 0; i < connectors_count(); i++)
+			if (Connector(i).d == 0) Connector(i).d = 1;
 }
 
 
@@ -2721,8 +2418,8 @@ void CMedium::set_default()
 
 void CMedium::evaluate_functions()
 {
-	for (int i=0; i<Connector.size(); i++)
-		Connector[i].evaluate_functions();
+	for (int i=0; i<connectors_count(); i++)
+		Connector(i).evaluate_functions();
 
 	for (int i=0; i<Blocks.size(); i++)
 		Blocks[i].evaluate_functions();
@@ -2731,8 +2428,8 @@ void CMedium::evaluate_functions()
 
 void CMedium::get_funcs()
 {
-	for (int i=0; i<Connector.size(); i++)
-		Connector[i].get_funcs(Connector[i].flow_expression);
+	for (int i=0; i<connectors_count(); i++)
+		Connector(i).get_funcs(Connector(i).flow_expression);
 
 	for (int i=0; i<Blocks.size(); i++)
 		Blocks[i].get_funcs(Blocks[i].H_S_expression);
@@ -2752,18 +2449,18 @@ int CMedium::getblocksq(string id)
 
 int CMedium::getconnectorsq(string id)
 {
-	if (!Connector.size())
+	if (!connectors_count())
 		return parent->connectorIndex[id];
-	for (int i = 0; i<Connector.size(); i++)
-		if (Connector[i].ID == id) return i;
+	for (int i = 0; i<connectors_count(); i++)
+		if (Connector(i).ID == id) return i;
 
 	return -1;
 }
 
 bool CMedium::is_there_any_fixed_connectors()
 {
-	for (int i=0; i<Connector.size(); i++)
-		if (Connector[i].fixed==true) return true;
+	for (int i=0; i<connectors_count(); i++)
+		if (Connector(i).fixed==true) return true;
 	for (int i=0; i<Blocks.size(); i++)
 		if (Blocks[i].fixed_evaporation==true) return true;
 	return false;
@@ -2814,11 +2511,11 @@ void CMedium::set_block_fluxes()
 		double x_star = -10;
 		for (int j=0; j<Blocks[i].connectors.size(); j++)
 		{
-			if ((fabs((Connector[Blocks[i].connectors[j]].Q-Connector[Blocks[i].connectors[j]].Q_v)/Connector[Blocks[i].connectors[j]].A))>x) x = fabs((Connector[Blocks[i].connectors[j]].Q-Connector[Blocks[i].connectors[j]].Q_v)/Connector[Blocks[i].connectors[j]].A);
-			if ((fabs((Connector[Blocks[i].connectors[j]].Q_star-Connector[Blocks[i].connectors[j]].Q_v_star)/Connector[Blocks[i].connectors[j]].A_star))>x_star) x_star = fabs((Connector[Blocks[i].connectors[j]].Q_star-Connector[Blocks[i].connectors[j]].Q_v_star)/Connector[Blocks[i].connectors[j]].A_star);
+			if ((fabs((Connectors[Blocks[i].connectors[j]].Q-Connectors[Blocks[i].connectors[j]].Q_v)/Connectors[Blocks[i].connectors[j]].A))>x) x = fabs((Connectors[Blocks[i].connectors[j]].Q-Connectors[Blocks[i].connectors[j]].Q_v)/Connectors[Blocks[i].connectors[j]].A);
+			if ((fabs((Connectors[Blocks[i].connectors[j]].Q_star-Connectors[Blocks[i].connectors[j]].Q_v_star)/Connectors[Blocks[i].connectors[j]].A_star))>x_star) x_star = fabs((Connectors[Blocks[i].connectors[j]].Q_star-Connectors[Blocks[i].connectors[j]].Q_v_star)/Connectors[Blocks[i].connectors[j]].A_star);
 
 		}
-		Blocks[i].q = w()*x + (1-w())*x_star;
+		Blocks[i].set_val(basic_properties::q,  w()*x + (1-w())*x_star);
 
 	}
 }
@@ -2867,17 +2564,17 @@ void CMedium::evaluate_capacity_c_star()
 
 void CMedium::evaluate_dispersion()
 {
-	for (int i=0; i<Connector.size(); i++)
-	{	Connector[i].evaluate_dispersion();
-		Connector[i].evaluate_dispersion_star();
+	for (int i=0; i<connectors_count(); i++)
+	{	Connector(i).evaluate_dispersion();
+		Connector(i).evaluate_dispersion_star();
 	}
 }
 
 void CMedium::evaluate_const_dispersion()
 {
-	for (int i=0; i<Connector.size(); i++)
-	{	Connector[i].evaluate_const_dispersion();
-		Connector[i].evaluate_const_dispersion_star();
+	for (int i=0; i<connectors_count(); i++)
+	{	Connector(i).evaluate_const_dispersion();
+		Connector(i).evaluate_const_dispersion_star();
 	}
 }
 
@@ -2888,7 +2585,7 @@ void CMedium::onestepsolve_colloid(double dtt)
 		failed_colloid = false;
 		return;
 	}
-	evaluate_dispersion();   //Connector[i].evaluate_dispersion(); Connector[i].evaluate_dispersion_star();  //Negative diffusion due to negative f[8]????
+	evaluate_dispersion();   //Connector(i).evaluate_dispersion(); Connector(i).evaluate_dispersion_star();  //Negative diffusion due to negative f[8]????
 	evaluate_K();			//Blocks[i].evaluate_K();
 	evaluate_capacity();	//Blocks[i].evaluate_capacity();
 	//renew_G();
@@ -3179,31 +2876,31 @@ CVector CMedium::getres_C(const CVector &X, double dtt)
 					F[get_member_no(i,p,l)] -= sum_interpolate(Blocks[i].inflow, t,"flow")*sum_interpolate(Blocks[i].inflow, t,Solid_phase()[p].name);
 			}
 
-			for (int i=0; i<Connector.size(); i++)
+			for (int i=0; i<connectors_count(); i++)
 			{
 				//advection
 				vector<int> ii;
 				ii.push_back(p);
 
-				double Q_adv_star = (Connector[i].Q_star - Connector[i].Q_v_star)*Connector[i].flow_factor + Connector[i].settling*Solid_phase()[p].vs*sgn(Connector[i].Block1->z0 - Connector[i].Block2->z0)*Connector[i].A_star*0.5*(Connector[i].Block1->calc_star(Solid_phase()[p].vs_coefficient,ii) + Connector[i].Block2->calc_star(Solid_phase()[p].vs_coefficient,ii));
-				double Q_adv = (Connector[i].Q - Connector[i].Q_v)*Connector[i].flow_factor + Connector[i].settling*Solid_phase()[p].vs*sgn(Connector[i].Block1->z0 - Connector[i].Block2->z0)*Connector[i].A*0.5*(Connector[i].Block1->calc(Solid_phase()[p].vs_coefficient,ii) + Connector[i].Block2->calc(Solid_phase()[p].vs_coefficient,ii));
+				double Q_adv_star = (Connector(i).Q_star - Connector(i).Q_v_star)*Connector(i).flow_factor + Connector(i).settling*Solid_phase()[p].vs*sgn(Connector(i).Block1->get_val(basic_properties::z0) - Connector(i).Block2->get_val(basic_properties::z0))*Connector(i).A_star*0.5*(Connector(i).Block1->calc_star(Solid_phase()[p].vs_coefficient,ii) + Connector(i).Block2->calc_star(Solid_phase()[p].vs_coefficient,ii));
+				double Q_adv = (Connector(i).Q - Connector(i).Q_v)*Connector(i).flow_factor + Connector(i).settling*Solid_phase()[p].vs*sgn(Connector(i).Block1->get_val(basic_properties::z0) - Connector(i).Block2->get_val(basic_properties::z0))*Connector(i).A*0.5*(Connector(i).Block1->calc(Solid_phase()[p].vs_coefficient,ii) + Connector(i).Block2->calc(Solid_phase()[p].vs_coefficient,ii));
 
 				if (((1-w())*Q_adv_star+w()*Q_adv)>0)
-				{	F[get_member_no(getblocksq(Connector[i].Block1ID),p,l)] += (w()*Q_adv*Blocks[getblocksq(Connector[i].Block1ID)].G[p][l] + (1-w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block1ID)].G_star[p][l])*Blocks[getblocksq(Connector[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
-					F[get_member_no(getblocksq(Connector[i].Block2ID),p,l)] -= (w()*Q_adv*Blocks[getblocksq(Connector[i].Block1ID)].G[p][l] + (1-w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block1ID)].G_star[p][l])*Blocks[getblocksq(Connector[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
+				{	F[get_member_no(getblocksq(Connector(i).Block1ID),p,l)] += (w()*Q_adv*Blocks[getblocksq(Connector(i).Block1ID)].G[p][l] + (1-w())*Q_adv_star*Blocks[getblocksq(Connector(i).Block1ID)].G_star[p][l])*Blocks[getblocksq(Connector(i).Block1ID)].Solid_phase[p]->mobility_factor[l];
+					F[get_member_no(getblocksq(Connector(i).Block2ID),p,l)] -= (w()*Q_adv*Blocks[getblocksq(Connector(i).Block1ID)].G[p][l] + (1-w())*Q_adv_star*Blocks[getblocksq(Connector(i).Block1ID)].G_star[p][l])*Blocks[getblocksq(Connector(i).Block1ID)].Solid_phase[p]->mobility_factor[l];
 				}
 				if (((1 - w())*Q_adv_star + w()*Q_adv)<0)
-				{	F[get_member_no(getblocksq(Connector[i].Block1ID),p,l)] += (w()*Q_adv*Blocks[getblocksq(Connector[i].Block2ID)].G[p][l] + (1-w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block2ID)].G_star[p][l])*Blocks[getblocksq(Connector[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
-					F[get_member_no(getblocksq(Connector[i].Block2ID),p,l)] -= (w()*Q_adv*Blocks[getblocksq(Connector[i].Block2ID)].G[p][l] + (1-w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block2ID)].G_star[p][l])*Blocks[getblocksq(Connector[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
+				{	F[get_member_no(getblocksq(Connector(i).Block1ID),p,l)] += (w()*Q_adv*Blocks[getblocksq(Connector(i).Block2ID)].G[p][l] + (1-w())*Q_adv_star*Blocks[getblocksq(Connector(i).Block2ID)].G_star[p][l])*Blocks[getblocksq(Connector(i).Block2ID)].Solid_phase[p]->mobility_factor[l];
+					F[get_member_no(getblocksq(Connector(i).Block2ID),p,l)] -= (w()*Q_adv*Blocks[getblocksq(Connector(i).Block2ID)].G[p][l] + (1-w())*Q_adv_star*Blocks[getblocksq(Connector(i).Block2ID)].G_star[p][l])*Blocks[getblocksq(Connector(i).Block2ID)].Solid_phase[p]->mobility_factor[l];
 				}
 
 			}
 				//diffusion
-			for (int i=0; i<Connector.size(); i++)
+			for (int i=0; i<connectors_count(); i++)
 			{
-				double exchange = Connector[i].A*(w()*Connector[i].c_dispersion[p]+(1-w())*Connector[i].c_dispersion_star[p])/Connector[i].d*((w()*Blocks[getblocksq(Connector[i].Block2ID)].G[p][l]+(1-w())*Blocks[getblocksq(Connector[i].Block2ID)].G_star[p][l])-(w()*Blocks[getblocksq(Connector[i].Block1ID)].G[p][l]+(1-w())*Blocks[getblocksq(Connector[i].Block1ID)].G_star[p][l]))*Blocks[getblocksq(Connector[i].Block1ID)].Solid_phase[p]->mobility_factor[l]*Blocks[getblocksq(Connector[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
-				F[get_member_no(getblocksq(Connector[i].Block1ID),p,l)] -= exchange;
-				F[get_member_no(getblocksq(Connector[i].Block2ID),p,l)] += exchange;
+				double exchange = Connector(i).A*(w()*Connector(i).c_dispersion[p]+(1-w())*Connector(i).c_dispersion_star[p])/Connector(i).d*((w()*Blocks[getblocksq(Connector(i).Block2ID)].G[p][l]+(1-w())*Blocks[getblocksq(Connector(i).Block2ID)].G_star[p][l])-(w()*Blocks[getblocksq(Connector(i).Block1ID)].G[p][l]+(1-w())*Blocks[getblocksq(Connector(i).Block1ID)].G_star[p][l]))*Blocks[getblocksq(Connector(i).Block1ID)].Solid_phase[p]->mobility_factor[l]*Blocks[getblocksq(Connector(i).Block2ID)].Solid_phase[p]->mobility_factor[l];
+				F[get_member_no(getblocksq(Connector(i).Block1ID),p,l)] -= exchange;
+				F[get_member_no(getblocksq(Connector(i).Block2ID),p,l)] += exchange;
 			}
 
 		}
@@ -3218,8 +2915,8 @@ CVector CMedium::getres_C(const CVector &X, double dtt)
 				for (int k=0; k<Blocks[i].Solid_phase[p]->n_phases; k++)
 				{
 					double exchange = (1-w())*Blocks[i].K_star[p][l][k]*Blocks[i].G_star[p][l] + w()*Blocks[i].K[p][l][k]*Blocks[i].G[p][l];
-					F[get_member_no(i,p,l)] += exchange*Blocks[i].V;
-					F[get_member_no(i,p,k)] -= exchange*Blocks[i].V;
+					F[get_member_no(i,p,l)] += exchange*Blocks[i].get_val(basic_properties::V);
+					F[get_member_no(i,p,k)] -= exchange*Blocks[i].get_val(basic_properties::V);
 				}
 		}
 	}
@@ -3231,7 +2928,7 @@ CVector CMedium::getres_C(const CVector &X, double dtt)
 		{	for (int k=0; k<Blocks[i].Solid_phase[p]->n_phases; k++)
 				for (int j=0; j<Blocks[i].buildup.size(); j++)
 					if ((buildup()[j].name == Blocks[i].Solid_phase[p]->name) && (Blocks[i].buildup[j]->phase == Blocks[i].Solid_phase[p]->phase_names[k]))
-						F[get_member_no(i,p,k)] -= Blocks[i].buildup[j]->buildup((1-w())*Blocks[i].G_star[p][k] + w()*Blocks[i].G[p][k],&Blocks[i])*Blocks[i].V;
+						F[get_member_no(i,p,k)] -= Blocks[i].buildup[j]->buildup((1-w())*Blocks[i].G_star[p][k] + w()*Blocks[i].G[p][k],&Blocks[i])*Blocks[i].get_val(basic_properties::V);
 		}
 	}
 
@@ -3261,33 +2958,33 @@ CVector_arma CMedium::getres_C(CVector_arma &X, double dtt)
 					F[get_member_no(i, p, l)] -= sum_interpolate(Blocks[i].inflow, t, "flow")*sum_interpolate(Blocks[i].inflow, t, Solid_phase()[p].name);
 			}
 
-			for (int i = 0; i<Connector.size(); i++)
+			for (int i = 0; i<connectors_count(); i++)
 			{
 				//advection
 				vector<int> ii;
 				ii.push_back(p);
 
-				double Q_adv_star = (Connector[i].Q_star - Connector[i].Q_v_star)*Connector[i].flow_factor + Connector[i].settling*Solid_phase()[p].vs*sgn(Connector[i].Block1->z0 - Connector[i].Block2->z0)*Connector[i].A_star*0.5*(Connector[i].Block1->calc_star(Solid_phase()[p].vs_coefficient, ii) + Connector[i].Block2->calc_star(Solid_phase()[p].vs_coefficient, ii));
-				double Q_adv = (Connector[i].Q - Connector[i].Q_v)*Connector[i].flow_factor + Connector[i].settling*Solid_phase()[p].vs*sgn(Connector[i].Block1->z0 - Connector[i].Block2->z0)*Connector[i].A*0.5*(Connector[i].Block1->calc(Solid_phase()[p].vs_coefficient, ii) + Connector[i].Block2->calc(Solid_phase()[p].vs_coefficient, ii));
+				double Q_adv_star = (Connector(i).Q_star - Connector(i).Q_v_star)*Connector(i).flow_factor + Connector(i).settling*Solid_phase()[p].vs*sgn(Connector(i).Block1->get_val(basic_properties::z0) - Connector(i).Block2->get_val(basic_properties::z0))*Connector(i).A_star*0.5*(Connector(i).Block1->calc_star(Solid_phase()[p].vs_coefficient, ii) + Connector(i).Block2->calc_star(Solid_phase()[p].vs_coefficient, ii));
+				double Q_adv = (Connector(i).Q - Connector(i).Q_v)*Connector(i).flow_factor + Connector(i).settling*Solid_phase()[p].vs*sgn(Connector(i).Block1->get_val(basic_properties::z0) - Connector(i).Block2->get_val(basic_properties::z0))*Connector(i).A*0.5*(Connector(i).Block1->calc(Solid_phase()[p].vs_coefficient, ii) + Connector(i).Block2->calc(Solid_phase()[p].vs_coefficient, ii));
 
 				if (((1 - w())*Q_adv_star + w()*Q_adv)>0)
 				{
-					F[get_member_no(getblocksq(Connector[i].Block1ID), p, l)] += (w()*Q_adv*Blocks[getblocksq(Connector[i].Block1ID)].G[p][l] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block1ID)].G_star[p][l])*Blocks[getblocksq(Connector[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
-					F[get_member_no(getblocksq(Connector[i].Block2ID), p, l)] -= (w()*Q_adv*Blocks[getblocksq(Connector[i].Block1ID)].G[p][l] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block1ID)].G_star[p][l])*Blocks[getblocksq(Connector[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
+					F[get_member_no(getblocksq(Connector(i).Block1ID), p, l)] += (w()*Q_adv*Blocks[getblocksq(Connector(i).Block1ID)].G[p][l] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector(i).Block1ID)].G_star[p][l])*Blocks[getblocksq(Connector(i).Block1ID)].Solid_phase[p]->mobility_factor[l];
+					F[get_member_no(getblocksq(Connector(i).Block2ID), p, l)] -= (w()*Q_adv*Blocks[getblocksq(Connector(i).Block1ID)].G[p][l] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector(i).Block1ID)].G_star[p][l])*Blocks[getblocksq(Connector(i).Block1ID)].Solid_phase[p]->mobility_factor[l];
 				}
 				if (((1 - w())*Q_adv_star + w()*Q_adv)<0)
 				{
-					F[get_member_no(getblocksq(Connector[i].Block1ID), p, l)] += (w()*Q_adv*Blocks[getblocksq(Connector[i].Block2ID)].G[p][l] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block2ID)].G_star[p][l])*Blocks[getblocksq(Connector[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
-					F[get_member_no(getblocksq(Connector[i].Block2ID), p, l)] -= (w()*Q_adv*Blocks[getblocksq(Connector[i].Block2ID)].G[p][l] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block2ID)].G_star[p][l])*Blocks[getblocksq(Connector[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
+					F[get_member_no(getblocksq(Connector(i).Block1ID), p, l)] += (w()*Q_adv*Blocks[getblocksq(Connector(i).Block2ID)].G[p][l] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector(i).Block2ID)].G_star[p][l])*Blocks[getblocksq(Connector(i).Block2ID)].Solid_phase[p]->mobility_factor[l];
+					F[get_member_no(getblocksq(Connector(i).Block2ID), p, l)] -= (w()*Q_adv*Blocks[getblocksq(Connector(i).Block2ID)].G[p][l] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector(i).Block2ID)].G_star[p][l])*Blocks[getblocksq(Connector(i).Block2ID)].Solid_phase[p]->mobility_factor[l];
 				}
 
 			}
 			//diffusion
-			for (int i = 0; i<Connector.size(); i++)
+			for (int i = 0; i<connectors_count(); i++)
 			{
-				double exchange = Connector[i].A*(w()*Connector[i].c_dispersion[p] + (1 - w())*Connector[i].c_dispersion_star[p]) / Connector[i].d*((w()*Blocks[getblocksq(Connector[i].Block2ID)].G[p][l] + (1 - w())*Blocks[getblocksq(Connector[i].Block2ID)].G_star[p][l]) - (w()*Blocks[getblocksq(Connector[i].Block1ID)].G[p][l] + (1 - w())*Blocks[getblocksq(Connector[i].Block1ID)].G_star[p][l]))*Blocks[getblocksq(Connector[i].Block1ID)].Solid_phase[p]->mobility_factor[l] * Blocks[getblocksq(Connector[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
-				F[get_member_no(getblocksq(Connector[i].Block1ID), p, l)] -= exchange;
-				F[get_member_no(getblocksq(Connector[i].Block2ID), p, l)] += exchange;
+				double exchange = Connector(i).A*(w()*Connector(i).c_dispersion[p] + (1 - w())*Connector(i).c_dispersion_star[p]) / Connector(i).d*((w()*Blocks[getblocksq(Connector(i).Block2ID)].G[p][l] + (1 - w())*Blocks[getblocksq(Connector(i).Block2ID)].G_star[p][l]) - (w()*Blocks[getblocksq(Connector(i).Block1ID)].G[p][l] + (1 - w())*Blocks[getblocksq(Connector(i).Block1ID)].G_star[p][l]))*Blocks[getblocksq(Connector(i).Block1ID)].Solid_phase[p]->mobility_factor[l] * Blocks[getblocksq(Connector(i).Block2ID)].Solid_phase[p]->mobility_factor[l];
+				F[get_member_no(getblocksq(Connector(i).Block1ID), p, l)] -= exchange;
+				F[get_member_no(getblocksq(Connector(i).Block2ID), p, l)] += exchange;
 			}
 
 		}
@@ -3303,8 +3000,8 @@ CVector_arma CMedium::getres_C(CVector_arma &X, double dtt)
 				for (int k = 0; k<Blocks[i].Solid_phase[p]->n_phases; k++)
 				{
 					double exchange = (1 - w())*Blocks[i].K_star[p][l][k] * Blocks[i].G_star[p][l] + w()*Blocks[i].K[p][l][k] * Blocks[i].G[p][l];
-					F[get_member_no(i, p, l)] += exchange*Blocks[i].V;
-					F[get_member_no(i, p, k)] -= exchange*Blocks[i].V;
+					F[get_member_no(i, p, l)] += exchange*Blocks[i].get_val(basic_properties::V);
+					F[get_member_no(i, p, k)] -= exchange*Blocks[i].get_val(basic_properties::V);
 				}
 		}
 	}
@@ -3317,7 +3014,7 @@ CVector_arma CMedium::getres_C(CVector_arma &X, double dtt)
 			for (int k = 0; k<Blocks[i].Solid_phase[p]->n_phases; k++)
 				for (int j = 0; j<Blocks[i].buildup.size(); j++)
 					if ((buildup()[j].name == Blocks[i].Solid_phase[p]->name) && (Blocks[i].buildup[j]->phase == Blocks[i].Solid_phase[p]->phase_names[k]))
-						F[get_member_no(i, p, k)] -= Blocks[i].buildup[j]->buildup((1 - w())*Blocks[i].G_star[p][k] + w()*Blocks[i].G[p][k], &Blocks[i])*Blocks[i].V;
+						F[get_member_no(i, p, k)] -= Blocks[i].buildup[j]->buildup((1 - w())*Blocks[i].G_star[p][k] + w()*Blocks[i].G[p][k], &Blocks[i])*Blocks[i].get_val(basic_properties::V);
 		}
 	}
 
@@ -3331,19 +3028,19 @@ void CMedium::correct_S(double dtt)
 	for (int i=0; i<Blocks.size(); i++)
 	{
 			if  (Blocks[i].inflow.size()!=0)
-				S[i] = Blocks[i].S+sum_interpolate(Blocks[i].inflow, t)[0]*dtt;
-			else S[i]= Blocks[i].S;
+				S[i] = Blocks[i].get_S()+sum_interpolate(Blocks[i].inflow, t)[0]*dtt;
+			else S[i]= Blocks[i].get_S();
 //			if (Blocks[i].indicator != Soil)
 				S[i] -= Blocks[i].outflow_corr_factor*Blocks[i].get_evaporation(t)*dtt;
 	}
 
-	for (int i=0; i<Connector.size(); i++)
+	for (int i=0; i<connectors_count(); i++)
 	{
-		S[getblocksq(Connector[i].Block1ID)] -= (w()*Connector[i].Q + (1-w())*Connector[i].Q_star)*Connector[i].flow_factor*dtt;
-		S[getblocksq(Connector[i].Block2ID)] += (w()*Connector[i].Q + (1-w())*Connector[i].Q_star)*Connector[i].flow_factor*dtt;
+		S[getblocksq(Connector(i).Block1ID)] -= (w()*Connector(i).Q + (1-w())*Connector(i).Q_star)*Connector(i).flow_factor*dtt;
+		S[getblocksq(Connector(i).Block2ID)] += (w()*Connector(i).Q + (1-w())*Connector(i).Q_star)*Connector(i).flow_factor*dtt;
 	}
 
-	for (int i=0; i<Blocks.size(); i++) Blocks[i].S_star = max(S[i],0.0);
+	for (int i=0; i<Blocks.size(); i++) Blocks[i].get_S_star() = max(S[i],0.0);
 
 }
 
@@ -3372,7 +3069,7 @@ double CMedium::calc_term(int i, string loc_id, CStringOP k)
 	if (i == 0)
 		return Blocks[getblocksq(loc_id)].calc(k);
 	else if (i == 1)
-		return Connector[getconnectorsq(loc_id)].calc(k);
+		return Connectors[getconnectorsq(loc_id)].calc(k);
 
 }
 
@@ -3381,7 +3078,7 @@ double CMedium::calc_term_star(int i, string loc_id, CStringOP k)
 	if (i == 0)
 		return Blocks[getblocksq(loc_id)].calc_star(k);
 	else if (i == 1)
-		return Connector[getconnectorsq(loc_id)].calc_star(k);
+		return Connectors[getconnectorsq(loc_id)].calc_star(k);
 }
 
 
@@ -3394,7 +3091,7 @@ void CMedium::write_state(string filename)
 	fprintf(Fil, "t=%le\n", t);
 	for (int j=0; j<Blocks.size(); j++)
 	{
-		fprintf(Fil, "S-%i=%le\n", j, Blocks[j].S);
+		fprintf(Fil, "S-%i=%le\n", j, Blocks[j].get_S());
 	}
 	for (int j=0; j<Blocks.size(); j++)
 	{
@@ -3494,7 +3191,7 @@ CVector CMedium::getres_Q(const CVector &X, double dtt)
 
 
 
-				for (int i=0; i<Connector.size(); i++)
+				for (int i=0; i<connectors_count(); i++)
 				{
 					//advection
 
@@ -3502,17 +3199,17 @@ CVector CMedium::getres_Q(const CVector &X, double dtt)
 					{
 						vector<int> ii;
 						ii.push_back(k);
-						double Q_adv_star = (Connector[i].Q_star - Connector[i].Q_v_star)*Connector[i].flow_factor + Connector[i].settling*RXN().cons[k].vs*sgn(Connector[i].Block1->z0 - Connector[i].Block2->z0)*Connector[i].A_star*0.5*(Connector[i].Block1->calc_star(RXN().cons[k].vs_coefficient,ii) + Connector[i].Block2->calc_star(RXN().cons[k].vs_coefficient,ii));
-						double Q_adv = (Connector[i].Q - Connector[i].Q_v)*Connector[i].flow_factor + Connector[i].settling*RXN().cons[k].vs*sgn(Connector[i].Block1->z0 - Connector[i].Block2->z0)*Connector[i].A*0.5*(Connector[i].Block1->calc(RXN().cons[k].vs_coefficient,ii) + Connector[i].Block2->calc(RXN().cons[k].vs_coefficient,ii));
+						double Q_adv_star = (Connector(i).Q_star - Connector(i).Q_v_star)*Connector(i).flow_factor + Connector(i).settling*RXN().cons[k].vs*sgn(Connector(i).Block1->get_val(basic_properties::z0) - Connector(i).Block2->get_val(basic_properties::z0))*Connector(i).A_star*0.5*(Connector(i).Block1->calc_star(RXN().cons[k].vs_coefficient,ii) + Connector(i).Block2->calc_star(RXN().cons[k].vs_coefficient,ii));
+						double Q_adv = (Connector(i).Q - Connector(i).Q_v)*Connector(i).flow_factor + Connector(i).settling*RXN().cons[k].vs*sgn(Connector(i).Block1->get_val(basic_properties::z0) - Connector(i).Block2->get_val(basic_properties::z0))*Connector(i).A*0.5*(Connector(i).Block1->calc(RXN().cons[k].vs_coefficient,ii) + Connector(i).Block2->calc(RXN().cons[k].vs_coefficient,ii));
 
 						if (w()*Q_adv+(1-w())*Q_adv_star>0)
-						{	F[get_member_no(getblocksq(Connector[i].Block1ID),p,l,k)] += (w()*Q_adv*Blocks[getblocksq(Connector[i].Block1ID)].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block1ID)].CG_star[k][get_member_no(p,l)]);
-							F[get_member_no(getblocksq(Connector[i].Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connector[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block1ID)].CG_star[k][get_member_no(p, l)]);
+						{	F[get_member_no(getblocksq(Connector(i).Block1ID),p,l,k)] += (w()*Q_adv*Blocks[getblocksq(Connector(i).Block1ID)].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[getblocksq(Connector(i).Block1ID)].CG_star[k][get_member_no(p,l)]);
+							F[get_member_no(getblocksq(Connector(i).Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connector(i).Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector(i).Block1ID)].CG_star[k][get_member_no(p, l)]);
 
 						}
 						if (Q_adv<0)
-						{	F[get_member_no(getblocksq(Connector[i].Block1ID),p,l,k)] += (w()*Q_adv*Blocks[getblocksq(Connector[i].Block2ID)].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block2ID)].CG_star[k][get_member_no(p,l)]);
-							F[get_member_no(getblocksq(Connector[i].Block2ID),p,l,k)] -= (w()*Q_adv*Blocks[getblocksq(Connector[i].Block2ID)].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block2ID)].CG_star[k][get_member_no(p,l)]);
+						{	F[get_member_no(getblocksq(Connector(i).Block1ID),p,l,k)] += (w()*Q_adv*Blocks[getblocksq(Connector(i).Block2ID)].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[getblocksq(Connector(i).Block2ID)].CG_star[k][get_member_no(p,l)]);
+							F[get_member_no(getblocksq(Connector(i).Block2ID),p,l,k)] -= (w()*Q_adv*Blocks[getblocksq(Connector(i).Block2ID)].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[getblocksq(Connector(i).Block2ID)].CG_star[k][get_member_no(p,l)]);
 						}
 
 					}
@@ -3525,31 +3222,31 @@ CVector CMedium::getres_Q(const CVector &X, double dtt)
 					{
 						vector<int> ii;
 						ii.push_back(p);
-						double Q_adv_star = (Connector[i].Q_star - Connector[i].Q_v_star)*Connector[i].flow_factor + Connector[i].settling*Solid_phase()[p].vs*sgn(Connector[i].Block1->z0 - Connector[i].Block2->z0)*0.5*(Connector[i].Block1->calc_star(Solid_phase()[p].vs_coefficient,ii)+ Connector[i].Block2->calc_star(Solid_phase()[p].vs_coefficient,ii));
-						double Q_adv = (Connector[i].Q - Connector[i].Q_v)*Connector[i].flow_factor + Connector[i].settling*Solid_phase()[p].vs*sgn(Connector[i].Block1->z0 - Connector[i].Block2->z0)*0.5*(Connector[i].Block1->calc(Solid_phase()[p].vs_coefficient,ii) + Connector[i].Block2->calc(Solid_phase()[p].vs_coefficient,ii));
+						double Q_adv_star = (Connector(i).Q_star - Connector(i).Q_v_star)*Connector(i).flow_factor + Connector(i).settling*Solid_phase()[p].vs*sgn(Connector(i).Block1->get_val(basic_properties::z0) - Connector(i).Block2->get_val(basic_properties::z0))*0.5*(Connector(i).Block1->calc_star(Solid_phase()[p].vs_coefficient,ii)+ Connector(i).Block2->calc_star(Solid_phase()[p].vs_coefficient,ii));
+						double Q_adv = (Connector(i).Q - Connector(i).Q_v)*Connector(i).flow_factor + Connector(i).settling*Solid_phase()[p].vs*sgn(Connector(i).Block1->get_val(basic_properties::z0) - Connector(i).Block2->get_val(basic_properties::z0))*0.5*(Connector(i).Block1->calc(Solid_phase()[p].vs_coefficient,ii) + Connector(i).Block2->calc(Solid_phase()[p].vs_coefficient,ii));
 						if (Q_adv>0)
-						{	F[get_member_no(getblocksq(Connector[i].Block1ID),p,l,k)] += (w()*Q_adv*Blocks[getblocksq(Connector[i].Block1ID)].G[p][l]*Blocks[getblocksq(Connector[i].Block1ID)].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block1ID)].G_star[p][l]*Blocks[getblocksq(Connector[i].Block1ID)].CG_star[k][get_member_no(p,l)])*Blocks[getblocksq(Connector[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
-							F[get_member_no(getblocksq(Connector[i].Block2ID),p,l,k)] -= (w()*Q_adv*Blocks[getblocksq(Connector[i].Block1ID)].G[p][l]*Blocks[getblocksq(Connector[i].Block1ID)].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block1ID)].G_star[p][l]*Blocks[getblocksq(Connector[i].Block1ID)].CG_star[k][get_member_no(p,l)])*Blocks[getblocksq(Connector[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
+						{	F[get_member_no(getblocksq(Connector(i).Block1ID),p,l,k)] += (w()*Q_adv*Blocks[getblocksq(Connector(i).Block1ID)].G[p][l]*Blocks[getblocksq(Connector(i).Block1ID)].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[getblocksq(Connector(i).Block1ID)].G_star[p][l]*Blocks[getblocksq(Connector(i).Block1ID)].CG_star[k][get_member_no(p,l)])*Blocks[getblocksq(Connector(i).Block1ID)].Solid_phase[p]->mobility_factor[l];
+							F[get_member_no(getblocksq(Connector(i).Block2ID),p,l,k)] -= (w()*Q_adv*Blocks[getblocksq(Connector(i).Block1ID)].G[p][l]*Blocks[getblocksq(Connector(i).Block1ID)].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[getblocksq(Connector(i).Block1ID)].G_star[p][l]*Blocks[getblocksq(Connector(i).Block1ID)].CG_star[k][get_member_no(p,l)])*Blocks[getblocksq(Connector(i).Block1ID)].Solid_phase[p]->mobility_factor[l];
 						}
 						if (Q_adv<0)
-						{	F[get_member_no(getblocksq(Connector[i].Block1ID),p,l,k)] += (w()*Q_adv*Blocks[getblocksq(Connector[i].Block2ID)].G[p][l]*Blocks[getblocksq(Connector[i].Block2ID)].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block2ID)].G_star[p][l]*Blocks[getblocksq(Connector[i].Block2ID)].CG_star[k][get_member_no(p,l)])*Blocks[getblocksq(Connector[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
-							F[get_member_no(getblocksq(Connector[i].Block2ID),p,l,k)] -= (w()*Q_adv*Blocks[getblocksq(Connector[i].Block2ID)].G[p][l]*Blocks[getblocksq(Connector[i].Block2ID)].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block2ID)].G_star[p][l]*Blocks[getblocksq(Connector[i].Block2ID)].CG_star[k][get_member_no(p,l)])*Blocks[getblocksq(Connector[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
+						{	F[get_member_no(getblocksq(Connector(i).Block1ID),p,l,k)] += (w()*Q_adv*Blocks[getblocksq(Connector(i).Block2ID)].G[p][l]*Blocks[getblocksq(Connector(i).Block2ID)].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[getblocksq(Connector(i).Block2ID)].G_star[p][l]*Blocks[getblocksq(Connector(i).Block2ID)].CG_star[k][get_member_no(p,l)])*Blocks[getblocksq(Connector(i).Block2ID)].Solid_phase[p]->mobility_factor[l];
+							F[get_member_no(getblocksq(Connector(i).Block2ID),p,l,k)] -= (w()*Q_adv*Blocks[getblocksq(Connector(i).Block2ID)].G[p][l]*Blocks[getblocksq(Connector(i).Block2ID)].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[getblocksq(Connector(i).Block2ID)].G_star[p][l]*Blocks[getblocksq(Connector(i).Block2ID)].CG_star[k][get_member_no(p,l)])*Blocks[getblocksq(Connector(i).Block2ID)].Solid_phase[p]->mobility_factor[l];
 						}
 					}
 
 
 				}
 				//diffusion
-				for (int i=0; i<Connector.size(); i++)
+				for (int i=0; i<connectors_count(); i++)
 				{
 					if (p==-2)
 					{
-						double exchange = Connector[i].A*(w()*Connector[i].dispersion[k] + (1 - w())*Connector[i].dispersion_star[k]) / Connector[i].d*min(Heavyside(get_capacity_star(getblocksq(Connector[i].Block2ID), l, p) - 1e-13), Heavyside(get_capacity_star(getblocksq(Connector[i].Block1ID), l, p) - 1e-13));
-						double term1 = w()*Blocks[getblocksq(Connector[i].Block2ID)].CG[k][get_member_no(p,l)]+(1-w())*Blocks[getblocksq(Connector[i].Block2ID)].CG_star[k][get_member_no(p,l)];
-						double term2 = w()*Blocks[getblocksq(Connector[i].Block1ID)].CG[k][get_member_no(p,l)]+(1-w())*Blocks[getblocksq(Connector[i].Block1ID)].CG_star[k][get_member_no(p,l)];
+						double exchange = Connector(i).A*(w()*Connector(i).dispersion[k] + (1 - w())*Connector(i).dispersion_star[k]) / Connector(i).d*min(Heavyside(get_capacity_star(getblocksq(Connector(i).Block2ID), l, p) - 1e-13), Heavyside(get_capacity_star(getblocksq(Connector(i).Block1ID), l, p) - 1e-13));
+						double term1 = w()*Blocks[getblocksq(Connector(i).Block2ID)].CG[k][get_member_no(p,l)]+(1-w())*Blocks[getblocksq(Connector(i).Block2ID)].CG_star[k][get_member_no(p,l)];
+						double term2 = w()*Blocks[getblocksq(Connector(i).Block1ID)].CG[k][get_member_no(p,l)]+(1-w())*Blocks[getblocksq(Connector(i).Block1ID)].CG_star[k][get_member_no(p,l)];
 						exchange*=(term1-term2);
-						F[get_member_no(getblocksq(Connector[i].Block1ID),p,l,k)] -= exchange;
-						F[get_member_no(getblocksq(Connector[i].Block2ID),p,l,k)] += exchange;
+						F[get_member_no(getblocksq(Connector(i).Block1ID),p,l,k)] -= exchange;
+						F[get_member_no(getblocksq(Connector(i).Block2ID),p,l,k)] += exchange;
 					}
 					else if (p==-1)
 					{
@@ -3557,12 +3254,12 @@ CVector CMedium::getres_Q(const CVector &X, double dtt)
 					}
 					else
 					{
-						double exchange = Connector[i].A*(w()*Connector[i].c_dispersion[p] + (1 - w())*Connector[i].c_dispersion_star[p]) / Connector[i].d*min(Heavyside(get_capacity_star(getblocksq(Connector[i].Block1ID), l, p) - 1e-13), Heavyside(get_capacity_star(getblocksq(Connector[i].Block2ID), l, p) - 1e-13));;
-						double term1 = w()*Blocks[getblocksq(Connector[i].Block2ID)].G[p][l]*Blocks[getblocksq(Connector[i].Block2ID)].CG[k][get_member_no(p,l)]+(1-w())*Blocks[getblocksq(Connector[i].Block2ID)].G_star[p][l]*Blocks[getblocksq(Connector[i].Block2ID)].CG_star[k][get_member_no(p,l)];
-						double term2 = w()*Blocks[getblocksq(Connector[i].Block1ID)].G[p][l]*Blocks[getblocksq(Connector[i].Block1ID)].CG[k][get_member_no(p,l)]+(1-w())*Blocks[getblocksq(Connector[i].Block1ID)].G_star[p][l]*Blocks[getblocksq(Connector[i].Block1ID)].CG_star[k][get_member_no(p,l)];
-						exchange*=(Blocks[getblocksq(Connector[i].Block1ID)].Solid_phase[p]->mobility_factor[l]*Blocks[getblocksq(Connector[i].Block2ID)].Solid_phase[p]->mobility_factor[l])*(term1-term2);
-						F[get_member_no(getblocksq(Connector[i].Block1ID),p,l,k)] -= exchange;
-						F[get_member_no(getblocksq(Connector[i].Block2ID),p,l,k)] += exchange;
+						double exchange = Connector(i).A*(w()*Connector(i).c_dispersion[p] + (1 - w())*Connector(i).c_dispersion_star[p]) / Connector(i).d*min(Heavyside(get_capacity_star(getblocksq(Connector(i).Block1ID), l, p) - 1e-13), Heavyside(get_capacity_star(getblocksq(Connector(i).Block2ID), l, p) - 1e-13));;
+						double term1 = w()*Blocks[getblocksq(Connector(i).Block2ID)].G[p][l]*Blocks[getblocksq(Connector(i).Block2ID)].CG[k][get_member_no(p,l)]+(1-w())*Blocks[getblocksq(Connector(i).Block2ID)].G_star[p][l]*Blocks[getblocksq(Connector(i).Block2ID)].CG_star[k][get_member_no(p,l)];
+						double term2 = w()*Blocks[getblocksq(Connector(i).Block1ID)].G[p][l]*Blocks[getblocksq(Connector(i).Block1ID)].CG[k][get_member_no(p,l)]+(1-w())*Blocks[getblocksq(Connector(i).Block1ID)].G_star[p][l]*Blocks[getblocksq(Connector(i).Block1ID)].CG_star[k][get_member_no(p,l)];
+						exchange*=(Blocks[getblocksq(Connector(i).Block1ID)].Solid_phase[p]->mobility_factor[l]*Blocks[getblocksq(Connector(i).Block2ID)].Solid_phase[p]->mobility_factor[l])*(term1-term2);
+						F[get_member_no(getblocksq(Connector(i).Block1ID),p,l,k)] -= exchange;
+						F[get_member_no(getblocksq(Connector(i).Block2ID),p,l,k)] += exchange;
 					}
 				}
 
@@ -3578,8 +3275,8 @@ CVector CMedium::getres_Q(const CVector &X, double dtt)
 					for (int kk=0; kk<Blocks[i].Solid_phase[p]->n_phases; kk++)
 					{
 						double exchange = (1-w())*Blocks[i].K_star[p][l][kk]*Blocks[i].G_star[p][l]*Blocks[i].CG_star[k][get_member_no(p,l)] + w()*Blocks[i].K[p][l][kk]*Blocks[i].G[p][l]*Blocks[i].CG[k][get_member_no(p,l)];
-						F[get_member_no(i,p,l,k)] += exchange*Blocks[i].V;
-						F[get_member_no(i,p,kk,k)] -= exchange*Blocks[i].V;
+						F[get_member_no(i,p,l,k)] += exchange*Blocks[i].get_val(basic_properties::V);
+						F[get_member_no(i,p,kk,k)] -= exchange*Blocks[i].get_val(basic_properties::V);
 					}
 			}
 		}
@@ -3625,13 +3322,13 @@ CVector CMedium::getres_Q(const CVector &X, double dtt)
 					{
 						for (int j=0; j<Blocks[i].buildup.size(); j++)
 							if (Blocks[i].buildup[j]->phase == "sorbed")
-								F[get_member_no(i,p,l,k)] -= Blocks[i].buildup[j]->buildup((1-w())*Blocks[i].CG_star[k][get_member_no(p,l)] + w()*Blocks[i].CG[k][get_member_no(p,l)],&Blocks[i])*Blocks[i].V;
+								F[get_member_no(i,p,l,k)] -= Blocks[i].buildup[j]->buildup((1-w())*Blocks[i].CG_star[k][get_member_no(p,l)] + w()*Blocks[i].CG[k][get_member_no(p,l)],&Blocks[i])*Blocks[i].get_val(basic_properties::V);
 					}
 					else
 					{
 						for (int j=0; j<Blocks[i].buildup.size(); j++)
 							if ((Blocks[i].buildup[j]->solid == Blocks[i].Solid_phase[p]->name) && (Blocks[i].buildup[j]->phase == Blocks[i].Solid_phase[p]->phase_names[l]))
-								F[get_member_no(i,p,l,k)] -= Blocks[i].buildup[j]->buildup((1-w())*Blocks[i].CG_star[k][get_member_no(p,l)] + w()*Blocks[i].CG[k][get_member_no(p,l)],&Blocks[i])*Blocks[i].V;
+								F[get_member_no(i,p,l,k)] -= Blocks[i].buildup[j]->buildup((1-w())*Blocks[i].CG_star[k][get_member_no(p,l)] + w()*Blocks[i].CG[k][get_member_no(p,l)],&Blocks[i])*Blocks[i].get_val(basic_properties::V);
 
 
 					}
@@ -3760,7 +3457,7 @@ CVector_arma CMedium::getres_Q(CVector_arma &X, double dtt)
 
 
 
-				for (int i = 0; i<Connector.size(); i++)
+				for (int i = 0; i<connectors_count(); i++)
 				{
 					//advection
 
@@ -3768,19 +3465,19 @@ CVector_arma CMedium::getres_Q(CVector_arma &X, double dtt)
 					{
 						vector<int> ii;
 						ii.push_back(k);
-						double Q_adv_star = (Connector[i].Q_star - Connector[i].Q_v_star)*Connector[i].flow_factor + Connector[i].settling*RXN().cons[k].vs*sgn(Connector[i].Block1->z0 - Connector[i].Block2->z0)*Connector[i].A_star*0.5*(Connector[i].Block1->calc_star(RXN().cons[k].vs_coefficient, ii) + Connector[i].Block2->calc_star(RXN().cons[k].vs_coefficient, ii));
-						double Q_adv = (Connector[i].Q - Connector[i].Q_v)*Connector[i].flow_factor + Connector[i].settling*RXN().cons[k].vs*sgn(Connector[i].Block1->z0 - Connector[i].Block2->z0)*Connector[i].A*0.5*(Connector[i].Block1->calc(RXN().cons[k].vs_coefficient, ii) + Connector[i].Block2->calc(RXN().cons[k].vs_coefficient, ii));
+						double Q_adv_star = (Connector(i).Q_star - Connector(i).Q_v_star)*Connector(i).flow_factor + Connector(i).settling*RXN().cons[k].vs*sgn(Connector(i).Block1->get_val(basic_properties::z0) - Connector(i).Block2->get_val(basic_properties::z0))*Connector(i).A_star*0.5*(Connector(i).Block1->calc_star(RXN().cons[k].vs_coefficient, ii) + Connector(i).Block2->calc_star(RXN().cons[k].vs_coefficient, ii));
+						double Q_adv = (Connector(i).Q - Connector(i).Q_v)*Connector(i).flow_factor + Connector(i).settling*RXN().cons[k].vs*sgn(Connector(i).Block1->get_val(basic_properties::z0) - Connector(i).Block2->get_val(basic_properties::z0))*Connector(i).A*0.5*(Connector(i).Block1->calc(RXN().cons[k].vs_coefficient, ii) + Connector(i).Block2->calc(RXN().cons[k].vs_coefficient, ii));
 
 						if (w()*Q_adv + (1 - w())*Q_adv_star>0)
 						{
-							F[get_member_no(getblocksq(Connector[i].Block1ID), p, l, k)] += (w()*Q_adv*Blocks[getblocksq(Connector[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block1ID)].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
-							F[get_member_no(getblocksq(Connector[i].Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connector[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block1ID)].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
+							F[get_member_no(getblocksq(Connector(i).Block1ID), p, l, k)] += (w()*Q_adv*Blocks[getblocksq(Connector(i).Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector(i).Block1ID)].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
+							F[get_member_no(getblocksq(Connector(i).Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connector(i).Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector(i).Block1ID)].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
 
 						}
 						else
 						{
-							F[get_member_no(getblocksq(Connector[i].Block1ID), p, l, k)] += (w()*Q_adv*Blocks[getblocksq(Connector[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block2ID)].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
-							F[get_member_no(getblocksq(Connector[i].Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connector[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block2ID)].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
+							F[get_member_no(getblocksq(Connector(i).Block1ID), p, l, k)] += (w()*Q_adv*Blocks[getblocksq(Connector(i).Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector(i).Block2ID)].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
+							F[get_member_no(getblocksq(Connector(i).Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connector(i).Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector(i).Block2ID)].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
 						}
 
 					}
@@ -3793,33 +3490,33 @@ CVector_arma CMedium::getres_Q(CVector_arma &X, double dtt)
 					{
 						vector<int> ii;
 						ii.push_back(p);
-						double Q_adv_star = (Connector[i].Q_star - Connector[i].Q_v_star)*Connector[i].flow_factor + Connector[i].settling*Solid_phase()[p].vs*sgn(Connector[i].Block1->z0 - Connector[i].Block2->z0)*0.5*(Connector[i].Block1->calc_star(Solid_phase()[p].vs_coefficient, ii) + Connector[i].Block2->calc_star(Solid_phase()[p].vs_coefficient, ii));
-						double Q_adv = (Connector[i].Q - Connector[i].Q_v)*Connector[i].flow_factor + Connector[i].settling*Solid_phase()[p].vs*sgn(Connector[i].Block1->z0 - Connector[i].Block2->z0)*0.5*(Connector[i].Block1->calc(Solid_phase()[p].vs_coefficient, ii) + Connector[i].Block2->calc(Solid_phase()[p].vs_coefficient, ii));
+						double Q_adv_star = (Connector(i).Q_star - Connector(i).Q_v_star)*Connector(i).flow_factor + Connector(i).settling*Solid_phase()[p].vs*sgn(Connector(i).Block1->get_val(basic_properties::z0) - Connector(i).Block2->get_val(basic_properties::z0))*0.5*(Connector(i).Block1->calc_star(Solid_phase()[p].vs_coefficient, ii) + Connector(i).Block2->calc_star(Solid_phase()[p].vs_coefficient, ii));
+						double Q_adv = (Connector(i).Q - Connector(i).Q_v)*Connector(i).flow_factor + Connector(i).settling*Solid_phase()[p].vs*sgn(Connector(i).Block1->get_val(basic_properties::z0) - Connector(i).Block2->get_val(basic_properties::z0))*0.5*(Connector(i).Block1->calc(Solid_phase()[p].vs_coefficient, ii) + Connector(i).Block2->calc(Solid_phase()[p].vs_coefficient, ii));
 						if (Q_adv>0)
 						{
-							F[get_member_no(getblocksq(Connector[i].Block1ID), p, l, k)] += (w()*Q_adv*Blocks[getblocksq(Connector[i].Block1ID)].G[p][l] * Blocks[getblocksq(Connector[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block1ID)].G_star[p][l] * Blocks[getblocksq(Connector[i].Block1ID)].CG_star[k][get_member_no(p, l)])*Blocks[getblocksq(Connector[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
-							F[get_member_no(getblocksq(Connector[i].Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connector[i].Block1ID)].G[p][l] * Blocks[getblocksq(Connector[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block1ID)].G_star[p][l] * Blocks[getblocksq(Connector[i].Block1ID)].CG_star[k][get_member_no(p, l)])*Blocks[getblocksq(Connector[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
+							F[get_member_no(getblocksq(Connector(i).Block1ID), p, l, k)] += (w()*Q_adv*Blocks[getblocksq(Connector(i).Block1ID)].G[p][l] * Blocks[getblocksq(Connector(i).Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector(i).Block1ID)].G_star[p][l] * Blocks[getblocksq(Connector(i).Block1ID)].CG_star[k][get_member_no(p, l)])*Blocks[getblocksq(Connector(i).Block1ID)].Solid_phase[p]->mobility_factor[l];
+							F[get_member_no(getblocksq(Connector(i).Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connector(i).Block1ID)].G[p][l] * Blocks[getblocksq(Connector(i).Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector(i).Block1ID)].G_star[p][l] * Blocks[getblocksq(Connector(i).Block1ID)].CG_star[k][get_member_no(p, l)])*Blocks[getblocksq(Connector(i).Block1ID)].Solid_phase[p]->mobility_factor[l];
 						}
 						if (Q_adv<0)
 						{
-							F[get_member_no(getblocksq(Connector[i].Block1ID), p, l, k)] += (w()*Q_adv*Blocks[getblocksq(Connector[i].Block2ID)].G[p][l] * Blocks[getblocksq(Connector[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block2ID)].G_star[p][l] * Blocks[getblocksq(Connector[i].Block2ID)].CG_star[k][get_member_no(p, l)])*Blocks[getblocksq(Connector[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
-							F[get_member_no(getblocksq(Connector[i].Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connector[i].Block2ID)].G[p][l] * Blocks[getblocksq(Connector[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector[i].Block2ID)].G_star[p][l] * Blocks[getblocksq(Connector[i].Block2ID)].CG_star[k][get_member_no(p, l)])*Blocks[getblocksq(Connector[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
+							F[get_member_no(getblocksq(Connector(i).Block1ID), p, l, k)] += (w()*Q_adv*Blocks[getblocksq(Connector(i).Block2ID)].G[p][l] * Blocks[getblocksq(Connector(i).Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector(i).Block2ID)].G_star[p][l] * Blocks[getblocksq(Connector(i).Block2ID)].CG_star[k][get_member_no(p, l)])*Blocks[getblocksq(Connector(i).Block2ID)].Solid_phase[p]->mobility_factor[l];
+							F[get_member_no(getblocksq(Connector(i).Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connector(i).Block2ID)].G[p][l] * Blocks[getblocksq(Connector(i).Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connector(i).Block2ID)].G_star[p][l] * Blocks[getblocksq(Connector(i).Block2ID)].CG_star[k][get_member_no(p, l)])*Blocks[getblocksq(Connector(i).Block2ID)].Solid_phase[p]->mobility_factor[l];
 						}
 					}
 
 
 				}
 				//diffusion
-				for (int i = 0; i<Connector.size(); i++)
+				for (int i = 0; i<connectors_count(); i++)
 				{
 					if (p == -2)
 					{
-						double exchange = Connector[i].A*(w()*Connector[i].dispersion[k] + (1 - w())*Connector[i].dispersion_star[k]) / Connector[i].d*min(Heavyside(get_capacity_star(getblocksq(Connector[i].Block2ID), l, p) - 1e-13), Heavyside(get_capacity_star(getblocksq(Connector[i].Block1ID), l, p) - 1e-13))*RXN().cons[k].mobile;
-						double term1 = w()*Blocks[getblocksq(Connector[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[getblocksq(Connector[i].Block2ID)].CG_star[k][get_member_no(p, l)];
-						double term2 = w()*Blocks[getblocksq(Connector[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[getblocksq(Connector[i].Block1ID)].CG_star[k][get_member_no(p, l)];
+						double exchange = Connector(i).A*(w()*Connector(i).dispersion[k] + (1 - w())*Connector(i).dispersion_star[k]) / Connector(i).d*min(Heavyside(get_capacity_star(getblocksq(Connector(i).Block2ID), l, p) - 1e-13), Heavyside(get_capacity_star(getblocksq(Connector(i).Block1ID), l, p) - 1e-13))*RXN().cons[k].mobile;
+						double term1 = w()*Blocks[getblocksq(Connector(i).Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[getblocksq(Connector(i).Block2ID)].CG_star[k][get_member_no(p, l)];
+						double term2 = w()*Blocks[getblocksq(Connector(i).Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[getblocksq(Connector(i).Block1ID)].CG_star[k][get_member_no(p, l)];
 						exchange *= (term1 - term2);
-						F[get_member_no(getblocksq(Connector[i].Block1ID), p, l, k)] -= exchange;
-						F[get_member_no(getblocksq(Connector[i].Block2ID), p, l, k)] += exchange;
+						F[get_member_no(getblocksq(Connector(i).Block1ID), p, l, k)] -= exchange;
+						F[get_member_no(getblocksq(Connector(i).Block2ID), p, l, k)] += exchange;
 					}
 					else if (p == -1)
 					{
@@ -3827,12 +3524,12 @@ CVector_arma CMedium::getres_Q(CVector_arma &X, double dtt)
 					}
 					else
 					{
-						double exchange = Connector[i].A*(w()*Connector[i].c_dispersion[p] + (1 - w())*Connector[i].c_dispersion_star[p]) / Connector[i].d*min(Heavyside(get_capacity_star(getblocksq(Connector[i].Block1ID), l, p) - 1e-13), Heavyside(get_capacity_star(getblocksq(Connector[i].Block2ID), l, p) - 1e-13));;
-						double term1 = w()*Blocks[getblocksq(Connector[i].Block2ID)].G[p][l] * Blocks[getblocksq(Connector[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[getblocksq(Connector[i].Block2ID)].G_star[p][l] * Blocks[getblocksq(Connector[i].Block2ID)].CG_star[k][get_member_no(p, l)];
-						double term2 = w()*Blocks[getblocksq(Connector[i].Block1ID)].G[p][l] * Blocks[getblocksq(Connector[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[getblocksq(Connector[i].Block1ID)].G_star[p][l] * Blocks[getblocksq(Connector[i].Block1ID)].CG_star[k][get_member_no(p, l)];
-						exchange *= (Blocks[getblocksq(Connector[i].Block1ID)].Solid_phase[p]->mobility_factor[l] * Blocks[getblocksq(Connector[i].Block2ID)].Solid_phase[p]->mobility_factor[l])*(term1 - term2);
-						F[get_member_no(getblocksq(Connector[i].Block1ID), p, l, k)] -= exchange;
-						F[get_member_no(getblocksq(Connector[i].Block2ID), p, l, k)] += exchange;
+						double exchange = Connector(i).A*(w()*Connector(i).c_dispersion[p] + (1 - w())*Connector(i).c_dispersion_star[p]) / Connector(i).d*min(Heavyside(get_capacity_star(getblocksq(Connector(i).Block1ID), l, p) - 1e-13), Heavyside(get_capacity_star(getblocksq(Connector(i).Block2ID), l, p) - 1e-13));;
+						double term1 = w()*Blocks[getblocksq(Connector(i).Block2ID)].G[p][l] * Blocks[getblocksq(Connector(i).Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[getblocksq(Connector(i).Block2ID)].G_star[p][l] * Blocks[getblocksq(Connector(i).Block2ID)].CG_star[k][get_member_no(p, l)];
+						double term2 = w()*Blocks[getblocksq(Connector(i).Block1ID)].G[p][l] * Blocks[getblocksq(Connector(i).Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[getblocksq(Connector(i).Block1ID)].G_star[p][l] * Blocks[getblocksq(Connector(i).Block1ID)].CG_star[k][get_member_no(p, l)];
+						exchange *= (Blocks[getblocksq(Connector(i).Block1ID)].Solid_phase[p]->mobility_factor[l] * Blocks[getblocksq(Connector(i).Block2ID)].Solid_phase[p]->mobility_factor[l])*(term1 - term2);
+						F[get_member_no(getblocksq(Connector(i).Block1ID), p, l, k)] -= exchange;
+						F[get_member_no(getblocksq(Connector(i).Block2ID), p, l, k)] += exchange;
 					}
 				}
 
@@ -3849,8 +3546,8 @@ CVector_arma CMedium::getres_Q(CVector_arma &X, double dtt)
 					for (int kk = 0; kk<Blocks[i].Solid_phase[p]->n_phases; kk++)
 					{
 						double exchange = (1 - w())*Blocks[i].K_star[p][l][kk] * Blocks[i].G_star[p][l] * Blocks[i].CG_star[k][get_member_no(p, l)] + w()*Blocks[i].K[p][l][kk] * Blocks[i].G[p][l] * Blocks[i].CG[k][get_member_no(p, l)];
-						F[get_member_no(i, p, l, k)] += exchange*Blocks[i].V;
-						F[get_member_no(i, p, kk, k)] -= exchange*Blocks[i].V;
+						F[get_member_no(i, p, l, k)] += exchange*Blocks[i].get_val(basic_properties::V);
+						F[get_member_no(i, p, kk, k)] -= exchange*Blocks[i].get_val(basic_properties::V);
 					}
 			}
 		}
@@ -3898,13 +3595,13 @@ CVector_arma CMedium::getres_Q(CVector_arma &X, double dtt)
 					{
 						for (int j = 0; j<Blocks[i].buildup.size(); j++)
 							if (Blocks[i].buildup[j]->phase == "sorbed")
-								F[get_member_no(i, p, l, k)] -= Blocks[i].buildup[j]->buildup((1 - w())*Blocks[i].CG_star[k][get_member_no(p, l)] + w()*Blocks[i].CG[k][get_member_no(p, l)], &Blocks[i])*Blocks[i].V;
+								F[get_member_no(i, p, l, k)] -= Blocks[i].buildup[j]->buildup((1 - w())*Blocks[i].CG_star[k][get_member_no(p, l)] + w()*Blocks[i].CG[k][get_member_no(p, l)], &Blocks[i])*Blocks[i].get_val(basic_properties::V);
 					}
 					else
 					{
 						for (int j = 0; j<Blocks[i].buildup.size(); j++)
 							if ((Blocks[i].buildup[j]->solid == Blocks[i].Solid_phase[p]->name) && (Blocks[i].buildup[j]->phase == Blocks[i].Solid_phase[p]->phase_names[l]))
-								F[get_member_no(i, p, l, k)] -= Blocks[i].buildup[j]->buildup((1 - w())*Blocks[i].CG_star[k][get_member_no(p, l)] + w()*Blocks[i].CG[k][get_member_no(p, l)], &Blocks[i])*Blocks[i].V;
+								F[get_member_no(i, p, l, k)] -= Blocks[i].buildup[j]->buildup((1 - w())*Blocks[i].CG_star[k][get_member_no(p, l)] + w()*Blocks[i].CG[k][get_member_no(p, l)], &Blocks[i])*Blocks[i].get_val(basic_properties::V);
 
 
 					}
@@ -4073,9 +3770,9 @@ int CMedium::get_member_no(int solid_id, int phase_no)
 double CMedium::get_capacity(int block_no, int phase_no, int particle_no)
 {
 	if (particle_no==-2)
-		return Blocks[block_no].S+1e-3;
+		return Blocks[block_no].get_S()+1e-3;
 	else if (particle_no==-1)
-		return Blocks[block_no].V*Blocks[block_no].bulk_density;
+		return Blocks[block_no].get_val(basic_properties::V)*Blocks[block_no].get_val(basic_properties::bulk_density);
 	else
 		return Blocks[block_no].capacity_c[particle_no][phase_no] * Blocks[block_no].capacity_c_Q[particle_no][phase_no];
 }
@@ -4083,9 +3780,9 @@ double CMedium::get_capacity(int block_no, int phase_no, int particle_no)
 double CMedium::get_capacity_star(int block_no, int phase_no, int particle_no)
 {
 	if (particle_no==-2)
-		return Blocks[block_no].S_star+1e-3;
+		return Blocks[block_no].get_S_star()+1e-3;
 	else if (particle_no==-1)
-		return Blocks[block_no].V*Blocks[block_no].bulk_density;
+		return Blocks[block_no].get_val(basic_properties::V)*Blocks[block_no].get_val(basic_properties::bulk_density);
 	else
 		return Blocks[block_no].capacity_c_star[particle_no][phase_no] * Blocks[block_no].capacity_c_star_Q[particle_no][phase_no];
 
@@ -4186,14 +3883,14 @@ void CMedium::writedetails()
 
 void CMedium::evaluate_area(bool all)
 {
-	for (int i = 0; i < Connector.size(); i++)
+	for (int i = 0; i < connectors_count(); i++)
 	{
-		if ((Connector[i].const_area == false) || (all==true))
+		if ((Connector(i).const_area == false) || (all==true))
 		{
-			if ((Connector[i].A == 0) || (Connector[i].const_area == false))
+			if ((Connector(i).A == 0) || (Connector(i).const_area == false))
 			{
-				Connector[i].A = Connector[i].calc(Connector[i].area_expression);
-				Connector[i].A_star = Connector[i].calc_star(Connector[i].area_expression);
+				Connector(i).A = Connector(i).calc(Connector(i).area_expression);
+				Connector(i).A_star = Connector(i).calc_star(Connector(i).area_expression);
 			}
 		}
 	}
@@ -4210,6 +3907,26 @@ int CMedium::lookup_external_flux(string S)
 
 	return out;
 
+}
+
+int CMedium::lookup_blocks(string S)
+{
+	int out = -1;
+	for (int i = 0; i < Blocks.size(); i++)
+		if (S == Blocks[i].ID)
+			return i;
+
+	return out;
+
+}
+int CMedium::lookup_connectors(string S)
+{
+	int out = -1;
+	for (int i = 0; i < Connectors.size(); i++)
+		if (S == Connectors[i].ID)
+			return i;
+
+	return out;
 }
 
 int CMedium::lookup_evaporation(string S)
@@ -4388,12 +4105,12 @@ void CMedium::set_control_params(int controller_no)
 
 		{
 			Blocks[controllers()[controller_no].application_spec.location[i]].set_val(controllers()[controller_no].application_spec.quan[i], controllers()[controller_no].value);
-			Connector[controllers()[controller_no].application_spec.location[i]].set_val(controllers()[controller_no].application_spec.quan[i], controllers()[controller_no].value);
+			Connectors[controllers()[controller_no].application_spec.location[i]].set_val(controllers()[controller_no].application_spec.quan[i], controllers()[controller_no].value);
 		}
 		else if (controllers()[controller_no].application_spec.location_type[i] == 0)
 			Blocks[controllers()[controller_no].application_spec.location[i]].set_val(controllers()[controller_no].application_spec.quan[i], controllers()[controller_no].value);
 		else if (controllers()[controller_no].application_spec.location_type[i] == 1)
-			Connector[controllers()[controller_no].application_spec.location[i]].set_val(controllers()[controller_no].application_spec.quan[i], controllers()[controller_no].value);
+			Connectors[controllers()[controller_no].application_spec.location[i]].set_val(controllers()[controller_no].application_spec.quan[i], controllers()[controller_no].value);
 
 	}
 
@@ -4406,8 +4123,8 @@ void CMedium::clear()
 	ANS_colloids.clear();
 	ANS_constituents.clear();
     //ANS_MB.clear();
-	Connector.clear();
-	Blocks.clear();
+	clear_connectors();
+	clear_blocks();
 
 }
 
@@ -4426,8 +4143,8 @@ void CMedium::onestepsolve_flow_bioest(double dtt)
 {
 	CVector v = get_steady_hydro_RHS();
 	CVector Q = hydro_steady_matrix_inv*v;
-	for (int i = 0; i < Connector.size(); i++)
-		Connector[i].Q_star = Q[i];
+	for (int i = 0; i < connectors_count(); i++)
+		Connector(i).Q_star = Q[i];
 	failed = false;
 	fail_reason = "none";
 }
@@ -4435,42 +4152,42 @@ void CMedium::onestepsolve_flow_bioest(double dtt)
 double CMedium::getflow(int connector_ID)
 {
 	double flow = 0;
-	if (Connector[connector_ID].presc_flow)
+	if (Connectors[connector_ID].presc_flow)
 	{
-		Connector[connector_ID].Q_star = flow;
-		Connector[connector_ID].flow_calc_done = true;
-		return Connector[connector_ID].presc_flowrate.interpol(t);
+		Connectors[connector_ID].Q_star = flow;
+		Connectors[connector_ID].flow_calc_done = true;
+		return Connectors[connector_ID].presc_flowrate.interpol(t);
 	}
-	if (Connector[connector_ID].flow_calc_done == true)
-		return Connector[connector_ID].Q_star;
+	if (Connectors[connector_ID].flow_calc_done == true)
+		return Connectors[connector_ID].Q_star;
 	vector<int> num_pre_flows = get_num_block_unpres_inflows(connector_ID);
 	if ((num_pre_flows[0] <= num_pre_flows[1]) || num_pre_flows[1]==1)
 	{
-		for (int j = 0; j < Connector[connector_ID].Block1->connectors.size(); j++)
+		for (int j = 0; j < Connectors[connector_ID].Block1->connectors.size(); j++)
 		{
-			if (Connector[connector_ID].Block1->connectors[j] != connector_ID)
-				flow += getflow(Connector[connector_ID].Block1->connectors[j])*(2*Connector[connector_ID].Block1->connectors_se[j]-1);
+			if (Connectors[connector_ID].Block1->connectors[j] != connector_ID)
+				flow += getflow(Connectors[connector_ID].Block1->connectors[j])*(2*Connectors[connector_ID].Block1->connectors_se[j]-1);
 		}
-		for (int j = 0; j < Connector[connector_ID].Block1->inflow.size(); j++)
+		for (int j = 0; j < Connectors[connector_ID].Block1->inflow.size(); j++)
 		{
-			flow += Connector[connector_ID].Block1->inflow[j].interpolate(t)[0];
+			flow += Connectors[connector_ID].Block1->inflow[j].interpolate(t)[0];
 		}
 	}
 	else
 	{
-		for (int j = 0; j < Connector[connector_ID].Block2->connectors.size(); j++)
+		for (int j = 0; j < Connectors[connector_ID].Block2->connectors.size(); j++)
 		{
-			if (Connector[connector_ID].Block2->connectors[j] != connector_ID)
-				flow -= getflow(Connector[connector_ID].Block2->connectors[j])*(2 * Connector[connector_ID].Block1->connectors_se[j] - 1);
+			if (Connectors[connector_ID].Block2->connectors[j] != connector_ID)
+				flow -= getflow(Connectors[connector_ID].Block2->connectors[j])*(2 * Connectors[connector_ID].Block1->connectors_se[j] - 1);
 		}
-		for (int j = 0; j < Connector[connector_ID].Block2->inflow.size(); j++)
+		for (int j = 0; j < Connectors[connector_ID].Block2->inflow.size(); j++)
 		{
-			flow -= Connector[connector_ID].Block2->inflow[j].interpolate(t)[0];
+			flow -= Connectors[connector_ID].Block2->inflow[j].interpolate(t)[0];
 		}
 
 	}
-	Connector[connector_ID].Q_star = flow;
-	Connector[connector_ID].flow_calc_done = true;
+	Connectors[connector_ID].Q_star = flow;
+	Connectors[connector_ID].flow_calc_done = true;
 	return flow;
 }
 
@@ -4479,16 +4196,16 @@ vector<int> CMedium::get_num_block_unpres_inflows(int connector_ID)
 	vector<int> num_inflows(2);
 
 	int numpresflow = 0;
-	for (int i = 0; i < Connector[connector_ID].Block1->connectors.size(); i++)
+	for (int i = 0; i < Connectors[connector_ID].Block1->connectors.size(); i++)
 	{
-		if (!Connector[Connector[connector_ID].Block1->connectors[i]].presc_flow) numpresflow++;
+		if (!Connectors[Connectors[connector_ID].Block1->connectors[i]].presc_flow) numpresflow++;
 	}
 	num_inflows[0] = numpresflow;
 
 	numpresflow = 0;
-	for (int i = 0; i < Connector[connector_ID].Block2->connectors.size(); i++)
+	for (int i = 0; i < Connectors[connector_ID].Block2->connectors.size(); i++)
 	{
-		if (!Connector[Connector[connector_ID].Block2->connectors[i]].presc_flow) numpresflow++;
+		if (!Connectors[Connectors[connector_ID].Block2->connectors[i]].presc_flow) numpresflow++;
 	}
 	num_inflows[1] = numpresflow;
 
@@ -4497,8 +4214,8 @@ vector<int> CMedium::get_num_block_unpres_inflows(int connector_ID)
 
 void CMedium::false_connector_flow_calc()
 {
-	for (int i = 0; i < Connector.size(); i++)
-		Connector[i].flow_calc_done = false;
+	for (int i = 0; i < connectors_count(); i++)
+		Connector(i).flow_calc_done = false;
 
 }
 
@@ -4508,17 +4225,17 @@ string CMedium::create_hydro_steady_matrix_inv()
 	for (int i = 0; i < Blocks.size(); i++)
 	{
 		if (Blocks[i].connectors.size() > 1)
-		{	vector<double> v(Connector.size());
+		{	vector<double> v(connectors_count());
 			for (int j = 0; j < Blocks[i].connectors.size(); j++)
 				v[Blocks[i].connectors[j]] = 2 * Blocks[i].connectors_se[j] - 1;
 			M.matr.push_back(v);
 		}
 	}
-	for (int i = 0; i < Connector.size(); i++)
+	for (int i = 0; i < connectors_count(); i++)
 	{
-		if (Connector[i].presc_flow)
+		if (Connector(i).presc_flow)
 		{
-			vector<double> v(Connector.size());
+			vector<double> v(connectors_count());
 			v[i] = 1;
 			M.matr.push_back(v);
 		}
@@ -4551,10 +4268,10 @@ CVector CMedium::get_steady_hydro_RHS()
 	{
 		if (Blocks[i].connectors.size() > 1) v.push_back(-sum_interpolate(Blocks[i].inflow, t, "flow"));
 	}
-	for (int i = 0; i < Connector.size(); i++)
+	for (int i = 0; i < connectors_count(); i++)
 	{
-		if (Connector[i].presc_flow)
-			v.push_back(Connector[i].presc_flowrate.interpol(t));
+		if (Connector(i).presc_flow)
+			v.push_back(Connector(i).presc_flowrate.interpol(t));
 	}
 
 	return CVector(v);
@@ -4591,7 +4308,7 @@ CMedium::CMedium(CLIDconfig _lid_config, CMediumSet *_parent)
 
 void CMedium::create(CLIDconfig _lid_config, CMediumSet *_parent)
 {
-	Blocks.clear(); Connector.clear();
+	clear_connectors(); clear_blocks(); 
 	parent = _parent;
 	lid_config = _lid_config;
 	if (!parent->set_features.formulas) set_default();
@@ -4627,6 +4344,16 @@ double& CMedium::w()
 vector<CSolid_Phase>& CMedium::Solid_phase()
 {
 	return parent->Solid_phase;
+}
+
+void CMedium::addblock(const CMBBlock & B)
+{
+	Blocks.push_back(B);
+}
+
+void CMedium::addconnector(const CConnection & C)
+{
+	Connectors.push_back(C);
 }
 
 double& CMedium::tol()
@@ -5004,7 +4731,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 			{
 				for (int kk = 0; kk < nans.size(); kk++)
 				{
-					fail_reason = fail_reason + "Flow not a number @ " + Connector[nans[kk]].ID + ",";
+					fail_reason = fail_reason + "Flow not a number @ " + Connectors[nans[kk]].ID + ",";
 #ifdef QT_version
                     solution_detail = solution_detail +"<b>" + QString::fromStdString(Blocks[nans[kk]].ID) + "</b>,";
 #else
@@ -5054,7 +4781,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 				{
 					for (int kk = 0; kk < nans.size(); kk++)
 					{
-						fail_reason = fail_reason + "Flow not a number @ " + Connector[nans[kk]].ID + ",";
+						fail_reason = fail_reason + "Flow not a number @ " + Connectors[nans[kk]].ID + ",";
 #ifdef QT_version
 						solution_detail = solution_detail + "Flow not a number @  <b>" + QString::fromStdString(Blocks[nans[kk]].ID) + "</b>,";
 #else
@@ -5193,9 +4920,9 @@ void CMedium::onestepsolve_flow_ar(double dt)
 				{
 					for (int kk = 0; kk < nans.size(); kk++)
 					{
-						fail_reason = fail_reason + "Flow not a number @ " + Connector[nans[kk]].ID + ",";
+						fail_reason = fail_reason + "Flow not a number @ " + Connectors[nans[kk]].ID + ",";
 #ifdef QT_version
-						solution_detail = solution_detail + "<b>" + QString::fromStdString(Connector[nans[kk]].ID) + "</b>,";
+						solution_detail = solution_detail + "<b>" + QString::fromStdString(Connectors[nans[kk]].ID) + "</b>,";
 #else
                         solution_detail = solution_detail + " " + Connector[nans[kk]].ID + ",";
 #endif // QT_version
@@ -5234,7 +4961,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 				J_update = true;
 				indicator = 1;
 				failed = true;
-				if (Blocks[i].S == 0)
+				if (Blocks[i].get_S() == 0)
 					Blocks[i].setzero = 2;
 				else
 					Blocks[i].setzero = 2;
@@ -5264,7 +4991,7 @@ void CMedium::onestepsolve_colloid_ar(double dt)
 		failed_colloid = false;
 		return;
 	}
-	evaluate_dispersion();   //Connector[i].evaluate_dispersion(); Connector[i].evaluate_dispersion_star();  //Negative diffusion due to negative f[8]????
+	evaluate_dispersion();   //Connector(i).evaluate_dispersion(); Connector(i).evaluate_dispersion_star();  //Negative diffusion due to negative f[8]????
 	evaluate_K();			//Blocks[i].evaluate_K();
 	evaluate_capacity();	//Blocks[i].evaluate_capacity();
 							//renew_G();
@@ -5805,8 +5532,8 @@ void CMedium::set_G_star(CVector_arma & X)
 void CMedium::write_flows(string filename)
 {
 	std::ofstream outfile(filename);
-	for (int i = 0; i < Connector.size(); i++)
-		outfile << Connector[i].ID << ", " << Connector[i].Q << ", " << Connector[i].Q_star <<endl;
+	for (int i = 0; i < connectors_count(); i++)
+		outfile << Connector(i).ID << ", " << Connector(i).Q << ", " << Connector(i).Q_star <<endl;
 
 	outfile.close();
 
@@ -5816,7 +5543,7 @@ vector<int> CMedium::infnan_H_blocks()
 {
 	vector<int> out;
 	for (int i = 0; i < Blocks.size(); i++)
-		if ((Blocks[i].H_star == Blocks[i].H_star) != true)
+		if ((Blocks[i].get_val_star(basic_properties::H) == Blocks[i].get_val_star(basic_properties::H)) != true)
 			out.push_back(i);
 
 	return out;
@@ -5826,8 +5553,8 @@ vector<int> CMedium::infnan_H_blocks()
 vector<int> CMedium::infnan_H_flows()
 {
 	vector<int> out;
-	for (int i = 0; i < Connector.size(); i++)
-		if ((Connector[i].Q_star == Connector[i].Q_star) != true)
+	for (int i = 0; i < connectors_count(); i++)
+		if ((Connector(i).Q_star == Connector(i).Q_star) != true)
 			out.push_back(i);
 
 	return out;
