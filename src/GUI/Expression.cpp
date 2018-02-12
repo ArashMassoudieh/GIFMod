@@ -338,14 +338,14 @@ double CExpression::oprt(QString &f, int i1, int i2, Wizard_Script_Reader *W)
 int corresponding_parenthesis(QString S, int i)
 {
 	string s = S.toStdString(); 
-	if (S.at(i) == "(")
+    if (S.at(i) == QChar('('))
 	{
 		int paranthesis_level = 1; 
 		for (int j = i+1; j < S.size(); j++)
 		{
-			if (S.at(j) == "(")
+            if (S.at(j) == '(')
 				paranthesis_level++;
-			if (S.at(j) == ")")
+            if (S.at(j) == ')')
 				paranthesis_level--;
 
 			if (paranthesis_level == 0)
@@ -355,14 +355,14 @@ int corresponding_parenthesis(QString S, int i)
 	}
 	
 
-	if (S.at(i) == ")")
+    if (S.at(i) == ')')
 	{
 		int paranthesis_level = 1;
 		for (int j = i-1; j > 0; j--)
 		{
-			if (S.at(j) == ")")
+            if (S.at(j) == ')')
 				paranthesis_level++;
-			if (S.at(j) == "(")
+            if (S.at(j) == '(')
 				paranthesis_level--;
 
 			if (paranthesis_level == 0)
