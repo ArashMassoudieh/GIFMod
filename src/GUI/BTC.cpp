@@ -274,23 +274,23 @@ CTimeSeries CTimeSeries::interpol(CTimeSeries &x)
 double ADD(CTimeSeries &BTC_p, CTimeSeries &BTC_d)
 {
 	double sum = 0;
-	for (int i=0; i<BTC_d.n; i++)
-		if (abs(BTC_d.C[i]) < 1e-3)
-			sum += abs(BTC_d.C[i] - BTC_p.interpol(BTC_d.t[i]));
+    for (int i=0; i<BTC_d.n; i++)
+        if (abs(BTC_d.C[i]) < 1e-3)
+            sum += abs(BTC_d.C[i] - BTC_p.interpol(BTC_d.t[i]));
 		else
-			sum += abs(BTC_d.C[i] - BTC_p.interpol(BTC_d.t[i])) /BTC_d.C[i];
+            sum += abs(BTC_d.C[i] - BTC_p.interpol(BTC_d.t[i])) /BTC_d.C[i];
 
-	return sum/BTC_d.n;
+    return sum/BTC_d.n;
 }
 
 double diff_relative(CTimeSeries &BTC_A, CTimeSeries &BTC_B, double m)
 {
 	double sum = 0;
-	for (int i=0; i<min(BTC_A.n,BTC_B.n); i++)
-		if (abs(BTC_A.C[i]) < m)
-			sum += abs(BTC_B.C[i] - BTC_A.interpol(BTC_B.t[i]));
+    for (int i=0; i<min(BTC_A.n,BTC_B.n); i++)
+        if (abs(BTC_A.C[i]) < m)
+            sum += abs(BTC_B.C[i] - BTC_A.interpol(BTC_B.t[i]));
 		else
-			sum += abs(BTC_B.C[i] - BTC_A.interpol(BTC_B.t[i])) /BTC_A.C[i];
+            sum += abs(BTC_B.C[i] - BTC_A.interpol(BTC_B.t[i])) /BTC_A.C[i];
 
 	return sum;
 }

@@ -26,17 +26,9 @@ public:
 	CTimeSeries();
 	CTimeSeries(int n);
 	virtual ~CTimeSeries();
-	int n;
-	vector<double> t;
-	vector<double> C;
-
-	string name = "";
-	string unit = "";
-	string defaultUnit = "";
-	vector<string> unitsList;
-
-	vector<double> D;
-
+    double& get_val(int i) {return C[i];};
+    double& get_time(int i) {return t[i];};
+    int size() {return C.size();};
 	double interpol(double x); //interpolate at location x
 	CTimeSeries MA_smooth(int span); //Moving average smoothing with span of 1+2*span
 	double interpol_D(double x); //interpolate the distance to the next non-zero data point
@@ -107,6 +99,14 @@ public:
 	static CTimeSeries unCompact(QDataStream &data);
 #endif // QT_verstion
 
+    int n;
+    vector<double> t;
+    vector<double> C;
+    string name = "";
+    string unit = "";
+    string defaultUnit = "";
+    vector<string> unitsList;
+    vector<double> D;
 };
 
 double diff(CTimeSeries &BTC_p, CTimeSeries &BTC_d);
