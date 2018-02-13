@@ -168,7 +168,10 @@
     <ClCompile Include="builds\Debug\moc\moc_imageviewer_window.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="builds\debug\moc\moc_UnitTextBox3.cpp" />
+    <ClCompile Include="builds\debug\moc\moc_UnitTextBox2.cpp" />
+    <ClCompile Include="builds\debug\moc\moc_UnitTextBox3.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="builds\Debug\moc\moc_wizard_dialog.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -184,6 +187,7 @@
     <ClCompile Include="builds\Release\moc\moc_imageviewer_window.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="builds\release\moc\moc_UnitTextBox3.cpp" />
     <ClCompile Include="builds\Release\moc\moc_wizard_dialog.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -1161,13 +1165,13 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(RootFolder)\builds\$(ConfigurationName)\moc\moc_UnitTextBox2.cpp;%(Outputs)</Outputs>
     </CustomBuild>
     <CustomBuild Include="src\GUI\UnitTextBox3.h">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(RootFolder)\builds\$(ConfigurationName)\moc\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DARMA_USE_LAPACK -DARMA_USE_BLAS -DGIFMOD -DQT_DEPRECATED_WARNINGS -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_version  "-I$(ProjectDir)src\GUI\Wizard" "-I." "-I.\include" "-I.\src\GUI" "-I.\src\duktape" "-I.\src\dukglue" "-I.\src\core" "-I.\src\scripting" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include\QtCore" "-I$(RootFolder)\builds\debug\moc" "-I$(RootFolder)\builds\debug\tmp-UI" "-I$(QTDIR)\mkspecs\win32-msvc2015"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(RootFolder)\builds\$(Configuration)\moc\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DARMA_USE_LAPACK -DARMA_USE_BLAS -DGIFMOD -DQT_DEPRECATED_WARNINGS -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_version  "-I$(ProjectDir)src\GUI\Wizard" "-I." "-I.\include" "-I.\src\GUI" "-I.\src\duktape" "-I.\src\dukglue" "-I.\src\core" "-I.\src\scripting" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include\QtCore" "-I$(RootFolder)\builds\$(Configuration)\moc" "-I$(RootFolder)\builds\$(Configuration)\tmp-UI" "-I$(QTDIR)\mkspecs\win32-msvc2015"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MOC src/GUI/UnitTextBox3.h</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(RootFolder)\builds\$(Configuration)\moc\moc_UnitTextBox3.cpp;%(Outputs)</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">src\GUI\UnitTextBox3.h;%(AdditionalInputs)</AdditionalInputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(RootFolder)\builds\$(ConfigurationName)\moc\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DARMA_USE_LAPACK -DARMA_USE_BLAS -DGIFMOD -DQT_DEPRECATED_WARNINGS -DQT_NO_DEBUG -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DNDEBUG -DQT_version  "-I$(ProjectDir)src\GUI\Wizard" "-I." "-I.\include" "-I.\src\GUI" "-I.\src\duktape" "-I.\src\dukglue" "-I.\src\core" "-I.\src\scripting" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include\QtCore" "-I$(RootFolder)\builds\release\moc" "-I$(RootFolder)\builds\release\tmp-UI" "-I$(QTDIR)\mkspecs\win32-msvc2015" "-I$(RootFolder)\builds\debug\tmp-UI"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(RootFolder)\builds\$(Configuration)\moc\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DWIN64 -DARMA_USE_LAPACK -DARMA_USE_BLAS -DGIFMOD -DQT_DEPRECATED_WARNINGS -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_version  "-I$(ProjectDir)src\GUI\Wizard" "-I." "-I.\include" "-I.\src\GUI" "-I.\src\duktape" "-I.\src\dukglue" "-I.\src\core" "-I.\src\scripting" "-I$(QTDIR)\include" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include\QtCore" "-I$(RootFolder)\builds\$(Configuration)\moc" "-I$(RootFolder)\builds\$(Configuration)\tmp-UI" "-I$(QTDIR)\mkspecs\win32-msvc2015"</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">MOC src/GUI/UnitTextBox3.h</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(RootFolder)\builds\$(ConfigurationName)\moc\moc_UnitTextBox3.cpp;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(RootFolder)\builds\$(Configuration)\moc\moc_UnitTextBox3.cpp;%(Outputs)</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">src\GUI\UnitTextBox3.h;%(AdditionalInputs)</AdditionalInputs>
     </CustomBuild>
     <CustomBuild Include="src\GUI\Vector.h">
@@ -2245,9 +2249,6 @@
     </ClCompile>
     <ClCompile Include="builds\release\moc\moc_ParticleWindow.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="builds\debug\moc\moc_UnitTextBox2.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="builds\release\moc\moc_UnitTextBox2.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

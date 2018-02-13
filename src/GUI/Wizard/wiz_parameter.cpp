@@ -16,6 +16,8 @@ wiz_parameter::wiz_parameter(const wiz_parameter & wiz_param)
 	parent = wiz_param.parent;
 	value = wiz_param.value;
 	_last_error = wiz_param._last_error;
+	fromfile = wiz_param.fromfile;
+	vals = wiz_param.vals;
 }
 
 QString wiz_parameter::toQString()
