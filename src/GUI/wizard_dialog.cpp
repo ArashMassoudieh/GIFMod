@@ -89,18 +89,20 @@ void Wizard_Dialog::save_script(QList<CCommand> commands)
 
 void Wizard_Dialog::set_wiz_parameters()
 {
-	//QMap<QString, QLineEdit*> textedits;
-	//QMap<QString, UnitTextBox3*> unittextedits;
-	//QMap<QString, QComboBox*>  comboboxes;
-	//QMap<QString, QDateTimeEdit*>  datetimepickers;
-	//QMap<QString, QLineEdit*>  filetextedits;
-	//QMap<QString, QSpinBox*>  spinboxes;
-	//QMap<QString, QCheckBox*>  checkboxes;
+	
 	for (QString key : unittextedits.keys())
 	{
-		XString x(unittextedits[key]->text());
-		x.setUnit(unittextedits[key]->unit());
-		wiz.get_parameters()[key].set_value(x);
+		
+		if (unittextedits[key]->openfile)
+		{
+			wiz.get_parameters()[key].get_vals_from_file(unittextedits[key]->text().toStdString());
+		}
+		else
+		{
+			XString x(unittextedits[key]->text());
+			x.setUnit(unittextedits[key]->unit());
+			wiz.get_parameters()[key].set_value(x);
+		}
 		//qDebug() << key << "was set to" << x.toQString() << endl;
 		
 	}
@@ -263,7 +265,11 @@ void Wizard_Dialog::setup_form()
 					xstr.defaultUnit = m.VariableUnits()[0].split(";").first();
 		
 				}
-                UnitTextBox3 *unittextEdit = new UnitTextBox3(xstr,true,tab);
+				UnitTextBox3 *unittextEdit;
+				if (wiz.get_parameters()[p].get_parameter("getfromfile").value.toLower().trimmed()=="true")
+					unittextEdit = new UnitTextBox3(xstr,true,tab);
+				else
+					unittextEdit = new UnitTextBox3(xstr, false, tab);
 				unittextEdit->setObjectName(wiz.get_parameters()[p].get_name());
 				unittextedits[p] = unittextEdit;
 				formLayout->setWidget(i, QFormLayout::FieldRole, unittextEdit);

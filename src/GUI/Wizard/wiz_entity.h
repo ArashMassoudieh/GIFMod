@@ -14,7 +14,7 @@ public:
 	wiz_entity(const wiz_entity & we);
 	QString get_configuration();
 	QString get_direction();
-    XString get_value(wiz_assigned_value x);
+	XString get_value(wiz_assigned_value x, int i=0, int j=0);
     XString get_value(QString x);
 	~wiz_entity();
 	Wizard_Script_Reader *parent; 

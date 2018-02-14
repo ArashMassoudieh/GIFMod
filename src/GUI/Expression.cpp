@@ -189,14 +189,14 @@ QStringList CExpression::extract_terms(QString s)
 }
 
 
-double CExpression::calc(Wizard_Script_Reader *W)
+double CExpression::calc(Wizard_Script_Reader *W, int i, int j)
 {
 	if (this->param_constant_expression == "constant") 
 		return constant;
 	if (this->param_constant_expression == "parameter")
 	{
 		XString out; 
-		out = W->get_parameter_value(parameter);
+		out = W->get_parameter_value(parameter, i, j);
 		if (W->get_parameter_value(parameter).unit != "" && unit == "")
 			unit = W->get_parameter_value(parameter).unit;
 		return out.toDouble(); 

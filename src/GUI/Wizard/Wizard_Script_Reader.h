@@ -68,7 +68,7 @@ public:
 	QString& get_description() { return description; };
 	QList<CCommand> get_script_commands();
 	QList<CCommand> get_script_commands_major_connections(wiz_entity * wiz_ent, int & x, int & y);
-	XString get_parameter_value(QString & parameter_name);
+	XString get_parameter_value(QString & parameter_name, int i=0, int j=0);
 	QList<CCommand> do_1dvh(QString configuration, wiz_entity * wiz_ent, int & x, int & y); //creates commands for a 1d grid object
 	QList<CCommand> do_2dv(QString configuration, wiz_entity * wiz_ent, int & x, int & y); //creates commands for a 2d-vertical grid object
 	QList<CCommand> do_2dh(QString configuration, wiz_entity * wiz_ent, int & x, int & y); //creates commands for a 2d-horizontal grid object
