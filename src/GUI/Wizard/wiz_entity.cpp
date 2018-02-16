@@ -109,10 +109,10 @@ XString wiz_entity::get_value(wiz_assigned_value x, int i, int j)
 
 }
 
-XString wiz_entity::get_value(QString x)
+XString wiz_entity::get_value(QString x, int i, int j)
 {
 	if (parameters.count(x) > 0)
-		return get_value(parameters[x]);
+		return get_value(parameters[x], i, j);
 	else
 		return XString(); 
 }

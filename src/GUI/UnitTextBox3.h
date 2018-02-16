@@ -33,6 +33,7 @@ public:
         textBox->show();
         this->show();
         updateContextMenu(openFileMenu);
+		connect(textBox, SIGNAL(keyPressed(const QString & text)), this, SLOT(onTextChanged()));
     }
 
     ~UnitTextBox3(){}
@@ -104,6 +105,11 @@ public slots:
 			openfile = true; 
         }
     }
+
+	void onTextChanged()
+	{
+		openfile = false; 
+	}
 
 private:
     QString m_fileName;

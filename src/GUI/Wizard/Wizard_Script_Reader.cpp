@@ -885,13 +885,16 @@ QList<CCommand> Wizard_Script_Reader::do_2dh(QString configuration, wiz_entity *
 				if (!script_specific_params.contains(item.entity))
 				{
 					if (m.VariableNames_w_abv().contains(item.entity))
-						command.parameters[item.entity] = wiz_ent->get_value(item);
+					{
+						command.parameters[item.entity] = 0.5*(wiz_ent->get_value(item, i, j).toDouble() + wiz_ent->get_value(item, i + 1, j).toDouble());
+						command.parameters[item.entity].unit = wiz_ent->get_value(item, i, j).unit;
+					}
 				}
 			}
 
 			command.parameters["Length"] = length;
 			command.parameters["Width"] = Width;
-			command.parameters["Interface/cross sectional area"] = Width*Depth;
+			command.parameters["Interface/cross sectional area"] = Width*0.5*(wiz_ent->get_value("Depth", i, j).toDouble() + wiz_ent->get_value("Depth", i + 1, j).toDouble());
 
 			commands.append(command);
 
@@ -918,12 +921,15 @@ QList<CCommand> Wizard_Script_Reader::do_2dh(QString configuration, wiz_entity *
 				if (!script_specific_params.contains(item.entity))
 				{
 					if (m.VariableNames_w_abv().contains(item.entity))
-						command.parameters[item.entity] = wiz_ent->get_value(item);
+					{
+						command.parameters[item.entity] = 0.5*(wiz_ent->get_value(item, i, j).toDouble() + wiz_ent->get_value(item, i, j + 1).toDouble());
+						command.parameters[item.entity].unit = wiz_ent->get_value(item, i, j).unit;
+					}
 				}
 			}
 			command.parameters["Length"] = Width;
 			command.parameters["Width"] = length;
-			command.parameters["Interface/cross sectional area"] = length*Depth;
+			command.parameters["Interface/cross sectional area"] = length*0.5*(wiz_ent->get_value("Depth", i, j).toDouble() + wiz_ent->get_value("Depth", i, j + 1).toDouble());
 			commands.append(command);
 
 		}

@@ -57,7 +57,7 @@
 1,Block,*,*,y location,y,y,!,!,integer,0,TextBox,Geometry,Input,No,100515,y,,,
 1,Block,*,*,!,Vapor diffusion coefficient,vapor_diffusion,m~^2/day; m~^2/s; cm~^2/s; cm~^2/day ,m~^2/day,float+Estimate,0,UnitBox,Material,Input,Yes,100059,vapor diffusion coefficient,>=0,E,Vapor Diffusion Coefficient must be non-negative
 1,Connector,Default,non-Porous,!,Flow exponent,exponent,!,!,float+Estimate,!,TextBox,Geometry,Input,Yes,100061,flow exponent,,,
-1,Connector,Default,non-Porous,!,Manning's roughness coefficient,nmanning,s/~^3~radicm,day/~^3~radicm,float+Estimate,!,UnitBox,Material,Input,Yes,100062,manning's roughness coefficient,>0,E,Manning's roughness coefficient must be positive
+1,Connector,Default,non-Porous,!,Manning's roughness coefficient,nmanning,s/~^3~radicm,day/~^3~radicm,float+Estimate,!,UnitBox,Material,Input,Yes,100062,manning's roughness coefficient;Manning;manning,>0,E,Manning's roughness coefficient must be positive
 1,Connector,Default,*,!,Width,width,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100063,width,!=0; >=0,W;E,Width is assigned to be zero; Width must be positive and non-zero
 1,Connector,Default,non-Porous,!,Dam elevation,dam,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100064,dam elevation,,,
 1,Connector,Default,Porous,!,Saturated hydraulic conductivity (ks),ks,m/day; cm/day;cm/s;mm/s;ft/day;in/day;in/s,m/day,float+Estimate,!,UnitBox,Material,Input,Yes,100066,saturated hydraulic conductivity (ks),>=0;!=0,E;W,Hydraulic conductivity must me non-negative;Saturated hydraulic conductivity will be assigned based on the connected blocks
@@ -79,7 +79,7 @@
 1,Connector,Prescribed flow,*,!,Length,d,m;cm;ft;in,m,float+Estimate,1,UnitBox,Geometry,Input,Yes,100078,length,>0,E,Connector length must be greater than zero
 1,Connector,Quasi steady,*,!,Length,d,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100078,length,>0,E,Connector length must be greater than zero
 1,Connector,Controlled,*,!,Length,d,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100078,length,>0,E,Connector length must be greater than zero
-1,Connector,Normal Flow,*,!,Manning's roughness coefficient,nmanning,s/~^3~radicm,day/~^3~radicm,float+Estimate,!,UnitBox,Material,Input,Yes,100079,manning's roughness coefficient;manning,>0,E,Manning's roughness coefficient must be positive
+1,Connector,Normal Flow,*,!,Manning's roughness coefficient,nmanning,s/~^3~radicm,day/~^3~radicm,float+Estimate,!,UnitBox,Material,Input,Yes,100079,manning's roughness coefficient;manning;Manning,>0,E,Manning's roughness coefficient must be positive
 1,Connector,Darcy,*,!,Saturated hydraulic conductivity (ks),ks,m/day;cm/day;cm/s;mm/s;ft/day;in/day;in/s,m/day,float+Estimate,!,UnitBox,Material,Input,Yes,100327,saturated hydraulic conductivity (ks);ks;K_s;k_s,>=0,E,Hydraulic conductivity must me non-negative
 1,Connector,*,*,!,Settling,settling,!,!,string,No;Yes,ComboBox,Geometry,Select,Yes,100081,settling,,,
 1,Connector,Normal Flow,*,!,Width,width,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100082,width,!=0; >=0,W;E,Width is assigned to be zero; Width must be non-negative
@@ -107,13 +107,13 @@
 1,Entity,External flux,External flux,!,Velocity exponent,velocity_exponent,!,!,float+Estimate,!,TextBox,Global,Input,No,100158,velocity exponent,,,
 1,Entity,Project settings,Project settings,!,Working path,path,!,!,directory,.,DirBrowser,Global,Input,No,100159,working path,,,
 1,Entity,Solver settings,Solver settings,!,Write solution details,write_details,!,!,string,No;Yes,ComboBox,Global,Select,No,100160,write solution details,,,
-1,Block,Catchment,Catchment,!,Manning's roughness coefficient,nmanning,s/~^3~radicm,day/~^3~radicm,float+Estimate,!,UnitBox,Material,Input,Yes,100337,manning's roughness coefficient,>0,W,Manning's roughness coefficient must be positive
+1,Block,Catchment,Catchment,!,Manning's roughness coefficient,nmanning,s/~^3~radicm,day/~^3~radicm,float+Estimate,!,UnitBox,Material,Input,Yes,100337,manning's roughness coefficientManning;manning,>0,W,Manning's roughness coefficient must be positive
 1,Entity,Climate settings,Climate settings,!,Solar-radiation,light,!,!,filename,!,Browser;time series,Global,Select,No,100177,solar-radiation,,,
 1,Entity,Climate settings,Climate settings,!,Humidity,humidity,!,!,filename,!,Browser;time series,Global,Select,No,100178,humidity,,,
 1,Entity,Observation,*,!,SubType,loc_type,!,!,string,Block;Connector,ComboBox,Global,Select,No,100183,subtype,,,
 1,Entity,Parameter,Parameter,!,Value,value,!,!,float,!,TextBox,Global,Input,No,100184,value,,,
 1,Block,Soil,Loam,!,Residual moisture content (~thetar),theta_r,!,!,float+Estimate,0.078,TextBox,Material,Input,Yes,100047,residual moisture content (~thetar),[0:{theta_s}),E,Residual moisure content must be between zero and ~thetas
-1,Block,Stream,Stream,!,Manning's roughness coefficient,nmanning,s/~^3~radicm,day/~^3~radicm,float+Estimate,!,UnitBox,Material,Input,Yes,100341,manning's roughness coefficient,>0,W,Manning's roughness coefficient must be positive
+1,Block,Stream,Stream,!,Manning's roughness coefficient,nmanning,s/~^3~radicm,day/~^3~radicm,float+Estimate,!,UnitBox,Material,Input,Yes,100341,manning's roughness coefficient;Manning;manning,>0,W,Manning's roughness coefficient must be positive
 //1,Block,Stream,Stream,!,Width,width,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100342,width,!=0; >=0,W;W,Width is assigned to be zero; Width must be positive and non-zero
 1,Block,Soil,Silt,!,Residual moisture content (~thetar),theta_r,!,!,float+Estimate,0.034,TextBox,Material,Input,Yes,100047,residual moisture content (~thetar),[0:{theta_s}),E,Residual moisure content must be between zero and ~thetas
 1,Block,Soil,Silt loam,!,Residual moisture content (~thetar),theta_r,!,!,float+Estimate,0.067,TextBox,Material,Input,Yes,100047,residual moisture content (~thetar),[0:{theta_s}),E,Residual moisure content must be between zero and ~thetas
@@ -270,7 +270,7 @@
 1,Block,Soil,Silty clay,!,Van-Genuchten n parameter,vg_n,!,!,float+Estimate,1.09,TextBox,Material,Input,Yes,100309,van-genuchten n parameter,>0,E,Van Genuchten n parameter must be positive
 1,Block,Soil,Clay,!,Van-Genuchten n parameter,vg_n,!,!,float+Estimate,1.09,TextBox,Material,Input,Yes,100314,van-genuchten n parameter,>0,E,Van Genuchten n parameter must be positive
 1,Block,Soil,Userdefined,!,Van-Genuchten n parameter,vg_n,!,!,float+Estimate,!,TextBox,Material,Input,Yes,100314,van-genuchten n parameter,>0,E,Van Genuchten n parameter must be positive
-1,Block,Pond,Pond,!,Manning's roughness coefficient,nmanning,s/~^3~radicm,day/~^3~radicm,float+Estimate,!,UnitBox,Material,Input,Yes,100161,manning's roughness coefficient,>0,W,Manning's roughness coefficient must be positive
+1,Block,Pond,Pond,!,Manning's roughness coefficient,nmanning,s/~^3~radicm,day/~^3~radicm,float+Estimate,!,UnitBox,Material,Input,Yes,100161,manning's roughness coefficient;Manning;manning,>0,W,Manning's roughness coefficient must be positive
 1,Block,*,*,!,Solar-radiation reduction factor,light_reduction_factor,!,!,float+Estimate,1,TextBox,Material,Input,Yes,100315,solar-radiation reduction factor,>=0,E,Solar-radiation reduction factor must be non-negative
 //1,Block,Pond,Pond,!,Width,width,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100163,width,!=0; >=0,W;W,Width is assigned to be zero; Width must be positive and non-zero
 1,Block,*,*,!,Conduct reactions,perform_rxn,!,!,string,Yes;No,ComboBox,Material,Select,Yes,100316,conduct reactions,,,

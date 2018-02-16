@@ -187,7 +187,9 @@
     <ClCompile Include="builds\Release\moc\moc_imageviewer_window.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="builds\release\moc\moc_UnitTextBox3.cpp" />
+    <ClCompile Include="builds\release\moc\moc_UnitTextBox3.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="builds\Release\moc\moc_wizard_dialog.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
