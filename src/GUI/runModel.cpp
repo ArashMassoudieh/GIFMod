@@ -149,11 +149,11 @@ void MainWindow::forwardRun(CMediumSet *model, runtimeWindow* progress)
 
 	for (int i = 0; i < model->Medium.size(); i++)
 	{
-		model->Medium[i].ANS.writetofile(model->Medium[i].detoutfilename_hydro, true);
-		model->Medium[i].ANS_colloids.writetofile(model->Medium[i].detoutfilename_prtcle, true);
-		model->Medium[i].ANS_constituents.writetofile(model->Medium[i].detoutfilename_wq, true);
-		model->Medium[i].ANS_control.writetofile(model->Medium[i].detoutfilename_control, true);
-		if (model->SP.mass_balance_check) model->Medium[i].ANS_MB.writetofile(model->FI.outputpathname + "output_MB" + model->Medium[i].name + ".txt", true);
+        model->Medium[i].Results.ANS.writetofile(model->Medium[i].detoutfilename_hydro, true);
+        model->Medium[i].Results.ANS_colloids.writetofile(model->Medium[i].detoutfilename_prtcle, true);
+        model->Medium[i].Results.ANS_constituents.writetofile(model->Medium[i].detoutfilename_wq, true);
+        model->Medium[i].Results.ANS_control.writetofile(model->Medium[i].detoutfilename_control, true);
+        if (model->SP.mass_balance_check) model->Medium[i].Results.ANS_MB.writetofile(model->FI.outputpathname + "output_MB" + model->Medium[i].name + ".txt", true);
 		/*			model->Medium[i].ANS.writetofile(model->FI.outputpathname + model->Medium[i].detoutfilename_hydro);
 					model->Medium[i].ANS_colloids.writetofile(model->FI.outputpathname + model->Medium[i].detoutfilename_prtcle);
 					model->Medium[i].ANS_constituents.writetofile(model->FI.outputpathname + model->Medium[i].detoutfilename_wq);
@@ -2255,13 +2255,13 @@ void CMediumSet::solve(runtimeWindow *rtw)
 		Medium[i].runtimewindow = rtw;
 		gw->log(QString("Solving %1").arg(QString::fromStdString(Medium[i].name)));
 		Medium[i].solve();
-		failed = failed || Medium[i].failed;
-		ANS_hyd.push_back(&Medium[i].ANS);
-		ANS_colloids.push_back(&Medium[i].ANS_colloids);
-		ANS_constituents.push_back(&Medium[i].ANS_constituents);
-		ANS_colloids.push_back(&Medium[i].ANS_control);
-		if (Medium[i].failed)
-			gw->log(QString("%1 failed, (%2)").arg(QString::fromStdString(Medium[i].name)).arg(QString::fromStdString(Medium[i].fail_reason)));
+        failed = failed || Medium[i].Solution_State.failed;
+        ANS_hyd.push_back(&Medium[i].Results.ANS);
+        ANS_colloids.push_back(&Medium[i].Results.ANS_colloids);
+        ANS_constituents.push_back(&Medium[i].Results.ANS_constituents);
+        ANS_colloids.push_back(&Medium[i].Results.ANS_control);
+        if (Medium[i].Solution_State.failed)
+            gw->log(QString("%1 failed, (%2)").arg(QString::fromStdString(Medium[i].name)).arg(QString::fromStdString(Medium[i].Solution_State.fail_reason)));
 		else
 			gw->log(QString("%1 finished").arg(QString::fromStdString(Medium[i].name)));
 
@@ -2273,7 +2273,7 @@ void CMediumSet::solve(runtimeWindow *rtw)
 	{
 		if (lookup_medium(measured_quan[i].experiment) != -1)
 		{
-			ANS_obs.BTC[i] = Medium[lookup_medium(measured_quan[i].experiment)].ANS_obs.BTC[i];
+            ANS_obs.BTC[i] = Medium[lookup_medium(measured_quan[i].experiment)].Results.ANS_obs.BTC[i];
 			ANS_obs.setname(i, measured_quan[i].name);
 			calc_MSE(i);
 		}
@@ -2456,8 +2456,8 @@ void CMedium::updateProgress(bool finished)
 			vars["t"] = t;
 			vars["progress"] = progress;
 			vars["dtt"] = dtt;
-			vars["epoch count"] = epoch_count;
-			QString reason = QString::fromStdString(fail_reason);
+            vars["epoch count"] = Solution_State.epoch_count;
+            QString reason = QString::fromStdString(Solution_State.fail_reason);
             ////qDebug() << reason;
 			if (!reason.toLower().contains("none"))
 				vars["label"] = reason;
@@ -2465,7 +2465,7 @@ void CMedium::updateProgress(bool finished)
 			
 			if (runtimewindow->sln_dtl_active)
 				if (!reason.toLower().contains("none"))
-					runtimewindow->slndetails_append(QString::number(epoch_count) + ":" + solution_detail + " time step size: " + QString::number(dtt));
+                    runtimewindow->slndetails_append(QString::number(Solution_State.epoch_count) + ":" + solution_detail + " time step size: " + QString::number(dtt));
 		}
 		runtimewindow->update(vars);
 		if (finished)

@@ -851,7 +851,8 @@ double sum_interpolate(vector<CTimeSeriesSet> &BTC, double t, string name)
 void CTimeSeriesSet::clear()
 {
 	BTC.clear();
-	nvars = 0;
+    names.clear();
+    nvars = 0;
 }
 
 vector<double> CTimeSeriesSet::max_wiggle()

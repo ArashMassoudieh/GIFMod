@@ -14,6 +14,7 @@ LIBS += -lgomp -lpthread
 
 #defines
 DEFINES += UNICODE GIFMOD
+DEFINES += QT_version
 
 DESTDIR = $${BUILD_DIR}
 MOC_DIR = $${BUILD_DIR}/moc
