@@ -86,10 +86,10 @@ CMediumSet::CMediumSet(const CMediumSet &M)
 	ANS_obs = M.ANS_obs;
 	for (int i = 0; i < Medium.size(); i++)
 	{
-		ANS_hyd.push_back(&Medium[i].ANS);
-		ANS_colloids.push_back(&Medium[i].ANS_colloids);
-		ANS_constituents.push_back(&Medium[i].ANS_constituents);
-		ANS_control.push_back(&Medium[i].ANS_control);
+        ANS_hyd.push_back(&Medium[i].Results.ANS);
+        ANS_colloids.push_back(&Medium[i].Results.ANS_colloids);
+        ANS_constituents.push_back(&Medium[i].Results.ANS_constituents);
+        ANS_control.push_back(&Medium[i].Results.ANS_control);
 	}
 	Control = M.Control;
 	ID = M.ID;
@@ -123,10 +123,10 @@ CMediumSet& CMediumSet::operator=(const CMediumSet &M)
 	ANS_control.clear();
 	for (int i = 0; i < Medium.size(); i++)
 	{
-		ANS_hyd.push_back(&Medium[i].ANS);
-		ANS_colloids.push_back(&Medium[i].ANS_colloids);
-		ANS_constituents.push_back(&Medium[i].ANS_constituents);
-		ANS_control.push_back(&Medium[i].ANS_constituents);
+        ANS_hyd.push_back(&Medium[i].Results.ANS);
+        ANS_colloids.push_back(&Medium[i].Results.ANS_colloids);
+        ANS_constituents.push_back(&Medium[i].Results.ANS_constituents);
+        ANS_control.push_back(&Medium[i].Results.ANS_constituents);
 	}
 	ANS_obs = M.ANS_obs;
 	Control = M.Control;
@@ -332,11 +332,11 @@ void CMediumSet::solve()
 	for (int i = 0; i < Medium.size(); i++)
 	{
 		Medium[i].solve();
-		failed = failed || Medium[i].failed;
-		ANS_hyd.push_back(&Medium[i].ANS);
-		ANS_colloids.push_back(&Medium[i].ANS_colloids);
-		ANS_constituents.push_back(&Medium[i].ANS_constituents);
-		ANS_control.push_back(&Medium[i].ANS_control);
+        failed = failed || Medium[i].Solution_State.failed;
+        ANS_hyd.push_back(&Medium[i].Results.ANS);
+        ANS_colloids.push_back(&Medium[i].Results.ANS_colloids);
+        ANS_constituents.push_back(&Medium[i].Results.ANS_constituents);
+        ANS_control.push_back(&Medium[i].Results.ANS_control);
 	}
 
 	ANS_obs = CBTCSet(measured_quan.size());
@@ -344,7 +344,7 @@ void CMediumSet::solve()
 	{
 		if (lookup_medium(measured_quan[i].experiment) != -1)
 		{
-			ANS_obs.BTC[i] = Medium[lookup_medium(measured_quan[i].experiment)].ANS_obs.BTC[i];
+            ANS_obs.BTC[i] = Medium[lookup_medium(measured_quan[i].experiment)].Results.ANS_obs.BTC[i];
 			ANS_obs.setname(i, measured_quan[i].name);
 			calc_MSE(i);
 		}
@@ -1011,7 +1011,7 @@ void CMediumSet::finalize_set_param()
 int CMediumSet::epoch_count()
 {
 	int out = 0;
-	for (int i = 0; i < Medium.size(); i++) out += Medium[i].epoch_count;
+    for (int i = 0; i < Medium.size(); i++) out += Medium[i].Solution_State.epoch_count;
 
 	return out; 
 }

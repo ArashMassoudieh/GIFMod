@@ -150,13 +150,8 @@ void cross(CBinary &B1, CBinary &B2, int p)
 			B1[i] = BT1[i];
 			B2[i] = BT2[i];
 		}
-<<<<<<< Updated upstream
-        else
-		{	
-=======
 		else
 		{
->>>>>>> Stashed changes
 			B1[i] = BT2[i];
 			B2[i] = BT1[i];
 		}

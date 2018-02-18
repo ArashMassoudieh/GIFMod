@@ -35,8 +35,7 @@ public:
 	string defaultUnit = "";
 	vector<string> unitsList;
 
-	//MM
-	vector<double> D;
+    vector<double> D;
 
 	double interpol(double x); //interpolate at location x
 	CTimeSeries MA_smooth(int span); //Moving average smoothing with span of 1+2*span
