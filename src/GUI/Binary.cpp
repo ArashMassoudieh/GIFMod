@@ -166,7 +166,7 @@ void cross(CBinary &B1, CBinary &B2, vector<int> p)
 	for (int i=0; i<B1.nDigits; i++)
 	{
 		for (int j=1; j<p.size(); j++)
-		if (p[j-1]< i < p[j])
+        if (p[j-1]< i && i < p[j])
 		{
 			if (i%2==0)
 			{

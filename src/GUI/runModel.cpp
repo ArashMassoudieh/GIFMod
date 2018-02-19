@@ -1343,7 +1343,7 @@ void CMedium::g_get_environmental_params()
 		{
 			if (key == "time_min")
 			{
-				Timemin = e->val(key).toFloat(); t = Timemin;
+                Timemin = e->val(key).toFloat(); Solution_State.t = Timemin;
 			}
 			if (key == "time_max")
 				if (!e->val(key).isEmpty()) Timemax = e->val(key).toFloat();
@@ -2452,8 +2452,8 @@ void CMedium::updateProgress(bool finished)
 		else
 		{
 			int progress;
-			progress = 100.0*(t - Timemin) / (Timemax - Timemin);
-			vars["t"] = t;
+            progress = 100.0*(Solution_State.t - Timemin) / (Timemax - Timemin);
+            vars["t"] = Solution_State.t;
 			vars["progress"] = progress;
 			vars["dtt"] = dtt;
             vars["epoch count"] = Solution_State.epoch_count;

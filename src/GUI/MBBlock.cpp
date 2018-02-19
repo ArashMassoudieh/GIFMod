@@ -263,7 +263,7 @@ double CMBBlock::get_val(int i, vector<int> ii)
 		return plant_prop.LAI;
 
 	if (i == physical_params::pan_evaporation_rate)
-		return get_evaporation(parent->t);
+        return get_evaporation(parent->Solution_State.t);
 
 	if (i>=50 && i<100) return fs_params[i-50];
 	if (i>=100 && i<1000) return G[ii[0]][i];
@@ -281,7 +281,7 @@ double CMBBlock::get_val(int i, vector<int> ii)
 	if (i>=4000 && i<5000) return envexchange[ii[1]]->parameters[i-4000];
 	if (i >= 5000 && i<6000) return RXN->cons[ii[0]].get_val(i);
 	if (i >= 6000 && i<6500) return evaporation_m[ii[0]]->parameters[i - 6000];
-	if (i == 6501 && i<7000) return evaporation_m[ii[0]]->single_crop_coefficient.interpol(dayOfYear(parent->t));
+    if (i == 6501 && i<7000) return evaporation_m[ii[0]]->single_crop_coefficient.interpol(dayOfYear(parent->Solution_State.t));
 	if (i >= 7000 && i < 8000) return 
 		plant_prop.half_saturation_constants[i - 7000]; 
 	if (i >= 10000 && i<20000) return G[(i-10000)/1000][(i-10000)%1000];
@@ -357,7 +357,7 @@ double CMBBlock::get_val(string SS)
 		if (tolower(trim(s[0]))=="h*") return H_star;
 		if (tolower(trim(s[0]))=="v") return V_star;
 		if (tolower(trim(s[0]))=="s*") return S_star;     
-		if (tolower(trim(s[0])) == "e") return get_evaporation(parent->t);
+        if (tolower(trim(s[0])) == "e") return get_evaporation(parent->Solution_State.t);
 		if (tolower(trim(s[0]))=="se*") 
 		{
 			if ((indicator != Soil) && (indicator != Darcy))
@@ -488,7 +488,7 @@ double CMBBlock::get_val_star(int i, vector<int> ii)
 		return plant_prop.LAI;
 
 	if (i == physical_params::pan_evaporation_rate)
-		return get_evaporation(parent->t);
+        return get_evaporation(parent->Solution_State.t);
 
 	if (i>=50 && i<100) return fs_params[i-50];
 	if (i>=100 && i<1000) return G_star[ii[0]][i];
@@ -506,7 +506,7 @@ double CMBBlock::get_val_star(int i, vector<int> ii)
 	if (i>=4000 && i<5000) return envexchange[ii[1]]->parameters[i-4000];
 	if (i >= 5000 && i<6000) return RXN->cons[ii[0]].get_val(i);
 	if (i >= 6000 && i<6500) return evaporation_m[ii[0]]->parameters[i - 6000];
-	if (i == 6501 && i<7000) return evaporation_m[ii[0]]->single_crop_coefficient.interpol(dayOfYear(parent->t));
+    if (i == 6501 && i<7000) return evaporation_m[ii[0]]->single_crop_coefficient.interpol(dayOfYear(parent->Solution_State.t));
 	if (i >= 7000 && 8000) return plant_prop.half_saturation_constants[i - 7000];
 	if (i >= 10000 && i<20000) return G_star[(i - 10000) / 1000][(i - 10000) % 1000];
 	if (i >= 100000 && i<200000) return CG_star[(i - 100000) / 10000][(i - 100000) % 10000];

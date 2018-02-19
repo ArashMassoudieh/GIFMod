@@ -49,6 +49,15 @@ struct solution_state
     bool failed;
     int epoch_count;
     string fail_reason;
+    double dtt_J_h1, dtt_J_h2, dtt_J_q, dtt_J_c;
+    int J_h_update_count, J_q_update_count, J_c_update_count;
+
+    double pos_def_mult;
+    double pos_def_mult_Q;
+    double max_wiggle, wiggle_dt_mult, dt_fail, max_wiggle_id;
+
+    double t; // time
+    int counter_flow, counter_colloid, counter_const; // counter for number of iteration
 };
 
 struct _results
@@ -121,12 +130,11 @@ public:
 	string detoutfilename_wq; //file name where the deterministic water quality output is saved
 	string detoutfilename_control; //file name where the controller values are saved
 	string detoutfilename_prtcle; //file name where the deterministic partcile output is saved
-	string& detoutfilename_obs(); ////file name where the deterministic outputs corresponding to the observed data is saved
+    string& detoutfilename_obs(); //file name where the deterministic outputs corresponding to the observed data is saved
 	int& writeinterval(); //the interval at which the output are save in output files (default = 1)
 	string& realizeparamfilename(); //output file name for Monte-Carlo realizations
 	double& minimum_acceptable_negative_conc(); //returns the minimum acceptable negative concentration criteria
-	double t; // time
-	int counter_flow, counter_colloid, counter_const; // counter for number of iteration
+
     void Blocksmassbalance();
 	vector<string> Precipitation_filename;
 	vector<CPrecipitation> Precipitation;
@@ -144,19 +152,11 @@ public:
     void f_load_inflows();
     void f_make_uniform_inflows();
 
-
-    CVector get_rxn_chng_rate();
-
 	vector<CBuildup>& buildup();
 	vector<CEnvExchange>& externalflux();
 	vector<CEvaporation>& evaporation_model();
 
-	double dtt_J_h1, dtt_J_h2, dtt_J_q, dtt_J_c;
-	int J_h_update_count, J_q_update_count, J_c_update_count;
     void writedetails();
-	double pos_def_mult;
-	double pos_def_mult_Q;
-	double max_wiggle, wiggle_dt_mult, dt_fail, max_wiggle_id;
 
     int lookup_external_flux(string S);
     int lookup_particle_type(string S);
@@ -169,12 +169,7 @@ public:
 //	int lookup_observation(string S);
 
     void writetolog(string S);
-	CMatrix Preconditioner_Q;
-	CMatrix Preconditioner_C;
-	CMatrix Preconditioner_S;
-	CMatrix_arma Preconditioner_Q_arma;
-	CMatrix_arma Preconditioner_C_arma;
-	CMatrix_arma Preconditioner_S_arma;
+
 	bool& pos_def_limit();
 	double& maximum_run_time();
     bool& check_oscillation();
@@ -191,16 +186,6 @@ public:
 	vector<CBTC> r_humidity;
 	vector<string> r_humidity_filename;
 
-
-	void update_rxn_params();
-	double current_light;
-	double current_temperature;
-	double current_wind;
-	double current_relative_humidity;
-	void update_light_temperature();
-	void update_wind_humidity();
-	double get_nextcontrolinterval(double _t);
-	void set_control_params(int);
 	QString solution_detail;
 	void clear(); //clear the model
 
@@ -229,7 +214,7 @@ public:
 	bool& steady_state_hydro();
 	double& max_dt();
 	void false_connector_flow_calc();
-	CMatrix hydro_steady_matrix_inv;
+
 	string create_hydro_steady_matrix_inv();
 	CVector get_steady_hydro_RHS();
     vector<int> get_member_no_inv(int i);
@@ -250,6 +235,8 @@ public:
 
     void get_funcs();
     string& log_file_name();
+
+    void set_control_params(int);
 
 private:
     CMatrix Jacobian_S(const CVector &X, double dt, bool);
@@ -347,7 +334,7 @@ private:
 
     bool J_update,J_update_C, J_update_Q;
     int& max_J_interval();
-    double cr;
+
     double dt0;
     vector<string>& formulas();
     vector<string>& formulasH();
@@ -442,8 +429,27 @@ private:
     double calc_term(int i, string loc_id, CStringOP k);
     double calc_term_star(int i, string loc_id, CStringOP k);
 
+    CMatrix Preconditioner_Q;
+    CMatrix Preconditioner_C;
+    CMatrix Preconditioner_S;
+    CMatrix_arma Preconditioner_Q_arma;
+    CMatrix_arma Preconditioner_C_arma;
+    CMatrix_arma Preconditioner_S_arma;
 
+    double current_light;
+    double current_temperature;
+    double current_wind;
+    double current_relative_humidity;
 
+    void update_rxn_params();
+
+    void update_light_temperature();
+    void update_wind_humidity();
+    double get_nextcontrolinterval(double _t);
+
+    CMatrix hydro_steady_matrix_inv;
+
+    CVector get_rxn_chng_rate();
 };
 
 QString Export(const QString& s);
