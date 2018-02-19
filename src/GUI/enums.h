@@ -1,7 +1,5 @@
 #pragma once
-#ifdef QT_version
 #include "qcolor.h"
-#endif // QT_version
 #define PI 3.14159265359;
 class GraphWidget;
 enum Operation_Modes{ Draw_Connector, Node1_selected, Pan, NormalMode, resizeNode };
@@ -60,7 +58,6 @@ enum XStringMetaTypes { XStringType = 1025, XStringListType = 1026 };
 
 };*/
 
-#ifdef QT_version
 struct objectColor
 {
 	QColor color1, color2, defaultColor;
@@ -69,15 +66,14 @@ struct condition
 {
 	QStringList Condition, error, errorDesc;
 };
-#endif // QT_version
 struct percentileData{
 	std::string parameter;
 	double p25, p50, p975, mean, std;
 };
 
 
-
-
+QStringList percentile2List(percentileData p);
+percentileData percentileFromList(QStringList r);
 //template <class T> const T& min(const T& a, const T& b);
 double min(double x, double y);
 float min(float x, float y);
@@ -87,9 +83,6 @@ double max(double x, double y);
 float max(float x, float y);
 int max(int x, int y);
 
-#ifdef QT_version
-percentileData percentileFromList(QStringList r);
-QStringList percentile2List(percentileData p);
 QString OnlyFilename(const QString &PathandFilename);
 QString OnlyFilenames(const QString &PathandFilenames);
 QString OnlyPath(const QString& PathandFilename);
@@ -103,4 +96,3 @@ QString operator&(const QString &, const QString &);
 //QStringList QSplit(const QString &QS, QChar del = ',');
 QString QMerge(const QStringList &QSL, QChar del = ';');
 std::string convertstringtoStringOP(const QString& s, GraphWidget *gWidget);
-#endif

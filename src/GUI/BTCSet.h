@@ -11,10 +11,10 @@ public:
 	CTimeSeriesSet(void); //default constructor
 	CTimeSeriesSet(int n); //construction with number of variables (timeseries)
 	CTimeSeriesSet(int numberofBTCs, int sizeofBTCvector);
-	CTimeSeriesSet(const CTimeSeriesSet &BTC); //copy constructor
-	CTimeSeriesSet(const CTimeSeries &BTC); //build from a single timeseries
+	CTimeSeriesSet(const CTimeSeriesSet &BTC);
+	CTimeSeriesSet(const CTimeSeries &BTC);
 	CTimeSeriesSet(string filename, bool varytime);
-	int nvars; //number of variables
+	int nvars;
 	vector<CTimeSeries> BTC;
 	void writetofile(char outputfile[]);
 	int maxnumpoints();
@@ -64,22 +64,17 @@ public:
 	bool file_not_found=false;
 	CTimeSeries &operator[](int index);
 	CTimeSeries &operator[](string BTCName);
-#ifdef QT_version
 	CTimeSeries &operator[](QString BTCName) {
 		return operator[](BTCName.toStdString());
 	}
-#endif // QT_version
 	CTimeSeriesSet(vector < vector<double>> &, int writeInterval = 1);
 	int indexOf(const string& name) const;
 	void pushBackName(string name);
 	void append(CTimeSeries &BTC, string name = "");
 	CTimeSeriesSet sort(int burnOut = 0);
-#ifdef QT_version
 	void compact(QDataStream &data) const;
 	static CTimeSeriesSet unCompact(QDataStream &data);
-#endif // QT_version
 	~CTimeSeriesSet(void);
-	int getnumvars() { return BTC.size(); };
 };
 
 double diff(CTimeSeriesSet B1, CTimeSeriesSet B2);

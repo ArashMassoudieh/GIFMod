@@ -18,7 +18,5 @@ UnitTextBox3::UnitTextBox3(const XString &X, bool openFileMenu, QWidget * parent
     setGeometry(QRect(0, 0, 300, 20));
     setXString(X);
     setFocusProxy(textBox);
-	openfile = false; 
-	updateContextMenu(openFileMenu);
-	connect(textBox, SIGNAL(textEdited(QString)), this, SLOT(onTextChanged()));
+    updateContextMenu(openFileMenu);
 }

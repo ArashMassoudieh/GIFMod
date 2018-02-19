@@ -302,8 +302,8 @@ void runtimeWindow::realtimeDataSlot(double x, double y, bool secondPlot, QStrin
 	double Timemax = x;
 	if (experiment)
 	{
-		Timemin = experiment->get_time_min();
-		Timemax = experiment->get_time_max();
+		Timemin = experiment->Timemin;
+		Timemax = experiment->Timemax;
 	}
 #endif
 #ifdef GWA

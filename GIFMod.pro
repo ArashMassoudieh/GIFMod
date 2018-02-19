@@ -14,6 +14,7 @@ LIBS += -lgomp -lpthread
 
 #defines
 DEFINES += UNICODE GIFMOD
+DEFINES += QT_version
 
 DESTDIR = $${BUILD_DIR}
 MOC_DIR = $${BUILD_DIR}/moc
@@ -67,7 +68,6 @@ win32{
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
-DEFINES += QT_version
 
 # You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.

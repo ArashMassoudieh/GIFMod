@@ -47,8 +47,8 @@ void CMediumSet::load(GraphWidget* gw, runtimeWindow *rtw)
 		Medium[i - 1].parent = this;
 		Medium[i - 1].name = gw->experimentName().toStdString();
 		Medium[i - 1].gw = gw;
-		Medium[i - 1].clear_blocks();
-		Medium[i - 1].clear_connectors();
+		Medium[i - 1].Blocks.clear();
+        Medium[i - 1].Connectors.clear();
 		Medium[i - 1].g_get_environmental_params();
 		Medium[i - 1].g_get_model_configuration(rtw); // load model structure (blocks, connectors)
 		Medium[i - 1].g_set_default_connector_expressions();
@@ -102,8 +102,8 @@ CMediumSet::CMediumSet(GraphWidget* gw, runtimeWindow *rtw)
 		Medium[i - 1].parent = this;
 		Medium[i - 1].name = gw->experimentName().toStdString();
 		Medium[i - 1].gw = gw;
-		Medium[i - 1].clear_blocks();
-		Medium[i - 1].clear_connectors();
+		Medium[i - 1].Blocks.clear();
+        Medium[i - 1].Connectors.clear();
 		Medium[i - 1].g_get_environmental_params();
 		Medium[i - 1].g_get_model_configuration(rtw); // load model structure (blocks, connectors)
 		Medium[i - 1].g_set_default_connector_expressions();
@@ -149,11 +149,11 @@ void MainWindow::forwardRun(CMediumSet *model, runtimeWindow* progress)
 
 	for (int i = 0; i < model->Medium.size(); i++)
 	{
-		model->Medium[i].ANS.writetofile(model->Medium[i].detoutfilename_hydro, true);
-		model->Medium[i].ANS_colloids.writetofile(model->Medium[i].detoutfilename_prtcle, true);
-		model->Medium[i].ANS_constituents.writetofile(model->Medium[i].detoutfilename_wq, true);
-		model->Medium[i].ANS_control.writetofile(model->Medium[i].detoutfilename_control, true);
-		if (model->SP.mass_balance_check) model->Medium[i].ANS_MB.writetofile(model->FI.outputpathname + "output_MB" + model->Medium[i].name + ".txt", true);
+        model->Medium[i].Results.ANS.writetofile(model->Medium[i].detoutfilename_hydro, true);
+        model->Medium[i].Results.ANS_colloids.writetofile(model->Medium[i].detoutfilename_prtcle, true);
+        model->Medium[i].Results.ANS_constituents.writetofile(model->Medium[i].detoutfilename_wq, true);
+        model->Medium[i].Results.ANS_control.writetofile(model->Medium[i].detoutfilename_control, true);
+        if (model->SP.mass_balance_check) model->Medium[i].Results.ANS_MB.writetofile(model->FI.outputpathname + "output_MB" + model->Medium[i].name + ".txt", true);
 		/*			model->Medium[i].ANS.writetofile(model->FI.outputpathname + model->Medium[i].detoutfilename_hydro);
 					model->Medium[i].ANS_colloids.writetofile(model->FI.outputpathname + model->Medium[i].detoutfilename_prtcle);
 					model->Medium[i].ANS_constituents.writetofile(model->FI.outputpathname + model->Medium[i].detoutfilename_wq);
@@ -1343,7 +1343,7 @@ void CMedium::g_get_environmental_params()
 		{
 			if (key == "time_min")
 			{
-				Timemin = e->val(key).toFloat(); t = Timemin;
+                Timemin = e->val(key).toFloat(); Solution_State.t = Timemin;
 			}
 			if (key == "time_max")
 				if (!e->val(key).isEmpty()) Timemax = e->val(key).toFloat();
@@ -1422,20 +1422,20 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 	{
 		Node* n = nodes[gw->nodeNames().indexOf(nodenames_sorted[i])];
 		CMBBlock B;
-		if (n->objectType.ObjectType == "Soil") { B.indicator = Block_type::Soil; } // 0
-		if (n->objectType.ObjectType == "Pond") { B.indicator = Block_type::Pond; } //1
-		if (n->objectType.ObjectType == "Storage") { B.indicator = Block_type::Storage; } //2
-		if (n->objectType.ObjectType == "Catchment") { B.indicator = Block_type::Catchment; } //3
-		if (n->objectType.ObjectType == "Manhole") { B.indicator = Block_type::Manhole; } //4
-		if (n->objectType.ObjectType == "Darcy") { B.indicator = Block_type::Darcy; } //5
-		if (n->objectType.ObjectType == "Stream") { B.indicator = Block_type::Stream; } //6
-		if (n->objectType.ObjectType == "Plant") { B.indicator = Block_type::Plant; } //7
+		if (n->objectType.ObjectType == "Soil") { B.indicator = Block_types::Soil; } // 0
+		if (n->objectType.ObjectType == "Pond") { B.indicator = Block_types::Pond; } //1
+		if (n->objectType.ObjectType == "Storage") { B.indicator = Block_types::Storage; } //2
+		if (n->objectType.ObjectType == "Catchment") { B.indicator = Block_types::Catchment; } //3
+		if (n->objectType.ObjectType == "Manhole") { B.indicator = Block_types::Manhole; } //4
+		if (n->objectType.ObjectType == "Darcy") { B.indicator = Block_types::Darcy; } //5
+		if (n->objectType.ObjectType == "Stream") { B.indicator = Block_types::Stream; } //6
+		if (n->objectType.ObjectType == "Plant") { B.indicator = Block_types::Plant; } //7
 		B.set_val("a", n->val("a").toFloat());
 		B.set_val("v", n->val("v").toFloat());
 
-		if (B.get_val(basic_properties::V) == 0) //&& (lookup(lid_config.param_names[i], "depth") != -1))
+		if (B.V == 0) //&& (lookup(lid_config.param_names[i], "depth") != -1))
 		{
-			B.set_val("v", B.get_val(basic_properties::A)*n->val("depth").toFloat());
+			B.set_val("v", B.A*n->val("depth").toFloat());
 		}
 
 		QStringList codes = n->codes();
@@ -1530,10 +1530,10 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 			C.flow_expression = CStringOP(e->val("flow_expression").toStdString());
 		else
 		{
-			if (type == "Darcy") C.flow_expression = formulas()[special_connectors::QDarcy];
-			if (type == "Pipe") C.flow_expression = CStringOP(formulas()[special_connectors::Pipe2]);
-			if (type == "Normal Flow") C.flow_expression = CStringOP(formulas()[special_connectors::Normal]);
-			if (type == "Rating Curve") C.flow_expression = CStringOP(formulas()[special_connectors::Rating_curve]);
+			if (type == "Darcy") C.flow_expression = formulas()[QDarcy];
+			if (type == "Pipe") C.flow_expression = CStringOP(formulas()[Pipe2]);
+			if (type == "Normal Flow") C.flow_expression = CStringOP(formulas()[Normal]);
+			if (type == "Rating Curve") C.flow_expression = CStringOP(formulas()[Rating_curve]);
 		}
 		if (!e->val("area_expression").isEmpty()) { C.area_expression = CStringOP(e->val("area_expression").toStdString()); C.const_area = false; }
 		if (!e->val("dispersion_expression").isEmpty()) C.dispersion_expression = CStringOP(e->val("dispersion_expression").toStdString());
@@ -1557,7 +1557,7 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 
 		if (!e->val("a").isEmpty() && e->val("a").toFloat() != 0) { C.const_area = true; }
 
-		Connectors.push_back(C);
+        Connectors.push_back(C);
 		//progress->setValue(progress->value() + 1);
 
         foreach (QString code , e->codes())
@@ -1565,7 +1565,7 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 			if (gw->EntityNames("Parameter").contains(e->val(code).toQString()))
 			{
 				if (lookup_parameters(e->val(code).toStdString()) != -1) {
-					parameters()[lookup_parameters(e->val(code).toStdString())].location.push_back(Connectors.size() - 1);  // Check for everything
+                    parameters()[lookup_parameters(e->val(code).toStdString())].location.push_back(Connectors.size() - 1);  // Check for everything
 					parameters()[lookup_parameters(e->val(code).toStdString())].conversion_factor.push_back(e->val(code).conversionCoefficient(e->val(code).unit, e->val(code).defaultUnit));
 					parameters()[lookup_parameters(e->val(code).toStdString())].quan.push_back(code.toStdString());
 					parameters()[lookup_parameters(e->val(code).toStdString())].location_type.push_back(1);
@@ -1578,7 +1578,7 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 			if (gw->EntityNames("Controller").contains(e->val(code).toQString()))
 			{
 				if (lookup_controllers(e->val(code).toStdString()) != -1) {
-					controllers()[lookup_controllers(e->val(code).toStdString())].application_spec.location.push_back(Connectors.size() - 1);  // Check for everything
+                    controllers()[lookup_controllers(e->val(code).toStdString())].application_spec.location.push_back(Connectors.size() - 1);  // Check for everything
 					controllers()[lookup_controllers(e->val(code).toStdString())].application_spec.conversion_factor.push_back(e->val(code).conversionCoefficient(e->val(code).unit, e->val(code).defaultUnit));
 					controllers()[lookup_controllers(e->val(code).toStdString())].application_spec.quan.push_back(code.toStdString());
 					controllers()[lookup_controllers(e->val(code).toStdString())].application_spec.location_type.push_back(1);
@@ -2151,76 +2151,76 @@ void CMediumSet::g_get_evapotranspiration()
 void CMedium::g_set_default_connector_expressions()
 {
 
-	for (int ii = 0; ii<connectors_count(); ii++)
+    for (int ii = 0; ii<Connectors.size(); ii++)
 	{
-		if (Connectors[ii].flow_expression.terms.size() == 0)
+        if (Connectors[ii].flow_expression.terms.size() == 0)
 		{
 
-			if (Blocks[getblocksq(Connectors[ii].Block1ID)].get_val(basic_properties::z0) >= Blocks[getblocksq(Connectors[ii].Block2ID)].get_val(basic_properties::z0))
+            if (Blocks[getblocksq(Connectors[ii].Block1ID)].z0 >= Blocks[getblocksq(Connectors[ii].Block2ID)].z0)
 			{
-				if (vaporTransport()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] == true)
+                if (vaporTransport()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] == true)
 				{
-					Connectors[ii].flow_expression = CStringOP(formulasQ()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] + "+" + formulas()[special_connectors::Vapor]);
-					Connectors[ii].flow_expression_strng = formulasQ()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] + "+" + formulas()[special_connectors::Vapor];
+                    Connectors[ii].flow_expression = CStringOP(formulasQ()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] + "+" + formulas()[Vapor]);
+                    Connectors[ii].flow_expression_strng = formulasQ()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] + "+" + formulas()[Vapor];
 
 				}
 				else
 				{
-					Connectors[ii].flow_expression = CStringOP(formulasQ()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator]);
-					Connectors[ii].flow_expression_strng = formulasQ()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator];
+                    Connectors[ii].flow_expression = CStringOP(formulasQ()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator]);
+                    Connectors[ii].flow_expression_strng = formulasQ()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator];
 
 				}
 			}
 			else
 			{
-				if (vaporTransport()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] == true)
+                if (vaporTransport()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] == true)
 				{
-					Connectors[ii].flow_expression = CStringOP(formulasQ2()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] + "+" + formulas()[special_connectors::Vapor]);
-					Connectors[ii].flow_expression_strng = formulasQ2()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] + "+" + formulas()[special_connectors::Vapor];
+                    Connectors[ii].flow_expression = CStringOP(formulasQ2()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] + "+" + formulas()[Vapor]);
+                    Connectors[ii].flow_expression_strng = formulasQ2()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] + "+" + formulas()[Vapor];
 				}
 				else
 				{
-					Connectors[ii].flow_expression = CStringOP(formulasQ2()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator]);
-					Connectors[ii].flow_expression_strng = formulasQ2()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator];
+                    Connectors[ii].flow_expression = CStringOP(formulasQ2()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator]);
+                    Connectors[ii].flow_expression_strng = formulasQ2()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator];
 				}
 			}
-			if (vaporTransport()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator])
+            if (vaporTransport()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator])
 			{
-				Connectors[ii].flow_expression_v = CStringOP(formulas()[special_connectors::Vapor]);
-				Connectors[ii].flow_expression_strng_v = formulas()[special_connectors::Vapor];
+                Connectors[ii].flow_expression_v = CStringOP(formulas()[Vapor]);
+                Connectors[ii].flow_expression_strng_v = formulas()[Vapor];
 			}
 		}
 	}
 
-	for (int ii = 0; ii < connectors_count(); ii++)
+    for (int ii = 0; ii < Connectors.size(); ii++)
 	{
-		Connectors[ii].area_expression = formulasA()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator];
-		Connectors[ii].area_expression_strng = formulasA()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator];
-		if (Connectors[ii].A == 0)
-			Connectors[ii].const_area = const_area()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator];
+        Connectors[ii].area_expression = formulasA()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator];
+        Connectors[ii].area_expression_strng = formulasA()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator];
+        if (Connectors[ii].A == 0)
+            Connectors[ii].const_area = const_area()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator];
 		else
-			Connectors[ii].const_area = true;
+            Connectors[ii].const_area = true;
 	}
 
-	for (int ii = 0; ii < connectors_count(); ii++)
+    for (int ii = 0; ii < Connectors.size(); ii++)
 	{
-		if (Connectors[ii].settling == -1)
+        if (Connectors[ii].settling == -1)
 		{
-			Connectors[ii].settling = settling()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator];
+            Connectors[ii].settling = settling()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator];
 		}
 	}
 
 
-	for (int i = 0; i<connectors_count(); i++)
+    for (int i = 0; i<Connectors.size(); i++)
 	{
-		for (int j = 0; j< Solid_phase().size(); j++)Connectors[i].Solid_phase_id.push_back(j);
-		Connectors[i].Block1 = &Blocks[getblocksq(Connectors[i].Block1ID)];
-		Connectors[i].Block2 = &Blocks[getblocksq(Connectors[i].Block2ID)];
-		Blocks[getblocksq(Connectors[i].Block1ID)].connectors.push_back(i);
-		Blocks[getblocksq(Connectors[i].Block1ID)].connectors_se.push_back(0);
-		Blocks[getblocksq(Connectors[i].Block2ID)].connectors.push_back(i);
-		Blocks[getblocksq(Connectors[i].Block2ID)].connectors_se.push_back(1);
-		for (int ii = 0; ii<Connectors[i].Solid_phase_id.size(); ii++) Connectors[i].Solid_phase.push_back(&(Solid_phase()[Connectors[i].Solid_phase_id[ii]]));
+        for (int j = 0; j< Solid_phase().size(); j++)Connectors[i].Solid_phase_id.push_back(j);
+        Connectors[i].Block1 = &Blocks[getblocksq(Connectors[i].Block1ID)];
+        Connectors[i].Block2 = &Blocks[getblocksq(Connectors[i].Block2ID)];
+        Blocks[getblocksq(Connectors[i].Block1ID)].connectors.push_back(i);
+        Blocks[getblocksq(Connectors[i].Block1ID)].connectors_se.push_back(0);
+        Blocks[getblocksq(Connectors[i].Block2ID)].connectors.push_back(i);
+        Blocks[getblocksq(Connectors[i].Block2ID)].connectors_se.push_back(1);
+        for (int ii = 0; ii<Connectors[i].Solid_phase_id.size(); ii++) Connectors[i].Solid_phase.push_back(&(Solid_phase()[Connectors[i].Solid_phase_id[ii]]));
 
 	}
 }
@@ -2255,13 +2255,13 @@ void CMediumSet::solve(runtimeWindow *rtw)
 		Medium[i].runtimewindow = rtw;
 		gw->log(QString("Solving %1").arg(QString::fromStdString(Medium[i].name)));
 		Medium[i].solve();
-		failed = failed || Medium[i].was_failed();
-		ANS_hyd.push_back(&Medium[i].ANS);
-		ANS_colloids.push_back(&Medium[i].ANS_colloids);
-		ANS_constituents.push_back(&Medium[i].ANS_constituents);
-		ANS_colloids.push_back(&Medium[i].ANS_control);
-		if (Medium[i].was_failed())
-			gw->log(QString("%1 failed, (%2)").arg(QString::fromStdString(Medium[i].name)).arg(QString::fromStdString(Medium[i].fail_reason)));
+        failed = failed || Medium[i].Solution_State.failed;
+        ANS_hyd.push_back(&Medium[i].Results.ANS);
+        ANS_colloids.push_back(&Medium[i].Results.ANS_colloids);
+        ANS_constituents.push_back(&Medium[i].Results.ANS_constituents);
+        ANS_colloids.push_back(&Medium[i].Results.ANS_control);
+        if (Medium[i].Solution_State.failed)
+            gw->log(QString("%1 failed, (%2)").arg(QString::fromStdString(Medium[i].name)).arg(QString::fromStdString(Medium[i].Solution_State.fail_reason)));
 		else
 			gw->log(QString("%1 finished").arg(QString::fromStdString(Medium[i].name)));
 
@@ -2273,7 +2273,7 @@ void CMediumSet::solve(runtimeWindow *rtw)
 	{
 		if (lookup_medium(measured_quan[i].experiment) != -1)
 		{
-			ANS_obs.BTC[i] = Medium[lookup_medium(measured_quan[i].experiment)].ANS_obs.BTC[i];
+            ANS_obs.BTC[i] = Medium[lookup_medium(measured_quan[i].experiment)].Results.ANS_obs.BTC[i];
 			ANS_obs.setname(i, measured_quan[i].name);
 			calc_MSE(i);
 		}
@@ -2381,14 +2381,14 @@ void CMedium::g_load_inflows()
 		{
 			if (Blocks[i].precipitation_swch == true)
 				for (int j = 0; j<Precipitation.size(); j++)
-					Blocks[i].inflow.push_back(Precipitation[j].getflow(Blocks[i].get_val(basic_properties::A),1.0/24.0/4));
+					Blocks[i].inflow.push_back(Precipitation[j].getflow(Blocks[i].A,1.0/24.0/4));
 		}
 	}
 
-	for (int i = 0; i<connectors_count(); i++)
+    for (int i = 0; i<Connectors.size(); i++)
 	{
-		if (Connectors[i].pre_flow_filename != "") {
-			Connectors[i].presc_flow = true; Connectors[i].presc_flowrate = CBTC(Connectors[i].pre_flow_filename);
+        if (Connectors[i].pre_flow_filename != "") {
+            Connectors[i].presc_flow = true; Connectors[i].presc_flowrate = CBTC(Connectors[i].pre_flow_filename);
 		}
 
 	}
@@ -2452,12 +2452,12 @@ void CMedium::updateProgress(bool finished)
 		else
 		{
 			int progress;
-			progress = 100.0*(t - Timemin) / (Timemax - Timemin);
-			vars["t"] = t;
+            progress = 100.0*(Solution_State.t - Timemin) / (Timemax - Timemin);
+            vars["t"] = Solution_State.t;
 			vars["progress"] = progress;
 			vars["dtt"] = dtt;
-			vars["epoch count"] = epoch_count;
-			QString reason = QString::fromStdString(fail_reason);
+            vars["epoch count"] = Solution_State.epoch_count;
+            QString reason = QString::fromStdString(Solution_State.fail_reason);
             ////qDebug() << reason;
 			if (!reason.toLower().contains("none"))
 				vars["label"] = reason;
@@ -2465,7 +2465,7 @@ void CMedium::updateProgress(bool finished)
 			
 			if (runtimewindow->sln_dtl_active)
 				if (!reason.toLower().contains("none"))
-					runtimewindow->slndetails_append(QString::number(epoch_count) + ":" + solution_detail + " time step size: " + QString::number(dtt));
+                    runtimewindow->slndetails_append(QString::number(Solution_State.epoch_count) + ":" + solution_detail + " time step size: " + QString::number(dtt));
 		}
 		runtimewindow->update(vars);
 		if (finished)

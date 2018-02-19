@@ -14,7 +14,9 @@ class QVariant;
 //class QList;
 #ifdef QT_version
 #include <QMap>
-#endif
+#endif // QT_version
+
+
 #include "Matrix_arma.h"
 #include "Vector_arma.h"
 
@@ -65,16 +67,17 @@ public:
 	friend void write_to_file(vector<CMatrix> M, string filename);
 	friend CMatrix Average(vector<CMatrix> M);
     CVector diag_ratio();
-    vector<vector<bool> > non_posdef_elems(double tol = 1);
+    vector<vector<bool>> non_posdef_elems(double tol = 1);
     CMatrix non_posdef_elems_m(double tol = 1);
     CMatrix Preconditioner(double tol = 1);
 	vector<string> toString(string format = "", vector<string> columnHeaders = vector<string>(), vector<string> rowHeaders = vector<string>());
 	vector<string> toHtml(string format = "", vector<string> columnHeaders = vector<string>(), vector<string> rowHeaders = vector<string>());
     void setnumcolrows();
+
 #ifdef QT_version
     QMap<QString, QVariant> compact() const;
     static CMatrix unCompact(QMap<QString, QVariant>);
-#endif
+#endif // QT_version
 
 };
 

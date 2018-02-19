@@ -18,9 +18,9 @@ CConnection::CConnection(void)
 	Q_v=0;
 	Q_v_star=0;
 	flow_params.resize(n_flow_params);
-	flow_params[connector_properties::z1] = -1000000;
-	flow_params[connector_properties::z2] = -1000000;
-	flow_params[connector_properties::flow_exponent] = 0.6667;
+	flow_params[z1] = -1000000;
+	flow_params[z2] = -1000000;
+	flow_params[flow_exponent] = 0.6667;
 	dispersivity = 0;
 	dispersion_expression = string("f[14]*f[7]/(f[2]+0.00000001)");
 	dispersion_strng = "f[14]*f[7]/f[2]";
@@ -83,16 +83,6 @@ CConnection::CConnection(const CConnection &CC)
 	presc_flowrate = CC.presc_flowrate;
 	control = CC.control;
 	controller_id = CC.controller_id;
-}
-
-CConnection::CConnection(string name, string _Block1ID, string _Block2ID, string _props)
-{
-	ID = name; 
-	Block1ID = _Block1ID; 
-	Block2ID = _Block2ID;
-	map<string, double> props = string_to_map(_props);
-	for (map<string, double>::iterator it = props.begin(); it != props.end(); ++it) set_val(it->first, it->second);
-
 }
 
 CConnection& CConnection::operator=(const CConnection &CC)
@@ -277,47 +267,47 @@ double CConnection::calc(CStringOP &term, int ii) //The function to calculate an
 		
 	}
 		if (term.function==true)
-	{	if (term.number == functions::exp_)
+	{	if (term.number == exp_)
 			return exp(out);
-		if (term.number == functions::hsd_)
+		if (term.number == hsd_)
 			return Heavyside(out);
-		if (term.number == functions::min_)
+		if (term.number == min_)
 			return min(calc(term.terms[0],ii), calc(term.terms[1],ii));
-		if (term.number == functions::max_)
+		if (term.number == max_)
 			return max(calc(term.terms[0],ii), calc(term.terms[1],ii));
-		if (term.number == functions::lne_)
+		if (term.number == lne_)
 			return log(out);
-		if (term.number == functions::lnt_)
+		if (term.number == lnt_)
 			return log10(out);
-		if (term.number == functions::sgm_)
+		if (term.number == sgm_)
 			return 1.0/(1.0+exp(-out));
-		if (term.number == functions::pos_)
+		if (term.number == pos_)
 			return 0.5*(fabs(out)+out);
-		if (term.number == functions::sq1_)
+		if (term.number == sq1_)
 			return 0.5/calc(term.terms[1],ii)*(calc(term.terms[0],ii)*calc(term.terms[1],ii)+sqrt(pow(calc(term.terms[0],ii)*calc(term.terms[1],ii),2)+1));
-		if (term.number == functions::sqr_)
+		if (term.number == sqr_)
 			return sqrt(out);
-		if (term.number == functions::frs_)
+		if (term.number == frs_)
 			return funcs[0].evaluate(get_val(9));
-		if (term.number == functions::fas_)
+		if (term.number == fas_)
 			return funcs[0].evaluate(get_val(4));
-		if (term.number == functions::ply_)
+		if (term.number == ply_)
 			return pipe_poly(out);
-		if (term.number== functions::mon_)
+		if (term.number==mon_)
 			return mon(calc(term.terms[0],ii),calc(term.terms[1],ii));
-		if (term.number == functions::sq2_)
+		if (term.number == sq2_)
 		{	double term1 = calc(term.terms[0],ii);
 			double term2 = calc(term.terms[1],ii);
 			return pow(term1,(0.5*term1+term2)/(term1+term2));
 		}
-		if (term.number== functions::abs_)
+		if (term.number==abs_)
 			return fabs(out);
-		if (term.number== functions::sqs_)
+		if (term.number==sqs_)
 			if (out!=0)
 				return out/fabs(out)*sqrt(fabs(out));
 			else
 				return 0;
-		if (term.number = functions::mo1_)
+		if (term.number = mo1_)
 			return mon(calc(term.terms[0], ii), calc(term.terms[1], ii))*calc(term.terms[0], ii) + mon(-calc(term.terms[0], ii), calc(term.terms[1], ii))*calc(term.terms[0], ii);
 
 	}
@@ -472,50 +462,50 @@ double CConnection::calc_star(CStringOP &term, int ii)
 		
 	}
 	if (term.function==true)
-	{	if (term.number == functions::exp_)
+	{	if (term.number == exp_)
 			return exp(out);
-		if (term.number == functions::hsd_)
+		if (term.number == hsd_)
 			return Heavyside(out);
-		if (term.number == functions::min_)
+		if (term.number == min_)
 			return min(calc_star(term.terms[0],ii), calc_star(term.terms[1],ii));
-		if (term.number == functions::max_)
+		if (term.number == max_)
 			return max(calc_star(term.terms[0],ii), calc_star(term.terms[1],ii));
-		if (term.number == functions::lne_)
+		if (term.number == lne_)
 			return log(out);
-		if (term.number == functions::lnt_)
+		if (term.number == lnt_)
 			return log10(out);
-		if (term.number == functions::sgm_)
+		if (term.number == sgm_)
 			return 1.0/(1.0+exp(-out));
-		if (term.number == functions::pos_)
+		if (term.number == pos_)
 			return 0.5*(fabs(out)+out);
-		if (term.number == functions::sq1_)
+		if (term.number == sq1_)
 			return 0.5/calc_star(term.terms[1],ii)*(calc_star(term.terms[0],ii)*calc_star(term.terms[1],ii)+sqrt(pow(calc_star(term.terms[0],ii)*calc_star(term.terms[1],ii),2)+1));
-		if (term.number == functions::sqr_)
+		if (term.number == sqr_)
 			return sqrt(out);
-		if (term.number == functions::frs_)
+		if (term.number == frs_)
 			return funcs[0].evaluate(get_val_star(9));
-		if (term.number == functions::fas_)
+		if (term.number == fas_)
 			return funcs[0].evaluate(get_val_star(4));
-		if (term.number == functions::ply_)
+		if (term.number == ply_)
 			return pipe_poly(out);
-		if (term.number== functions::mon_)
+		if (term.number==mon_)
 			return mon(calc_star(term.terms[0],ii),calc_star(term.terms[1],ii));
-		if (term.number == functions::sq2_)
+		if (term.number == sq2_)
 		{	double term1 = calc_star(term.terms[0],ii);
 			int sign_ = sgn(term1);
 			double term2 = calc_star(term.terms[1],ii);
 			return double(sign_)*pow(fabs(term1),(0.5*term1+term2)/(term1+term2));
 		}
-		if (term.number== functions::abs_)
+		if (term.number==abs_)
 			return fabs(out);
-		if (term.number == functions::sqs_)
+		if (term.number == sqs_)
 		{
 			if (out != 0)
 				return out / fabs(out)*sqrt(fabs(out));
 			else
 				return 0;
 		}
-		if (term.number = functions::mo1_)
+		if (term.number = mo1_)
 			return mon(calc_star(term.terms[0], ii), calc_star(term.terms[1], ii))*calc_star(term.terms[0], ii) + mon(-calc_star(term.terms[0], ii), calc_star(term.terms[1], ii))*calc_star(term.terms[0], ii);
 
 		
@@ -544,28 +534,28 @@ double CConnection::get_val(int i, int ii)
 
 	if (i==1)
 	{	if (Q>0)
-			return Block1->get_val("h");
+			return Block1->H;
 		else
-			return Block2->get_val("h");
+			return Block2->H;
 	}
 	if (i==2) return A;
 	if (i==3)
 	{	if (Q>0)
-		return Block1->get_val("v");
+		return Block1->V;
 	else
-		return Block2->get_val("v");
+		return Block2->V;
 	}
 	if (i==4)
 	{	if (Q>0)
-		return Block1->get_val("s");
+		return Block1->S;
 	else
-		return Block2->get_val("s");
+		return Block2->S;
 	}
 	if (i==5)
 	{	if (Q>0)
-		return Block1->get_val("z0");
+		return Block1->z0;
 	else
-		return Block2->get_val("z0");
+		return Block2->z0;
 	}
 	if (i==6) return d;
 	if (i==7) return Q;
@@ -573,9 +563,9 @@ double CConnection::get_val(int i, int ii)
 
 	if (i==9)
 	{
-		if (Block1->indicator==Block_type::Soil || Block1->indicator == Block_type::Plant || Block1->indicator == Block_type::Darcy || Block1->indicator == Block_type::Storage)
+		if (Block1->indicator==Soil || Block1->indicator == Plant || Block1->indicator == Darcy || Block1->indicator == Storage)
 		{
-			if (Block2->indicator== Block_type::Soil || Block2->indicator == Block_type::Plant || Block2->indicator == Block_type::Darcy || Block2->indicator == Block_type::Storage)
+			if (Block2->indicator==Soil || Block2->indicator == Plant || Block2->indicator == Darcy || Block2->indicator == Storage)
 			{
 				vector<int> jj;
 				jj.push_back(ii);
@@ -590,7 +580,7 @@ double CConnection::get_val(int i, int ii)
 		}
 		else
 		{
-			if (Block2->indicator== Block_type::Soil || Block2->indicator == Block_type::Plant)
+			if (Block2->indicator==Soil || Block2->indicator == Plant)
 			{
 				vector<int> jj;
 				jj.push_back(ii);
@@ -639,28 +629,28 @@ double CConnection::get_val_star(int i, int ii)
 
 	if (i==1)
 	{	if (Q>0)
-			return Block1->get_val_star(i);
+			return Block1->H_star;
 		else
-			return Block2->get_val_star(i);
+			return Block2->H_star;
 	}
 	if (i==2) return A_star;
 	if (i==3)
 	{	if (Q>0)
-		return Block1->get_val_star(i);
+		return Block1->V;
 	else
-		return Block2->get_val_star(i);
+		return Block2->V;
 	}
 	if (i==4)
 	{	if (Q>0)
-		return Block1->get_val_star(i);
+		return Block1->S_star;
 	else
-		return Block2->get_val_star(i);
+		return Block2->S_star;
 	}
 	if (i==5)
 	{	if (Q>0)
-		return Block1->get_val(i);
+		return Block1->z0;
 	else
-		return Block2->get_val(i);
+		return Block2->z0;
 	}
 	if (i==6) return d;
 	if (i==7) return Q_star;
@@ -668,9 +658,9 @@ double CConnection::get_val_star(int i, int ii)
 	
 	if (i==9)
 	{
-		if ((Block1->indicator== Block_type::Soil) || (Block1->indicator == Block_type::Plant) || (Block1->indicator == Block_type::Darcy) || (Block1->indicator == Block_type::Storage))
+		if ((Block1->indicator==Soil) || (Block1->indicator == Plant) || (Block1->indicator == Darcy) || (Block1->indicator == Storage))
 		{
-			if ((Block2->indicator== Block_type::Soil) || (Block2->indicator == Block_type::Plant) || (Block2->indicator == Block_type::Darcy) || (Block2->indicator == Block_type::Storage))
+			if ((Block2->indicator==Soil) || (Block2->indicator == Plant) || (Block2->indicator == Darcy) || (Block2->indicator == Storage))
 			{
 				return max(Block1->get_val_star(9),Block2->get_val_star(9));
 			}
@@ -681,7 +671,7 @@ double CConnection::get_val_star(int i, int ii)
 		}
 		else
 		{
-			if (Block2->indicator== Block_type::Soil)
+			if (Block2->indicator==Soil) 
 			{
 				return Block2->get_val_star(9);
 			}
@@ -725,30 +715,30 @@ void CConnection::set_val(string SS, double val)
 		if (tolower(trim(s[0]))=="q*") Q_star = val;
 		if (tolower(trim(s[0]))=="vel*") v_star = val;
 
-		if (tolower(trim(s[0]))=="width") flow_params[connector_properties::width] = val;
-		if (tolower(trim(s[0]))=="nmanning") flow_params[connector_properties::n_manning] = val;
-		if (tolower(trim(s[0]))=="flow_exponent") flow_params[connector_properties::flow_exponent] = val;
+		if (tolower(trim(s[0]))=="width") flow_params[width] = val;	
+		if (tolower(trim(s[0]))=="nmanning") flow_params[n_manning] = val;	
+		if (tolower(trim(s[0]))=="flow_exponent") flow_params[flow_exponent] = val;	
 
 
-		if (tolower(trim(s[0]))=="ks") flow_params[physical_properties::ks] = val;
-		if (tolower(trim(s[0]))=="theta_s") flow_params[physical_properties::theta_s] = val;
-		if (tolower(trim(s[0]))=="theta_r") flow_params[physical_properties::theta_r] = val;
-		if (tolower(trim(s[0]))=="vg_alpha") flow_params[physical_properties::vg_alpha] = val;
-		if (tolower(trim(s[0]))=="vg_n") flow_params[physical_properties::vg_n] = val;
-		if (tolower(trim(s[0]))=="vg_m") flow_params[physical_properties::vg_m] = val;
-		if (tolower(trim(s[0]))=="lambda") flow_params[physical_properties::lambda] = val;
+		if (tolower(trim(s[0]))=="ks") flow_params[ks] = val;	
+		if (tolower(trim(s[0]))=="theta_s") flow_params[theta_s] = val;
+		if (tolower(trim(s[0]))=="theta_r") flow_params[theta_r] = val;
+		if (tolower(trim(s[0]))=="vg_alpha") flow_params[vg_alpha] = val;
+		if (tolower(trim(s[0]))=="vg_n") flow_params[vg_n] = val;
+		if (tolower(trim(s[0]))=="vg_m") flow_params[vg_m] = val;
+		if (tolower(trim(s[0]))=="lambda") flow_params[lambda] = val;
 
-		if (tolower(trim(s[0]))=="z1") flow_params[connector_properties::z1] = val;
-		if (tolower(trim(s[0]))=="z2") flow_params[connector_properties::z2] = val;
+		if (tolower(trim(s[0]))=="z1") flow_params[z1] = val;	
+		if (tolower(trim(s[0]))=="z2") flow_params[z2] = val;
 		if (tolower(trim(s[0])) == "dam")
 		{
-			flow_params[connector_properties::z1] = val;
-			flow_params[connector_properties::z2] = val;
+			flow_params[z1] = val;
+			flow_params[z2] = val;
 		}
-		if (tolower(trim(s[0])) == "rating_curve_coeff") flow_params[connector_properties::rating_curve_coeff] = val;
-		if (tolower(trim(s[0])) == "rating_curve_power") flow_params[connector_properties::rating_curve_power] = val;
+		if (tolower(trim(s[0])) == "rating_curve_coeff") flow_params[rating_curve_coeff] = val;
+		if (tolower(trim(s[0])) == "rating_curve_power") flow_params[rating_curve_power] = val;
 		if (tolower(trim(s[0])) == "rating_curve_datum") 
-			flow_params[connector_properties::rating_curve_datum] = val;
+			flow_params[rating_curve_datum] = val;
 		
 		if (tolower(trim(s[0]))=="diameter") 
 		{
@@ -756,7 +746,7 @@ void CConnection::set_val(string SS, double val)
 			A_star=atan(1.0)*4*pow(val/2,2);
 			A=atan(1.0)*4*pow(val/2,2);
 		}
-		if (tolower(trim(s[0]))=="pipe_c") flow_params[connector_properties::pipe_c] = val;
+		if (tolower(trim(s[0]))=="pipe_c") flow_params[pipe_c] = val;
 
 		if (tolower(trim(s[0]))=="q_v*") Q_v_star = val; 
 		if (tolower(trim(s[0]))=="q_v") Q_v = val;		 
@@ -816,8 +806,8 @@ void CConnection::get_funcs(CStringOP &term)  //Works w/o reference(&)
 			XX.Expression = term;
 			XX.Expression.function=false;
 			XX.var_id = 1;
-			XX._min = -0.3*max(Block1->get_val("v"),Block2->get_val("v"));
-			XX._max = 1.3*max(Block1->get_val("v"),Block2->get_val("v"));
+			XX._min = -0.3*max(Block1->V,Block2->V);
+			XX._max = 1.3*max(Block1->V,Block2->V);
 			funcs.push_back(XX);
 		}
 
@@ -898,31 +888,31 @@ double CConnection::get_val(string S)
 	if (tolower(S) == "h")
 	{
 		if (Q>0)
-			return Block1->get_val("h");
+			return Block1->H;
 		else
-			return Block2->get_val("h");
+			return Block2->H;
 	}
 	if (tolower(S) == "a") return A;
 	if (tolower(S) == "volume")
 	{
 		if (Q>0)
-			return Block1->get_val("v");
+			return Block1->V;
 		else
-			return Block2->get_val("v");
+			return Block2->V;
 	}
 	if (tolower(S) == "s")
 	{
 		if (Q>0)
-			return Block1->get_val("s");
+			return Block1->S;
 		else
-			return Block2->get_val("s");
+			return Block2->S;
 	}
 	if (tolower(S) == "z0")
 	{
 		if (Q>0)
-			return Block1->get_val("z0");
+			return Block1->z0;
 		else
-			return Block2->get_val("z0");
+			return Block2->z0;
 	}
 	if (tolower(S) == "d") return d;
 	if (tolower(S) == "q") return Q*flow_factor;;
@@ -930,9 +920,9 @@ double CConnection::get_val(string S)
 
 	if (tolower(S) == "se")
 	{
-		if (Block1->indicator == Block_type::Soil)
+		if (Block1->indicator == Soil)
 		{
-			if (Block2->indicator == Block_type::Soil)
+			if (Block2->indicator == Soil)
 			{
 				return 0.5*(Block1->get_val("se") + Block2->get_val("se"));
 			}
@@ -943,7 +933,7 @@ double CConnection::get_val(string S)
 		}
 		else
 		{
-			if (Block2->indicator == Block_type::Soil)
+			if (Block2->indicator == Soil)
 			{
 				return Block2->get_val("se");
 			}

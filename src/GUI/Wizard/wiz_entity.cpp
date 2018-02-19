@@ -88,7 +88,7 @@ QString wiz_entity::get_direction()
 	return s;
 }
 
-XString wiz_entity::get_value(wiz_assigned_value x, int i, int j)
+XString wiz_entity::get_value(wiz_assigned_value x)
 {
 	XString X; 
 	//qDebug() << x.entity << " count: " << parameters.count(x.entity) << endl; 
@@ -97,11 +97,11 @@ XString wiz_entity::get_value(wiz_assigned_value x, int i, int j)
 		if (parameters[x.entity].value_param_expression == "value")
 			X.setString(parameters[x.entity].value);
 		if (parameters[x.entity].value_param_expression == "parameter")
-			X = parent->get_parameters()[x.parameter_name].get_value(i, j);
+			X = parent->get_parameters()[x.parameter_name].get_value();
 		if (parameters[x.entity].value_param_expression == "expression")
 		{
 			CExpression expr(parameters[x.entity].value); 
-			X = expr.calc(parent, i, j);
+			X = expr.calc(parent);
 			X.unit = expr.unit;
 		};
 	}
@@ -109,10 +109,10 @@ XString wiz_entity::get_value(wiz_assigned_value x, int i, int j)
 
 }
 
-XString wiz_entity::get_value(QString x, int i, int j)
+XString wiz_entity::get_value(QString x)
 {
 	if (parameters.count(x) > 0)
-		return get_value(parameters[x], i, j);
+		return get_value(parameters[x]);
 	else
 		return XString(); 
 }
