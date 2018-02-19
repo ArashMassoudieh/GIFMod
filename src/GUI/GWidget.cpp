@@ -1434,8 +1434,8 @@ QList<QMap<QString, QVariant>> GraphWidget::compact() const// QDataStream &out, 
 
 		r["GUI"] = "Connector Index";
 #ifdef GIFMOD
-		for (int i = 0; i < modelSet->Medium[0].Connector.size(); i++)
-			r[QString::fromStdString(modelSet->Medium[0].Connector[i].ID)] = i;
+        for (int i = 0; i < modelSet->Medium[0].Connectors.size(); i++)
+            r[QString::fromStdString(modelSet->Medium[0].Connectors[i].ID)] = i;
 #endif
 		//qDebug() << "Connector Index" << " " << getTime();
 		list.append(r);

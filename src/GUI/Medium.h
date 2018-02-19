@@ -91,7 +91,8 @@ public:
     vector<string> build_errors;
     vector<string> compile_errors;
     // ***
-
+    CMBBlock *Block(string B);
+    CConnection *Connector(string C);
 	string name;
 	CMediumSet *parent;
 	CMedium(void);
@@ -103,7 +104,7 @@ public:
     void create(CLIDconfig _lid_config, CMediumSet *_parent);
     CMedium& operator=(const CMedium &BB); //equal operator
 	void get_state(const CMedium & M);
-	vector<CConnection> Connector;
+    vector<CConnection> Connectors;
 	vector<CMBBlock> Blocks;
 	vector<CSolid_Phase>& Solid_phase();
 
