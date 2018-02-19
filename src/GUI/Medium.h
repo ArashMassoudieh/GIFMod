@@ -75,7 +75,7 @@ struct _results
 
 
 class CMediumSet;
-
+class CMBBlock;
 enum formulas
 	{
 		Pipe1, Pipe2, QDarcy, Vapor, Normal, Rating_curve
@@ -83,8 +83,15 @@ enum formulas
 
 class CMedium
 {
+
 public:
-	bool use_arma = true;
+    // API model building functions
+    bool AddBlock(const CMBBlock& B );
+    bool AddConnector(string source, string destination, const CConnection &C);
+    vector<string> build_errors;
+    vector<string> compile_errors;
+    // ***
+
 	string name;
 	CMediumSet *parent;
 	CMedium(void);
@@ -113,8 +120,7 @@ public:
 	vector<CSensor>& sensors(); // properties of sensors
 	vector<CController>& controllers(); //propoerties of controllers;
 	vector<CObjectiveFunction>& objective_functions(); //objective functions for control;
-    void getparams(string filename);
-	vector<measured_chrc>& measured_quan();
+    vector<measured_chrc>& measured_quan();
 	vector<double>& std(); // the vector of measured error standard deviations
 	CBTCSet& measured_data(); //measured data
 	string& pathname(); //pathname of where the files are saved
@@ -239,6 +245,7 @@ public:
     void set_control_params(int);
 
 private:
+    bool use_arma = true;
     CMatrix Jacobian_S(const CVector &X, double dt, bool);
     CVector Jacobian_S(const CVector &V, int &i, double &dt);
     CVector Jacobian_S(const CVector &V, CVector &F0, int i, double dt);

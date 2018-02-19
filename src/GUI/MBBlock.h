@@ -41,47 +41,68 @@ struct plant_props // plant properties
 
 class CMBBlock
 {
+friend class CMedium;
+friend class CConnection;
+friend class CEnvExchange;
+friend class CEvaporation;
 public:
 	CMBBlock(void);// default constructor
 	~CMBBlock(void);
 	CMBBlock(const CMBBlock& BB);// copy constructor
-	int n_constts; 	int n_phases; //number of chemical species, number of phases;
-    void set_num_phases_constts(int n, int m);
-    void set_num_phases(int n);
-    void set_num_constts(int m);
+
     CMBBlock& operator=(const CMBBlock &BB); //equal operator
 	string ID; //Identification of the Mass Balance Block
-	double H, A, V, S;  //Head, Area, Volume, Storage
-	double q; // Darcy flux
-	double DS;  //Depression Storage (thickness)
-	double H_star, A_star, V_star, S_star; //Head, Area, Volume, Storage
-	double z0; //reference_elevation
-	double bulk_density;
-	int air_phase;
-	double porosity; //MM
-	vector<CSolid_Phase*> Solid_phase;
-	vector<vector<double>> G; //Solid phases G[i][j] i: solid_type_counter, j: phase identifier
-	vector<vector<double>> G_star; //Solid phases
-	vector<vector<double>> CG; // Sorbed Phases
-	vector<vector<double>> CG_star; // Sorbed Phases
-	vector<vector<double>> G_stored_mass; //Solid phases G[i][j] i: solid_type_counter, j: phase identifier
-	vector<vector<double>> CG_stored_mass; // Sorbed Phases
-	vector<double> fs_params; //hydraulics_parameters;
-	vector<double> rxn_params; //Reaction_parameters
-	vector<vector<double>> phi; //Capacities
-	vector<CVector> capacity_c; // colloid capacities
-	vector<CVector> capacity_c_star;
-	vector<CVector> capacity_c_Q; // constituent capacity
-	vector<CVector> capacity_c_star_Q;
+
+    void set_val(const string &SS, double val); //set the value of physical properties, variables and parameters based on star values
+	vector<CBTCSet> inflow; //inflow time-series
+    int n_constts; 	int n_phases; //number of chemical species, number of phases;
+	
+	vector<string> inflow_filename;
+	int indicator; //specify block medium 0: soil, 1: pond
+
+#ifdef GIFMOD
+	CMedium *parent; 
+#endif
+#ifdef GWA
+	CGWA *parent;
+#endif
+private:
+    vector<vector<double>> phi; //Capacities
+    vector<CVector> capacity_c; // colloid capacities
+    vector<CVector> capacity_c_star;
+    vector<CVector> capacity_c_Q; // constituent capacity
+    vector<CVector> capacity_c_star_Q;
     void evaluate_capacity_c();
     void evaluate_capacity_c_star();
-	vector<CMatrix> K; //exchange of phases
-	vector<CMatrix> K_star; //exchange of phases
-	CMatrix f; //interfacial surface area between phases
-	vector<CMatrix> kappa; //contaminant mass exchange between phases
-	CStringOP H_S_expression; //Storage-Head Relationship
-	string H_S_expression_txt;
-	CStringOP V_S_expression; //Storage-Volume Relationship
+    vector<CMatrix> K; //exchange of phases
+    vector<CMatrix> K_star; //exchange of phases
+    CMatrix f; //interfacial surface area between phases
+    vector<CMatrix> kappa; //contaminant mass exchange between phases
+    vector<string> initial_g_counter_p; vector<string> initial_g_counter_l; vector<double> initial_g;
+    vector<string> initial_cg_counter_p; vector<string> initial_cg_counter_l; vector<string> initial_cg_counter_c;  vector<double> initial_cg;
+    vector<CSolid_Phase*> Solid_phase;
+
+    double H, A, V, S;  //Head, Area, Volume, Storage
+    double q; // Darcy flux
+    double DS;  //Depression Storage (thickness)
+    double H_star, A_star, V_star, S_star; //Head, Area, Volume, Storage
+    double z0; //reference_elevation
+    double bulk_density;
+    int air_phase;
+    double porosity;
+
+    vector<vector<double>> G; //Solid phases G[i][j] i: solid_type_counter, j: phase identifier
+    vector<vector<double>> G_star; //Solid phases
+    vector<vector<double>> CG; // Sorbed Phases
+    vector<vector<double>> CG_star; // Sorbed Phases
+    vector<vector<double>> G_stored_mass; //Solid phases G[i][j] i: solid_type_counter, j: phase identifier
+    vector<vector<double>> CG_stored_mass; // Sorbed Phases
+    vector<double> fs_params; //hydraulics_parameters;
+    vector<double> rxn_params; //Reaction_parameters
+
+    CStringOP H_S_expression; //Storage-Head Relationship
+    string H_S_expression_txt;
+    CStringOP V_S_expression; //Storage-Volume Relationship
     double calc_rxn_rate(CStringOP &C); //calculate reaction rate
     vector<double> calc_rxn_prod_rate(); //calculate production rate of all constituents
     double get_rate_exchange(int particle_type, int constituent);
@@ -97,50 +118,30 @@ public:
     double get_val(string SS); //get the value of physical properties, variables and parameters
     void set_val(int i, double val);// set the value of physical properties, variables and parameters
     void set_val_star(int i, double val); //set the value of physical properties, variables and parameters based on star values
-    void set_val(const string &SS, double val); //set the value of physical properties, variables and parameters based on star values
-	vector<CBTCSet> inflow; //inflow time-series
-	
-	
-	vector<string> inflow_filename;
-	int indicator; //specify block medium 0: soil, 1: pond
-	vector<int> connectors; //the id of connectors attached to the block
-	vector<int> connectors_se;// 0: block1 of the connector 1: block 2 of the connector
+
+    vector<int> connectors; //the id of connectors attached to the block
+    vector<int> connectors_se;// 0: block1 of the connector 1: block 2 of the connector
     void get_funcs(CStringOP &term);
     void evaluate_functions(int i);
     void evaluate_functions();
-	double vapor_diffusion;
-	bool fixed_evaporation;
-	double fixed_evaporation_val;
-	int setzero;
-	double outflow_corr_factor;
+    double vapor_diffusion;
+    bool fixed_evaporation;
+    double fixed_evaporation_val;
+    int setzero;
+    double outflow_corr_factor;
     double get_evaporation(double t);
     double get_evaporation(int j, double t);
-	vector<int> Solid_phase_id;
-	/* variable codes: 
-	H: 1
-	A: 2
-	V: 3
-	S: 4
-	z0: 5
-	d: 6
-	Q: 7
-	v: 8
-	Hydraulic Parameters: 50-99
-	G: 101-199
-	GS: 1000-1999
-	Reaction parameters: 2000-2999
-	*/
-	vector<CFunction> funcs;
-	double MBBlocks;  //MM
-	bool fixed;// fixed flow for connected connector
+    vector<int> Solid_phase_id;
+    vector<CFunction> funcs;
+    double MBBlocks;
+    bool fixed;// fixed flow for connected connector
     void evaluate_K();
     void evaluate_K_star();
     void evaluate_capacity();
     void evaluate_capacity_star();
-	vector<string> initial_g_counter_p; vector<string> initial_g_counter_l; vector<double> initial_g;
-	vector<string> initial_cg_counter_p; vector<string> initial_cg_counter_l; vector<string> initial_cg_counter_c;  vector<double> initial_cg;
+
     int get_tot_num_phases();
-	CRxnNetwork *RXN;
+    CRxnNetwork *RXN;
     double get_exchange_rate(int particule_type, int phase, int constituent);
     double get_kd(int particule_type, int phase, int constituent);
     void set_CG(int particle_type, int phase, int constituent, double val);
@@ -157,32 +158,30 @@ public:
     CVector get_X_from_CG();
     void set_CG_star(const CVector &X);
     CMatrix Eval_Stoichiometry(bool star);
-	bool precipitation_swch;
-	bool light_swch;
-	vector<CBuildup*> buildup;
-	vector<string> buildup_id;
-	vector<CEnvExchange*> envexchange;
-	vector<string> envexchange_id;
-	vector<CEvaporation*> evaporation_m;
-	vector<string> evaporation_id;
+    bool precipitation_swch;
+    bool light_swch;
+    vector<CBuildup*> buildup;
+    vector<string> buildup_id;
+    vector<CEnvExchange*> envexchange;
+    vector<string> envexchange_id;
+    vector<CEvaporation*> evaporation_m;
+    vector<string> evaporation_id;
     int lookup_particle_type(string S);
     int lookup_env_exchange(string S);
-	vector<CBTC> *light;
-	vector<CBTC> *temperature;
+    vector<CBTC> *light;
+    vector<CBTC> *temperature;
 
-	double *current_temperature;
-	double *current_light;
-	double *current_humidity;
-	double *current_wind;
-	double light_reduction_factor;
-	bool perform_rxn = true;
-	plant_props plant_prop; //plant properties including LAI and growth parameters. 
-	void set_up_plant_growth_expressions(); //The plant growth expressions are built. 
-#ifdef GIFMOD
-	CMedium *parent; 
-#endif
-#ifdef GWA
-	CGWA *parent;
-#endif
+    void set_num_phases_constts(int n, int m);
+    void set_num_phases(int n);
+    void set_num_constts(int m);
+
+    double *current_temperature;
+    double *current_light;
+    double *current_humidity;
+    double *current_wind;
+    double light_reduction_factor;
+    bool perform_rxn = true;
+    plant_props plant_prop; //plant properties including LAI and growth parameters.
+    void set_up_plant_growth_expressions(); //The plant growth expressions are built.
 };
 

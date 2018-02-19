@@ -5439,4 +5439,46 @@ vector<int> CMedium::infnan_H_flows()
 
 }
 
+bool CMedium::AddBlock(const CMBBlock &B )
+{
+    if (getblocksq(B.ID) != -1)
+    {   build_errors.push_back("Block "+ B.ID + " already exists!");
+        return false;
+    }
+    else
+    {   Blocks.push_back(B);
+        return true;
+    }
+}
+
+bool CMedium::AddConnector(string source, string destination, const CConnection &C)
+{
+    Connector.push_back(C);
+    if (getblocksq(source) == -1)
+    {
+        build_errors.push_back("Block "+ source + " does not exist!");
+        return false;
+    }
+
+    if (getblocksq(destination) == -1)
+    {
+        build_errors.push_back("Block "+ destination + " does not exist!");
+        return false;
+    }
+
+    if (getconnectorsq(C.ID) !=-1)
+    {
+        build_errors.push_back("Connector "+ C.ID + " already exists!");
+        return false;
+    }
+
+
+    Connector[Connector.size()-1].Block1ID = source;
+    Connector[Connector.size()-1].Block2ID = destination;
+    if (Connector[Connector.size()-1].ID == "");
+        Connector[Connector.size()-1].ID = source + "-" + destination;
+
+    return true;
+}
+
 #endif
