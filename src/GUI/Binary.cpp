@@ -6,7 +6,9 @@
 #include "math.h"
 #include <iostream>
 #include "DistributionNUnif.h"
-
+#ifdef QT_version
+#include "qdebug.h"
+#endif // QT_version
 
 using namespace std;
 
@@ -148,7 +150,7 @@ void cross(CBinary &B1, CBinary &B2, int p)
 			B1[i] = BT1[i];
 			B2[i] = BT2[i];
 		}
-        else
+		else
 		{
 			B1[i] = BT2[i];
 			B2[i] = BT1[i];
@@ -164,7 +166,7 @@ void cross(CBinary &B1, CBinary &B2, vector<int> p)
 	for (int i=0; i<B1.nDigits; i++)
 	{
 		for (int j=1; j<p.size(); j++)
-		if (p[j-1]< i < p[j])
+        if (p[j-1]< i && i < p[j])
 		{
 			if (i%2==0)
 			{

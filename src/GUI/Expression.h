@@ -27,7 +27,7 @@ public:
 	QStringList extract_operators(QString s);
 	QStringList _errors;
 	QStringList extract_terms(QString s);
-	double calc(Wizard_Script_Reader * W, int i=0, int j=0);
+	double calc(Wizard_Script_Reader * W);
 	double func(QString & f, double val);
 	double func(QString & f, double val1, double val2);
 	double oprt(QString & f, double val1, double val2);

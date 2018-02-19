@@ -502,9 +502,9 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
 	return commands; 
 }
 
-XString Wizard_Script_Reader::get_parameter_value(QString &parameter_name, int i, int j)
+XString Wizard_Script_Reader::get_parameter_value(QString &parameter_name)
 {
-	return get_parameters()[parameter_name].get_value(i, j);
+	return get_parameters()[parameter_name].get_value();
 }
 
 QList<CCommand> Wizard_Script_Reader::do_1dvh(QString configuration, wiz_entity *wiz_ent, int &x, int &y)
@@ -576,7 +576,7 @@ QList<CCommand> Wizard_Script_Reader::do_1dvh(QString configuration, wiz_entity 
 			if (!script_specific_params.contains(item.entity))
 			{
 				if (m.VariableNames_w_abv().contains(XString::reform(item.entity)))
-					command.parameters[item.entity] = wiz_ent->get_value(item,i,0);
+					command.parameters[item.entity] = wiz_ent->get_value(item);
 			}
 		}
 		if (has_depth)
@@ -700,7 +700,7 @@ QList<CCommand> Wizard_Script_Reader::do_2dv(QString configuration, wiz_entity *
 				if (!script_specific_params.contains(item.entity))
 				{
 					if (m.VariableNames_w_abv().contains(XString::reform(item.entity)))
-						command.parameters[item.entity] = wiz_ent->get_value(item,i , j);
+						command.parameters[item.entity] = wiz_ent->get_value(item);
 				}
 			}
 			if (has_depth)
@@ -849,12 +849,11 @@ QList<CCommand> Wizard_Script_Reader::do_2dh(QString configuration, wiz_entity *
 				if (!script_specific_params.contains(item.entity))
 				{
 					if (m.VariableNames_w_abv().contains(XString::reform(item.entity)))
-						command.parameters[item.entity] = wiz_ent->get_value(item, i, j);
+						command.parameters[item.entity] = wiz_ent->get_value(item);
 				}
 			}
 			
-			if (!get_parameters()[wiz_ent->get_parameter("Bottom elevation").parameter_name].getfromfile())
-				command.parameters["Bottom elevation"] = z0 - i*slope_x - j*slope_y;
+			command.parameters["Bottom elevation"] = z0 - i*slope_x - j*slope_y;
 			
 			commands.append(command);
 		}

@@ -186,7 +186,7 @@ res.push_back(G1.Medium[0].ANS_obs);
 		G1.finalize_set_param();
 		sum += G1.calc_log_likelihood();
 
-		res.push_back(G1.ANS_obs);
+        res.push_back(G1.Results.ANS_obs);
 	}
 	return res;
 }

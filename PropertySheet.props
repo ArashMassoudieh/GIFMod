@@ -9,7 +9,6 @@
   <ItemGroup>
     <BuildMacro Include="RootFolder">
       <Value>$(RootFolder)</Value>
-      <EnvironmentVariable>true</EnvironmentVariable>
     </BuildMacro>
   </ItemGroup>
 </Project>

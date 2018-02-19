@@ -3,13 +3,12 @@
 #include "StringOP.h"
 #include "Function.h"
 #include "Medium.h"
-#include "utility_funcs.h"
 
 
 CMBBlock::CMBBlock(void)
 {
 	n_constts = 0;
-	n_phases = 0;
+	n_phases = 0;    
 	fixed = false;
 	fixed_evaporation=false;
 	fixed_evaporation_val=1;
@@ -18,12 +17,12 @@ CMBBlock::CMBBlock(void)
 	outflow_corr_factor = 1;
 	q = 0;
 	fs_params.resize(n_flow_params);
-	fs_params[physical_properties::storativity] = 0.01;
-	fs_params[physical_properties::theta_s] = 1;
+	fs_params[storativity] = 0.01;
+	fs_params[theta_s] = 1;
 
-	fs_params[physical_properties::storage_epsilon] = 0.01;
-	fs_params[physical_properties::storage_n] = 2;
-	fs_params[physical_properties::maximum_bio_volume] = 1e6;
+	fs_params[storage_epsilon] = 0.01;
+	fs_params[storage_n] = 2;
+	fs_params[maximum_bio_volume] = 1e6;
 
 	vapor_diffusion=0;
 	DS = 0;
@@ -73,11 +72,11 @@ CMBBlock::CMBBlock(const CMBBlock& BB)// copy constructor
 	V = BB.V;
 	S = BB.S;
 	DS=BB.DS;
-	porosity=BB.porosity;
+	porosity=BB.porosity;  
 	H_star = BB.H_star;
 	A_star = BB.A_star;
 	V_star = BB.V_star;
-	S_star = BB.S_star;
+	S_star = BB.S_star; 
 	z0 = BB.z0;
 	H_S_expression = BB.H_S_expression;
 	H_S_expression_txt = BB.H_S_expression_txt;
@@ -86,8 +85,8 @@ CMBBlock::CMBBlock(const CMBBlock& BB)// copy constructor
 	inflow_filename = BB.inflow_filename;
 	inflow = BB.inflow;
 	indicator=BB.indicator;
-	MBBlocks=BB.MBBlocks;
-	fixed=BB.fixed;
+	MBBlocks=BB.MBBlocks;  
+	fixed=BB.fixed;  
 	connectors = BB.connectors;
 	connectors_se = BB.connectors_se;
 	vapor_diffusion = BB.vapor_diffusion;
@@ -120,15 +119,6 @@ CMBBlock::CMBBlock(const CMBBlock& BB)// copy constructor
 	evaporation_m = BB.evaporation_m;
 	light_reduction_factor = BB.light_reduction_factor;
 	perform_rxn = BB.perform_rxn;
-	real_location = BB.real_location;
-}
-
-CMBBlock::CMBBlock(string name, string params)
-{
-	ID = name; 
-	map<string, double> props = string_to_map(params); 
-	for (map<string, double>::iterator it = props.begin(); it != props.end(); ++it) set_val(it->first, it->second); 
-
 }
 
 CMBBlock& CMBBlock::operator=(const CMBBlock &BB)
@@ -157,7 +147,7 @@ CMBBlock& CMBBlock::operator=(const CMBBlock &BB)
 	H_star = BB.H_star;
 	A_star = BB.A_star;
 	V_star = BB.V_star;
-	S_star = BB.S_star;
+	S_star = BB.S_star; 
 	z0 = BB.z0;
 	H_S_expression = BB.H_S_expression;
 	H_S_expression_txt = BB.H_S_expression_txt;
@@ -167,8 +157,8 @@ CMBBlock& CMBBlock::operator=(const CMBBlock &BB)
 	inflow_filename = BB.inflow_filename;
 	inflow = BB.inflow;
 	indicator=BB.indicator;
-	MBBlocks=BB.MBBlocks;
-	fixed=BB.fixed;
+	MBBlocks=BB.MBBlocks;  
+	fixed=BB.fixed;  
 	connectors = BB.connectors;
 	connectors_se = BB.connectors_se;
 	vapor_diffusion = BB.vapor_diffusion;
@@ -198,15 +188,12 @@ CMBBlock& CMBBlock::operator=(const CMBBlock &BB)
 	evaporation_m = BB.evaporation_m;
 	light_reduction_factor = BB.light_reduction_factor;
 	perform_rxn = BB.perform_rxn;
-	real_location = BB.real_location;
 	return *this;
 }
 
 double CMBBlock::get_val(int i, vector<int> ii)
 {
-	
-	
-	/* variable codes:
+	/* variable codes: 
 	H: 1 : Hydraulic Head
 	A: 2 : Area
 	V: 3 : Volume
@@ -216,43 +203,43 @@ double CMBBlock::get_val(int i, vector<int> ii)
 	Q: 7 :flow rate
 	v: 8 :velocity
 	s: 9 :effective saturation
-	theta: 10: volumetric water content
+	theta: 10: volumetric water content 
 	Hydraulic Parameters: 50-99
 	G: 101-199
 	GS: 1000-1999
 	Reaction parameters: 2000-2999
 	*/
 
-	if (i==basic_properties::H) return H;
-	if (i== basic_properties::A) return A;
-	if (i== basic_properties::V) return V;
-	if (i== basic_properties::S) return S;
-	if (i== basic_properties::z0) return z0;
-	if (i== basic_properties::depth) return V/A;    // blocks don't have d
+	if (i==1) return H;
+	if (i==2) return A;
+	if (i==3) return V;
+	if (i==4) return S;
+	if (i==5) return z0;
+	if (i==6) return V/A;    // blocks don't have d
 	if (i==7) return 0;
-	if (i== basic_properties::q) return q;
-
-	if (i== basic_properties::relative_saturation)
-	{ if ((indicator != Block_type::Soil) && (indicator!= Block_type::Darcy))
-			return (Heavyside(S/V)*S/V - fs_params[physical_properties::theta_r])/(fs_params[physical_properties::theta_s]-fs_params[physical_properties::theta_r]);
+	if (i==8) return q;
+	
+	if (i==9) 
+	{ if ((indicator != Soil) && (indicator!=Darcy))
+			return (Heavyside(S/V)*S/V - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);
 		else
-			return (S/V - fs_params[physical_properties::theta_r])/(fs_params[physical_properties::theta_s]-fs_params[physical_properties::theta_r]);   //allow s to be above 1
+			return (S/V - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);   //allow s to be above 1
 
 	}
 
-	if (i==basic_properties::moisture_content)
+	if (i==10) 
 	{
-		if ((indicator != Block_type::Soil) && (indicator != Block_type::Darcy))
+		if ((indicator != Soil) && (indicator != Darcy))
 			if (S>0) return S/(S+1e-5*A); else return 0;
 		else
 			return S/V;   //allow s to be above 1
 	}
+		
 
-
-	if (i==basic_properties::depression_storage) return DS;
-	if (i==basic_properties::vapor_diffusion) return vapor_diffusion;
-	if (i==basic_properties::bulk_density) return bulk_density;
-	if (i == basic_properties::air_volume)
+	if (i==12) return DS;
+	if (i==13) return vapor_diffusion;
+	if (i==14) return bulk_density;
+	if (i == 15)
 	{
 		if (air_phase == 0)
 			return 0;
@@ -260,23 +247,23 @@ double CMBBlock::get_val(int i, vector<int> ii)
 			return Pos(V*fs_params[1] - S);
 	}
 
-	if (i == physical_properties::light)
+	if (i == physical_params::light)
 		return *current_light*light_reduction_factor;
 
-	if (i == physical_properties::temperature)
+	if (i == physical_params::temperature)
 		return *current_temperature;
 
-	if (i == physical_properties::vapor_pressure)
+	if (i == physical_params::vapor_pressure)
 		return 611 * exp(17.27*(*current_temperature) / ((*current_temperature) + 237.3));
 
-	if (i == physical_properties::latent_heat_of_evaporation)
+	if (i == physical_params::latent_heat_of_evaporation)
 		return 2.501e6 - 2370*(*current_temperature);
 
-	if (i == physical_properties::LAI)
+	if (i == physical_params::LAI)
 		return plant_prop.LAI;
 
-	if (i == physical_properties::pan_evaporation_rate)
-		return get_evaporation(parent->get_time());
+	if (i == physical_params::pan_evaporation_rate)
+        return get_evaporation(parent->Solution_State.t);
 
 	if (i>=50 && i<100) return fs_params[i-50];
 	if (i>=100 && i<1000) return G[ii[0]][i];
@@ -294,18 +281,17 @@ double CMBBlock::get_val(int i, vector<int> ii)
 	if (i>=4000 && i<5000) return envexchange[ii[1]]->parameters[i-4000];
 	if (i >= 5000 && i<6000) return RXN->cons[ii[0]].get_val(i);
 	if (i >= 6000 && i<6500) return evaporation_m[ii[0]]->parameters[i - 6000];
-	if (i == 6501 && i<7000) return evaporation_m[ii[0]]->single_crop_coefficient.interpol(dayOfYear(parent->get_time()));
-	if (i >= 7000 && i < 8000) return
-		plant_prop.half_saturation_constants[i - 7000];
+    if (i == 6501 && i<7000) return evaporation_m[ii[0]]->single_crop_coefficient.interpol(dayOfYear(parent->Solution_State.t));
+	if (i >= 7000 && i < 8000) return 
+		plant_prop.half_saturation_constants[i - 7000]; 
 	if (i >= 10000 && i<20000) return G[(i-10000)/1000][(i-10000)%1000];
 	if (i >= 100000 && i<200000) return CG[(i-100000)/10000][(i-100000)%10000];
-
 
 }
 
 double CMBBlock::get_val(string SS)
 {
-	/* variable codes:
+	/* variable codes: 
 	H: 1 : Hydraulic Head
 	A: 2 : Area
 	V: 3 : Volume
@@ -315,7 +301,7 @@ double CMBBlock::get_val(string SS)
 	Q: 7 :flow rate
 	v: 8 :velocity
 	s: 9 :effective saturation
-	theta: 10: volumetric water content
+	theta: 10: volumetric water content 
 	Hydraulic Parameters: 50-99
 	G: 101-199
 	GS: 1000-1999
@@ -336,52 +322,52 @@ double CMBBlock::get_val(string SS)
 		if (tolower(trim(s[0]))=="s") return S;
 		if (tolower(trim(s[0]))=="z0") return z0;
 		if (tolower(trim(s[0])) == "lai") return plant_prop.LAI;
-		if (tolower(trim(s[0]))=="se")
+		if (tolower(trim(s[0]))=="se") 
 		{	if (indicator!=0)
-			return (Heavyside(S/V)*S/V - fs_params[physical_properties::theta_r])/(fs_params[physical_properties::theta_s]-fs_params[physical_properties::theta_r]);
+			return (Heavyside(S/V)*S/V - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);
 		else
-			return (S/V - fs_params[physical_properties::theta_r])/(fs_params[physical_properties::theta_s]-fs_params[physical_properties::theta_r]);   //allow s to be above 1
+			return (S/V - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);   //allow s to be above 1
 		}
-		if (tolower(trim(s[0]))=="theta")
+		if (tolower(trim(s[0]))=="theta") 
 		{	if (indicator!=0)
 			if (S>0) return S/(S+1e-5*A); else return 0;
 		else
 			return S/V;   //allow s to be above 1
-		}
-
-		if (tolower(trim(s[0]))=="porosity") return fs_params[physical_properties::theta_s];
+		}	
+		
+		if (tolower(trim(s[0]))=="porosity") return fs_params[theta_s];
 		if (tolower(trim(s[0]))=="depression") return DS;
 		if (tolower(trim(s[0]))=="vapor_diff") return vapor_diffusion;
 
-		if (tolower(trim(s[0]))=="ks") return fs_params[physical_properties::ks];
-		if (tolower(trim(s[0]))=="theta_s") return fs_params[physical_properties::theta_s];
-		if (tolower(trim(s[0]))=="theta_r") return fs_params[physical_properties::theta_r];
-		if (tolower(trim(s[0]))=="vg_alpha") return fs_params[physical_properties::vg_alpha];
-		if (tolower(trim(s[0]))=="vg_n") return fs_params[physical_properties::vg_n];
-		if (tolower(trim(s[0]))=="vg_m") return fs_params[physical_properties::vg_m];
-		if (tolower(trim(s[0]))=="lambda") return fs_params[physical_properties::lambda];
-		if ((tolower(trim(s[0]))=="sc") || (tolower(trim(s[0]))=="storativity")) return fs_params[physical_properties::storativity];
+		if (tolower(trim(s[0]))=="ks") return fs_params[ks];	
+		if (tolower(trim(s[0]))=="theta_s") return fs_params[theta_s];
+		if (tolower(trim(s[0]))=="theta_r") return fs_params[theta_r];
+		if (tolower(trim(s[0]))=="vg_alpha") return fs_params[vg_alpha];
+		if (tolower(trim(s[0]))=="vg_n") return fs_params[vg_n];
+		if (tolower(trim(s[0]))=="vg_m") return fs_params[vg_m];
+		if (tolower(trim(s[0]))=="lambda") return fs_params[lambda];
+		if ((tolower(trim(s[0]))=="sc") || (tolower(trim(s[0]))=="storativity")) return fs_params[storativity];
 		if ((tolower(trim(s[0]))=="bulk_density") || (tolower(trim(s[0]))=="bd")) return bulk_density;
-		if (tolower(trim(s[0]))=="storage_epsilon") return fs_params[physical_properties::storage_epsilon];
-		if (tolower(trim(s[0]))=="storage_n") return fs_params[physical_properties::storage_n];
+		if (tolower(trim(s[0]))=="storage_epsilon") return fs_params[storage_epsilon];
+		if (tolower(trim(s[0]))=="storage_n") return fs_params[storage_n];
 		if (tolower(trim(s[0])) == "light") return (*current_light)*light_reduction_factor;
 		if (tolower(trim(s[0])) == "temperature") return *current_temperature;
 		if (tolower(trim(s[0])) == "light_reduction_factor") return light_reduction_factor;
 		if (tolower(trim(s[0]))=="a*") return A_star;
 		if (tolower(trim(s[0]))=="h*") return H_star;
 		if (tolower(trim(s[0]))=="v") return V_star;
-		if (tolower(trim(s[0]))=="s*") return S_star;
-		if (tolower(trim(s[0])) == "e") return get_evaporation(parent->get_time());
-		if (tolower(trim(s[0]))=="se*")
+		if (tolower(trim(s[0]))=="s*") return S_star;     
+        if (tolower(trim(s[0])) == "e") return get_evaporation(parent->Solution_State.t);
+		if (tolower(trim(s[0]))=="se*") 
 		{
-			if ((indicator != Block_type::Soil) && (indicator != Block_type::Darcy))
-			return (Heavyside(S_star/V)*S_star/V - fs_params[physical_properties::theta_r])/(fs_params[physical_properties::theta_s]-fs_params[physical_properties::theta_r]);
+			if ((indicator != Soil) && (indicator != Darcy))
+			return (Heavyside(S_star/V)*S_star/V - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);
 		else
-			return (S_star/V - fs_params[physical_properties::theta_r])/(fs_params[physical_properties::theta_s]-fs_params[physical_properties::theta_r]);   //allow s to be above 1
+			return (S_star/V - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);   //allow s to be above 1
 		}
-		if (tolower(trim(s[0]))=="theta*")
+		if (tolower(trim(s[0]))=="theta*") 
 		{
-			if ((indicator != Block_type::Soil) && (indicator != Block_type::Darcy))
+			if ((indicator != Soil) && (indicator != Darcy))
 			if (S_star>0) return S_star/(S_star+1e-5*A); else return 0;
 		else
 			return S_star/V;   //allow s to be above 1
@@ -417,7 +403,7 @@ double CMBBlock::get_val(string SS)
 			if ((p!=-1) && (l!=-1)) return G[p][l];
 
 		}
-
+		
 		if (tolower(trim(s[0])) == "cg")
 		{
 			int p = lookup_particle_type(s[2]);
@@ -430,7 +416,7 @@ double CMBBlock::get_val(string SS)
 
 	else if (s.size() == 4)
 	{
-
+		
 		if (tolower(trim(s[0])) == "cg")
 		{
 			int p = lookup_particle_type(s[2]);
@@ -453,20 +439,20 @@ double CMBBlock::get_val_star(int i, vector<int> ii)
 	if (i==5) return z0;
 	if (i==6) return V_star/A_star;
 	if (i==7) return 0;
-	if (i==8) return q;
+	if (i==8) return q; 
 	if (i==9)
 	{
-		if ((indicator != Block_type::Soil) && (indicator != Block_type::Darcy))
-			return (Heavyside(S_star/V_star)*S_star/V_star - fs_params[physical_properties::theta_r])/(fs_params[physical_properties::theta_s]-fs_params[physical_properties::theta_r]);
+		if ((indicator != Soil) && (indicator != Darcy))
+			return (Heavyside(S_star/V_star)*S_star/V_star - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);
 		else
-			return (S_star/V_star - fs_params[physical_properties::theta_r])/(fs_params[physical_properties::theta_s]-fs_params[physical_properties::theta_r]);   //allow s to be above 1
+			return (S_star/V_star - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);   //allow s to be above 1
 		}
 	//if (i==12) return DS;
 	if (i==13) return vapor_diffusion;
 
-	if (i==10)
+	if (i==10) 
 	{
-		if ((indicator != Block_type::Soil) && (indicator != Block_type::Darcy))
+		if ((indicator != Soil) && (indicator != Darcy))
 			if (S_star>0) return S_star/(S_star+1e-5*A); else return 0;
 		else
 			return S_star/V;   //allow s to be above 1
@@ -477,32 +463,32 @@ double CMBBlock::get_val_star(int i, vector<int> ii)
 		if (air_phase == 0)
 			return 0;
 		else
-			return Pos(V*fs_params[physical_properties::theta_s] - S);
+			return Pos(V*fs_params[theta_s] - S);
 
 	}
-	if (i == physical_properties::light)
+	if (i == physical_params::light)
 		return (*current_light)*light_reduction_factor;
 
-	if (i == physical_properties::temperature)
+	if (i == physical_params::temperature)
 		return *current_temperature;
 
-	if (i == physical_properties::wind)
+	if (i == physical_params::wind)
 		return *current_wind;
 
-	if (i == physical_properties::humidity)
+	if (i == physical_params::humidity)
 		return *current_humidity;
 
-	if (i == physical_properties::vapor_pressure)
+	if (i == physical_params::vapor_pressure)
 		return 611 * exp(17.27*(*current_temperature) / ((*current_temperature) + 237.3));
 
-	if (i == physical_properties::latent_heat_of_evaporation)
+	if (i == physical_params::latent_heat_of_evaporation)
 		return 2.501e6 - 2370 * (*current_temperature);
 
-	if (i == physical_properties::LAI)
+	if (i == physical_params::LAI)
 		return plant_prop.LAI;
 
-	if (i == physical_properties::pan_evaporation_rate)
-		return get_evaporation(parent->get_time());
+	if (i == physical_params::pan_evaporation_rate)
+        return get_evaporation(parent->Solution_State.t);
 
 	if (i>=50 && i<100) return fs_params[i-50];
 	if (i>=100 && i<1000) return G_star[ii[0]][i];
@@ -520,7 +506,7 @@ double CMBBlock::get_val_star(int i, vector<int> ii)
 	if (i>=4000 && i<5000) return envexchange[ii[1]]->parameters[i-4000];
 	if (i >= 5000 && i<6000) return RXN->cons[ii[0]].get_val(i);
 	if (i >= 6000 && i<6500) return evaporation_m[ii[0]]->parameters[i - 6000];
-	if (i == 6501 && i<7000) return evaporation_m[ii[0]]->single_crop_coefficient.interpol(dayOfYear(parent->get_time()));
+    if (i == 6501 && i<7000) return evaporation_m[ii[0]]->single_crop_coefficient.interpol(dayOfYear(parent->Solution_State.t));
 	if (i >= 7000 && 8000) return plant_prop.half_saturation_constants[i - 7000];
 	if (i >= 10000 && i<20000) return G_star[(i - 10000) / 1000][(i - 10000) % 1000];
 	if (i >= 100000 && i<200000) return CG_star[(i - 100000) / 10000][(i - 100000) % 10000];
@@ -534,7 +520,7 @@ double CMBBlock::calc(CStringOP &term, vector<int> ii)  //Works w/o reference(&)
 		if (term.parameter == true)
 			out = RXN->parameters[term.number].eff_value;
 		else if (term.s_concentration == true)
-			if (term.particle_type == -1) out = G[ii[0]][term.phase]; else out = G[term.particle_type][term.phase];
+			if (term.particle_type == -1) out = G[ii[0]][term.phase]; else out = G[term.particle_type][term.phase]; 
 		else if (term.concentration == true)
 			if (term.particle_type==-1)
 				if (term.number!=-1)
@@ -550,7 +536,7 @@ double CMBBlock::calc(CStringOP &term, vector<int> ii)  //Works w/o reference(&)
 			out = get_val(term.number,ii);
 		else if (term.constant == true)
 			out = term.value;
-		else
+		else 
 			out = calc(term.terms[0],ii);
 	}
 
@@ -584,7 +570,7 @@ double CMBBlock::calc(CStringOP &term, vector<int> ii)  //Works w/o reference(&)
 			sum = calc(term.terms[0],ii);
 		else if (term.operators[0] == 1)
 			sum = -calc(term.terms[0],ii);
-
+		
 		if (term.operators[1] == 0)
 			out = sum+calc(term.terms[1],ii);
 		if (term.operators[1] == 1)
@@ -595,14 +581,14 @@ double CMBBlock::calc(CStringOP &term, vector<int> ii)  //Works w/o reference(&)
 			out = sum/calc(term.terms[1],ii);
 		if (term.operators[1] == 4)
 			out = pow(fabs(sum),calc(term.terms[1],ii))*fabs(sum)/sum;
-
+		
 	}
 
 	if ((term.nterms>2) && (term.nopts == term.nterms-1))
-	{
+	{	
 		out = calc(term.terms[0],ii);
 		for (int j=1; j<term.nterms; j++)
-		{
+		{	
 			if (term.operators[j-1] == 0)
 				out+=calc(term.terms[j],ii);
 			if (term.operators[j-1] == 1)
@@ -614,21 +600,21 @@ double CMBBlock::calc(CStringOP &term, vector<int> ii)  //Works w/o reference(&)
 			if (term.operators[j-1] == 4)
 				out=pow(out,calc(term.terms[j],ii));
 		}
-
+		
 	}
 
 
 	if ((term.nterms>2) && (term.nopts == term.nterms))
-	{
+	{	
 		out = 0;
-		if (term.operators[0] == 0)
+		if (term.operators[0] == 0)	
 			out = calc(term.terms[0],ii);
 		else if (term.operators[0] == 1)
 			out = -calc(term.terms[0],ii);
-
-
+	
+		
 		for (int j=1; j<term.nterms; j++)
-		{
+		{	
 			if (term.operators[j] == 0)
 				out+=calc(term.terms[j],ii);
 			if (term.operators[j] == 1)
@@ -640,50 +626,50 @@ double CMBBlock::calc(CStringOP &term, vector<int> ii)  //Works w/o reference(&)
 			if (term.operators[j] == 4)
 				out=pow(out,calc(term.terms[j],ii));
 		}
-
+		
 	}
 	if (term.function==true)
-	{	if (term.number == functions::exp_)
+	{	if (term.number == exp_)
 			return exp(out);
-		if (term.number == functions::hsd_)
+		if (term.number == hsd_)
 			return Heavyside(out);
-		if (term.number == functions::min_)
+		if (term.number == min_)
 			return min(calc(term.terms[0],ii), calc(term.terms[1],ii));
-		if (term.number == functions::max_)
+		if (term.number == max_)
 			return max(calc(term.terms[0],ii), calc(term.terms[1],ii));
-		if (term.number == functions::lne_)
+		if (term.number == lne_)
 			return log(out);
-		if (term.number == functions::lnt_)
+		if (term.number == lnt_)
 			return log10(out);
-		if (term.number == functions::sgm_)
+		if (term.number == sgm_)
 			return 1.0/(1.0+exp(-out));
-		if (term.number == functions::pos_)
+		if (term.number == pos_)
 			return 0.5*(fabs(out)+out);
-		if (term.number == functions::sq1_)
+		if (term.number == sq1_)
 			return 0.5/calc(term.terms[1],ii)*(calc(term.terms[0],ii)*calc(term.terms[1],ii)+sqrt(pow(calc(term.terms[0],ii)*calc(term.terms[1],ii),2)+1));
-		if (term.number == functions::sqr_)
+		if (term.number == sqr_)
 			return sqrt(out);
-		if (term.number == functions::frs_)
+		if (term.number == frs_)
 			return funcs[0].evaluate(get_val("se"));
-		if (term.number == functions::fas_)
+		if (term.number == fas_)
 			return funcs[0].evaluate(get_val("s"));
-		if (term.number == functions::ply_)
+		if (term.number == ply_)
 			return pipe_poly(out);
-		if (term.number == functions::mon_)
+		if (term.number == mon_)
 			return mon(calc(term.terms[0],ii),calc(term.terms[1],ii));
-		if (term.number == functions::sq2_)
+		if (term.number == sq2_)
 		{	double term1 = calc(term.terms[0],ii);
 			double term2 = calc(term.terms[1],ii);
 			return pow(term1,(0.5*term1+term2)/(term1+term2));
 		}
-		if (term.number== functions::abs_)
+		if (term.number==abs_)
 			return fabs(out);
-		if (term.number== functions::sqs_)
+		if (term.number==sqs_)
 			if (out!=0)
 				return out/fabs(out)*sqrt(fabs(out));
 			else
 				return 0;
-		if (term.number == functions::sig_)
+		if (term.number == sig_)
 		{
 			return exp(out) / (1 + exp(out));
 		}
@@ -701,7 +687,7 @@ double CMBBlock::calc_star(CStringOP &term, vector<int> ii)
 		if (term.parameter == true)
 			out = RXN->parameters[term.number].eff_value;
 		else if (term.s_concentration == true)
-			if (term.particle_type == -1) out = G_star[ii[0]][term.phase]; else out = G[term.particle_type][term.phase];
+			if (term.particle_type == -1) out = G_star[ii[0]][term.phase]; else out = G[term.particle_type][term.phase]; 
 		else if (term.concentration == true)
 			if (term.particle_type==-1)
 				if (term.number!=-1)
@@ -717,7 +703,7 @@ double CMBBlock::calc_star(CStringOP &term, vector<int> ii)
 			out = get_val_star(term.number,ii);
 		else if (term.constant == true)
 			out = term.value;
-		else
+		else 
 			out = calc_star(term.terms[0],ii);
 	}
 
@@ -752,7 +738,7 @@ double CMBBlock::calc_star(CStringOP &term, vector<int> ii)
 			sum = calc_star(term.terms[0],ii);
 		else if (term.operators[0] == 1)
 			sum = -calc_star(term.terms[0],ii);
-
+		
 		if (term.operators[1] == 0)
 			out = sum+calc_star(term.terms[1],ii);
 		if (term.operators[1] == 1)
@@ -767,10 +753,10 @@ double CMBBlock::calc_star(CStringOP &term, vector<int> ii)
 	}
 
 	if ((term.nterms>2) && (term.nopts == term.nterms-1))
-	{
+	{	
 		out = calc_star(term.terms[0],ii);
 		for (int j=1; j<term.nterms; j++)
-		{
+		{	
 			if (term.operators[j-1] == 0)
 				out+=calc_star(term.terms[j],ii);
 			if (term.operators[j-1] == 1)
@@ -782,21 +768,21 @@ double CMBBlock::calc_star(CStringOP &term, vector<int> ii)
 			if (term.operators[j-1] == 4)
 				out=pow(out,calc_star(term.terms[j],ii));
 		}
-
+		
 	}
 
 
 	if ((term.nterms>2) && (term.nopts == term.nterms))
-	{
+	{	
 		out = 0;
-		if (term.operators[0] == 0)
+		if (term.operators[0] == 0)	
 			out = calc_star(term.terms[0],ii);
 		else if (term.operators[0] == 1)
 			out = -calc_star(term.terms[0],ii);
-
-
+	
+		
 		for (int j=1; j<term.nterms; j++)
-		{
+		{	
 			if (term.operators[j] == 0)
 				out+=calc_star(term.terms[j],ii);
 			if (term.operators[j] == 1)
@@ -808,50 +794,50 @@ double CMBBlock::calc_star(CStringOP &term, vector<int> ii)
 			if (term.operators[j] == 4)
 				out=pow(out,calc_star(term.terms[j],ii));
 		}
-
+		
 	}
 	if (term.function==true)
-	{	if (term.number == functions::exp_)
+	{	if (term.number == exp_)
 			return exp(out);
-		if (term.number == functions::hsd_)
+		if (term.number == hsd_)
 			return Heavyside(out);
-		if (term.number == functions::min_)
+		if (term.number == min_)
 			return min(calc_star(term.terms[0],ii), calc_star(term.terms[1],ii));
-		if (term.number == functions::max_)
+		if (term.number == max_)
 			return max(calc_star(term.terms[0],ii), calc_star(term.terms[1],ii));
-		if (term.number == functions::lne_)
+		if (term.number == lne_)
 			return log(out);
-		if (term.number == functions::lnt_)
+		if (term.number == lnt_)
 			return log10(out);
-		if (term.number == functions::sgm_)
+		if (term.number == sgm_)
 			return 1.0/(1.0+exp(-out));
-		if (term.number == functions::pos_)
+		if (term.number == pos_)
 			return 0.5*(fabs(out)+out);
-		if (term.number == functions::sq1_)
+		if (term.number == sq1_)
 			return 0.5/calc_star(term.terms[1],ii)*(calc_star(term.terms[0],ii)*calc_star(term.terms[1],ii)+sqrt(pow(calc_star(term.terms[0],ii)*calc_star(term.terms[1],ii),2)+1));
-		if (term.number == functions::sqr_)
+		if (term.number == sqr_)
 			return sqrt(out);
-		if (term.number == functions::frs_)
+		if (term.number == frs_)
 			return funcs[0].evaluate(get_val("se*"));
-		if (term.number == functions::fas_)
+		if (term.number == fas_)
 			return funcs[0].evaluate(get_val("s*"));
-		if (term.number == functions::ply_)
+		if (term.number == ply_)
 			return pipe_poly(out);
-		if (term.number == functions::mon_)
+		if (term.number == mon_)
 			return mon(calc_star(term.terms[0],ii),calc_star(term.terms[1],ii));
-		if (term.number == functions::sq2_)
+		if (term.number == sq2_)
 		{	double term1 = calc_star(term.terms[0],ii);
 			double term2 = calc_star(term.terms[1],ii);
 			return pow(term1,(0.5*term1+term2)/(term1+term2));
 		}
-		if (term.number== functions::abs_)
+		if (term.number==abs_)
 			return fabs(out);
-		if (term.number== functions::sqs_)
+		if (term.number==sqs_)
 			if (out!=0)
 				return out/fabs(out)*sqrt(fabs(out));
 			else
 				return 0;
-		if (term.number == functions::sig_)
+		if (term.number == sig_)
 		{
 			return exp(out) / (1 + exp(out));
 		}
@@ -868,15 +854,15 @@ void CMBBlock::set_val(int i, double val)
 	if (i==3) V = val;
 	if (i==4) S = val;
 	if (i==5) z0 = val;
-	if (i==9) S = V*(val*(fs_params[physical_properties::theta_s]-fs_params[physical_properties::theta_r]) + fs_params[physical_properties::theta_r]);
+	if (i==9) S = V*(val*(fs_params[theta_s]-fs_params[theta_r]) + fs_params[theta_r]);
 	if (i==10) S = V*val;
 	if (i==13) vapor_diffusion=val;
-	if (i==14) bulk_density = val;
+	if (i==14) bulk_density = val;	
 	if (i>=50 && i<100) fs_params[i-50] = val;
-	if (i>=100 && i<1000) G[(i-100)/100][(i-100)%100] = val;
+	if (i>=100 && i<1000) G[(i-100)/100][(i-100)%100] = val; 
 	if (i>=1000 && i<2000) CG[int((i-1000)/n_phases)][(i-1000)%n_phases] = val;
 	if (i>=2000 && i<3000) rxn_params[i-2000] = val;
-
+	
 
 }
 
@@ -887,7 +873,7 @@ void CMBBlock::set_val_star(int i, double val)
 	if (i==3) V = val;
 	if (i==4) S_star = val;
 	if (i==5) z0 = val;
-	if (i==9) S_star = V*(val*(fs_params[physical_properties::theta_s]-fs_params[physical_properties::theta_r]) + fs_params[physical_properties::theta_r]);
+	if (i==9) S_star = V*(val*(fs_params[theta_s]-fs_params[theta_r]) + fs_params[theta_r]);
 	if (i==10) S_star = V*val;
 	if (i==13) vapor_diffusion=val;
 	if (i==14) bulk_density = val;
@@ -896,7 +882,7 @@ void CMBBlock::set_val_star(int i, double val)
 	if (i>=100 && i<200) G[(i-100)/100][(i-100)%100] = val; // colloidal phases
 	if (i>=1000 && i<2000) CG[int((i-1000)/n_phases)][(i-1000)%n_phases] = val;
 	if (i>=2000 && i<3000) rxn_params[i-2000] = val;
-	// 3000-3999: solid_phase
+	// 3000-3999: solid_phase 
 
 }
 
@@ -914,49 +900,49 @@ void CMBBlock::set_val(const string &SS, double val)
 		if (tolower(trim(s[0]))=="v") V = val;
 		if (tolower(trim(s[0]))=="s") S = val;
 		if (tolower(trim(s[0]))=="z0") z0 = val;
-		if (tolower(trim(s[0]))=="se") S = V*(val*(fs_params[physical_properties::theta_s]-fs_params[physical_properties::theta_r]) + fs_params[physical_properties::theta_r]);
+		if (tolower(trim(s[0]))=="se") S = V*(val*(fs_params[theta_s]-fs_params[theta_r]) + fs_params[theta_r]);
 		if (tolower(trim(s[0]))=="theta") S = V*val;
 		if (tolower(trim(s[0]))=="vapor_diffusion") vapor_diffusion=val;
 		if ((tolower(trim(s[0]))=="bulk_density") || (tolower(trim(s[0]))=="bd")) bulk_density = val;
-
+		
 		if (tolower(trim(s[0]))=="depth") V = A*val;
-		if (tolower(trim(s[0]))=="h0") S = A*val*fs_params[physical_properties::theta_s];   //fs_params[1] must be read earlier than h0
-		if (tolower(trim(s[0]))=="porosity") fs_params[physical_properties::theta_s] = val;
-		if (tolower(trim(s[0]))=="depression") fs_params[physical_properties::depression_storage]=val;
-
-		if (tolower(trim(s[0]))=="ks") fs_params[physical_properties::ks] = val;
-		if (tolower(trim(s[0]))=="theta_s") fs_params[physical_properties::theta_s] = val;
-		if (tolower(trim(s[0]))=="theta_r") fs_params[physical_properties::theta_r] = val;
-		if (tolower(trim(s[0]))=="vg_alpha") fs_params[physical_properties::vg_alpha] = val;
-		if (tolower(trim(s[0]))=="vg_n") fs_params[physical_properties::vg_n] = val;
-		if (tolower(trim(s[0]))=="vg_m") fs_params[physical_properties::vg_m] = val;
-		if (tolower(trim(s[0]))=="lambda") fs_params[physical_properties::lambda] = val;
-		if ((tolower(trim(s[0]))=="sc") || (tolower(trim(s[0]))=="storativity")) fs_params[physical_properties::storativity] = val;
-		if (tolower(trim(s[0]))=="storage_epsilon") fs_params[physical_properties::storage_epsilon] = val;
-		if (tolower(trim(s[0]))=="storage_n") fs_params[physical_properties::storage_n] = val;
+		if (tolower(trim(s[0]))=="h0") S = A*val*fs_params[theta_s];   //fs_params[1] must be read earlier than h0
+		if (tolower(trim(s[0]))=="porosity") fs_params[theta_s] = val;
+		if (tolower(trim(s[0]))=="depression") fs_params[depression_storage]=val;
+		
+		if (tolower(trim(s[0]))=="ks") fs_params[ks] = val;	
+		if (tolower(trim(s[0]))=="theta_s") fs_params[theta_s] = val;
+		if (tolower(trim(s[0]))=="theta_r") fs_params[theta_r] = val;
+		if (tolower(trim(s[0]))=="vg_alpha") fs_params[vg_alpha] = val;
+		if (tolower(trim(s[0]))=="vg_n") fs_params[vg_n] = val;
+		if (tolower(trim(s[0]))=="vg_m") fs_params[vg_m] = val;
+		if (tolower(trim(s[0]))=="lambda") fs_params[lambda] = val;
+		if ((tolower(trim(s[0]))=="sc") || (tolower(trim(s[0]))=="storativity")) fs_params[storativity] = val;
+		if (tolower(trim(s[0]))=="storage_epsilon") fs_params[storage_epsilon] = val;
+		if (tolower(trim(s[0]))=="storage_n") fs_params[storage_n] = val;
 		if (tolower(trim(s[0])) == "lai") plant_prop.LAI = val;
-		if (tolower(trim(s[0])) == "lai_max") fs_params[physical_properties::LAI_max] = val;
-		if (tolower(trim(s[0])) == "k_lai") fs_params[physical_properties::K_LAI] = val;
-		if (tolower(trim(s[0])) == "plant_growth_rate_coefficient") fs_params[physical_properties::plant_growth_rate_coefficient] = val;
-		if (tolower(trim(s[0])) == "temperature_base") fs_params[physical_properties::temperature_base] = val;
-		if (tolower(trim(s[0])) == "temperature_spread_factor") fs_params[physical_properties::temperature_spread_factor] = val;
-		if (tolower(trim(s[0])) == "plant_biomass_decay_factor") fs_params[physical_properties::plant_biomass_decay_factor] = val;
-		if (tolower(trim(s[0])) == "plant_leaf_decay_factor") fs_params[physical_properties::plant_leaf_decay_factor] = val;
-		if (tolower(trim(s[0])) == "optimal_temperature") fs_params[physical_properties::optimal_temperature] = val;
-		if (tolower(trim(s[0])) == "maximum_biovolume") fs_params[physical_properties::maximum_bio_volume] = val;
+		if (tolower(trim(s[0])) == "lai_max") fs_params[LAI_max] = val;
+		if (tolower(trim(s[0])) == "k_lai") fs_params[K_LAI] = val;
+		if (tolower(trim(s[0])) == "plant_growth_rate_coefficient") fs_params[plant_growth_rate_coefficient] = val;
+		if (tolower(trim(s[0])) == "temperature_base") fs_params[temperature_base] = val;
+		if (tolower(trim(s[0])) == "temperature_spread_factor") fs_params[temperature_spread_factor] = val;
+		if (tolower(trim(s[0])) == "plant_biomass_decay_factor") fs_params[plant_biomass_decay_factor] = val;
+		if (tolower(trim(s[0])) == "plant_leaf_decay_factor") fs_params[plant_leaf_decay_factor] = val;
+		if (tolower(trim(s[0])) == "optimal_temperature") fs_params[optimal_temperature] = val;
+		if (tolower(trim(s[0])) == "maximum_biovolume") fs_params[maximum_bio_volume] = val;
 
-
+		
 		if (tolower(trim(s[0]))=="outflow_corr_factor") outflow_corr_factor = val;
 		if (tolower(trim(s[0]))=="fixed_status") fixed = val;
 		if (tolower(trim(s[0])) == "air_phase") air_phase = int(val);
 		if (tolower(trim(s[0]))=="a*") A_star = val;
 		if (tolower(trim(s[0]))=="h*") H_star = val;
 		if (tolower(trim(s[0]))=="v") V_star = val;
-		if (tolower(trim(s[0]))=="s*") S_star = val;
-		if (tolower(trim(s[0]))=="se*") S_star = V*(val*(fs_params[physical_properties::theta_s]-fs_params[physical_properties::theta_r]) + fs_params[physical_properties::theta_r]);
+		if (tolower(trim(s[0]))=="s*") S_star = val;     
+		if (tolower(trim(s[0]))=="se*") S_star = V*(val*(fs_params[theta_s]-fs_params[theta_r]) + fs_params[theta_r]);
 		if (tolower(trim(s[0]))=="theta*") S_star = V*val;
 		if (tolower(trim(s[0])) == "light_reduction_factor") light_reduction_factor = val;
-
+		
 	}
 	else if (s.size()==2)
 	{
@@ -978,7 +964,7 @@ void CMBBlock::set_val(const string &SS, double val)
 	}
 
 }
-
+	
 void CMBBlock::set_num_phases_constts(int n, int m)
 {
 	n_constts = m;
@@ -1024,24 +1010,24 @@ void CMBBlock::get_funcs(CStringOP &term)  //Works w/o reference(&)
 	{
 		get_funcs(term.terms[0]);
 		get_funcs(term.terms[1]);
-
+		
 	}
 
 	if ((term.nterms>2) && (term.nopts == term.nterms-1))
-	{
+	{	
 		for (int j=0; j<term.nterms; j++)
 			get_funcs(term.terms[j]);
-
+		
 	}
 
 
 	if ((term.nterms>2) && (term.nopts == term.nterms))
-	{
+	{	
 		for (int j=0; j<term.nterms; j++)
 			get_funcs(term.terms[j]);
-
+		
 	}
-	if (term.function==true)
+	if (term.function==true) 
 		if (term.number == 11)
 		{	CFunction XX;
 			XX.Expression = term;
@@ -1066,29 +1052,29 @@ void CMBBlock::get_funcs(CStringOP &term)  //Works w/o reference(&)
 void CMBBlock::evaluate_functions(int i) //i=0->small s; i=1->large S
 {
 	funcs[i].X.clear();
-
-
+	
+		
 	for (double x=funcs[i]._min; x<=funcs[i]._max; x+=(funcs[i]._max-funcs[i]._min)/double(funcs[i].n_steps))
 	{	if (funcs[i].var_id==0)
 			set_val_star(9,x);
 		if (funcs[i].var_id==1)
 			set_val_star(4,x);
-
+				
 		funcs[i].X.append(x,calc_star(funcs[i].Expression));
 	}
 
-	funcs[i].X.structured = true;
+	funcs[i].X.structured = true;	
 	funcs[i].X = funcs[i].X.MA_smooth(2);
 }
 
-void CMBBlock::evaluate_functions()
+void CMBBlock::evaluate_functions() 
 {
 	for (int i=0; i<funcs.size(); i++) evaluate_functions(i);
 }
 
 double CMBBlock::get_evaporation(double t)
 {
-
+	
 		double sum=0;
 		for (int j = 0; j < evaporation_m.size(); j++)
 		{
@@ -1097,7 +1083,7 @@ double CMBBlock::get_evaporation(double t)
 			if ((evaporation_m[j]->evaporation_TS.n>0) && (evaporation_m[j]->model == "time_series"))
 				sum += evaporation_m[j]->evaporation_TS.interpol(t)*A;
 		}
-
+		
 		return sum;
 }
 
@@ -1120,7 +1106,7 @@ void CMBBlock::evaluate_K()
 		K[ii] = CMatrix(Solid_phase[ii]->n_phases);
 		for (int i=0; i<K[ii].getnumrows(); i++)
 			for (int j=0; j<K[ii].getnumrows(); j++)
-				if (Solid_phase[ii]->K[i][j].nterms==0)
+				if (Solid_phase[ii]->K[i][j].nterms==0) 
 					K[ii][i][j]=0;
 				else
 				{
@@ -1138,7 +1124,7 @@ void CMBBlock::evaluate_K_star()
 		K_star[ii] = CMatrix(Solid_phase[ii]->n_phases);
 		for (int i=0; i<K_star[ii].getnumrows(); i++)
 			for (int j=0; j<K_star[ii].getnumrows(); j++)
-				if (Solid_phase[ii]->K[i][j].nterms==0)
+				if (Solid_phase[ii]->K[i][j].nterms==0) 
 					K_star[ii][i][j]=0;
 				else
 				{
@@ -1154,7 +1140,7 @@ void CMBBlock::evaluate_K_star()
 void CMBBlock::evaluate_capacity()
 {
 	for (int ii=0; ii<Solid_phase.size(); ii++)
-	{
+	{	
 		capacity_c[ii] = CVector(Solid_phase[ii]->n_phases);
 		for (int j = 0; j < Solid_phase[ii]->n_phases; j++)
 		{
@@ -1169,7 +1155,7 @@ void CMBBlock::evaluate_capacity()
 void CMBBlock::evaluate_capacity_star()
 {
 	for (int ii=0; ii<Solid_phase.size(); ii++)
-	{
+	{	
 		capacity_c_star[ii] = CVector(Solid_phase[ii]->n_phases);
 		for (int j = 0; j < Solid_phase[ii]->n_phases; j++)
 		{
@@ -1183,7 +1169,7 @@ void CMBBlock::evaluate_capacity_star()
 void CMBBlock::evaluate_capacity_c()
 {
 	for (int ii=0; ii<Solid_phase.size(); ii++)
-	{
+	{	
 		capacity_c_Q[ii] = CVector(Solid_phase[ii]->n_phases);
 		for (int j = 0; j < Solid_phase[ii]->n_phases; j++)
 		{
@@ -1198,7 +1184,7 @@ void CMBBlock::evaluate_capacity_c()
 void CMBBlock::evaluate_capacity_c_star()
 {
 	for (int ii=0; ii<Solid_phase.size(); ii++)
-	{
+	{	
 		capacity_c_star_Q[ii] = CVector(Solid_phase[ii]->n_phases);
 		for (int j = 0; j < Solid_phase[ii]->n_phases; j++)
 		{
@@ -1262,7 +1248,7 @@ double CMBBlock::get_kd(int particule_type, int phase, int constituent)
 		i = lookup(RXN->cons[constituent].capacity_ptr, "soil");
 	else
 		i = lookup(RXN->cons[constituent].capacity_ptr, Solid_phase[particule_type]->name);
-	if (i!=-1)
+	if (i!=-1) 
 		return RXN->cons[constituent].capacity[i];
 	else
 		return 0;
@@ -1285,9 +1271,9 @@ double CMBBlock::get_CG(int particle_type, int phase, int constituent)
 
 int CMBBlock::get_member_no(int solid_id, int phase_no)
 {
-	if (solid_id==-2)
+	if (solid_id==-2) 
 		return 0;
-	else if (solid_id==-1)
+	else if (solid_id==-1) 
 		return 1;
 	else
 	{
@@ -1299,9 +1285,9 @@ int CMBBlock::get_member_no(int solid_id, int phase_no)
 
 int CMBBlock::get_member_no(int solid_id, int phase_no, int const_no)
 {
-	if (solid_id==-2)
+	if (solid_id==-2) 
 		return const_no;
-	else if (solid_id==-1)
+	else if (solid_id==-1) 
 		return const_no+int(RXN->cons.size());
 	else
 	{
@@ -1309,13 +1295,13 @@ int CMBBlock::get_member_no(int solid_id, int phase_no, int const_no)
 		for (int i=0; i<solid_id; i++) k+=Solid_phase[i]->n_phases*RXN->cons.size();
 		return k+phase_no*RXN->cons.size()+2*int(RXN->cons.size())+const_no;
 	}
-
+	
 }
 
 double CMBBlock::get_rate_exchange(int particle_type, int constituent)
 {
 	int i;
-	if (particle_type==-1)
+	if (particle_type==-1) 
 		i = lookup(RXN->cons[constituent].rate_exchange_ptr, "soil");
 	else
 		i = lookup(RXN->cons[constituent].rate_exchange_ptr, Solid_phase[particle_type]->name);
@@ -1356,7 +1342,7 @@ CVector CMBBlock::get_reaction_rates(CVector &X, bool star)
 
 CVector CMBBlock::get_reaction_rates(bool star)
 {
-
+	
 	CVector X(RXN->Rxts.size()) ;
 	for (int i=0; i<RXN->Rxts.size(); i++)
 	{	if (star==true)
@@ -1381,7 +1367,7 @@ CVector CMBBlock::get_rxn_change(CVector &X, bool star)
 	CVector R = get_rxn_change(star);
 	set_CG_star(X_old);
 	return R;
-
+	
 }
 
 CMatrix CMBBlock::Eval_Stoichiometry(bool star)
@@ -1401,8 +1387,8 @@ CMatrix CMBBlock::Eval_Stoichiometry(bool star)
 
 CVector CMBBlock::get_X_from_CG()
 {
-	CVector X((n_phases+2)*RXN->cons.size());
-
+	CVector X((n_phases+2)*RXN->cons.size());  
+	
 	for (int k=0; k<RXN->cons.size(); k++)
 		for (int p=-2; p<int (Solid_phase.size()); p++)
 		{	int _t=1; if (p>-1) _t=Solid_phase[p]->n_phases;
@@ -1457,8 +1443,8 @@ void CMBBlock::set_up_plant_growth_expressions()
 	plant_prop.plant_growth_rate_expression = CStringOP(s);
 
 	s = "(f[75]*f[76]*_pos(f[19]-f[78])*_max((1-_exp(5.0*(f[24]-f[76]))):0)" + l_constituent + "*f[9]*" + temperature_stress + ")";
-	s = s + "-(f[81]*f[24]*_sig((f[78]-f[19])/f[79]))";
-	plant_prop.LAI_growth_rate_expression = s;
+	s = s + "-(f[81]*f[24]*_sig((f[78]-f[19])/f[79]))"; 
+	plant_prop.LAI_growth_rate_expression = s; 
 
 }
 

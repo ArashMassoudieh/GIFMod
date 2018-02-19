@@ -6,8 +6,8 @@
 #include <vector>
 #include "QuickSort.h"
 #include "NormalDist.h"
-#include <map>
 
+//GUI
 #ifdef QT_version
 #include "qlist.h"
 #include "qmap.h"
@@ -26,9 +26,17 @@ public:
 	CTimeSeries();
 	CTimeSeries(int n);
 	virtual ~CTimeSeries();
-    double& get_val(int i) {return C[i];};
-    double& get_time(int i) {return t[i];};
-    int size() {return C.size();};
+	int n;
+	vector<double> t;
+	vector<double> C;
+
+	string name = "";
+	string unit = "";
+	string defaultUnit = "";
+	vector<string> unitsList;
+
+    vector<double> D;
+
 	double interpol(double x); //interpolate at location x
 	CTimeSeries MA_smooth(int span); //Moving average smoothing with span of 1+2*span
 	double interpol_D(double x); //interpolate the distance to the next non-zero data point
@@ -84,10 +92,7 @@ public:
 	CTimeSeries fabs();
 	//GUI
 	//QList <QMap <QVariant, QVariant>> compact() const;
-#ifdef QT_version
 	CTimeSeries(QList <QMap <QVariant, QVariant>> data);
-#endif
-
 	CTimeSeries(double a, double b, const vector<double>&x);
 	CTimeSeries(double a, double b, const CTimeSeries &btc);
 	CTimeSeries(const vector<double> &t, const vector<double> &C);
@@ -97,16 +102,8 @@ public:
 #ifdef QT_version
 	void compact(QDataStream &data) const;
 	static CTimeSeries unCompact(QDataStream &data);
-#endif // QT_verstion
+#endif // QT_version
 
-    int n;
-    vector<double> t;
-    vector<double> C;
-    string name = "";
-    string unit = "";
-    string defaultUnit = "";
-    vector<string> unitsList;
-    vector<double> D;
 };
 
 double diff(CTimeSeries &BTC_p, CTimeSeries &BTC_d);

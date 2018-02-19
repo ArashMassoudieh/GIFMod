@@ -4,11 +4,7 @@
 #include "wiz_assigned_value.h"
 #include <qmap.h>
 #include "XString.h"
-#include <vector>
-#include <fstream>
-#include "StringOP.h"
 
-using namespace std; 
 class Wizard_Script_Reader;
 
 class wiz_parameter
@@ -20,8 +16,6 @@ public:
 	~wiz_parameter();
 	wiz_parameter(QString &s, Wizard_Script_Reader *_parent);
 	Wizard_Script_Reader *parent;
-	bool getfromfile() { return fromfile; };
-	
     QString get_name()
 	{
 		name = parameters["name"].value.trimmed();
@@ -68,16 +62,9 @@ public:
 		return parameters["question"].value.replace("#",",");
 	}
 
-    XString get_value(int i=0, int j=0)
+    XString get_value()
 	{
-		if (fromfile)
-		{
-			XString x;
-			x = vals[i][j];
-			return x; 
-		}
-		else
-			return value;
+		return value;
 	}
 
 	void set_value(XString &val)
@@ -85,33 +72,12 @@ public:
 		value = val;
 	}
 
-	bool get_vals_from_file(string filename)
-	{
-		ifstream file(filename);
-		vector<string> s;
-		
-		if (file.good() == false)
-		{
-			_last_error = QString::fromStdString("file " + filename + " was not found");
-			return false;
-		}
-		
-		while (file.eof() == false)
-		{
-			s = getline(file);
-			if (s.size())
-				vals.push_back(ATOF(s));
-		}
-		fromfile = true; 
-	}
 
 private:
 	QString name;
 	XString value;
 	QMap<QString, wiz_assigned_value> parameters;
 	QString _last_error;
-	bool fromfile = false;
-	vector<vector<double>> vals;
 
 };
 

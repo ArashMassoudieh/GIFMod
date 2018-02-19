@@ -15,8 +15,7 @@ class UnitTextBox3 :
     Q_OBJECT
 
 public:
-	bool openfile; 
-	UnitTextBox3(const XString &X, bool openFileMenu = false, QWidget * parent = 0);
+    UnitTextBox3(const XString &X, bool openFileMenu = false, QWidget * parent = 0);
 
     UnitTextBox3(QWidget * parent = 0)
         :QWidget(parent) {}
@@ -101,7 +100,6 @@ public slots:
         if( !m_fileName.isNull() )
         {
             textBox->setText(m_fileName);
-			openfile = true; 
         }
     }
 

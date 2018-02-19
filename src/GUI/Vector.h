@@ -13,11 +13,11 @@ using namespace std;
 class CVector_arma;
 class CMatrix;
 class SizeDist;
-class CVector
+class CVector  
 {
 private:
-
-
+	
+	
 public:
 	vector<double> vec;
 	CVector();
@@ -48,7 +48,7 @@ public:
     CVector& operator-=(const CVector&);
     CVector& operator*=(const CVector&);
 	friend double dotproduct(CVector, CVector);
-	friend CVector mult(CMatrix&, CVector&);
+	friend CVector mult(CMatrix&, CVector&);	
 	friend double norm(CVector);			//Friend can be deleted. we don't have any private or protected variable in this class  //
 	friend double dotproduct(CVector v1, CVector v2);
     bool operator==(double v);
@@ -95,7 +95,7 @@ CVector operator-(CVector, CVector);
 CVector operator-(double, CVector);
 CVector operator*(CVector, CVector);
 CVector operator*(double, CVector);
-CVector operator/(CVector, double);
+CVector operator/(CVector, double); 
 CVector operator/(CVector, CVector);
 CVector operator/(double, CVector);
 CVector zeros(int i);
@@ -106,5 +106,5 @@ int lookup(vector<double> v, double val);
 int lookup(vector<string> v, string val);
 double avg(CVector &);
 vector<double> create_vector(int i);
-vector<vector<double> > create_vector(int i, int j);
+vector<vector<double>> create_vector(int i, int j);
 template<typename T> bool isfinite(T arg);

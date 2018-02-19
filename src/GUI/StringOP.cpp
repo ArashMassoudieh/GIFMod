@@ -27,7 +27,7 @@ CStringOP::CStringOP(void)
 	phase = 0;
 	particle_type = -2;
 	number = -1;
-
+		 
 }
 
 
@@ -46,7 +46,7 @@ CStringOP::CStringOP(string S)
 			  6:lnt
 			  7:lgs
 	*/
-	expression = S;
+	expression = S; 
 	constant = false;
 	parameter = false;
 	concentration = false;
@@ -84,12 +84,12 @@ CStringOP::CStringOP(string S)
 				{
 					prntcnt--;
 					if (prntcnt == 0)
-					{
+					{	
 						terms.push_back(CStringOP(S.substr(i+1,j-i-1)));
 						terms_count++;
 						i=j;
 						j=S.size() + 1;
-
+						
 					}
 				}
 			}
@@ -101,45 +101,45 @@ CStringOP::CStringOP(string S)
 			string a = S.substr(i+1,4);
 			int nn;
 			if (S.substr(i+1,3) == "exp")
-				nn = functions::exp_;
+				nn = exp_;
 			if (S.substr(i+1,3) == "hsd")
-				nn = functions::hsd_;
+				nn = hsd_;
 			if (S.substr(i+1,3) == "min")
-				nn = functions::min_;
+				nn = min_;
 			if (S.substr(i+1,3) == "max")
-				nn = functions::max_;
+				nn = max_;
 			if (S.substr(i+1,3) == "lne")
-				nn = functions::lne_;
+				nn = lne_;
 			if (S.substr(i+1,3) == "lnt")
-				nn = functions::lnt_;
+				nn = lnt_;
 			if (S.substr(i+1,3) == "sgm")
-				nn = functions::sgm_;
+				nn = sgm_;
 			if (S.substr(i+1,3) == "pos")
-				nn = functions::pos_;
+				nn = pos_;
 			if (S.substr(i+1,3) == "sq1")
-				nn = functions::sq1_;
+				nn = sq1_;
 			if (S.substr(i+1,3) == "sqr")
-				nn = functions::sqr_;
+				nn = sqr_;
 			if (S.substr(i+1,3) == "frs")
-				nn = functions::frs_;
+				nn = frs_;
 			if (S.substr(i+1,3) == "fas")
-				nn = functions::fas_;
+				nn = fas_;
 			if (S.substr(i+1,3) == "ply")
-				nn = functions::ply_;
+				nn = ply_;
 			if (S.substr(i+1,3) == "mon")
-				nn = functions::mon_;
+				nn = mon_;
 			if (S.substr(i+1,3) == "sq2")
-				nn = functions::sq2_;
+				nn = sq2_;
 			if (S.substr(i+1,3) == "abs")
-				nn = functions::abs_;
+				nn = abs_;
 			if (S.substr(i+1,3) == "sqs")
-				nn = functions::sqs_;
+				nn = sqs_;
 			if (S.substr(i + 1, 3) == "mo1")
-				nn = functions::mo1_;
+				nn = mo1_;
 			if (S.substr(i + 1, 3) == "sig")
-				nn = functions::sig_;
+				nn = sig_;
 			if (S.substr(i + 1, 3) == "toy")
-				nn = functions::toy_;
+				nn = toy_;
 
 			for (int j=i+4; j<S.size(); j++)
 			{
@@ -151,14 +151,14 @@ CStringOP::CStringOP(string S)
 				{
 					prntcnt--;
 					if (prntcnt == 0)
-					{
+					{	
 						terms.push_back(CStringOP(S.substr(i+5,j-i-5)));
 						terms_count++;
 						terms[terms.size()-1].function = 1;
 						terms[terms.size()-1].number = nn;
 						i=j;
 						j=S.size() + 1;
-
+						
 					}
 				}
 			}
@@ -168,7 +168,7 @@ CStringOP::CStringOP(string S)
 		{
 			int j=i+1;
 			while ((j<S.size()) && (isnumber(S[min(j,(int)S.size()-1)]) == true)) j++;
-			terms.push_back(CStringOP());
+			terms.push_back(CStringOP());	
 			terms[terms_count].value = atof(S.substr(i,j-i).c_str());
 			terms_count++;
 			terms[terms_count-1].constant = true;
@@ -180,7 +180,7 @@ CStringOP::CStringOP(string S)
 			int j=i+1;
 			while (S[j] != ']') j++;
 			{
-				terms.push_back(CStringOP());
+				terms.push_back(CStringOP());	
 				if (split(S.substr(i+2,j-i-2),':').size()>0) terms[terms_count].number = atoi(S.substr(i+2,j-i-2).c_str());
 				terms_count++;
 				terms[terms_count-1].parameter = true;
@@ -194,7 +194,7 @@ CStringOP::CStringOP(string S)
 			int j=i+1;
 			while (S[j] != ']') j++;
 			{
-				terms.push_back(CStringOP());
+				terms.push_back(CStringOP());	
 				if (split(S.substr(i+2,j-i-2),':').size()>0) terms[terms_count].number = ATOI(split(S.substr(i+2,j-i-2),':'))[0];
 				if (split(S.substr(i+2,S.size()-1),':').size()==2)
 				{	terms[terms_count].phase = ATOI(split(S.substr(i+2,j-i-2),':'))[1];
@@ -221,12 +221,12 @@ CStringOP::CStringOP(string S)
 			int j=i+1;
 			while (S[j] != ']') j++;
 			{
-				terms.push_back(CStringOP());
-				if (split(S.substr(i+2,S.size()-1),':').size()==1)
+				terms.push_back(CStringOP());	
+				if (split(S.substr(i+2,S.size()-1),':').size()==1) 
 				{	terms[terms_count].phase = ATOI(split(S.substr(i+2,S.size()-1),':'))[0];
 					terms[terms_count].particle_type = -1;
 				}
-				if (split(S.substr(i+2,S.size()-1),':').size()==2)
+				if (split(S.substr(i+2,S.size()-1),':').size()==2) 
 				{
 					terms[terms_count].phase = ATOI(split(S.substr(i+2,S.size()-1),':'))[1];
 					terms[terms_count].particle_type = ATOI(split(S.substr(i+2,S.size()-1),':'))[0];
@@ -243,12 +243,12 @@ CStringOP::CStringOP(string S)
 			int j=i+1;
 			while (S[j] != ']') j++;
 			{
-				terms.push_back(CStringOP());
+				terms.push_back(CStringOP());	
 				if (isintegernumber(S.substr(i + 2, j-i-2)) == true)
 					terms[terms_count].number = atoi(S.substr(i + 2, j-i-2).c_str());
 				else
 					terms[terms_count].number = quan(S.substr(i + 2, j-i-2));
-
+				
 
 				terms_count++;
 				terms[terms_count-1].s_block = true;
@@ -263,7 +263,7 @@ CStringOP::CStringOP(string S)
 			int j=i+1;
 			while (S[j] != ']') j++;
 			{
-				terms.push_back(CStringOP());
+				terms.push_back(CStringOP());	
 				if (isintegernumber(S.substr(i + 2, j-i-2)) == true)
 					terms[terms_count].number = atoi(S.substr(i + 2, j - i - 2).c_str());
 				else
@@ -281,7 +281,7 @@ CStringOP::CStringOP(string S)
 			int j=i+1;
 			while (S[j] != ']') j++;
 			{
-				terms.push_back(CStringOP());
+				terms.push_back(CStringOP());	
 				if (isintegernumber(S.substr(i + 2, j-i-2)) == true)
 					terms[terms_count].number = atoi(S.substr(i + 2, j-i-2).c_str());
 				else
@@ -294,15 +294,15 @@ CStringOP::CStringOP(string S)
 
 		}
 
-
+		
 
 		if ((i<S.size()) && (S[min(i,(int)S.size()-1)]=='f'))
 		{
 			int j=i+1;
 			while (S[j] != ']') j++;
 			{
-				terms.push_back(CStringOP());
-
+				terms.push_back(CStringOP());	
+				
 				if (isintegernumber(S.substr(i + 2, j - i - 2)) == true)
 					terms[terms_count].number = atoi(S.substr(i + 2, j - i - 2).c_str());
 				else
@@ -315,10 +315,10 @@ CStringOP::CStringOP(string S)
 
 		}
 	}
-
+	
 	nterms = terms_count;
 	nopts = op_count;
-
+	
 }
 
 
@@ -389,45 +389,45 @@ CStringOP::CStringOP(string S, CRxnNetwork *R)
 			string a = S.substr(i + 1, 4);
 			int nn;
 			if (S.substr(i + 1, 3) == "exp")
-				nn = functions::exp_;
+				nn = exp_;
 			if (S.substr(i + 1, 3) == "hsd")
-				nn = functions::hsd_;
+				nn = hsd_;
 			if (S.substr(i + 1, 3) == "min")
-				nn = functions::min_;
+				nn = min_;
 			if (S.substr(i + 1, 3) == "max")
-				nn = functions::max_;
+				nn = max_;
 			if (S.substr(i + 1, 3) == "lne")
-				nn = functions::lne_;
+				nn = lne_;
 			if (S.substr(i + 1, 3) == "lnt")
-				nn = functions::lnt_;
+				nn = lnt_;
 			if (S.substr(i + 1, 3) == "sgm")
-				nn = functions::sgm_;
+				nn = sgm_;
 			if (S.substr(i + 1, 3) == "pos")
-				nn = functions::pos_;
+				nn = pos_;
 			if (S.substr(i + 1, 3) == "sq1")
-				nn = functions::sq1_;
+				nn = sq1_;
 			if (S.substr(i + 1, 3) == "sqr")
-				nn = functions::sqr_;
+				nn = sqr_;
 			if (S.substr(i + 1, 3) == "frs")
-				nn = functions::frs_;
+				nn = frs_;
 			if (S.substr(i + 1, 3) == "fas")
-				nn = functions::fas_;
+				nn = fas_;
 			if (S.substr(i + 1, 3) == "ply")
-				nn = functions::ply_;
+				nn = ply_;
 			if (S.substr(i + 1, 3) == "mon")
-				nn = functions::mon_;
+				nn = mon_;
 			if (S.substr(i + 1, 3) == "sq2")
-				nn = functions::sq2_;
+				nn = sq2_;
 			if (S.substr(i + 1, 3) == "abs")
-				nn = functions::abs_;
+				nn = abs_;
 			if (S.substr(i + 1, 3) == "sqs")
-				nn = functions::sqs_;
+				nn = sqs_;
 			if (S.substr(i + 1, 3) == "mo1")
-				nn = functions::mo1_;
+				nn = mo1_;
 			if (S.substr(i + 1, 3) == "toy")
-				nn = functions::toy_;
+				nn = toy_;
 			if (S.substr(i + 1, 3) == "sig")
-				nn = functions::sig_;
+				nn = sig_;
 
 			for (int j = i + 4; j<S.size(); j++)
 			{
@@ -632,14 +632,14 @@ int opertr(char a)
 		case ':':
 			return 5;
 	}
-	return 999;
+	return 999;			
 }
 
 int getoperator(string S)
 {
 	int k=-1;
 	for (int i=0; i<S.size(); i++)
-		if (opertr(S[i])!=999)
+		if (opertr(S[i])!=999) 
 			{	k=opertr(S[i]);
 				break;}
 	return k;
@@ -656,12 +656,12 @@ bool isnumber(char S)
 
 bool isnumber(string S)
 {
-	bool res = true;
+	bool res = true; 
 	for (int i = 0; i < S.size(); i++)
 		if (!isnumber(S[i]))
-			res = false;
+			res = false; 
 
-	return res;
+	return res; 
 }
 
 
@@ -685,38 +685,24 @@ int quan(string S)
 	if (tolower(trim(S)) == "z0") return 5;
 	if (tolower(trim(S)) == "se") return 9;
 	if (tolower(trim(S)) == "theta") return 10;
-	if (tolower(trim(S)) == "porosity") return physical_properties::theta_s+50;
+	if (tolower(trim(S)) == "porosity") return theta_s+50;
 	if (tolower(trim(S)) == "depression") return 12;
 	if (tolower(trim(S)) == "vapor_diff") return 13;
 
-	if (tolower(trim(S)) == "ks") return physical_properties::ks+50;
-	if (tolower(trim(S)) == "theta_s") return physical_properties::theta_s+50;
-	if (tolower(trim(S)) == "theta_r") return physical_properties::theta_r+50;
-	if (tolower(trim(S)) == "vg_alpha") return physical_properties::vg_alpha+50;
-	if (tolower(trim(S)) == "vg_n") return physical_properties::vg_n+50;
-	if (tolower(trim(S)) == "vg_m") return physical_properties::vg_m+50;
-	if (tolower(trim(S)) == "lambda") return physical_properties::lambda+50;
-	if ((tolower(trim(S)) == "sc") || (tolower(trim(S)) == "storativity")) return physical_properties::storativity+50;
+	if (tolower(trim(S)) == "ks") return ks+50;
+	if (tolower(trim(S)) == "theta_s") return theta_s+50;
+	if (tolower(trim(S)) == "theta_r") return theta_r+50;
+	if (tolower(trim(S)) == "vg_alpha") return vg_alpha+50;
+	if (tolower(trim(S)) == "vg_n") return vg_n+50;
+	if (tolower(trim(S)) == "vg_m") return vg_m+50;
+	if (tolower(trim(S)) == "lambda") return lambda+50;
+	if ((tolower(trim(S)) == "sc") || (tolower(trim(S)) == "storativity")) return storativity+50;
 	if ((tolower(trim(S)) == "bulk_density") || (tolower(trim(S)) == "bd")) return 14;
-	if (tolower(trim(S)) == "storage_epsilon") return physical_properties::storage_epsilon+50;
-	if (tolower(trim(S)) == "storage_n") return physical_properties::storage_n+50;
-	if (tolower(trim(S)) == "temperature") return physical_properties::temperature;
-	if (tolower(trim(S)) == "light") return physical_properties::light;
+	if (tolower(trim(S)) == "storage_epsilon") return storage_epsilon+50;
+	if (tolower(trim(S)) == "storage_n") return storage_n+50;
+	if (tolower(trim(S)) == "temperature") return temperature;
+	if (tolower(trim(S)) == "light") return light;
 	return -1;
-}
-
-map<string, double> string_to_map(string s)
-{
-	map<string, double> out;
-	vector<string> s1 = split(s, ',');
-	for (int i = 0; i < s.size(); i++)
-	{
-		vector<string> s2 = split(s1[i], '=');
-		double val = atof(s2[1].c_str());
-		out[s2[1]] = val; 
-	}
-	return out; 
-	
 }
 
 vector<string> getline(ifstream& file)
@@ -804,11 +790,11 @@ vector<string> split(const string &s, const vector<char> &del)
 
 }
 
-vector<string> split(const string &s, char del=',')
+vector<string> split(const string &s, char del=',') 
 {
 	int lastdel=0;
 	vector<string> strings;
-	for (int i=0; i<s.size(); i++)
+	for (int i=0; i<s.size(); i++)   
 	{
 		if (s[i]==del)
 		{
@@ -828,15 +814,15 @@ vector<string> split_curly_semicolon(string s)
 	return split(s,del2);
 }
 
-vector<int> look_up(string s, char del)  //Returns a vector with indices of "del"
+vector<int> look_up(string s, char del)  //Returns a vector with indices of "del" 
 {
 	int lastdel=0;		//not used
 	int j=0;			// j is Not Used- can be deleted
 	vector<int> out;
-	for (int i=0; i<s.size(); i++)
+	for (int i=0; i<s.size(); i++)   
 		if (s[i]==del)
 			out.push_back(i);
-
+		
 	return out;
 
 }
@@ -846,7 +832,7 @@ vector<int> ATOI(vector<string> ii)
 	vector<int> res;
 	for (int i=0; i<ii.size(); i++)
 		res.push_back(atoi(ii[i].c_str()));
-
+	
 	return res;
 }
 
@@ -855,7 +841,7 @@ vector<double> ATOF(vector<string> ii)
 	vector<double> res;
 	for (int i=0; i<ii.size(); i++)
 		res.push_back(atof(ii[i].c_str()));
-
+	
 	return res;
 }
 
@@ -963,7 +949,7 @@ void writestring(ofstream& f, string s)
 void writestring(string filename, string s)
 {
 	FILE *FILEBTC;
-	FILEBTC = fopen((filename).c_str(), "a");
+	FILEBTC = fopen((filename).c_str(), "a");  
 	fprintf(FILEBTC, s.c_str());
 	fprintf(FILEBTC, "\n");
 	fclose(FILEBTC);
@@ -1001,7 +987,7 @@ string numbertostring(double x)
 double pipe_poly(double x)
 {
 	double out;
-	if (x < 0) out=0;
+	if (x < 0) out=0; 
 	else if (x >1) out=1;
 	else out = -2.0255*pow(x,4)+1.9813*pow(x,3)+1.0318*pow(x,2)+0.0388*x;
 	return out;
@@ -1009,11 +995,7 @@ double pipe_poly(double x)
 
 string numbertostring(int x)
 {
-    string Result;          // string which will contain the result
-	ostringstream convert;   // stream used for the conversion
-	convert << x;      // insert the textual representation of 'Number' in the characters in the stream
-	Result = convert.str();
-	return Result;
+    return QString("%1").arg(x).toStdString();
 }
 
 string numbertostring(vector<int> x)
