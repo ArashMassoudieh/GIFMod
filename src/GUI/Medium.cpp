@@ -50,12 +50,7 @@ CMedium::CMedium(const CMedium &M)
     Solution_State = M.Solution_State;
 	J_update = M.J_update;
 	
-<<<<<<< HEAD
 
-=======
-	t = M.t;
-	
->>>>>>> master
     Results = M.Results;
 
 
@@ -111,24 +106,12 @@ CMedium& CMedium::operator=(const CMedium &M)
 {
 	parent = M.parent;
 	name = M.name;
-<<<<<<< HEAD
 
     InvJ1 = M.InvJ1;
-=======
-	counter_colloid = M.counter_colloid;
-	counter_flow = M.counter_flow;
-	cr = M.cr;
-	InvJ1 = M.InvJ1;
->>>>>>> master
 	InvJ2 = M.InvJ2;
 	
     Solution_State = M.Solution_State;
 	J_update = M.J_update;
-<<<<<<< HEAD
-=======
-		
-	t = M.t;
->>>>>>> master
 
     Results = M.Results;
 	
@@ -191,12 +174,7 @@ void CMedium::get_state(const CMedium &M)
     Solution_State = M.Solution_State;
 	J_update = M.J_update;
 
-<<<<<<< HEAD
 
-=======
-	t = M.t;
-			
->>>>>>> master
 }
 
 
@@ -761,15 +739,9 @@ CVector CMedium::getres_S(const CVector &X, double dt)
 	for (int i=0; i<Blocks.size(); i++)
 	{    
 		if  (Blocks[i].inflow.size()!=0) 
-<<<<<<< HEAD
             F[i]= (X1[i]-Blocks[i].S)/dt-sum_interpolate(Blocks[i].inflow, Solution_State.t,"flow");
 		else F[i]= (X1[i]-Blocks[i].S)/dt;
         F[i]+=Blocks[i].outflow_corr_factor*Blocks[i].get_evaporation(Solution_State.t);
-=======
-			F[i]= (X1[i]-Blocks[i].S)/dt-sum_interpolate(Blocks[i].inflow, t,"flow"); 
-		else F[i]= (X1[i]-Blocks[i].S)/dt;
-		F[i]+=Blocks[i].outflow_corr_factor*Blocks[i].get_evaporation(t);
->>>>>>> master
 	}
 
 
@@ -794,11 +766,7 @@ CVector CMedium::getres_S(const CVector &X, double dt)
 		if (Blocks[i].setzero==2)
 		{
 			bool all_out_flows_zero=true;
-<<<<<<< HEAD
             if (Blocks[i].get_evaporation(Solution_State.t) > 1e-30) all_out_flows_zero=false;
-=======
-			if (Blocks[i].get_evaporation(t) > 1e-30) all_out_flows_zero=false;  
->>>>>>> master
 			for (int k=0; k<Blocks[i].connectors.size(); k++)
 				if ((w()*Connector[Blocks[i].connectors[k]].Q + (1-w())*Connector[Blocks[i].connectors[k]].Q_star)*(Blocks[i].connectors_se[k]-0.5)<0)
 					all_out_flows_zero = false;
@@ -833,15 +801,9 @@ CVector_arma CMedium::getres_S(CVector_arma &X, double dt)
 	for (int i = 0; i<Blocks.size(); i++)
 	{
 		if (Blocks[i].inflow.size() != 0)
-<<<<<<< HEAD
             F[i] = (X1[i] - Blocks[i].S) / dt - sum_interpolate(Blocks[i].inflow, Solution_State.t, "flow");
 		else F[i] = (X1[i] - Blocks[i].S) / dt;
         F[i] += Blocks[i].outflow_corr_factor*Blocks[i].get_evaporation(Solution_State.t);
-=======
-			F[i] = (X1[i] - Blocks[i].S) / dt - sum_interpolate(Blocks[i].inflow, t, "flow");
-		else F[i] = (X1[i] - Blocks[i].S) / dt;
-		F[i] += Blocks[i].outflow_corr_factor*Blocks[i].get_evaporation(t);
->>>>>>> master
 	}
 
 	for (int i = 0; i<Connector.size(); i++)
@@ -951,22 +913,14 @@ void CMedium::setQ_star()
 		if (Connector[i].control)
 		{
 			if (Connector[i].Controller->output.n>0)
-<<<<<<< HEAD
                 Connector[i].set_val("q*", Connector[i].Controller->output.interpol(Solution_State.t));
-=======
-				Connector[i].set_val("q*", Connector[i].Controller->output.interpol(t));
->>>>>>> master
 			else
 				Connector[i].set_val("q*", Connector[i].Controller->value);
 		}
 		else if (!Connector[i].presc_flow)
 			Connector[i].set_val("q*", Connector[i].calc_star(Connector[i].flow_expression));
 		else
-<<<<<<< HEAD
             Connector[i].set_val("q*", Connector[i].presc_flowrate.interpol(Solution_State.t));
-=======
-			Connector[i].set_val("q*", Connector[i].presc_flowrate.interpol(t));
->>>>>>> master
 			
 		
 		Connector[i].set_val("q_v*", Connector[i].calc_star(Connector[i].flow_expression_v));
@@ -984,11 +938,7 @@ void CMedium::setQ0()
 			if (!Connector[i].presc_flow)
 				Connector[i].set_val("q", Connector[i].calc(Connector[i].flow_expression));
 			else
-<<<<<<< HEAD
                 Connector[i].set_val("q", Connector[i].presc_flowrate.interpol(Solution_State.t));
-=======
-				Connector[i].set_val("q", Connector[i].presc_flowrate.interpol(t));
->>>>>>> master
 
 
 			Connector[i].set_val("q_v", Connector[i].calc(Connector[i].flow_expression_v));
@@ -1046,17 +996,10 @@ CVector CMedium::getQ(const CVector &X)
 		if (!Connector[i].presc_flow)
 			H[i] = Connector[i].calc_star(Connector[i].flow_expression);
 		else
-<<<<<<< HEAD
             H[i] = Connector[i].presc_flowrate.interpol(Solution_State.t);
 	
 		if (Connector[i].control)
             H[i] = Connector[i].Controller->output.interpol(Solution_State.t);
-=======
-			H[i] = Connector[i].presc_flowrate.interpol(t);
-	
-		if (Connector[i].control)
-			H[i] = Connector[i].Controller->output.interpol(t);
->>>>>>> master
 	}
 	return H;
 }
@@ -1415,13 +1358,8 @@ void CMedium::onestepsolve_flow(double dtt)
 			}
 
 
-<<<<<<< HEAD
             Solution_State.counter_flow++;
             if (Solution_State.counter_flow>nr_failure_criteria())
-=======
-			counter_flow++;
-			if (counter_flow>nr_failure_criteria()) 
->>>>>>> master
 			{	
                 Solution_State.fail_reason = "Number of iteration exceeded the limit in hydro";
 				set_flow_factors(correction_factor_old);
@@ -1468,13 +1406,8 @@ void CMedium::Blocksmassbalance()
 	for (int i=0; i<Blocks.size(); i++)
 	{
 		Blocks[i].MBBlocks =(Blocks[i].S_star-Blocks[i].S);
-<<<<<<< HEAD
         Blocks[i].MBBlocks -= sum_interpolate(Blocks[i].inflow, Solution_State.t)[0]*dtt;
         Blocks[i].MBBlocks +=Blocks[i].outflow_corr_factor*Blocks[i].get_evaporation(Solution_State.t)*dtt;
-=======
-		Blocks[i].MBBlocks -= sum_interpolate(Blocks[i].inflow, t)[0]*dtt; 
-		Blocks[i].MBBlocks +=Blocks[i].outflow_corr_factor*Blocks[i].get_evaporation(t)*dtt;	
->>>>>>> master
 	}
 	for (int i=0; i<Connector.size(); i++)
 	{
@@ -1569,11 +1502,7 @@ void CMedium::solve_fts_m2(double dt)
 	int oscillation_counter;
     Results.Solution_dt.clear();
     Results.Solution_dt = CBTCSet(3);
-<<<<<<< HEAD
     Solution_State.dt_fail = 10000;
-=======
-	dt_fail = 10000;
->>>>>>> master
     Results.ANS = CBTCSet(5 * Blocks.size() + 3 * Connector.size());
     Results.ANS_colloids = CBTCSet(Blocks.size()*Blocks[0].n_phases);
     Results.ANS_constituents = CBTCSet(Blocks.size()*(Blocks[0].n_phases + n_default_phases)*RXN().cons.size());
@@ -1705,11 +1634,7 @@ void CMedium::solve_fts_m2(double dt)
 			else
 				onestepsolve_flow_bioest(dtt);
             vector<int> max_wiggle_v = Results.ANS.max_wiggle_sl(Blocks.size(), wiggle_tolerance());
-<<<<<<< HEAD
             Solution_State.max_wiggle = max_wiggle_v[0]; Solution_State.max_wiggle_id = max_wiggle_v[1];
-=======
-			max_wiggle = max_wiggle_v[0]; max_wiggle_id = max_wiggle_v[1];
->>>>>>> master
 			/*if (max_wiggle>wiggle_tolerance())
 			{	wiggle_dt_mult=wiggle_tolerance()/max_wiggle;
 				if (dtt*wiggle_dt_mult/dt0<1e-6) wiggle_dt_mult=max(1.0,wiggle_dt_mult);
@@ -1796,15 +1721,9 @@ void CMedium::solve_fts_m2(double dt)
                     Solution_State.pos_def_mult_Q = 10000;
 				}
 				
-<<<<<<< HEAD
                 if ((Solution_State.max_wiggle > 0.1) && (!redo) && check_oscillation() && dtt > 0.01*dt0)
 				{
                     Solution_State.fail_reason = "Oscillation at: " + Blocks[Solution_State.max_wiggle_id].ID;
-=======
-				if ((max_wiggle > 0.1) && (!redo) && check_oscillation() && dtt > 0.01*dt0)
-				{
-                    Solution_State.fail_reason = "Oscillation at: " + Blocks[max_wiggle_id].ID;
->>>>>>> master
 					redo_counter++;
 					redo = true;
                     Res = clean_up_restore_points(Res, Solution_State.t);
@@ -1945,29 +1864,17 @@ void CMedium::solve_fts_m2(double dt)
 				return;
 			}
 
-<<<<<<< HEAD
             if (((((iii > 100) && ((Solution_State.t - Timemin) / double(iii) / dt0 < avg_dt_limit())) || (Solution_State.epoch_count > epoch_limit())) && dt <= dt_last) || (dtt<1e-20))
-=======
-            if (((((iii > 100) && ((t - Timemin) / double(iii) / dt0 < avg_dt_limit())) || (Solution_State.epoch_count > epoch_limit())) && dt <= dt_last) || (dtt<1e-20))
->>>>>>> master
 			{
 				if (write_details())
 				{
 					FILEBTC = fopen((outputpathname() + "Solution_details_" + parent->ID +".txt").c_str(), "a");
 					write_state(outputpathname() + "state.txt");
-<<<<<<< HEAD
                     fprintf(FILEBTC, "dt too small, epoch = %i, average_dt = %e < %e\n", Solution_State.epoch_count, (Solution_State.t - Timemin) / double(iii), avg_dt_limit()*dt0);
                     fprintf(FILEBTC, "epoch = %i, > %i\n", Solution_State.epoch_count, epoch_limit());
 					fclose(FILEBTC);
 				}
                 Solution_State.fail_reason = "dt too small, epoch = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii);
-=======
-                    fprintf(FILEBTC, "dt too small, epoch = %i, average_dt = %e < %e\n", Solution_State.epoch_count, (t - Timemin) / double(iii), avg_dt_limit()*dt0);
-                    fprintf(FILEBTC, "epoch = %i, > %i\n", Solution_State.epoch_count, epoch_limit());
-					fclose(FILEBTC);
-				}
-                Solution_State.fail_reason = "dt too small, epoch = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii);
->>>>>>> master
                 Solution_State.failed = true;
 				write_flows(outputpathname() + "flows.txt");
 				for (int i = 0; i < controllers().size(); i++)
@@ -1976,13 +1883,8 @@ void CMedium::solve_fts_m2(double dt)
 				{
                     if (Solution_State.epoch_count > epoch_limit())
                         QMessageBox::warning(runtimewindow, "Simulation Failed", "Number of epochs (" + QString::number(Solution_State.epoch_count) + " ) exceeded the limit (" + QString::number(epoch_limit()) + ")", QMessageBox::Ok);
-<<<<<<< HEAD
                     if ((Solution_State.t - Timemin) / double(iii) / dt0 < avg_dt_limit())
                         QMessageBox::warning(runtimewindow, "Simulation Failed", "Average time-step size (" + QString::number((Solution_State.t - Timemin) / double(iii)) + " ) is too small < " + QString::number(avg_dt_limit()*dt0)  , QMessageBox::Ok);
-=======
-					if ((t - Timemin) / double(iii) / dt0 < avg_dt_limit())
-						QMessageBox::warning(runtimewindow, "Simulation Failed", "Average time-step size (" + QString::number((t - Timemin) / double(iii)) + " ) is too small < " + QString::number(avg_dt_limit()*dt0)  , QMessageBox::Ok);
->>>>>>> master
 
 
 				}
@@ -2062,7 +1964,6 @@ void CMedium::solve_fts_m2(double dt)
 		if (!redo)
 		{
 			for (int i = 0; i < Blocks.size(); i++)
-<<<<<<< HEAD
                 Results.ANS.BTC[i].append(Solution_State.t, Blocks[i].S);
 
 			for (int i = 0; i < Connector.size(); i++)
@@ -2085,39 +1986,11 @@ void CMedium::solve_fts_m2(double dt)
 
 			for (int i = 0; i < Blocks.size(); i++)
                 Results.ANS.BTC[i + 4 * Blocks.size() + 3 * Connector.size()].append(Solution_State.t, Blocks[i].plant_prop.LAI);
-=======
-                Results.ANS.BTC[i].append(t, Blocks[i].S);
-
-			for (int i = 0; i < Connector.size(); i++)
-                Results.ANS.BTC[i + Blocks.size()].append(t, Connector[i].Q*Connector[i].flow_factor);
-
-			for (int i = 0; i < Blocks.size(); i++)
-                Results.ANS.BTC[i + Blocks.size() + Connector.size()].append(t, Blocks[i].H);
-
-			for (int i = 0; i < Blocks.size(); i++)
-                Results.ANS.BTC[i + 2 * Blocks.size() + Connector.size()].append(t, Blocks[i].outflow_corr_factor*Blocks[i].get_evaporation(t));
-
-			for (int i = 0; i < Connector.size(); i++)
-                Results.ANS.BTC[i + 3 * Blocks.size() + Connector.size()].append(t, Connector[i].A);
-
-			for (int i = 0; i < Connector.size(); i++)
-                Results.ANS.BTC[i + 3 * Blocks.size() + 2 * Connector.size()].append(t, Connector[i].Q_v);
-
-			for (int i = 0; i < Blocks.size(); i++)
-                Results.ANS.BTC[i + 3 * Blocks.size() + 3* Connector.size()].append(t, Blocks[i].V);
-
-			for (int i = 0; i < Blocks.size(); i++)
-                Results.ANS.BTC[i + 4 * Blocks.size() + 3 * Connector.size()].append(t, Blocks[i].plant_prop.LAI);
->>>>>>> master
 
 
 			for (int i = 0; i < measured_quan().size(); i++)
 				if (measured_quan()[i].experiment == name)
-<<<<<<< HEAD
                     Results.ANS_obs.BTC[i].append(Solution_State.t, get_var(measured_quan()[i].loc_type, measured_quan()[i].id, measured_quan()[i].quan));
-=======
-                    Results.ANS_obs.BTC[i].append(t, get_var(measured_quan()[i].loc_type, measured_quan()[i].id, measured_quan()[i].quan));
->>>>>>> master
 
 			//updating sensors
 			for (int i = 0; i < sensors().size(); i++)
@@ -2149,25 +2022,15 @@ void CMedium::solve_fts_m2(double dt)
 
 
 
-<<<<<<< HEAD
             Results.Solution_dt.BTC[0].append(Solution_State.t, dtt);
             Results.Solution_dt.BTC[1].append(Solution_State.t, double(Solution_State.counter_flow));
             Results.Solution_dt.BTC[2].append(Solution_State.t, Solution_State.max_wiggle);
-=======
-            Results.Solution_dt.BTC[0].append(t, dtt);
-            Results.Solution_dt.BTC[1].append(t, double(counter_flow));
-            Results.Solution_dt.BTC[2].append(t, max_wiggle);
->>>>>>> master
 
 			if (colloid_transport())
 				for (int j = 0; j < Blocks[0].Solid_phase.size(); j++)
 					for (int k = 0; k < Blocks[0].Solid_phase[j]->n_phases; k++)
 						for (int i = 0; i < Blocks.size(); i++)
-<<<<<<< HEAD
                             Results.ANS_colloids.BTC[get_member_no(i, j, k)].append(Solution_State.t, Blocks[i].G[j][k]);
-=======
-                            Results.ANS_colloids.BTC[get_member_no(i, j, k)].append(t, Blocks[i].G[j][k]);
->>>>>>> master
 
 			if (constituent_transport())
 				for (int kk = 0; kk < RXN().cons.size(); kk++)
@@ -2177,22 +2040,14 @@ void CMedium::solve_fts_m2(double dt)
 						if (p < 0) _t = 1; else _t = Blocks[0].Solid_phase[p]->n_phases;
 						for (int l = 0; l < _t; l++)
 							for (int i = 0; i < Blocks.size(); i++)
-<<<<<<< HEAD
                                 Results.ANS_constituents.BTC[get_member_no(i, p, l, kk)].append(Solution_State.t, Blocks[i].CG[kk][Blocks[i].get_member_no(p, l)]);
-=======
-                                Results.ANS_constituents.BTC[get_member_no(i, p, l, kk)].append(t, Blocks[i].CG[kk][Blocks[i].get_member_no(p, l)]);
->>>>>>> master
 
 					}
 
 			if (mass_balance_check())
 			{
 				Blocksmassbalance();
-<<<<<<< HEAD
                 for (int i = 0; i < Blocks.size(); i++) Results.ANS_MB.BTC[i].append(Solution_State.t, Blocks[i].MBBlocks);
-=======
-                for (int i = 0; i < Blocks.size(); i++) Results.ANS_MB.BTC[i].append(t, Blocks[i].MBBlocks);
->>>>>>> master
 			}
 
 			setQ();
@@ -2411,7 +2266,6 @@ void CMedium::finalize_set_param()
 				if (((Blocks[getblocksq(Connector[i].Block2ID)].indicator == Soil) || (Blocks[getblocksq(Connector[i].Block2ID)].indicator == Darcy)) && ((Blocks[getblocksq(Connector[i].Block1ID)].indicator == Pond) || (Blocks[getblocksq(Connector[i].Block1ID)].indicator == Stream)))
 					Connector[i].flow_params[j] = Blocks[getblocksq(Connector[i].Block2ID)].fs_params[j];
 
-<<<<<<< HEAD
 
 				if (Blocks[getblocksq(Connector[i].Block1ID)].indicator == Blocks[getblocksq(Connector[i].Block2ID)].indicator) 
 					Connector[i].flow_params[j]=0.5*(Blocks[getblocksq(Connector[i].Block1ID)].fs_params[j] + Blocks[getblocksq(Connector[i].Block2ID)].fs_params[j]);
@@ -2421,17 +2275,6 @@ void CMedium::finalize_set_param()
 					Connector[i].flow_params[j]=Blocks[getblocksq(Connector[i].Block2ID)].fs_params[j];
 			} 
 
-=======
-
-				if (Blocks[getblocksq(Connector[i].Block1ID)].indicator == Blocks[getblocksq(Connector[i].Block2ID)].indicator) 
-					Connector[i].flow_params[j]=0.5*(Blocks[getblocksq(Connector[i].Block1ID)].fs_params[j] + Blocks[getblocksq(Connector[i].Block2ID)].fs_params[j]);
-				else if (Blocks[getblocksq(Connector[i].Block1ID)].indicator==0) 
-					Connector[i].flow_params[j]=Blocks[getblocksq(Connector[i].Block1ID)].fs_params[j];
-				else if (Blocks[getblocksq(Connector[i].Block2ID)].indicator==0)
-					Connector[i].flow_params[j]=Blocks[getblocksq(Connector[i].Block2ID)].fs_params[j];
-			} 
-
->>>>>>> master
 
 			if (Connector[i].A==0)  
 			{
@@ -2710,11 +2553,7 @@ void CMedium::onestepsolve_colloid(double dtt)
 	CVector F = getres_C(X,dtt);  
 	CVector F_old = F;
 	double lambda = 1;
-<<<<<<< HEAD
     Solution_State.counter_colloid = 0;
-=======
-	counter_colloid = 0;
->>>>>>> master
 		
 	if ((F == F) != true || (X == X) != true || (F.is_finite() == false) || (X.is_finite() == false))
 	{	failed_colloid = true;
@@ -2757,11 +2596,7 @@ void CMedium::onestepsolve_colloid(double dtt)
             Solution_State.dtt_J_c = dtt;
 		}
 					
-<<<<<<< HEAD
         CVector dx = (dtt / Solution_State.dtt_J_c)*(InvJ_C*normalize_diag(F, M_C));
-=======
-		CVector dx = (dtt / dtt_J_c)*(InvJ_C*normalize_diag(F, M_C));
->>>>>>> master
 
 		X -= lambda*dx;
 		
@@ -2786,13 +2621,8 @@ void CMedium::onestepsolve_colloid(double dtt)
 			return;
 		}
 
-<<<<<<< HEAD
         Solution_State.counter_colloid++;
         if (Solution_State.counter_colloid>nr_failure_criteria())
-=======
-		counter_colloid++;
-		if (counter_colloid>nr_failure_criteria()) 
->>>>>>> master
 		{
 			set_G_star(X_old);
             Solution_State.fail_reason = "Number of iterations exceeded the limit in colloids";
@@ -2824,11 +2654,7 @@ void CMedium::onestepsolve_const(double dtt)
 	CVector X_old = X;
 	CVector F = getres_Q(X,dtt);  
 	CVector F_old = F;
-<<<<<<< HEAD
     Solution_State.counter_const = 0;
-=======
-	counter_const = 0;
->>>>>>> master
 		
 	if ((F == F) != true || (X == X) != true || (F.is_finite() == false) || (X.is_finite() == false))
 	{	failed_const=true;
@@ -2841,11 +2667,7 @@ void CMedium::onestepsolve_const(double dtt)
 	double err_p = err;
 	double errF;
 	double lambda = 1; 
-<<<<<<< HEAD
     Solution_State.J_q_update_count = 0;
-=======
-	J_q_update_count = 0;
->>>>>>> master
 	while (err>tol()) 
 	{
 		if ((J_update_Q==true) || (M_Q.getnumrows()!= X.num ))
@@ -2880,11 +2702,7 @@ void CMedium::onestepsolve_const(double dtt)
             Solution_State.dtt_J_q = dtt;
 		}
 				
-<<<<<<< HEAD
         CVector dx = dtt / Solution_State.dtt_J_q*(InvJ_Q*Preconditioner_Q*normalize_diag(F, M_Q));
-=======
-		CVector dx = dtt / dtt_J_q*(InvJ_Q*Preconditioner_Q*normalize_diag(F, M_Q));
->>>>>>> master
 		
 		X -= lambda*dx;
 
@@ -2904,11 +2722,7 @@ void CMedium::onestepsolve_const(double dtt)
 			lambda /= 2.0;
 		}
 
-<<<<<<< HEAD
         Solution_State.counter_const++;
-=======
-		counter_const++;
->>>>>>> master
 		
 		if (error_expand_counter==4)
 		{
@@ -2918,11 +2732,7 @@ void CMedium::onestepsolve_const(double dtt)
 			return;
 		}
 
-<<<<<<< HEAD
         if (Solution_State.counter_const>nr_failure_criteria())
-=======
-		if (counter_const>nr_failure_criteria()) 
->>>>>>> master
 		{
 			set_CG_star(X_old);
             Solution_State.fail_reason = "Number of iterations exceeded the limit in wq";
@@ -3014,11 +2824,7 @@ CVector CMedium::getres_C(const CVector &X, double dtt)
 			{
 				F[get_member_no(i,p,l)] = (Blocks[i].capacity_c_star[p][l]*Blocks[i].G_star[p][l]-Blocks[i].capacity_c[p][l]*Blocks[i].G[p][l])/dtt;
 				if ((l==0) && (Blocks[i].inflow.size()!=0)) 
-<<<<<<< HEAD
                     F[get_member_no(i,p,l)] -= sum_interpolate(Blocks[i].inflow, Solution_State.t,"flow")*sum_interpolate(Blocks[i].inflow, Solution_State.t,Solid_phase()[p].name);
-=======
-					F[get_member_no(i,p,l)] -= sum_interpolate(Blocks[i].inflow, t,"flow")*sum_interpolate(Blocks[i].inflow, t,Solid_phase()[p].name); 
->>>>>>> master
 			}
 						
 			for (int i=0; i<Connector.size(); i++)
@@ -3173,11 +2979,7 @@ void CMedium::correct_S(double dtt)
 	for (int i=0; i<Blocks.size(); i++)
 	{
 			if  (Blocks[i].inflow.size()!=0) 
-<<<<<<< HEAD
                 S[i] = Blocks[i].S+sum_interpolate(Blocks[i].inflow, Solution_State.t)[0]*dtt;
-=======
-				S[i] = Blocks[i].S+sum_interpolate(Blocks[i].inflow, t)[0]*dtt; 
->>>>>>> master
 			else S[i]= Blocks[i].S;
 //			if (Blocks[i].indicator != Soil)
                 S[i] -= Blocks[i].outflow_corr_factor*Blocks[i].get_evaporation(Solution_State.t)*dtt;
@@ -4026,11 +3828,7 @@ void CMedium::writedetails()
 {
 	FILE *FILEBTC;
 	FILEBTC = fopen((outputpathname() + "Solution_details_" + parent->ID + ".txt").c_str(), "a");
-<<<<<<< HEAD
     fprintf(FILEBTC, "dt:, %lf, %le, %le(%i), %le, counters:, %i, %i, %i, J_updates:, %i, %i, %i, update_counts: %i, %i, %i, multis: %le, %le, pos_defs: %le, %le, wiggle: %le, %le, %le, %i, %s\n", Solution_State.t, dtt, base_dtt, where_base_dtt_changed, avg_redo_dtt, Solution_State.counter_flow, Solution_State.counter_colloid, Solution_State.counter_const, J_update, J_update_C, J_update_Q, Solution_State.J_h_update_count, Solution_State.J_c_update_count, Solution_State.J_q_update_count, Solution_State.pos_def_mult, Solution_State.pos_def_mult_Q, pos_def_ratio, pos_def_ratio_const, Solution_State.max_wiggle, Solution_State.wiggle_dt_mult, Solution_State.dt_fail, Solution_State.max_wiggle_id, Solution_State.fail_reason.c_str());
-=======
-    fprintf(FILEBTC, "dt:, %lf, %le, %le(%i), %le, counters:, %i, %i, %i, J_updates:, %i, %i, %i, update_counts: %i, %i, %i, multis: %le, %le, pos_defs: %le, %le, wiggle: %le, %le, %le, %i, %s\n", t, dtt, base_dtt, where_base_dtt_changed, avg_redo_dtt, counter_flow, counter_colloid, counter_const, J_update, J_update_C, J_update_Q, J_h_update_count, J_c_update_count, J_q_update_count, pos_def_mult, pos_def_mult_Q, pos_def_ratio, pos_def_ratio_const, max_wiggle, wiggle_dt_mult, dt_fail, max_wiggle_id, Solution_State.fail_reason.c_str());
->>>>>>> master
 	fclose(FILEBTC);
 }
 
@@ -4293,11 +4091,7 @@ double CMedium::getflow(int connector_ID)
 	{
 		Connector[connector_ID].Q_star = flow;
 		Connector[connector_ID].flow_calc_done = true;
-<<<<<<< HEAD
         return Connector[connector_ID].presc_flowrate.interpol(Solution_State.t);
-=======
-		return Connector[connector_ID].presc_flowrate.interpol(t);
->>>>>>> master
 	}
 	if (Connector[connector_ID].flow_calc_done == true) 
 		return Connector[connector_ID].Q_star;
@@ -4311,11 +4105,7 @@ double CMedium::getflow(int connector_ID)
 		}
 		for (int j = 0; j < Connector[connector_ID].Block1->inflow.size(); j++)
 		{
-<<<<<<< HEAD
             flow += Connector[connector_ID].Block1->inflow[j].interpolate(Solution_State.t)[0];
-=======
-			flow += Connector[connector_ID].Block1->inflow[j].interpolate(t)[0];
->>>>>>> master
 		}
 	}
 	else
@@ -4327,11 +4117,7 @@ double CMedium::getflow(int connector_ID)
 		}
 		for (int j = 0; j < Connector[connector_ID].Block2->inflow.size(); j++)
 		{
-<<<<<<< HEAD
             flow -= Connector[connector_ID].Block2->inflow[j].interpolate(Solution_State.t)[0];
-=======
-			flow -= Connector[connector_ID].Block2->inflow[j].interpolate(t)[0];
->>>>>>> master
 		}
 
 	}
@@ -4420,11 +4206,7 @@ CVector CMedium::get_steady_hydro_RHS()
 	for (int i = 0; i < Connector.size(); i++)
 	{
 		if (Connector[i].presc_flow)
-<<<<<<< HEAD
             v.push_back(Connector[i].presc_flowrate.interpol(Solution_State.t));
-=======
-			v.push_back(Connector[i].presc_flowrate.interpol(t));
->>>>>>> master
 	}
 
 	return CVector(v);
