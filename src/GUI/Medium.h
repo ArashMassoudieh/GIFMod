@@ -49,6 +49,7 @@ struct solution_state
     bool failed;
     int epoch_count;
     string fail_reason;
+<<<<<<< HEAD
     double dtt_J_h1, dtt_J_h2, dtt_J_q, dtt_J_c;
     int J_h_update_count, J_q_update_count, J_c_update_count;
 
@@ -58,6 +59,8 @@ struct solution_state
 
     double t; // time
     int counter_flow, counter_colloid, counter_const; // counter for number of iteration
+=======
+>>>>>>> master
 };
 
 struct _results
@@ -73,9 +76,15 @@ struct _results
 
 };
 
+<<<<<<< HEAD
 
 class CMediumSet;
 class CMBBlock;
+=======
+
+class CMediumSet;
+
+>>>>>>> master
 enum formulas
 	{
 		Pipe1, Pipe2, QDarcy, Vapor, Normal, Rating_curve
@@ -85,6 +94,7 @@ class CMedium
 {
 
 public:
+<<<<<<< HEAD
     // API model building functions
     bool AddBlock(const CMBBlock& B );
     bool AddConnector(string source, string destination, const CConnection &C);
@@ -92,6 +102,9 @@ public:
     vector<string> compile_errors;
     // ***
 
+=======
+	bool use_arma = true;
+>>>>>>> master
 	string name;
 	CMediumSet *parent;
 	CMedium(void);
@@ -136,11 +149,20 @@ public:
 	string detoutfilename_wq; //file name where the deterministic water quality output is saved
 	string detoutfilename_control; //file name where the controller values are saved
 	string detoutfilename_prtcle; //file name where the deterministic partcile output is saved
+<<<<<<< HEAD
     string& detoutfilename_obs(); //file name where the deterministic outputs corresponding to the observed data is saved
 	int& writeinterval(); //the interval at which the output are save in output files (default = 1)
 	string& realizeparamfilename(); //output file name for Monte-Carlo realizations
 	double& minimum_acceptable_negative_conc(); //returns the minimum acceptable negative concentration criteria
 
+=======
+	string& detoutfilename_obs(); ////file name where the deterministic outputs corresponding to the observed data is saved
+	int& writeinterval(); //the interval at which the output are save in output files (default = 1)
+	string& realizeparamfilename(); //output file name for Monte-Carlo realizations
+	double& minimum_acceptable_negative_conc(); //returns the minimum acceptable negative concentration criteria
+	double t; // time
+	int counter_flow, counter_colloid, counter_const; // counter for number of iteration
+>>>>>>> master
     void Blocksmassbalance();
 	vector<string> Precipitation_filename;
 	vector<CPrecipitation> Precipitation;
@@ -162,7 +184,16 @@ public:
 	vector<CEnvExchange>& externalflux();
 	vector<CEvaporation>& evaporation_model();
 
+<<<<<<< HEAD
     void writedetails();
+=======
+	double dtt_J_h1, dtt_J_h2, dtt_J_q, dtt_J_c;
+	int J_h_update_count, J_q_update_count, J_c_update_count;
+    void writedetails();
+	double pos_def_mult;
+	double pos_def_mult_Q;
+	double max_wiggle, wiggle_dt_mult, dt_fail, max_wiggle_id;
+>>>>>>> master
 
     int lookup_external_flux(string S);
     int lookup_particle_type(string S);
@@ -175,7 +206,16 @@ public:
 //	int lookup_observation(string S);
 
     void writetolog(string S);
+<<<<<<< HEAD
 
+=======
+	CMatrix Preconditioner_Q;
+	CMatrix Preconditioner_C;
+	CMatrix Preconditioner_S;
+	CMatrix_arma Preconditioner_Q_arma;
+	CMatrix_arma Preconditioner_C_arma;
+	CMatrix_arma Preconditioner_S_arma;
+>>>>>>> master
 	bool& pos_def_limit();
 	double& maximum_run_time();
     bool& check_oscillation();
@@ -192,6 +232,19 @@ public:
 	vector<CBTC> r_humidity;
 	vector<string> r_humidity_filename;
 
+<<<<<<< HEAD
+=======
+
+	void update_rxn_params();
+	double current_light;
+	double current_temperature;
+	double current_wind;
+	double current_relative_humidity;
+	void update_light_temperature();
+	void update_wind_humidity();
+	double get_nextcontrolinterval(double _t);
+	void set_control_params(int);
+>>>>>>> master
 	QString solution_detail;
 	void clear(); //clear the model
 
@@ -227,6 +280,7 @@ public:
     vector<int> get_relevant_measured_quans();
     int lookup_experiment(string S);
 
+<<<<<<< HEAD
 
 	// Control
     double calc_obj_function(double time_interval);
@@ -246,6 +300,24 @@ public:
 
 private:
     bool use_arma = true;
+=======
+
+	// Control
+    double calc_obj_function(double time_interval);
+
+    int getblocksq(string id);
+    int getconnectorsq(string id);
+    int get_member_no(int solid_id, int phase_no);
+    int get_member_no(int block_no, int solid_id, int phase_no);
+    int get_member_no(int block_no, int solid_id, int phase_no, int const_no);
+
+    CRxnNetwork& RXN();
+
+    void get_funcs();
+    string& log_file_name();
+
+private:
+>>>>>>> master
     CMatrix Jacobian_S(const CVector &X, double dt, bool);
     CVector Jacobian_S(const CVector &V, int &i, double &dt);
     CVector Jacobian_S(const CVector &V, CVector &F0, int i, double dt);
@@ -341,7 +413,11 @@ private:
 
     bool J_update,J_update_C, J_update_Q;
     int& max_J_interval();
+<<<<<<< HEAD
 
+=======
+    double cr;
+>>>>>>> master
     double dt0;
     vector<string>& formulas();
     vector<string>& formulasH();
@@ -381,12 +457,27 @@ private:
 
     bool& forward();
     int& epoch_limit();
+<<<<<<< HEAD
+
+    double& avg_dt_limit();
+    CMatrix M;
+    CMatrix_arma M_arma;
+=======
 
     double& avg_dt_limit();
     CMatrix M;
     CMatrix_arma M_arma;
 
+>>>>>>> master
 
+    int& restore_interval();
+    double dtt;
+    double base_dtt;
+    int where_base_dtt_changed = 0;
+    double avg_redo_dtt=0;
+    int redo_count = 0;
+
+<<<<<<< HEAD
     int& restore_interval();
     double dtt;
     double base_dtt;
@@ -459,6 +550,54 @@ private:
     CVector get_rxn_chng_rate();
 };
 
+=======
+    double get_capacity(int block_no, int phase_no, int particle_no);
+    double get_capacity_star(int block_no, int phase_no, int particle_no);
+    vector<int> get_phase_solid_id(int i);
+
+    void evaluate_const_dispersion();
+    void set_CG_star(const CVector &X);
+    void set_CG(const CVector &X);
+    void set_G(const CVector &X);
+    CVector get_X_from_CG();
+    CVector get_X_from_G();
+    void set_default();
+    CMatrix M_Q;
+    CMatrix M_C;
+    CMatrix_arma M_Q_arma;
+    CMatrix_arma M_C_arma;
+
+    void set_num_phases(int n);
+    void set_num_constituents(int n);
+    void set_var(int i, double v);
+    void set_var(const string &S, const double &v);
+    void set_var(const string &S, const vector<double> &v);
+    void set_var(const string &S, const double &v, const int&, const int&);
+    void set_var(const string &S, const vector<double> &v, const int&, const int&);
+    void set_var(const string &S, const double &v, const int&);
+    void set_var(const string &S, const vector<double> &v, const int&);
+    void set_var(const string &S, int i, const double &v);
+    void set_z0(double down, double up);
+    void set_z0(double down);
+    void set_z0(int id, int n, double z0, double dz);
+    void setS_star(const CVector &X);
+    void setS_star(CVector_arma &X);
+    void set_G_star(const CVector &X);
+
+
+    double get_var(int i, string j, int k); //i: type (i.e. connector vs. block), j: ID, k: variable ID
+    double get_var(int i, string j, string k); //i: ID, j: type (i.e. connector vs. block), k: variable
+    CVector get_val(string I, int j);
+    double get_var(int i, vector<string> j, int k);
+    double get_var(int i, vector<string> j, string k);
+    double calc_term(int i, string loc_id, CStringOP k);
+    double calc_term_star(int i, string loc_id, CStringOP k);
+
+
+
+};
+
+>>>>>>> master
 QString Export(const QString& s);
 
 #endif
