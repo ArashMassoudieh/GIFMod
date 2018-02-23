@@ -1,11 +1,14 @@
 //template <class T> const T& min(const T& a, const T& b) {
 //	return !(b<a) ? a : b;     // or: return !comp(b,a)?a:b; for version (2)
 //}
+#if QT_version
 #include <qstring.h>
 #include <qdatetime.h>
-#include <utility_funcs.h>
 #include <qstringlist.h>
 #include <qdebug.h>
+#endif // QT_version
+
+#include <utility_funcs.h>
 
 double min(double x, double y)
 {
@@ -35,6 +38,7 @@ int max(int x, int y)
 	return -min(-x, -y);
 }
 
+#ifdef QT_version
 QString float2date(const double d, QString format, bool ignorefirst50years)
 {
 	if (ignorefirst50years && d < 18264)
@@ -52,7 +56,7 @@ qint64 xldate2julian(const qint64 xldate)
 	qint64 julian = xldate + 2415020;
 	if (xldate >= 60)
 		julian--;
-	
+
 	return julian;
 }
 
@@ -70,7 +74,7 @@ int dayOfYear(const qint64 xldate)
 	QDate date = QDate::fromJulianDay(julian);
 	return date.dayOfYear();
 }
-#ifdef QT_version
+
 double dayOfYear(const double xldate)
 {
 	double fraction = fmod(xldate, 1.0);
@@ -93,7 +97,7 @@ double dayOfYear(double nSerialDate)
         nMonth    = 2;
         nYear    = 1900;
 
-        return;
+        return 0;
     }
     else if (nSerialDate < 60)
     {
@@ -156,6 +160,7 @@ double timetodayfraction(int hh, int mm, int ss)
 	return fraction;
 }
 
+#ifdef QT_version
 QList<int> dayfractiontotime(double dayFraction)
 {
 	QTime qtime;
@@ -205,15 +210,15 @@ QStringList specialSplit(QString s)
 double QDate2Xldate(QDateTime &x)
 {
 	QDateTime base_time1 = QDateTime::fromString("1-1-1900 00:00", "M-d-yyyy hh:mm");
-	double xxx = (x.toMSecsSinceEpoch() - base_time1.toMSecsSinceEpoch())/(1000.00*24.0*60.0*60.0)+2; 
-	return xxx; 
+	double xxx = (x.toMSecsSinceEpoch() - base_time1.toMSecsSinceEpoch())/(1000.00*24.0*60.0*60.0)+2;
+	return xxx;
 }
 
 QStringList extract_by_space_quote(QString s)
 {
 	QString del1 = "'";
-	
-	bool inside_quote = false; 
+
+	bool inside_quote = false;
 	for (int i = 0; i < s.size(); i++)
 	{
 		if (s.mid(i, 1) == "'")
@@ -227,7 +232,7 @@ QStringList extract_by_space_quote(QString s)
 	}
 	QStringList out = s.split(" ");
 	for (int i = 0; i < out.size(); i++) out[i].replace("|", " ");
-	return out; 
+	return out;
 }
 
 
@@ -238,7 +243,7 @@ QString extract_in_between(const QString &s,QString s1, QString s2)
 	if (!s.contains(s1) && !s.contains(s2)) return out;
 	int start = s.indexOf(s1,0);
 	int end = s.indexOf(s2, 0);
-	if (start == -1) return out; 
+	if (start == -1) return out;
 	out = s.mid(start+1, end - start-1);
 	return out;
 }
@@ -250,9 +255,11 @@ vector<int> find_indexes_of(const QString &s, QString &s1)
 	while (s.indexOf(s1, i) != -1)
 	{
 		out.push_back(s.indexOf(s1, i));
-		i++; 
+		i++;
 	}
 
-	return out; 
+	return out;
 
 }
+
+#endif // QT_version

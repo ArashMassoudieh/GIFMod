@@ -12,8 +12,6 @@
 #include "Vector_arma.h"
 #ifdef QT_version
 #include "qmessagebox.h"
-#else
-#define QString
 #endif // QT_version
 #include "Vector.h"
 
@@ -4651,7 +4649,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 			for (int kk = 0; kk < nans.size(); kk++)
 			{
                 Solution_State.fail_reason = Solution_State.fail_reason + Blocks[nans[kk]].ID + ",";
-				solution_detail = solution_detail +"<b>" + QString::fromStdString(Blocks[nans[kk]].ID) + "</b>,";
+				solution_detail = solution_detail +"<b>" + string2QString(Blocks[nans[kk]].ID) + "</b>,";
 			}
 			nans = infnan_H_blocks();
 			if (nans.size() > 0)
@@ -4659,7 +4657,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 				for (int kk = 0; kk < nans.size(); kk++)
 				{
                     Solution_State.fail_reason = Solution_State.fail_reason + "Head not a number @ " + Blocks[nans[kk]].ID + ",";
-					solution_detail = solution_detail + "<b>" + QString::fromStdString(Blocks[nans[kk]].ID) + "</b>,";
+					solution_detail = solution_detail + "<b>" + string2QString(Blocks[nans[kk]].ID) + "</b>,";
 				}
 			}
 			nans = infnan_H_flows();
@@ -4668,7 +4666,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 				for (int kk = 0; kk < nans.size(); kk++)
 				{
                     Solution_State.fail_reason = Solution_State.fail_reason + "Flow not a number @ " + Connectors[nans[kk]].ID + ",";
-                    solution_detail = solution_detail + "<b>" + QString::fromStdString(Connectors[nans[kk]].ID) + "</b>,";
+                    solution_detail = solution_detail + "<b>" + string2QString(Connectors[nans[kk]].ID) + "</b>,";
 				}
 			}
 
@@ -4689,7 +4687,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 				for (int kk = 0; kk < nans.size(); kk++)
 				{
                     Solution_State.fail_reason = Solution_State.fail_reason + Blocks[nans[kk]].ID + ",";
-					solution_detail = solution_detail + "<b>" + QString::fromStdString(Blocks[nans[kk]].ID) + "</b>,";
+					solution_detail = solution_detail + "<b>" + string2QString(Blocks[nans[kk]].ID) + "</b>,";
 				}
 				nans = infnan_H_blocks();
 				if (nans.size() > 0)
@@ -4697,7 +4695,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 					for (int kk = 0; kk < nans.size(); kk++)
 					{
                         Solution_State.fail_reason = Solution_State.fail_reason + "Head not a number @ " + Blocks[nans[kk]].ID + ",";
-						solution_detail = solution_detail + "<b>" + QString::fromStdString(Blocks[nans[kk]].ID) + "</b>,";
+						solution_detail = solution_detail + "<b>" + string2QString(Blocks[nans[kk]].ID) + "</b>,";
 					}
 				}
 				nans = infnan_H_flows();
@@ -4706,7 +4704,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 					for (int kk = 0; kk < nans.size(); kk++)
 					{
                         Solution_State.fail_reason = Solution_State.fail_reason + "Flow not a number @ " + Connectors[nans[kk]].ID + ",";
-						solution_detail = solution_detail + "Flow not a number @  <b>" + QString::fromStdString(Blocks[nans[kk]].ID) + "</b>,";
+						solution_detail = solution_detail + "Flow not a number @  <b>" + string2QString(Blocks[nans[kk]].ID) + "</b>,";
 					}
 				}
 
@@ -4792,8 +4790,8 @@ void CMedium::onestepsolve_flow_ar(double dt)
                 Solution_State.fail_reason = Solution_State.fail_reason + ", max error @ " + Blocks[F.abs_max_elems()].ID;
                 Solution_State.fail_reason = Solution_State.fail_reason + ", ini max error @ " + Blocks[ini_max_error_elements].ID;
 				solution_detail = "Expanding error in hydro ";
-				solution_detail = solution_detail + ", max error @ " + Blocks[F.abs_max_elems()].ID;
-				solution_detail = solution_detail + ", ini max error @ <b>" + Blocks[ini_max_error_elements].ID + "</b>";
+                solution_detail = solution_detail + ", max error @ " + string2QString(Blocks[F.abs_max_elems()].ID);
+                solution_detail = solution_detail + ", ini max error @ <b>" + string2QString(Blocks[ini_max_error_elements].ID + "</b>");
 
 				set_flow_factors(correction_factor_old);
 				set_fixed_connect_status(old_fixed_connect_status);
@@ -4809,7 +4807,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 				for (int kk = 0; kk < nans.size(); kk++)
 				{
                     Solution_State.fail_reason = Solution_State.fail_reason + Blocks[nans[kk]].ID + ",";
-					solution_detail = solution_detail + "<b>" + QString::fromStdString(Blocks[nans[kk]].ID) + "</b>,";
+					solution_detail = solution_detail + "<b>" + string2QString(Blocks[nans[kk]].ID) + "</b>,";
 				}
 				nans = infnan_H_blocks();
 				if (nans.size() > 0)
@@ -4817,7 +4815,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 					for (int kk = 0; kk < nans.size(); kk++)
 					{
                         Solution_State.fail_reason = Solution_State.fail_reason + "Head not a number @ " + Blocks[nans[kk]].ID + ",";
-						solution_detail = solution_detail + "<b>" + QString::fromStdString(Blocks[nans[kk]].ID) + "</b>,";
+						solution_detail = solution_detail + "<b>" + string2QString(Blocks[nans[kk]].ID) + "</b>,";
 					}
 				}
 				nans = infnan_H_flows();
@@ -4826,7 +4824,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 					for (int kk = 0; kk < nans.size(); kk++)
 					{
                         Solution_State.fail_reason = Solution_State.fail_reason + "Flow not a number @ " + Connectors[nans[kk]].ID + ",";
-                        solution_detail = solution_detail + "<b>" + QString::fromStdString(Connectors[nans[kk]].ID) + "</b>,";
+                        solution_detail = solution_detail + "<b>" + string2QString(Connectors[nans[kk]].ID) + "</b>,";
 					}
 				}
 				set_flow_factors(correction_factor_old);
@@ -4870,7 +4868,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 			if (Blocks[i].outflow_corr_factor>1)
 			{
                 Solution_State.fail_reason = "block " + Blocks[i].ID + " is wet, " + "outflow factor = " + numbertostring(Blocks[i].outflow_corr_factor);
-				solution_detail = QString::fromStdString("block " + Blocks[i].ID + " is wet, " + "outflow factor = " + numbertostring(Blocks[i].outflow_corr_factor));
+				solution_detail = string2QString("block " + Blocks[i].ID + " is wet, " + "outflow factor = " + numbertostring(Blocks[i].outflow_corr_factor));
 				J_update = true;
 				indicator = 1;
                 Solution_State.failed = true;
