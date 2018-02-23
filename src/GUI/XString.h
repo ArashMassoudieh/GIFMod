@@ -179,7 +179,7 @@ public:
 	static XString fromQStringUnit(const QString &c) {
 		////qDebug() << c.indexOf('[') << c.indexOf(']') << c.lastIndexOf('[') << c.lastIndexOf(']');
 		QString valueTxt = c.left(c.indexOf('['));
-		double value = valueTxt.toDouble();
+        //double value = valueTxt.toDouble();
 
 		if (c.indexOf('[')==-1 || c.indexOf(']')==-1 || c.indexOf('[') >= c.indexOf(']') ||
 			c.indexOf('[') != c.lastIndexOf('[') || c.indexOf(']') != c.lastIndexOf(']'))
@@ -197,16 +197,16 @@ public:
 
 	XString convertTo(const QString _unit) const{
 		if (unit == _unit) return XString(QString::number(toDouble()), _unit, unitsList, defaultUnit);
-		double a = conversionCoefficient(unit, _unit);
-		double b = toDouble() * conversionCoefficient(unit, _unit);
-		XString c = b;
-		QString d = QString::number(b);
+        //double a = conversionCoefficient(unit, _unit);
+        //double b = toDouble() * conversionCoefficient(unit, _unit);
+        //XString c = b;
+        //QString d = QString::number(b);
 
 		return XString(QString::number(toDouble() * conversionCoefficient(unit, _unit)), _unit, unitsList, defaultUnit);	};
 	double conversionCoefficient(const XString &unit_from, const XString &unit_to) const{
 		if (unit_from.isEmpty() || unit_to.isEmpty()) return 1;
-		float a = coefficient(unit_from.reformBack());
-		float b = coefficient(unit_to.reformBack());
+        //float a = coefficient(unit_from.reformBack());
+        //float b = coefficient(unit_to.reformBack());
 		return coefficient(unit_from.reformBack()) / coefficient(unit_to.reformBack()); };
 	static double coefficient(const QString expression) 	{
 		QString leftOperand = expression, rightOperand, Operator;
@@ -232,10 +232,11 @@ public:
 				1.0 << 1.0 / 24.0 << 1.0 / 24 / 60 << 1.0 / 24 / 60 / 60 << 7.0 <<
 				.001 << 9.81 
 				<< 1.0 << 1.0 << 1.0 << 1.0;
-			double a = CL[UL.indexOf(leftOperand)];
+            //double a = CL[UL.indexOf(leftOperand)];
 			return CL[UL.indexOf(leftOperand)];
 		};
-	};
+        return 0;
+    };
 	static bool validUnit(const QString unit)  {
 		if (coefficient(unit) != 0)
 			return true;

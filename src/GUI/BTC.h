@@ -1,7 +1,7 @@
 
 #pragma once
 
-
+#include <map>
 #include <string>
 #include <vector>
 #include "QuickSort.h"
@@ -92,7 +92,7 @@ public:
 	CTimeSeries fabs();
 	//GUI
 	//QList <QMap <QVariant, QVariant>> compact() const;
-	CTimeSeries(QList <QMap <QVariant, QVariant>> data);
+
 	CTimeSeries(double a, double b, const vector<double>&x);
 	CTimeSeries(double a, double b, const CTimeSeries &btc);
 	CTimeSeries(const vector<double> &t, const vector<double> &C);
@@ -100,6 +100,7 @@ public:
 	bool error = false;
 
 #ifdef QT_version
+	CTimeSeries(QList <QMap <QVariant, QVariant>> data);
 	void compact(QDataStream &data) const;
 	static CTimeSeries unCompact(QDataStream &data);
 #endif // QT_version

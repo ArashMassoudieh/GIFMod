@@ -6,8 +6,10 @@
 #include <iostream>
 #include "Vector.h"
 #include "Matrix.h"
+#ifdef QT_version
 #include "qdebug.h"
 #include "qdatastream.h"
+#endif // QT_version
 
 using namespace std;
 
@@ -41,7 +43,7 @@ CTimeSeriesSet::CTimeSeriesSet(int numberofBTCs, int sizeofBTCvector)
 	nvars = numberofBTCs;
 	BTC.resize(nvars);
 	names.resize(nvars);
-	for (int i = 0; i<nvars; i++) 
+	for (int i = 0; i<nvars; i++)
 		BTC[i] = CTimeSeries(sizeofBTCvector);
 	unif = true;
 }
@@ -71,7 +73,7 @@ void CTimeSeriesSet::writetofile(char outputfile[])
 	Fil = fopen(outputfile, "w");
 	for (int i=0; i<names.size(); i++)
 		fprintf(Fil , "t, %s, ", names[i].c_str());
-	fprintf(Fil, "\n"); 
+	fprintf(Fil, "\n");
 	for (int j=0; j<maxnumpoints(); j++)
 	{
 		for (int i=0; i<nvars; i++)
@@ -105,7 +107,7 @@ void CTimeSeriesSet::writetofile(string outputfile, bool writeColumnNameHeaders)
 	fprintf(Fil , "//");
 	for (int i=0; i<names.size(); i++)
 		fprintf(Fil , "t, %s, ", names[i].c_str());
-	fprintf(Fil, "\n"); 
+	fprintf(Fil, "\n");
 	for (int j = 0; j<maxnumpoints(); j++)
 	{
 		for (int i=0; i<nvars; i++)
@@ -129,7 +131,7 @@ void CTimeSeriesSet::writetofile(string outputfile, int outputwriteinterval)
 	Fil = fopen(outputfile.c_str() , "w");
 	for (int i=0; i<names.size(); i++)
 		fprintf(Fil , "t, %s, ", names[i].c_str());
-	fprintf(Fil, "\n"); 
+	fprintf(Fil, "\n");
 	for (int j=0; j<maxnumpoints(); j++)
 	{
 		for (int i=0; i<nvars; i++)
@@ -154,7 +156,7 @@ int CTimeSeriesSet::maxnumpoints()
 	int m = 0;
 	for (int i=0; i<nvars; i++)
 		if (BTC[i].n>m) m = BTC[i].n;
-	
+
 	return m;
 }
 
@@ -172,8 +174,8 @@ CTimeSeriesSet::CTimeSeriesSet(const CTimeSeries &B)
 {
 	nvars = 1;
 	BTC.resize(1);
-	
-	BTC[0] = B; 
+
+	BTC[0] = B;
 }
 
 CTimeSeriesSet& CTimeSeriesSet::operator = (const CTimeSeriesSet &B)
@@ -182,7 +184,7 @@ CTimeSeriesSet& CTimeSeriesSet::operator = (const CTimeSeriesSet &B)
 	BTC.resize(nvars);
 	names = B.names;
 	for (int i=0; i<nvars; i++)
-		BTC[i] = B.BTC[i]; 
+		BTC[i] = B.BTC[i];
 	unif = B.unif;
 	return *this;
 
@@ -191,8 +193,8 @@ CTimeSeriesSet& CTimeSeriesSet::operator = (const CTimeSeriesSet &B)
 vector<double> CTimeSeriesSet::interpolate(double t)
 {
 	vector<double> out;
-	out.resize(nvars); 
-	for (int i=0; i<nvars; i++) 
+	out.resize(nvars);
+	for (int i=0; i<nvars; i++)
 		out[i] = BTC[i].interpol(t);
 
 	return out;
@@ -201,8 +203,8 @@ vector<double> CTimeSeriesSet::interpolate(double t)
 vector<double> CTimeSeriesSet::interpolate(double t, int fnvars)
 {
 	vector<double> out;
-	out.resize(fnvars); 
-	for (int i=0; i<min(nvars,fnvars); i++) 
+	out.resize(fnvars);
+	for (int i=0; i<min(nvars,fnvars); i++)
 		out[i] = BTC[i].interpol(t);
 
 	return out;
@@ -316,7 +318,7 @@ void CTimeSeriesSet::getfromfile(string filename, bool varytime)
 		{
 			s = getline(file);
 			if (s.size()>0)
-			{ 
+			{
 				if (s[0] == "names")
 					for (int i = 1; i < s.size(); i++) names.push_back(s[i]);
 				if (s[0] == "units")
@@ -334,7 +336,7 @@ void CTimeSeriesSet::getfromfile(string filename, bool varytime)
 									if ((BTC[i].t[BTC[i].n-1]-BTC[i].t[BTC[i].n-2]) != (BTC[i].t[BTC[i].n-2]-BTC[i].t[BTC[i].n-3]))
 										BTC[i].structured = false;
 						}
-				
+
 				}
 			}
 		}
@@ -368,7 +370,7 @@ void CTimeSeriesSet::getfromfile(string filename, bool varytime)
 				}
 			}
 		}
-	
+
 	for (int i = 0; i < min(int(names.size()), nvars); i++)
 		BTC[i].name = names[i];
 
@@ -483,14 +485,14 @@ vector<double> CTimeSeriesSet::std(int limit, vector<int> index)
 
 }
 
-CMatrix CTimeSeriesSet::correlation(int limit, int n)	
+CMatrix CTimeSeriesSet::correlation(int limit, int n)
 {
 	CMatrix r_xy(n);
 
 	for (int i=0; i<n; i++)
 		for (int j=0; j<=i; j++)
 			r_xy[i][j] = R(BTC[i], BTC[j], limit);
-	
+
 	return r_xy;
 
 }
@@ -543,8 +545,8 @@ CTimeSeriesSet CTimeSeriesSet::sort(int burnOut)
 	int counter = 0;
 	clock_t tt0 = clock();
 
-#pragma omp parallel 
-	
+#pragma omp parallel
+
 	#pragma omp for
 	for (int i = 0; i < nvars; i++)
 	{
@@ -577,7 +579,7 @@ CTimeSeriesSet CTimeSeriesSet::sort(int burnOut)
 CTimeSeriesSet CTimeSeriesSet::distribution(int n_bins, int n_columns, int limit)
 {
 	//qDebug() << "Distribution bins, columns, limit" << n_bins << n_columns << limit;
-	CTimeSeriesSet A(n_columns);		
+	CTimeSeriesSet A(n_columns);
 	for (int i = 0; i < n_columns; i++)
 	{
 		A.BTC[i] = BTC[i].distribution(n_bins, limit);
@@ -590,19 +592,19 @@ CTimeSeriesSet CTimeSeriesSet::distribution(int n_bins, int n_columns, int limit
 CVector norm2dif(CTimeSeriesSet &A, CTimeSeriesSet &B)
 {
 	CVector res;
-	for (int i=0; i<min(A.nvars,B.nvars); i++)		
+	for (int i=0; i<min(A.nvars,B.nvars); i++)
     {	CTimeSeries BTC1 = A.BTC[i].Log(1e-5);
         CTimeSeries BTC2 = B.BTC[i].Log(1e-5);
         res.append(diff_abs(BTC1,BTC2)/B.BTC[i].n);
 
     }
-	
+
 	return res;
 
 }
 
 void CTimeSeriesSet::append(double t, vector<double> c)
-{	
+{
 	for (int i=0; i<min(int(c.size()), nvars); i++)
 	{	BTC[i].structured = true;
 		BTC[i].append(t,c[i]);
@@ -617,7 +619,7 @@ CTimeSeries CTimeSeriesSet::add(vector<int> ii)
 	CTimeSeries A = BTC[ii[0]];
 	A.structured = BTC[ii[0]].structured;
 	for (int i=1; i<ii.size(); i++)
-	if (unif==false)	
+	if (unif==false)
 	{	A+=BTC[ii[i]];
 		A.structured = (A.structured && BTC[ii[i]].structured);
 	}
@@ -636,7 +638,7 @@ CTimeSeries CTimeSeriesSet::add_mult(vector<int> ii, vector<double> mult)
 	{	A = mult[0]*BTC[ii[0]];
 		A.structured = BTC[ii[0]].structured;
 		for (int i=1; i<ii.size(); i++)
-		if (unif==false)	
+		if (unif==false)
         {	CTimeSeries BTC1 = mult[i]*BTC[ii[i]];
             A+=BTC1;
 			A.structured = (A.structured && BTC[ii[i]].structured);
@@ -663,7 +665,7 @@ CTimeSeries CTimeSeriesSet::add_mult(vector<int> ii, CTimeSeriesSet &mult)
 	{	A = mult.BTC[0]*BTC[ii[0]];
 		A.structured = BTC[ii[0]].structured;
 		for (int i=1; i<ii.size(); i++)
-		if (unif==false)	
+		if (unif==false)
         {	CTimeSeries BTC1 = BTC[ii[i]]*mult.BTC[i];
             A+=BTC1;
 			A.structured = (A.structured && BTC[ii[i]].structured && mult.BTC[i].structured);
@@ -688,7 +690,7 @@ CTimeSeries CTimeSeriesSet::divide(int ii, int jj)
 {
 	CTimeSeries A;
 	A.structured = (BTC[ii].structured && BTC[jj].structured);
-	if (unif==false)	
+	if (unif==false)
 		A=BTC[ii]/BTC[jj];
 	else
 		A=BTC[ii]%BTC[jj];
@@ -703,7 +705,7 @@ CTimeSeriesSet CTimeSeriesSet::make_uniform(double increment, bool assgn_d)
 	if (nvars==0) return CTimeSeriesSet();
 	CTimeSeriesSet out(nvars);
 	out.names = names;
-	
+
 	if (unif == true)
 	{
 		//qDebug() << "make uniform with unif option";
@@ -727,7 +729,7 @@ CTimeSeriesSet CTimeSeriesSet::make_uniform(double increment, bool assgn_d)
 				for (int k=0; k<nvars; k++)
 				{
 					double CC = (x-BTC[k].t[i])/(BTC[k].t[i+1]-BTC[k].t[i])*(BTC[k].C[i+1]-BTC[k].C[i])+BTC[k].C[i];
-					
+
 					out.BTC[k].append(x,CC);
 					if (assgn_d)
 					{
@@ -743,7 +745,7 @@ CTimeSeriesSet CTimeSeriesSet::make_uniform(double increment, bool assgn_d)
 		//qDebug() << "make uniform without unif option";
 		for (int k = 0; k < nvars; k++)
 		{
-			//qDebug() << "Variable:" + QString::fromStdString(names[k]); 
+			//qDebug() << "Variable:" + QString::fromStdString(names[k]);
 			out.BTC[k] = BTC[k].make_uniform(increment);
 
 		}
@@ -760,7 +762,7 @@ CTimeSeriesSet CTimeSeriesSet::make_uniform(double increment, bool assgn_d)
 CTimeSeriesSet CTimeSeriesSet::getpercentiles(vector<double> percents)
 {
 	CTimeSeriesSet X(1+percents.size());
-	
+
 	X.names.clear();
 	char buffer[33];
 	X.setname(0, "Mean");
@@ -769,14 +771,14 @@ CTimeSeriesSet CTimeSeriesSet::getpercentiles(vector<double> percents)
 		string Xname = to_string(percents[j]*100)+" %";
 		X.setname(j + 1, Xname);
 	}
-		
+
 	vector<double> XX(1+percents.size());
 	vector<double> XX_prc(percents.size());
-	
+
 	double meanX;
 	for (int i=0; i<BTC[0].n; i++)
 	{
-		vector<double> x;		
+		vector<double> x;
 		int count = 0;
 		for (int j=0; j<nvars; j++)
 			if (i<BTC[j].n)
@@ -790,7 +792,7 @@ CTimeSeriesSet CTimeSeriesSet::getpercentiles(vector<double> percents)
 		XX_prc = prcntl(x,percents);
 		for (int j=0; j<percents.size(); j++)
 			XX[j+1] = XX_prc[j];
-		
+
 		X.append(BTC[0].t[i],XX);
 	}
 
@@ -825,7 +827,7 @@ CTimeSeriesSet CTimeSeriesSet::add_noise(vector<double> std, bool logd)
 
 CVector sum_interpolate(vector<CTimeSeriesSet> &BTC, double t)
 {
-	if (BTC.size()==0) return CVector(1); 
+	if (BTC.size()==0) return CVector(1);
 	CVector sum(max(max_n_vars(BTC),2)); //Be chacked later?
 	for (int i=0; i<BTC.size(); i++)   //We can have several BTCs (Precipitation, Evaporation,...) and each one can have several variables (flow, concentration, ...)
 	{
@@ -839,7 +841,7 @@ double sum_interpolate(vector<CTimeSeriesSet> &BTC, double t, string name)
 {
 	if (BTC.size() == 0) return 0;
 	double sum=0;
-	for (int i = 0; i<BTC.size(); i++)   
+	for (int i = 0; i<BTC.size(); i++)
 	{
 		int ii = BTC[i].lookup(name);
 		if (ii!=-1)
@@ -989,6 +991,7 @@ void CTimeSeriesSet::setname(int index, string name)
 
 }
 
+#ifdef QT_version
 void CTimeSeriesSet::compact(QDataStream &data) const
 {
 	QMap<QString, QVariant> r;
@@ -1008,7 +1011,7 @@ for (int i = 0; i < nvars; i++)
 		BTC[i].compact(data);
 	}
 	return;
-	
+
 }
 CTimeSeriesSet CTimeSeriesSet::unCompact(QDataStream &data)
 {
@@ -1017,7 +1020,7 @@ CTimeSeriesSet CTimeSeriesSet::unCompact(QDataStream &data)
 	CTimeSeriesSet c;
 	c.nvars = r["nvars"].toInt();
 	//c.BTC.resize(c.nvars);
-	
+
 	QStringList namesList = r["names"].toStringList();
 	for (int i = 0; i < namesList.size(); i++)
 		c.names.push_back(namesList[i].toStdString());
@@ -1034,3 +1037,4 @@ CTimeSeriesSet CTimeSeriesSet::unCompact(QDataStream &data)
 
 	return c;
 }
+#endif

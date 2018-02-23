@@ -1,7 +1,9 @@
 #pragma once
 #include <string>
 #include <vector>
+#ifdef QT_version
 #include "qdatetime.h"
+#endif // QT_version
 using namespace std;
 #ifdef GIFMOD
 struct range //properties of unknown parameters
