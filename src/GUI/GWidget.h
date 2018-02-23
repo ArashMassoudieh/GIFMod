@@ -1,6 +1,9 @@
 #pragma once
 
+#ifdef QT_version
 #include "qgraphicsview.h"
+#endif // QT_version
+
 #include <enums.h>
 //#include "modelconfig.h"
 #include "mProp.h"
@@ -105,7 +108,7 @@ public:
 	bool trackingUndo = false;
 	void deselectAll(QString items = "Nodes Edges Entities (Entity)") const;
 	void deleteSelected();
-	
+
 	//names of selected Items
 	QStringList selectedItems()const;
 	QString typeOfSelecetedItems()const;
@@ -178,7 +181,7 @@ public:
 	TreeModel *treeModel;
 	void expandNode(const QModelIndex &parentIndex, bool expand);
 	QMap<QString, QString> find_objects(QString name);
-	
+
     QString setprop(Node * n, QString  propname, XString  value, QString experiment);
     QString setprop(Edge * ed, QString  propname, XString  value, QString experiment);
     QString setprop(Entity * en, QString  propname, XString  value, QString experiment);
@@ -211,13 +214,13 @@ public:
 	helpWindow* help = 0;
 
 	void deleteSolutionResults(){
-	/*	if (model) 
+	/*	if (model)
 			delete model;
-		if (modelSet) 
+		if (modelSet)
 			delete modelSet;
-		if (results) 
+		if (results)
 			delete results;
-		if (resultsSet.size()) 
+		if (resultsSet.size())
 			resultsSet.clear();
 	*/	model = 0;		results = 0;
 
@@ -229,7 +232,7 @@ public:
 	QString modelPathname() const;
 	QString updateRelativePaths(QString oldPath, QString newPath);
 	QString defaultDir() const;
-	void log(QString text) const { 
+	void log(QString text) const {
 		(*logW)(text); };
 	logWindow *logW;
 	void newError(QString message){
@@ -298,7 +301,7 @@ public:
     void add_to_undo_list(QList<QMap<QString, QVariant>> state = QList<QMap<QString, QVariant>>());
 	void settableProp(QTableView*_tableProp);
 	//void setpropModel(PropModel *_propModel);
-	void scaleView(qreal scaleFactor); 
+	void scaleView(qreal scaleFactor);
 	bool select(const QString &name, const QString type) const;
 	void nodeContextMenuRequested(Node* ,QPointF pos, QMenu *menu=NULL);
 	void edgeContextMenuRequested(Edge*, QPointF pos, QMenu *menu=NULL);
@@ -336,7 +339,7 @@ public:
 signals:
 	void Mouse_Pos(int, int, QString);
 	void changed();
-	
+
 protected:
 	void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
 	void timerEvent(QTimerEvent *event) Q_DECL_OVERRIDE;

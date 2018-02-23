@@ -21,8 +21,9 @@
 #include "Matrix_arma.h"
 
 
-//Sassan
+#ifdef QT_version
 #include "qstring.h"
+#endif // QT_version
 
 class GraphWidget;
 class QProgressBar;
@@ -193,7 +194,13 @@ public:
 	vector<CBTC> r_humidity;
 	vector<string> r_humidity_filename;
 
+#ifdef QT_version
 	QString solution_detail;
+#else
+    string solution_detail;
+#endif // QT_version
+
+
 	void clear(); //clear the model
 
     void g_get_environmental_params();
@@ -201,13 +208,16 @@ public:
     void g_set_default_connector_expressions();
     void g_set_default_block_expressions();
     void g_load_inflows();
-    void warning(QString text);
 
+#ifdef QT_version
+    void warning(QString text);
     GraphWidget *gw;
-    bool solve();
-    bool solved() { return !this->Solution_State.failed; }
     int get_member_no(QString block_name, QString solid_name, QString phase_name);
     int get_member_no(QString block_name, QString solid_name, QString phase_name, QString const_name);
+#endif // QT_version
+
+    bool solve();
+    bool solved() { return !this->Solution_State.failed; }
     void updateProgress(bool finished = false);
 	runtimeWindow * runtimewindow = 0;
 	bool stop_triggered = false;
@@ -460,6 +470,8 @@ private:
     CVector get_rxn_chng_rate();
 };
 
+#ifdef QT_version
 QString Export(const QString& s);
+#endif // QT_version
 
 #endif

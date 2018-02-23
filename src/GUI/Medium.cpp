@@ -10,8 +10,14 @@
 #include "MediumSet.h"
 #include "Matrix_arma.h"
 #include "Vector_arma.h"
+#ifdef QT_version
 #include "qmessagebox.h"
+#else
+#define QString
+#endif // QT_version
 #include "Vector.h"
+
+
 
 using namespace std;
 
@@ -35,8 +41,10 @@ CMedium::~CMedium(void)
 	//qDebug() << "Connectors deleted";
 
 	parent = 0;
+#ifdef QT_version
 	gw = 0;
 	runtimewindow = 0;
+#endif // QT_version
 	//qDebug() << "Setting parents to Null";
 }
 
@@ -1808,10 +1816,12 @@ void CMedium::solve_fts_m2(double dt)
                     for (unsigned int i=0; i < controllers().size(); i++)
                         Results.ANS_control.BTC[i] = controllers()[i].output;
 					updateProgress();
+#ifdef QT_version
 					if (runtimewindow != 0)
 					{
 						QMessageBox::warning(runtimewindow, "Simulation Failed", "Simulation Failed! + Number of unsuccessful time-step reductions > 30", QMessageBox::Ok);
 					}
+#endif // QT_version
 					write_flows(outputpathname() + "flows.txt");
 				return;
 			}
@@ -1829,11 +1839,13 @@ void CMedium::solve_fts_m2(double dt)
 					FILEBTC = fopen((outputpathname() + "Solution_details_" + parent->ID + ".txt").c_str(), "a");
 					//runtimewindow->parent->logW->append("failed, trying to write state.txt.");
 					fprintf(FILEBTC, "Simulation ended by the user");
+#ifdef QT_version
 					if (runtimewindow != 0)
 					{
 						QMessageBox::StandardButton reply;
 						QMessageBox::question(runtimewindow, "Simulation Stopped by the user", "Simulation Ended", QMessageBox::Ok);
 					}
+#endif // QT_version
 					fclose(FILEBTC);
 				}
 
@@ -1855,10 +1867,12 @@ void CMedium::solve_fts_m2(double dt)
 					fprintf(FILEBTC, "Simulation time exceeded the maximum simulation time");
 					fclose(FILEBTC);
 				}
+#ifdef QT_version
 				if (runtimewindow != 0)
 				{
 					QMessageBox::warning(runtimewindow, "Simulation Failed", "Runtime greater than the runtime limit set by the user", QMessageBox::Ok);
 				}
+#endif // QT_version
 
                 updateProgress();
 				return;
@@ -1879,15 +1893,15 @@ void CMedium::solve_fts_m2(double dt)
 				write_flows(outputpathname() + "flows.txt");
                 for (unsigned int i=0; i < controllers().size(); i++)
                     Results.ANS_control.BTC[i] = controllers()[i].output;
+#ifdef QT_version
 				if (runtimewindow != 0)
 				{
                     if (Solution_State.epoch_count > epoch_limit())
                         QMessageBox::warning(runtimewindow, "Simulation Failed", "Number of epochs (" + QString::number(Solution_State.epoch_count) + " ) exceeded the limit (" + QString::number(epoch_limit()) + ")", QMessageBox::Ok);
                     if ((Solution_State.t - Timemin) / double(iii) / dt0 < avg_dt_limit())
                         QMessageBox::warning(runtimewindow, "Simulation Failed", "Average time-step size (" + QString::number((Solution_State.t - Timemin) / double(iii)) + " ) is too small < " + QString::number(avg_dt_limit()*dt0)  , QMessageBox::Ok);
-
-
 				}
+#endif // QT_version
 
 				return;
 			}
@@ -2059,9 +2073,10 @@ void CMedium::solve_fts_m2(double dt)
                 Solution_State.t += dtt;
 			}
 		}
-
+#ifdef QT_version
         if (iii%120==0)
             QCoreApplication::processEvents(QEventLoop::AllEvents,10*1000);
+#endif // QT_version
 	}
 	//qDebug() << "Solution Ended!";
 
@@ -2389,8 +2404,10 @@ void CMedium::get_funcs()
 
 int CMedium::getblocksq(string id)
 {
+#ifdef QT_version
 	if (!Blocks.size())
 		return parent->blockIndex[id];
+#endif
     for (unsigned int i=0; i<Blocks.size(); i++)
 		if (Blocks[i].ID == id)
 			return i;
@@ -2400,8 +2417,10 @@ int CMedium::getblocksq(string id)
 
 int CMedium::getconnectorsq(string id)
 {
+#ifdef QT_version
     if (!Connectors.size())
 		return parent->connectorIndex[id];
+#endif
     for (unsigned int i=0; i<Connectors.size(); i++)
         if (Connectors[i].ID == id) return i;
 
@@ -3221,7 +3240,7 @@ CVector CMedium::getres_Q(const CVector &X, double dtt)
 		// solid mass transfer
         for (unsigned int i=0; i<Blocks.size(); i++)
 		{
-			for (int p=0; p<min(Blocks[i].Solid_phase.size(),max_phases); p++)
+			for (int p=0; p<min(int(Blocks[i].Solid_phase.size()),max_phases); p++)
 			{	for (int l=0; l<Blocks[i].Solid_phase[p]->n_phases; l++)
 					for (int kk=0; kk<Blocks[i].Solid_phase[p]->n_phases; kk++)
 					{
@@ -3491,7 +3510,7 @@ CVector_arma CMedium::getres_Q(CVector_arma &X, double dtt)
 		// solid mass transfer
         for (unsigned int i=0; i<Blocks.size(); i++)
 		{
-			for (int p = 0; p<min(Blocks[i].Solid_phase.size(), max_phases); p++)
+			for (int p = 0; p<min(int(Blocks[i].Solid_phase.size()), max_phases); p++)
 			{
 				for (int l = 0; l<Blocks[i].Solid_phase[p]->n_phases; l++)
 					for (int kk = 0; kk<Blocks[i].Solid_phase[p]->n_phases; kk++)
@@ -4773,8 +4792,8 @@ void CMedium::onestepsolve_flow_ar(double dt)
                 Solution_State.fail_reason = Solution_State.fail_reason + ", max error @ " + Blocks[F.abs_max_elems()].ID;
                 Solution_State.fail_reason = Solution_State.fail_reason + ", ini max error @ " + Blocks[ini_max_error_elements].ID;
 				solution_detail = "Expanding error in hydro ";
-				solution_detail = solution_detail + ", max error @ " + QString::fromStdString(Blocks[F.abs_max_elems()].ID);
-				solution_detail = solution_detail + ", ini max error @ <b>" + QString::fromStdString(Blocks[ini_max_error_elements].ID) + "</b>";
+				solution_detail = solution_detail + ", max error @ " + Blocks[F.abs_max_elems()].ID;
+				solution_detail = solution_detail + ", ini max error @ <b>" + Blocks[ini_max_error_elements].ID + "</b>";
 
 				set_flow_factors(correction_factor_old);
 				set_fixed_connect_status(old_fixed_connect_status);

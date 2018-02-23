@@ -70,6 +70,7 @@ int dayOfYear(const qint64 xldate)
 	QDate date = QDate::fromJulianDay(julian);
 	return date.dayOfYear();
 }
+#ifdef QT_version
 double dayOfYear(const double xldate)
 {
 	double fraction = fmod(xldate, 1.0);
@@ -80,6 +81,41 @@ double dayOfYear(const double xldate)
 	return dayofyear;
 
 }
+#else
+double dayOfYear(double nSerialDate)
+{
+    double nDay, nMonth, nYear;
+    // Excel/Lotus 123 have a bug with 29-02-1900. 1900 is not a
+    // leap year, but Excel/Lotus 123 think it is...
+    if (nSerialDate == 60)
+    {
+        nDay    = 29;
+        nMonth    = 2;
+        nYear    = 1900;
+
+        return;
+    }
+    else if (nSerialDate < 60)
+    {
+        // Because of the 29-02-1900 bug, any serial date
+        // under 60 is one off... Compensate.
+        nSerialDate++;
+    }
+
+    // Modified Julian to DMY calculation with an addition of 2415019
+    double l = nSerialDate + 68569 + 2415019;
+    double n = int(( 4 * l ) / 146097);
+            l = l - int(( 146097 * n + 3 ) / 4);
+    double i = int(( 4000 * ( l + 1 ) ) / 1461001);
+        l = l - int(( 1461 * i ) / 4) + 31;
+    double j = int(( 80 * l ) / 2447);
+     nDay = l - int(( 2447 * j ) / 80);
+        l = int(j / 11);
+        nMonth = j + 2 - ( 12 * l );
+    nYear = 100 * ( n - 49 ) + i + l;
+    return nDay + 30*nMonth;
+}
+#endif
 /*
 std::string GetSystemFolderPaths(int csidl)
 {
