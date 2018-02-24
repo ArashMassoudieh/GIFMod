@@ -15,6 +15,11 @@
 #endif // QT_version
 #include "Vector.h"
 
+#ifndef QT_version
+#define string2QString string2QString_nqt
+#else
+#define string2QString string2QString_qt
+#endif
 
 
 using namespace std;
@@ -1755,8 +1760,10 @@ void CMedium::solve_fts_m2(double dt)
 			{
 				if (write_details()) writedetails();
 			}
-			// Sassan
+
+#ifdef QT_version
 			updateProgress();
+#endif // QT_version
 
 			if (!colloid_transport()) failed_colloid = false;
 			if (!constituent_transport()) failed_const = false;
@@ -1813,8 +1820,9 @@ void CMedium::solve_fts_m2(double dt)
                     Solution_State.fail_reason = "failed count > 30";
                     for (unsigned int i=0; i < controllers().size(); i++)
                         Results.ANS_control.BTC[i] = controllers()[i].output;
-					updateProgress();
 #ifdef QT_version
+					updateProgress();
+
 					if (runtimewindow != 0)
 					{
 						QMessageBox::warning(runtimewindow, "Simulation Failed", "Simulation Failed! + Number of unsuccessful time-step reductions > 30", QMessageBox::Ok);
@@ -1872,7 +1880,7 @@ void CMedium::solve_fts_m2(double dt)
 				}
 #endif // QT_version
 
-                updateProgress();
+
 				return;
 			}
 
@@ -1899,6 +1907,7 @@ void CMedium::solve_fts_m2(double dt)
                     if ((Solution_State.t - Timemin) / double(iii) / dt0 < avg_dt_limit())
                         QMessageBox::warning(runtimewindow, "Simulation Failed", "Average time-step size (" + QString::number((Solution_State.t - Timemin) / double(iii)) + " ) is too small < " + QString::number(avg_dt_limit()*dt0)  , QMessageBox::Ok);
 				}
+				updateProgress();
 #endif // QT_version
 
 				return;
@@ -1969,9 +1978,9 @@ void CMedium::solve_fts_m2(double dt)
 
 
 		if (write_details()) writedetails();
-		// Sassan
+#ifdef QT_version
 		updateProgress();
-
+#endif
 
 		if (!redo)
 		{
@@ -2099,7 +2108,9 @@ void CMedium::solve_fts_m2(double dt)
 	}
     Solution_State.failed = false;
     Solution_State.fail_reason = "Simulation conducted successfully";
+#ifdef QT_version
 	updateProgress(true);
+#endif // QT_version
 }
 
 bool CMedium::solve()

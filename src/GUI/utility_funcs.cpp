@@ -262,4 +262,13 @@ vector<int> find_indexes_of(const QString &s, QString &s1)
 
 }
 
+QString string2QString_qt(string s)
+{
+    return QString::fromStdString(s);
+}
+#else
+string string2QString_nqt(string s)
+{
+    return s;
+}
 #endif // QT_version

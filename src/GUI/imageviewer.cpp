@@ -1,9 +1,9 @@
 #include <QtWidgets>
 #if defined(QT_PRINTSUPPORT_LIB)
-#include <QtPrintSupport/qtprintsupportglobal.h>
-#if QT_CONFIG(printdialog)
-#include <QPrintDialog>
-#endif
+//#include <QtPrintSupport/qtprintsupportglobal.h>
+//#if QT_CONFIG(printdialog)
+//#include <QPrintDialog>
+//#endif
 #endif
 
 #include "imageviewer.h"
@@ -139,7 +139,7 @@ void ImageViewer::saveAs()
 void ImageViewer::print()
 {
 	Q_ASSERT(imageLabel->pixmap());
-#if QT_CONFIG(printdialog)
+/*#if QT_CONFIG(printdialog)
 	QPrintDialog dialog(&printer, this);
 	if (dialog.exec()) {
 		QPainter painter(&printer);
@@ -150,7 +150,7 @@ void ImageViewer::print()
 		painter.setWindow(imageLabel->pixmap()->rect());
 		painter.drawPixmap(0, 0, *imageLabel->pixmap());
 	}
-#endif
+#endif*/
 }
 
 void ImageViewer::copy()
@@ -249,9 +249,9 @@ void ImageViewer::createActions()
 	saveAsAct = fileMenu->addAction(tr("&Save As..."), this, &ImageViewer::saveAs);
 	saveAsAct->setEnabled(false);
 
-	printAct = fileMenu->addAction(tr("&Print..."), this, &ImageViewer::print);
-	printAct->setShortcut(QKeySequence::Print);
-	printAct->setEnabled(false);
+    printAct = fileMenu->addAction(tr("&Print..."), this, &ImageViewer::print);
+    printAct->setShortcut(QKeySequence::Print);
+    printAct->setEnabled(false);
 
 	fileMenu->addSeparator();
 
