@@ -103,7 +103,13 @@
       <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;WIN64;ARMA_USE_LAPACK;ARMA_USE_BLAS;UNICODE;GIFMOD;QT_DEPRECATED_WARNINGS;QT_NO_DEBUG;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <PostBuildEvent>
-      <Command>copy /Y $(RootFolder)\libs\lapack-blas_lib_win64\release\lapack_win64_MT.dll $(RootFolder)\builds\release &amp;&amp; copy /Y $(RootFolder)\libs\lapack-blas_lib_win64\release\blas_win64_MT.dll $(RootFolder)\builds\release &amp;&amp; copy /Y $(RootFolder)\src\resources\GIFModGUIPropList.csv $(RootFolder)\builds\release &amp;&amp; copy /Y $(RootFolder)\src\resources\help.txt $(RootFolder)\builds\release &amp;&amp; xcopy /Y /I $(RootFolder)\src\GUI\Icons $(RootFolder)\builds\release\Icons &amp;&amp; echo</Command>
+      <Command>copy /Y $(RootFolder)\libs\lapack-blas_lib_win64\release\lapack_win64_MT.dll $(RootFolder)\builds\release 
+copy /Y $(RootFolder)\libs\lapack-blas_lib_win64\release\blas_win64_MT.dll $(RootFolder)\builds\release 
+copy /Y $(RootFolder)\src\resources\GIFModGUIPropList.csv $(RootFolder)\builds\release 
+copy /Y $(RootFolder)\src\resources\help.txt $(RootFolder)\builds\release 
+xcopy /Y /I $(RootFolder)\src\resources\Icons $(RootFolder)\builds\release\Icons  
+xcopy /Y /I $(RootFolder)\src\resources\Templates $(RootFolder)\builds\release\templates
+echo</Command>
       <Message>copy /Y $(RootFolder)\libs\lapack-blas_lib_win64\release\lapack_win64_MT.dll $(RootFolder)\builds\release &amp;&amp; copy /Y $(RootFolder)\libs\lapack-blas_lib_win64\release\blas_win64_MT.dll $(RootFolder)\builds\release &amp;&amp; copy /Y $(RootFolder)\src\resources\GIFModGUIPropList.csv $(RootFolder)\builds\release &amp;&amp; copy /Y $(RootFolder)\src\resources\help.txt $(RootFolder)\builds\release &amp;&amp; xcopy /Y /I $(RootFolder)\src\GUI\Icons $(RootFolder)\builds\release\Icons &amp;&amp; echo</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -148,7 +154,13 @@
       <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;WIN64;ARMA_USE_LAPACK;ARMA_USE_BLAS;UNICODE;GIFMOD;QT_DEPRECATED_WARNINGS;QT_PRINTSUPPORT_LIB;QT_WIDGETS_LIB;QT_GUI_LIB;QT_CORE_LIB;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <PostBuildEvent>
-      <Command>copy /Y $(RootFolder)\libs\lapack-blas_lib_win64\debug\lapack_win64_MTd.dll $(RootFolder)\builds\debug &amp;&amp; copy /Y $(RootFolder)\libs\lapack-blas_lib_win64\debug\blas_win64_MTd.dll $(RootFolder)\builds\debug &amp;&amp; copy /Y $(RootFolder)\src\resources\GIFModGUIPropList.csv $(RootFolder)\builds\debug &amp;&amp; copy /Y $(RootFolder)\src\resources\help.txt $(RootFolder)\builds\debug &amp;&amp; xcopy /Y /I $(RootFolder)\src\GUI\Icons $(RootFolder)\builds\debug\Icons &amp;&amp; echo</Command>
+      <Command>copy /Y $(RootFolder)\libs\lapack-blas_lib_win64\debug\lapack_win64_MTd.dll $(RootFolder)\builds\debug  
+copy /Y $(RootFolder)\libs\lapack-blas_lib_win64\debug\blas_win64_MTd.dll $(RootFolder)\builds\debug 
+copy /Y $(RootFolder)\src\resources\GIFModGUIPropList.csv $(RootFolder)\builds\debug 
+copy /Y $(RootFolder)\src\resources\help.txt $(RootFolder)\builds\debug 
+xcopy /Y /I $(RootFolder)\src\resources\Icons $(RootFolder)\builds\debug\Icons  
+xcopy /Y /I $(RootFolder)\src\resources\Templates $(RootFolder)\builds\debug\templates
+echo</Command>
       <Message>copy /Y $(RootFolder)\libs\lapack-blas_lib_win64\debug\lapack_win64_MTd.dll $(RootFolder)\builds\debug &amp;&amp; copy /Y $(RootFolder)\libs\lapack-blas_lib_win64\debug\blas_win64_MTd.dll $(RootFolder)\builds\debug &amp;&amp; copy /Y $(RootFolder)\src\resources\GIFModGUIPropList.csv $(RootFolder)\builds\debug &amp;&amp; copy /Y $(RootFolder)\src\resources\help.txt $(RootFolder)\builds\debug &amp;&amp; xcopy /Y /I $(RootFolder)\src\GUI\Icons $(RootFolder)\builds\debug\Icons &amp;&amp; echo</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
