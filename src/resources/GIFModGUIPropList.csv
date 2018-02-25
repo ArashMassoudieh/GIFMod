@@ -55,6 +55,8 @@
 1,Block,Storage,Storage,!,Saturated moisture content (~thetas),theta_s,!,!,float+Estimate,0.4,TextBox,Material,Input,Yes,100334,theta_s;~theta_s,(0:1],E,Saturation moisure content must be between zero and one
 1,Block,*,*,x location,x,x,!,!,integer,0,TextBox,Geometry,Input,No,100514,x,,,
 1,Block,*,*,y location,y,y,!,!,integer,0,TextBox,Geometry,Input,No,100515,y,,,
+1,Block,*,*,Appeared height,Superficial height,appheight,!,!,integer,100,TextBox,Geometry,Input,No,100515,app_height; AppHeight; appheight; superficial height; sup height,>30,,Superficial height must be greater than 30
+1,Block,*,*,Appeared width,Superficial width,appwidth,!,!,integer,200,TextBox,Geometry,Input,No,100515,app_width; AppWidth; appwidth; superficial width; sup width,>30,,Superficial width must be greater than 30
 1,Block,*,*,!,Vapor diffusion coefficient,vapor_diffusion,m~^2/day; m~^2/s; cm~^2/s; cm~^2/day ,m~^2/day,float+Estimate,0,UnitBox,Material,Input,Yes,100059,vapor diffusion coefficient,>=0,E,Vapor Diffusion Coefficient must be non-negative
 1,Connector,Default,non-Porous,!,Flow exponent,exponent,!,!,float+Estimate,!,TextBox,Geometry,Input,Yes,100061,flow exponent,,,
 1,Connector,Default,non-Porous,!,Manning's roughness coefficient,nmanning,s/~^3~radicm,day/~^3~radicm,float+Estimate,!,UnitBox,Material,Input,Yes,100062,manning's roughness coefficient,>0,E,Manning's roughness coefficient must be positive

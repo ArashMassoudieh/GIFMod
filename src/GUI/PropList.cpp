@@ -76,6 +76,18 @@ bool PropList<Node>::setProp(const QString& propName, const XString& Value, cons
 			parent->setY(Value.toDouble());
 	}
 
+	if (propName == "Superficial width")
+	{
+		if (Value.toFloat() != parent->Width())
+			parent->setWidth(Value.toDouble());
+	}
+
+	if (propName == "Superficial height")
+	{
+		if (Value.toFloat() != parent->Height())
+			parent->setHeight(Value.toDouble());
+	}
+
 	if (experimentName == "All experiments")
 	{
 		bool r = list[experimentName].setProp(propName, Value, parent);

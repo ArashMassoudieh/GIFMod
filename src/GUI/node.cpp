@@ -58,6 +58,8 @@ Node::Node(GraphWidget *gwidget, QString _type, QString _name, int _ID, int x, i
 	props.parent = this;
 	setProp("x", x);
 	setProp("y", y);
+	setProp("Superficial height", height);
+	setProp("Superficial width", width);
 	parent->MainGraphicsScene->addItem(this);
     QList<Node*> nodenames = parent->Nodes();
     setName (newNodeName( (_name == "No Name") ? ObjectType().SubType : _name, nodenames));
@@ -352,6 +354,8 @@ bool Node::setProp(const QString &propName, const QVariant &Value, const int rol
 		return setValue(propName, valallUnits);
 		setX(getProp(variableName("x")).toInt());
 		setY(getProp(variableName("y")).toInt());
+		setWidth(getProp(variableName("appwidth")).toInt());
+		setHeight(getProp(variableName("appheight")).toInt());
 	}
 
 	return false;

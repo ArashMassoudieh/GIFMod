@@ -70,8 +70,13 @@ public:
 	mProp ObjectType() const{ return objectType; };
 	int Width() const { return width; };
 	int Height() const { return height; };
-	void setWidth(const int &Width) { width = Width; update(); };
-	void setHeight(const int &Height) { height = Height; update(); };
+	void setWidth(const int &Width) 
+	{ 
+		width = Width; update(); 
+	};
+	void setHeight(const int &Height) { 
+		height = Height; update(); 
+	};
 	mProp Filter() const { return ObjectType(); };
 	QList<mProp> Filter(const QList<Node*> nodes) const { 
 		QList<mProp> objectTypes;

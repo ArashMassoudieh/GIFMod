@@ -786,6 +786,8 @@ void GraphWidget::mouseReleaseEvent(QMouseEvent *event)
 			specs[n->Name()]["h"] = QString::number(n->Height());
 			n->setProp("x",n->x());
 			n->setProp("y", n->y());
+			n->setProp("Superficial width", n->Width());
+			n->setProp("Superficial height", n->Height());
 		}
 	}
 	if (changed) 
@@ -4022,8 +4024,12 @@ QVariant GraphWidget::runCommand(CCommand command)
 				//qDebug() << int(n->getProp("x").toDouble());
 				n->setProp("x", int(n->getProp("x").toDouble()));
 				n->setProp("y", int(n->getProp("y").toDouble()));
+				n->setProp("Superficial width", int(n->getProp("Superficial width").toDouble()));
+				n->setProp("Superficial height", int(n->getProp("Superficial height").toDouble()));
 				n->setX(int(n->getProp("x").toDouble()));
 				n->setY(int(n->getProp("y").toDouble()));
+				n->setWidth(int(n->getProp("Superficial width").toDouble()));
+				n->setHeight(int(n->getProp("Superficial height").toDouble()));
 				failed = false;
 			}
 			
