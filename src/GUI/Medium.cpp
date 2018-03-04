@@ -1780,8 +1780,12 @@ void CMedium::solve_fts_m2(double dt)
 				if (controllers().size())
                     dtt = min(dtt, get_nextcontrolinterval(Solution_State.t) - Solution_State.t);
 
-				if (fail_counter > 3)
+				if (fail_counter > 3 || dtt<dt0*1e-4)
 				{
+					if (fail_counter>3)
+						Solution_State.fail_reason += "Failed with three attempts";
+					if (dtt<dt0*1e-4)
+						Solution_State.fail_reason += "Redoing, dtt = " + numbertostring(dtt);
 					redo_counter++;
 					redo = true;
                     Res = clean_up_restore_points(Res, Solution_State.t);
