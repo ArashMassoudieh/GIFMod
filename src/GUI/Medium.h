@@ -323,6 +323,7 @@ private:
     void onestepsolve_colloid(double dt);
     void onestepsolve_const(double dtt);
     void do_plant_growth(double dtt);
+	void initialize_ANSs();
     void solve_fts_m2(double dt);
 
 
@@ -366,6 +367,7 @@ private:
 
     void evaluate_functions();
     bool& write_details();
+	void write_to_detail_file(string s);
     bool is_there_any_fixed_connectors();
     double& wiggle_tolerance();
     CVector get_flow_factors();
