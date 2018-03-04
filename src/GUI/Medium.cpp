@@ -1500,10 +1500,82 @@ void CMedium::do_plant_growth(double dtt)
 		}
 }
 
+void CMedium::initialize_ANSs()
+{
+	int max_phase;
+	if (sorption())
+		max_phase = 10000;
+	else
+		max_phase = -1;
+
+	Results.ANS = CBTCSet(5 * Blocks.size() + 3 * Connectors.size());
+	Results.ANS_colloids = CBTCSet(Blocks.size()*Blocks[0].n_phases);
+	Results.ANS_constituents = CBTCSet(Blocks.size()*(Blocks[0].n_phases + n_default_phases)*RXN().cons.size());
+	Results.ANS_control = CBTCSet(controllers().size());
+	if (mass_balance_check())
+	{
+		Results.ANS_MB = CBTCSet(Blocks.size());
+		for (unsigned int i = 0; i < Blocks.size(); i++)
+			Results.ANS_MB.pushBackName("S_" + Blocks[i].ID);
+	}
+	for (unsigned int i = 0; i < Blocks.size(); i++) Results.ANS.pushBackName("S_" + Blocks[i].ID);
+	for (unsigned int i = 0; i < Connectors.size(); i++) Results.ANS.pushBackName("Q_" + Connectors[i].ID);
+	for (unsigned int i = 0; i < Blocks.size(); i++) Results.ANS.pushBackName("H_" + Blocks[i].ID);
+	for (unsigned int i = 0; i < Blocks.size(); i++) Results.ANS.pushBackName("E_" + Blocks[i].ID);
+	for (unsigned int i = 0; i < Connectors.size(); i++) Results.ANS.pushBackName("A_" + Connectors[i].ID);
+	for (unsigned int i = 0; i < Connectors.size(); i++) Results.ANS.pushBackName("Qv_" + Connectors[i].ID);
+	for (unsigned int i = 0; i < Blocks.size(); i++) Results.ANS.pushBackName("V_" + Blocks[i].ID);
+	for (unsigned int i = 0; i < Blocks.size(); i++) Results.ANS.pushBackName("LAI_" + Blocks[i].ID);
+
+	for (int j = 0; j < Blocks[0].Solid_phase.size(); j++)
+		for (int k = 0; k < Blocks[0].Solid_phase[j]->n_phases; k++)
+			for (unsigned int i = 0; i < Blocks.size(); i++)
+				Results.ANS_colloids.setname(get_member_no(i, j, k), "C_" + Blocks[i].ID + "_" + Solid_phase()[j].name + "_" + Solid_phase()[j].phase_names[k]);
+
+
+	for (int k = 0; k < RXN().cons.size(); k++)
+		for (int p = -2; p<min(int(Blocks[0].Solid_phase.size()), max_phase); p++)
+		{
+			int _t;
+			if (p < 0) _t = 1; else _t = Blocks[0].Solid_phase[p]->n_phases;
+			for (int l = 0; l < _t; l++)
+				for (unsigned int i = 0; i < Blocks.size(); i++)
+				{
+					if (p == -2)
+						Results.ANS_constituents.setname(get_member_no(i, p, l, k), RXN().cons[k].name + "_" + Blocks[i].ID + "_" + "aq");
+					else if (p == -1)
+						Results.ANS_constituents.setname(get_member_no(i, p, l, k), RXN().cons[k].name + "_" + Blocks[i].ID + "_" + "sorbed");
+					else
+						Results.ANS_constituents.setname(get_member_no(i, p, l, k), RXN().cons[k].name + "_" + Blocks[i].ID + "_" + Solid_phase()[p].name + "_" + Solid_phase()[p].phase_names[l]);
+				}
+		}
+
+	for (unsigned int i = 0; i < controllers().size(); i++)
+		Results.ANS_control.setname(i, controllers()[i].name);
+
+	Solution_State.wiggle_dt_mult = 4;
+	Solution_State.max_wiggle_id = -1;
+	Solution_State.pos_def_mult = 1;
+	Solution_State.pos_def_mult_Q = 1;
+	Solution_State.t = Timemin;
+	J_update = true;
+	J_update_C = true;
+	J_update_Q = true;
+
+	Solution_State.counter_flow = 0; Solution_State.counter_colloid = 0; Solution_State.counter_const = 0;
+	failed_colloid = false; failed_const = false;
+
+	for (unsigned int i = 0; i < controllers().size(); i++)
+		controllers()[i].output.clear();
+
+	
+}
+
 void CMedium::solve_fts_m2(double dt)
 {
 
 	FILE *FILEBTC;
+	
 	int max_phase;
 	if (sorption())
 		max_phase = 10000;
@@ -1514,83 +1586,23 @@ void CMedium::solve_fts_m2(double dt)
     Results.Solution_dt.clear();
     Results.Solution_dt = CBTCSet(3);
     Solution_State.dt_fail = 10000;
-    Results.ANS = CBTCSet(5 * Blocks.size() + 3 * Connectors.size());
-    Results.ANS_colloids = CBTCSet(Blocks.size()*Blocks[0].n_phases);
-    Results.ANS_constituents = CBTCSet(Blocks.size()*(Blocks[0].n_phases + n_default_phases)*RXN().cons.size());
-    Results.ANS_control = CBTCSet(controllers().size());
-    if (mass_balance_check()) Results.ANS_MB = CBTCSet(Blocks.size());
-	char buffer[33];
     Solution_State.epoch_count = 0;
-
-    Results.ANS.names.clear();
-
-    Results.ANS_MB.names.clear();
-
-	mass_balance_check();
-
-    for (unsigned int i=0; i < Blocks.size(); i++)
-        Results.ANS_MB.pushBackName("S_" + Blocks[i].ID);
+   
 
     double redo_time = Solution_State.t;
 	double redo_dt = 10000;
     double redo_to_time = Solution_State.t;
 	int in_redo = false;
-    for (unsigned int i=0; i < Blocks.size(); i++) Results.ANS.pushBackName("S_" + Blocks[i].ID);
-    for (unsigned int i=0; i < Connectors.size(); i++) Results.ANS.pushBackName("Q_" + Connectors[i].ID);
-    for (unsigned int i=0; i < Blocks.size(); i++) Results.ANS.pushBackName("H_" + Blocks[i].ID);
-    for (unsigned int i=0; i < Blocks.size(); i++) Results.ANS.pushBackName("E_" + Blocks[i].ID);
-    for (unsigned int i=0; i < Connectors.size(); i++) Results.ANS.pushBackName("A_" + Connectors[i].ID);
-    for (unsigned int i=0; i < Connectors.size(); i++) Results.ANS.pushBackName("Qv_" + Connectors[i].ID);
-    for (unsigned int i=0; i < Blocks.size(); i++) Results.ANS.pushBackName("V_" + Blocks[i].ID);
-    for (unsigned int i=0; i < Blocks.size(); i++) Results.ANS.pushBackName("LAI_" + Blocks[i].ID);
-
-	for (int j = 0; j < Blocks[0].Solid_phase.size(); j++)
-		for (int k = 0; k < Blocks[0].Solid_phase[j]->n_phases; k++)
-            for (unsigned int i=0; i < Blocks.size(); i++)
-                Results.ANS_colloids.setname(get_member_no(i, j, k), "C_" + Blocks[i].ID + "_" + Solid_phase()[j].name + "_" + Solid_phase()[j].phase_names[k]);
-
-
-	for (int k = 0; k < RXN().cons.size(); k++)
-		for (int p = -2; p<min(int(Blocks[0].Solid_phase.size()),max_phase); p++)
-		{
-			int _t;
-			if (p < 0) _t = 1; else _t = Blocks[0].Solid_phase[p]->n_phases;
-			for (int l = 0; l < _t; l++)
-                for (unsigned int i=0; i < Blocks.size(); i++)
-				{
-					if (p == -2)
-                        Results.ANS_constituents.setname(get_member_no(i, p, l, k), RXN().cons[k].name + "_" + Blocks[i].ID + "_" + "aq");
-					else if (p == -1)
-                        Results.ANS_constituents.setname(get_member_no(i, p, l, k), RXN().cons[k].name + "_" + Blocks[i].ID + "_" + "sorbed");
-					else
-                        Results.ANS_constituents.setname(get_member_no(i, p, l, k), RXN().cons[k].name + "_" + Blocks[i].ID + "_" + Solid_phase()[p].name + "_" + Solid_phase()[p].phase_names[l]);
-				}
-		}
-
-    for (unsigned int i=0; i < controllers().size(); i++)
-        Results.ANS_control.setname(i, controllers()[i].name);
-
-	dtt = dt;
-	base_dtt = dt;
-	dt0 = dt;
-
-    Solution_State.wiggle_dt_mult = 4;
-    Solution_State.max_wiggle_id = -1;
-    Solution_State.pos_def_mult = 1;
-    Solution_State.pos_def_mult_Q = 1;
-    Solution_State.t = Timemin;
-	J_update = true;
-	J_update_C = true;
-	J_update_Q = true;
+   
+	initialize_ANSs();
 
 	int iii = 0;
 	int jjj = 0;
 	int fail_counter = 0;
-    Solution_State.counter_flow = 0; Solution_State.counter_colloid = 0; Solution_State.counter_const = 0;
-	failed_colloid = false; failed_const = false;
-
-    for (unsigned int i=0; i < controllers().size(); i++)
-		controllers()[i].output.clear();
+    
+	dtt = dt;
+	base_dtt = dt;
+	dt0 = dt;
 
 	if (write_details())
 	{
@@ -1659,12 +1671,8 @@ void CMedium::solve_fts_m2(double dt)
 				jjj++;
                 if ((restore == true) && (dt_last <= dtt) && (redo == false) && Solution_State.t > redo_time)
 				{
-					if (write_details())
-					{
-						FILEBTC = fopen((outputpathname() + "Solution_details_" + parent->ID + ".txt").c_str(), "a");
-						fprintf(FILEBTC, "restore point: %i, %e\n", Res.size(), Res_temp.dt_res);
-						fclose(FILEBTC);
-					}
+					if (write_details()) write_to_detail_file("Restore point: " + numbertostring(int(Res.size())) + ", dt = " + numbertostring(Res_temp.dt_res));
+							
 					Res.push_back(Res_temp);
 					restore = false;
 				}
@@ -1746,9 +1754,8 @@ void CMedium::solve_fts_m2(double dt)
 					iii = Res[max(int(Res.size()) - redo_counter, 0)].iii;
 
 					if (write_details())
-					{
-						FILEBTC = fopen((outputpathname() + "Solution_details_" + parent->ID + ".txt").c_str(), "a");  fprintf(FILEBTC, "redo\n"); fclose(FILEBTC);
-					}
+						write_to_detail_file("Redo");
+					
 				}
 				else
 				{
@@ -1776,12 +1783,16 @@ void CMedium::solve_fts_m2(double dt)
                 Solution_State.dt_fail = dtt;
 
 				dtt = min(base_dtt, 1000 * avg_redo_dtt*1.2);
-
+				
 				if (controllers().size())
                     dtt = min(dtt, get_nextcontrolinterval(Solution_State.t) - Solution_State.t);
 
-				if (fail_counter > 3)
+				if (fail_counter > 3 || dtt<dt0*1e-4)
 				{
+					if (dtt<dt0*1e-8)
+						Solution_State.fail_reason += " Redoing! Time step < " + numbertostring(dtt);
+					if (fail_counter>3)
+						Solution_State.fail_reason += " Redoing! Failed with three attempts";
 					redo_counter++;
 					redo = true;
                     Res = clean_up_restore_points(Res, Solution_State.t);
@@ -1815,7 +1826,7 @@ void CMedium::solve_fts_m2(double dt)
 					fclose(FILEBTC);
 					write_flows(outputpathname() + "flows.txt");
 				}
-				// Sassan
+				
                     Solution_State.failed = true;
                     Solution_State.fail_reason = "failed count > 30";
                     for (unsigned int i=0; i < controllers().size(); i++)
@@ -1831,7 +1842,7 @@ void CMedium::solve_fts_m2(double dt)
 					write_flows(outputpathname() + "flows.txt");
 				return;
 			}
-			// Sassan
+			
 			if (stop_triggered)
 			{
                 Solution_State.failed = true;
@@ -1968,6 +1979,23 @@ void CMedium::solve_fts_m2(double dt)
 
 			dtt = min(dtt, max_dt());
 
+			if (dtt<dt0*1e-8)
+			{
+				Solution_State.fail_reason += " Redoing, dtt = " + numbertostring(dtt);
+				redo_counter++;
+				redo = true;
+				Res = clean_up_restore_points(Res, Solution_State.t);
+				redo_time = Solution_State.t;
+				redo_dt = dtt* dt_change_failure();
+				doredo(Res[max(int(Res.size()) - redo_counter, 0)]);
+				base_dtt = dtt;
+				redo_to_time = Solution_State.t;
+				iii = Res[max(int(Res.size()) - redo_counter, 0)].iii;
+				if (write_details())
+				{
+					FILEBTC = fopen((outputpathname() + "Solution_details_" + parent->ID + ".txt").c_str(), "a");  fprintf(FILEBTC, "redo\n"); fclose(FILEBTC);
+				}
+			}
 		}
 		if (iii%max_J_interval() == 0)
 		{
@@ -2072,6 +2100,7 @@ void CMedium::solve_fts_m2(double dt)
 			}
 
 			setQ();
+			
 			if (!redo)
 			{
 				renew();
@@ -4460,6 +4489,13 @@ vector<vector<bool>>& CMedium::settling()
 bool& CMedium::write_details()
 {
 	return parent->FI.write_details;
+}
+
+void CMedium::write_to_detail_file(string s)
+{
+	FILE* FILEBTC = fopen((outputpathname() + "Solution_details_" + parent->ID + ".txt").c_str(), "a");
+	fprintf(FILEBTC, "%s\n" , s);
+	fclose(FILEBTC);
 }
 
 double& CMedium::wiggle_tolerance()
