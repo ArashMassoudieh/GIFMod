@@ -16,6 +16,7 @@
 #include "MediumSet.h"
 #include "Medium.h"
 
+using namespace std; 
 
 void CMediumSet::load(GraphWidget* gw, runtimeWindow *rtw)
 {
@@ -144,8 +145,8 @@ void MainWindow::forwardRun(CMediumSet *model, runtimeWindow* progress)
 	string st = " sec";
 	if (run_time >= 60) { run_time /= 60; st = " min"; }
 	if (run_time >= 60) { run_time /= 60; st = " hr"; }
-	runtime_file << "Run Time :  " << run_time << st << endl;
-	runtime_file << "Epoch count: " << model->epoch_count() << endl;
+	runtime_file << "Run Time :  " << run_time << st << std::endl;
+	runtime_file << "Epoch count: " << model->epoch_count() << std::endl;
 
 	for (int i = 0; i < model->Medium.size(); i++)
 	{
@@ -849,7 +850,7 @@ void MainWindow::inverseRun(CMediumSet *modelSet, runtimeWindow* rtw)
 			if (run_time >= 60) { run_time /= 60; st = " min"; }
 			if (run_time >= 60) { run_time /= 60; st = " hr"; }
 
-			runtime_file << " Genetic Run Time :  " << run_time << st << endl;
+			runtime_file << " Genetic Run Time :  " << run_time << st << std::endl;
 		}
 		else
 		{
@@ -948,7 +949,7 @@ void MainWindow::inverseRun(CMediumSet *modelSet, runtimeWindow* rtw)
 			if (run_time >= 60) { run_time /= 60; st = " min"; }
 			if (run_time >= 60) { run_time /= 60; st = " hr"; }
 
-			runtime_file << " MCMC Run Time :  " << run_time << st << endl;
+			runtime_file << " MCMC Run Time :  " << run_time << st << std::endl;
 		}
 		//qDebug() << 1011;
 		CBTCSet MCMCOut(MCMC.outputfilename, false);
@@ -1090,7 +1091,7 @@ void MainWindow::inverseRun(CMediumSet *modelSet, runtimeWindow* rtw)
 			if (run_time >= 60) { run_time /= 60; st = " min"; }
 			if (run_time >= 60) { run_time /= 60; st = " hr"; }
 
-			runtime_file << " Post-MCMC Run Time :  " << run_time << st << endl;
+			runtime_file << " Post-MCMC Run Time :  " << run_time << st << std::endl;
 	    	runtime_file.close();
 		}
 	}

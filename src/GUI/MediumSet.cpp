@@ -1,6 +1,7 @@
 #ifdef GIFMOD
 #include "MediumSet.h"
 
+using namespace std; 
 
 
 CMediumSet::CMediumSet()
@@ -569,7 +570,7 @@ void CMediumSet::f_get_controller(CLIDconfig &lid_config)
 void CMediumSet::writetolog(string S)
 {
 	fstream file(FI.outputpathname + FI.log_file_name);
-	file << S << endl;
+	file << S << std::endl;
 	file.close();
 
 }

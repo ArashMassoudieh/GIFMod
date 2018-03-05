@@ -32,6 +32,17 @@ class runtimeWindow;
 using namespace std;
 
 
+struct redo_parameters
+{
+	int redo_counter;
+	bool redo; 
+	double redo_time; 
+	double redo_dt; 
+	double redo_to_time;
+	bool in_redo; 
+	vector<CRestoreInfo> Res;
+	bool restore; 
+};
 
 struct measured_chrc //Properties of observed data
 {
@@ -193,6 +204,7 @@ public:
 
     CRestoreInfo getrestoreinfo();
     void doredo(CRestoreInfo &R);
+	void doredo(redo_parameters & Redo_params);
 	vector<CBTC> temperature;
 	vector<string> temperature_filename;
 	vector<CBTC> light;

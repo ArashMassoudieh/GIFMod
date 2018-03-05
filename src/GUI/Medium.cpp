@@ -1591,10 +1591,11 @@ void CMedium::solve_fts_m2(double dt)
     Solution_State.epoch_count = 0;
    
 
-    double redo_time = Solution_State.t;
-	double redo_dt = 10000;
-    double redo_to_time = Solution_State.t;
-	int in_redo = false;
+	redo_parameters Redo_parameters; 
+	Redo_parameters.redo_time = Solution_State.t;
+	Redo_parameters.redo_dt = 10000;
+	Redo_parameters.redo_to_time = Solution_State.t;
+	Redo_parameters.in_redo = false;
    
 	initialize_ANSs();
 
@@ -1621,28 +1622,25 @@ void CMedium::solve_fts_m2(double dt)
 	setQ0();
 
 
-	vector<CRestoreInfo> Res;
-	Res.push_back(getrestoreinfo());
+	
+	Redo_parameters.Res.push_back(getrestoreinfo());
 	CRestoreInfo Res_temp;
 
 	double dt_last = Solution_State.dtt;
-	bool restore = true;
-	bool redo = false;
-	int redo_counter = 0;
 	avg_redo_dtt = Solution_State.dtt;
 
 	clock_t time_start = clock();
 
     while (Solution_State.t - Solution_State.dtt < Timemax)
 	{
-        in_redo = (Solution_State.t < redo_time);
+		Redo_parameters.in_redo = (Solution_State.t < Redo_parameters.redo_time);
 		update_light_temperature();
 		iii++;
         Solution_State.failed = true; Solution_State.failed_colloid = true; Solution_State.failed_const = true;
         while ((Solution_State.failed == true) || (Solution_State.failed_colloid == true) || (Solution_State.failed_const == true))
 		{
-			if (jjj%restore_interval() == 0) restore = true;
-			if ((restore == true) && (dt_last <= Solution_State.dtt) && (redo == false))
+			if (jjj%restore_interval() == 0) Redo_parameters.restore = true;
+			if ((Redo_parameters.restore == true) && (dt_last <= Solution_State.dtt) && (Redo_parameters.redo == false))
 			{
 				Res_temp = getrestoreinfo(); Res_temp.iii = iii;
 			}
@@ -1661,14 +1659,14 @@ void CMedium::solve_fts_m2(double dt)
             if (Solution_State.failed == false)
 			{
 				jjj++;
-                if ((restore == true) && (dt_last <= Solution_State.dtt) && (redo == false) && Solution_State.t > redo_time)
+                if ((Redo_parameters.restore == true) && (dt_last <= Solution_State.dtt) && (Redo_parameters.redo == false) && Solution_State.t > Redo_parameters.redo_time)
 				{
-					if (write_details()) write_to_detail_file("Restore point: " + numbertostring(int(Res.size())) + ", dt = " + numbertostring(Res_temp.dt_res));
+					if (write_details()) write_to_detail_file("Restore point: " + numbertostring(int(Redo_parameters.Res.size())) + ", dt = " + numbertostring(Res_temp.dt_res));
 							
-					Res.push_back(Res_temp);
-					restore = false;
+					Redo_parameters.Res.push_back(Res_temp);
+					Redo_parameters.restore = false;
 				}
-				redo = false;
+				Redo_parameters.redo = false;
 				set_block_fluxes();
 				correct_S(Solution_State.dtt);
 				if (colloid_transport()) Solution_State.failed_colloid = false;
@@ -1726,39 +1724,31 @@ void CMedium::solve_fts_m2(double dt)
 				}
 				else
 				{
-
 					Solution_State.failed_colloid = false;
                     Solution_State.pos_def_mult = 10000;
                     Solution_State.pos_def_mult_Q = 10000;
 				}
 
-                if ((Solution_State.max_wiggle > 0.1) && (!redo) && check_oscillation() && Solution_State.dtt > 0.01*dt0)
+                if ((Solution_State.max_wiggle > 0.1) && (!Redo_parameters.redo) && check_oscillation() && Solution_State.dtt > 0.01*dt0)
 				{
-                    Solution_State.fail_reason = "Oscillation at: " + Blocks[Solution_State.max_wiggle_id].ID;
-					redo_counter++;
-					redo = true;
-                    Res = clean_up_restore_points(Res, Solution_State.t);
-                    redo_time = Solution_State.t;
-					redo_dt = Solution_State.dtt* dt_change_failure();;
-					doredo(Res[max(int(Res.size()) - redo_counter, 0)]);
-					Solution_State.base_dtt = Solution_State.dtt;
-                    redo_to_time = Solution_State.t;
-					iii = Res[max(int(Res.size()) - redo_counter, 0)].iii;
+                    Solution_State.fail_reason = "Oscillation at: " + Blocks[Solution_State.max_wiggle_id].ID + " Redoing";
+					doredo(Redo_parameters);
+					
+					iii = Redo_parameters.Res[max(int(Redo_parameters.Res.size()) - Redo_parameters.redo_counter, 0)].iii;
 
 					if (write_details())
-						write_to_detail_file("Redo");
+						write_to_detail_file("Redoing due to Oscillation!");
 					
 				}
 				else
 				{
-					redo_counter = 0;
+					Redo_parameters.redo_counter = 0;
 				}
 
 			}
 			else
-			{
 				if (write_details()) writedetails();
-			}
+			
 
 #ifdef QT_version
 			updateProgress();
@@ -1785,21 +1775,20 @@ void CMedium::solve_fts_m2(double dt)
 						Solution_State.fail_reason += " Redoing! Time step < " + numbertostring(Solution_State.dtt);
 					if (fail_counter>3)
 						Solution_State.fail_reason += " Redoing! Failed with three attempts";
-					redo_counter++;
-					redo = true;
-                    Res = clean_up_restore_points(Res, Solution_State.t);
-                    redo_time = Solution_State.t;
-					redo_dt = Solution_State.dtt* dt_change_failure();;
-					doredo(Res[max(int(Res.size()) - redo_counter, 0)]);
-					Solution_State.base_dtt = Solution_State.dtt;
-                    redo_to_time = Solution_State.t;
-					iii = Res[max(int(Res.size()) - redo_counter, 0)].iii;
+					
+					doredo(Redo_parameters);
+					
+					iii = Redo_parameters.Res[max(int(Redo_parameters.Res.size()) - Redo_parameters.redo_counter, 0)].iii;
 					if (write_details())
 					{
-						FILEBTC = fopen((outputpathname() + "Solution_details_" + parent->ID + ".txt").c_str(), "a");  fprintf(FILEBTC, "redo\n"); fclose(FILEBTC);
+						if (Solution_State.dtt<dt0*1e-8)
+							write_to_detail_file("Redoing for small dt, dt = " + numbertostring(Solution_State.dtt));
+						if (fail_counter>3)
+							write_to_detail_file("Redoing! Failed with three attempts");
 					}
+					
 				}
-				else redo_counter = 0;
+				else Redo_parameters.redo_counter = 0;
 			}
 			else
 			{
@@ -1879,12 +1868,19 @@ void CMedium::solve_fts_m2(double dt)
 			{
 				if (write_details())
 				{
-					write_to_detail_file("dt too small, epoch = " + numbertostring(Solution_State.epoch_count) + " average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + " < " + numbertostring(avg_dt_limit()*dt0));
-					write_to_detail_file("epoch = " + numbertostring(Solution_State.epoch_count) + " > " + numbertostring(epoch_limit()));
+					if (Solution_State.dtt<1e-20)
+						write_to_detail_file("dt = " + numbertostring(Solution_State.dtt) + " too small, epoch = " + numbertostring(Solution_State.epoch_count) + " average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)));
+					
+					if ((Solution_State.t - Timemin) / double(iii) / dt0 < avg_dt_limit())
+						write_to_detail_file("dt = " + numbertostring(Solution_State.dtt) + ", epoch = " + numbertostring(Solution_State.epoch_count) + " average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + " < " + numbertostring(avg_dt_limit()*dt0));
+
+					if (Solution_State.epoch_count > epoch_limit())
+						write_to_detail_file("epoch = " + numbertostring(Solution_State.epoch_count) + " > " + numbertostring(epoch_limit()));
+					
 					write_state(outputpathname() + "state.txt");
                   
 				}
-                Solution_State.fail_reason = "dt too small, epoch = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii);
+                Solution_State.fail_reason = "dt = " + numbertostring(Solution_State.dtt) + " too small, epoch = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii);
                 Solution_State.failed = true;
 				write_flows(outputpathname() + "flows.txt");
                 for (unsigned int i=0; i < controllers().size(); i++)
@@ -1916,12 +1912,12 @@ void CMedium::solve_fts_m2(double dt)
                     maxt = min(maxt, max(Blocks[ii].inflow[jj].BTC[0].interpol_D(Solution_State.t), dt0));
 
 		dt_last = Solution_State.dtt;
-		if (redo == false)
+		if (Redo_parameters.redo == false)
 		{
 			where_base_dtt_changed = 0;
             if (max(max(Solution_State.counter_flow, Solution_State.counter_colloid), Solution_State.counter_const) < nr_iteration_treshold_min())
 			{
-				Solution_State.base_dtt = min(Solution_State.base_dtt*min(min(min(1 / (pow(dt_change_rate(), 1 - double(in_redo) / 2.0)), Solution_State.wiggle_dt_mult), Solution_State.pos_def_mult), Solution_State.pos_def_mult_Q), maxt);
+				Solution_State.base_dtt = min(Solution_State.base_dtt*min(min(min(1 / (pow(dt_change_rate(), 1 - double(Redo_parameters.in_redo) / 2.0)), Solution_State.wiggle_dt_mult), Solution_State.pos_def_mult), Solution_State.pos_def_mult_Q), maxt);
 				where_base_dtt_changed = 11;
 				J_update = false;
 				J_update_C = false;
@@ -1941,11 +1937,11 @@ void CMedium::solve_fts_m2(double dt)
 				Solution_State.base_dtt = min(Solution_State.base_dtt*min(min(min(Solution_State.wiggle_dt_mult, 1.0), Solution_State.pos_def_mult), Solution_State.pos_def_mult_Q), maxt);
 				where_base_dtt_changed = 13;
 			}
-			Solution_State.base_dtt = min(Solution_State.base_dtt, Solution_State.dt_fail*pow(1.1, 1 - double(in_redo) / 2.0));
+			Solution_State.base_dtt = min(Solution_State.base_dtt, Solution_State.dt_fail*pow(1.1, 1 - double(Redo_parameters.in_redo) / 2.0));
 			where_base_dtt_changed += 10;
-            if (Solution_State.t < redo_time)
-				Solution_State.dtt = min(pow((redo_time - Solution_State.t) / (redo_time - redo_to_time), 1)*Solution_State.base_dtt + (1 - pow((redo_time - Solution_State.t) / (redo_time - redo_to_time), 1))*dt_change_failure()*redo_dt, 1000 * avg_redo_dtt*1.2);
-            else if (Solution_State.t > redo_time && Solution_State.t - Solution_State.dtt < redo_time)
+            if (Solution_State.t < Redo_parameters.redo_time)
+				Solution_State.dtt = min(pow((Redo_parameters.redo_time - Solution_State.t) / (Redo_parameters.redo_time - Redo_parameters.redo_to_time), 1)*Solution_State.base_dtt + (1 - pow((Redo_parameters.redo_time - Solution_State.t) / (Redo_parameters.redo_time - Redo_parameters.redo_to_time), 1))*dt_change_failure()*Redo_parameters.redo_dt, 1000 * avg_redo_dtt*1.2);
+            else if (Solution_State.t > Redo_parameters.redo_time && Solution_State.t - Solution_State.dtt < Redo_parameters.redo_time)
 			{
 				Solution_State.base_dtt = Solution_State.dtt;
 				where_base_dtt_changed += 20;
@@ -1961,15 +1957,8 @@ void CMedium::solve_fts_m2(double dt)
 			if (Solution_State.dtt<dt0*1e-8)
 			{
 				Solution_State.fail_reason += " Redoing, dtt = " + numbertostring(Solution_State.dtt);
-				redo_counter++;
-				redo = true;
-				Res = clean_up_restore_points(Res, Solution_State.t);
-				redo_time = Solution_State.t;
-				redo_dt = Solution_State.dtt* dt_change_failure();
-				doredo(Res[max(int(Res.size()) - redo_counter, 0)]);
-				Solution_State.base_dtt = Solution_State.dtt;
-				redo_to_time = Solution_State.t;
-				iii = Res[max(int(Res.size()) - redo_counter, 0)].iii;
+				doredo(Redo_parameters);
+				iii = Redo_parameters.Res[max(int(Redo_parameters.Res.size()) - Redo_parameters.redo_counter, 0)].iii;
 				if (write_details())
 				{
 					FILEBTC = fopen((outputpathname() + "Solution_details_" + parent->ID + ".txt").c_str(), "a");  fprintf(FILEBTC, "redo\n"); fclose(FILEBTC);
@@ -1989,7 +1978,7 @@ void CMedium::solve_fts_m2(double dt)
 		updateProgress();
 #endif
 
-		if (!redo)
+		if (!Redo_parameters.redo)
 		{
             for (unsigned int i=0; i < Blocks.size(); i++)
                 Results.ANS.BTC[i].append(Solution_State.t, Blocks[i].S);
@@ -2080,7 +2069,7 @@ void CMedium::solve_fts_m2(double dt)
 
 			setQ();
 			
-			if (!redo)
+			if (!Redo_parameters.redo)
 			{
 				renew();
 				renew_G();
@@ -3967,7 +3956,7 @@ int CMedium::lookup_buildup(string S)
 void CMedium::writetolog(string S)
 {
 	fstream file(outputpathname() + log_file_name());
-	file << S << endl;
+	file << S << std::endl;
 	file.close();
 
 }
@@ -4011,6 +4000,18 @@ void CMedium::doredo(CRestoreInfo &R)
     Results.ANS_MB.knockout(R.t_res);
 	set_CG(R.CG_res);
 	set_G(R.G_res);
+}
+
+void CMedium::doredo(redo_parameters &Redo_parameters)
+{
+	Redo_parameters.redo_counter++;
+	Redo_parameters.redo = true;
+	Redo_parameters.Res = clean_up_restore_points(Redo_parameters.Res, Solution_State.t);
+	Redo_parameters.redo_time = Solution_State.t;
+	Redo_parameters.redo_dt = Solution_State.dtt* dt_change_failure();;
+	doredo(Redo_parameters.Res[max(int(Redo_parameters.Res.size()) - Redo_parameters.redo_counter, 0)]);
+	Solution_State.base_dtt = Solution_State.dtt;
+	Redo_parameters.redo_to_time = Solution_State.t;
 }
 
 void CMedium::update_rxn_params()
@@ -4472,9 +4473,9 @@ bool& CMedium::write_details()
 
 void CMedium::write_to_detail_file(string s)
 {
-	FILE* FILEBTC = fopen((outputpathname() + "Solution_details_" + parent->ID + ".txt").c_str(), "a");
-	fprintf(FILEBTC, "%s\n" , s);
-	fclose(FILEBTC);
+	std::ofstream outfile(outputpathname() + "Solution_details_" + parent->ID + ".txt", std::fstream::app);
+	outfile << s << std::endl;
+	outfile.close();
 }
 
 double& CMedium::wiggle_tolerance()
@@ -4703,10 +4704,18 @@ void CMedium::onestepsolve_flow_ar(double dt)
 		int ini_max_error_elements = -1;
 		while (err>tol())
 		{
-
-			bool a = (F == F);
+			
 			if ((F == F) != true || (X == X) != true || (F.is_finite() == false) || (X.is_finite() == false))
 			{
+				if ((X == X) != true)
+					X.writetofile("X.txt");
+				if ((F == F) != true)
+					F.writetofile("F.txt");
+				if (X.is_finite() == false)
+					X.writetofile("X.txt");
+				if (F.is_finite() == false)
+					F.writetofile("F.txt");
+				
 				vector<int> nans = F.get_nan_elements();
                 Solution_State.fail_reason = "indefinite X or F in hydro @";
 				solution_detail = "indefinite X or F in hydro @";
@@ -4825,8 +4834,17 @@ void CMedium::onestepsolve_flow_ar(double dt)
 				return;
 			}
 
-			if ((err == err) == false)
+			if ((err == err) != true)
 			{
+				if ((X == X) != true)
+					X.writetofile("X.txt");
+				if ((F == F) != true)
+					F.writetofile("F.txt");
+				if (X.is_finite() == false)
+					X.writetofile("X.txt");
+				if (F.is_finite() == false)
+					F.writetofile("F.txt");
+				
 				vector<int> nans = F.get_nan_elements();
                 Solution_State.fail_reason = "indefinite X or F in hydro @";
 				solution_detail = "indefinite X or F in hydro @";
@@ -5454,7 +5472,7 @@ void CMedium::write_flows(string filename)
 {
 	std::ofstream outfile(filename);
     for (unsigned int i=0; i < Connectors.size(); i++)
-        outfile << Connectors[i].ID << ", " << Connectors[i].Q << ", " << Connectors[i].Q_star <<endl;
+        outfile << Connectors[i].ID << ", " << Connectors[i].Q << ", " << Connectors[i].Q_star <<std::endl;
 
 	outfile.close();
 
@@ -5464,7 +5482,7 @@ vector<int> CMedium::infnan_H_blocks()
 {
 	vector<int> out;
     for (unsigned int i=0; i < Blocks.size(); i++)
-		if ((Blocks[i].H_star == Blocks[i].H_star) != true)
+		if ((Blocks[i].H_star == Blocks[i].H_star) != true || !isfinite(Blocks[i].H_star))
 			out.push_back(i);
 
 	return out;
@@ -5475,7 +5493,7 @@ vector<int> CMedium::infnan_H_flows()
 {
 	vector<int> out;
     for (unsigned int i=0; i < Connectors.size(); i++)
-        if ((Connectors[i].Q_star == Connectors[i].Q_star) != true)
+        if ((Connectors[i].Q_star == Connectors[i].Q_star) != true || !isfinite(Connectors[i].Q_star))
 			out.push_back(i);
 
 	return out;

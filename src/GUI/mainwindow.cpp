@@ -357,7 +357,7 @@ void MainWindow::addToRecentFiles(QString fileName, bool addToFile)
 		{
 			ofstream file(localAppFolderAddress().toStdString() + RECENT, fstream::app);
 			if (file.good())
-				file << fileName.toStdString() << endl;
+				file << fileName.toStdString() << std::endl;
 			file.close();
 		}
 		if (rewriteFile)
@@ -2880,7 +2880,7 @@ void MainWindow::writeRecentFilesList()
 	{
 		int i = recentFiles.removeDuplicates();
         foreach (QString fileName , recentFiles)
-			file << fileName.toStdString() << endl;
+			file << fileName.toStdString() << std::endl;
 	}
 	file.close();
 }

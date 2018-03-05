@@ -12,6 +12,8 @@
 #include "runtimeWindow.h"
 #include "qcoreapplication.h"
 
+using namespace std; 
+
 CMCMC::CMCMC(void)
 {
 }
@@ -956,7 +958,7 @@ void CMCMC::getrealizations(CBTCSet &MCMCout)
 		for (int j = 0; j < min(numberOfThreads, n_realizations - jj*numberOfThreads); j++)
 		{
 			int realizationNumber = jj*numberOfThreads + j;
-			cout << "Realization Sample No. : " << realizationNumber << endl;
+			cout << "Realization Sample No. : " << realizationNumber << std::endl;
 			//qDebug() << "Realization Sample No. : " << realizationNumber;
 			vector<double> param = realized_paramsList.getrow(realizationNumber);
 			Sys1[j][0] = G;

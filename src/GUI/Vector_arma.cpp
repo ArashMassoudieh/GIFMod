@@ -302,7 +302,7 @@ vector<int> CVector_arma::get_nan_elements()
 	vector<int> out;
 	for (int i = 0; i < num; i++)
 	{
-		if ((vect[i] == vect[i]) != true)
+		if ((vect[i] == vect[i]) != true || !isfinite(vect[i]))
 			out.push_back(i);
 	}
 	return out; 
