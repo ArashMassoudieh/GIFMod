@@ -2455,7 +2455,7 @@ void CMedium::updateProgress(bool finished)
             progress = 100.0*(Solution_State.t - Timemin) / (Timemax - Timemin);
             vars["t"] = Solution_State.t;
 			vars["progress"] = progress;
-			vars["dtt"] = dtt;
+			vars["dtt"] = Solution_State.dtt;
             vars["epoch count"] = Solution_State.epoch_count;
             QString reason = QString::fromStdString(Solution_State.fail_reason);
             ////qDebug() << reason;
@@ -2465,7 +2465,7 @@ void CMedium::updateProgress(bool finished)
 			
 			if (runtimewindow->sln_dtl_active)
 				if (!reason.toLower().contains("none"))
-                    runtimewindow->slndetails_append(QString::number(Solution_State.epoch_count) + ":" + solution_detail + " time step size: " + QString::number(dtt));
+                    runtimewindow->slndetails_append(QString::number(Solution_State.epoch_count) + ":" + solution_detail + " time step size: " + QString::number(Solution_State.dtt));
 		}
 		runtimewindow->update(vars);
 		if (finished)

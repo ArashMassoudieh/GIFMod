@@ -59,6 +59,14 @@ struct solution_state
 
     double t; // time
     int counter_flow, counter_colloid, counter_const; // counter for number of iteration
+
+	bool failed_colloid;
+	bool failed_const;
+	double pos_def_ratio;
+	double pos_def_ratio_const;
+
+	double dtt;
+	double base_dtt;
 };
 
 struct _results
@@ -385,10 +393,7 @@ private:
     void evaluate_area(bool all=false);
 
     void correct_S(double dtt);
-    bool failed_colloid;
-    bool failed_const;
-    double pos_def_ratio;
-    double pos_def_ratio_const;
+ 
     bool& uniformoutput();
     bool& mass_balance_check();
 
@@ -401,8 +406,7 @@ private:
 
 
     int& restore_interval();
-    double dtt;
-    double base_dtt;
+   
     int where_base_dtt_changed = 0;
     double avg_redo_dtt=0;
     int redo_count = 0;
