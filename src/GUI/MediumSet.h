@@ -110,6 +110,7 @@ public:
 	string PE_info_filename;
 	_formulas formulas;
 	void set_formulas();
+    bool get_formulas_from_file(string filename);
 	CRxnNetwork RXN;
 	vector <CBTCSet*> ANS_hyd;
 	vector <CBTCSet*> ANS_control;
