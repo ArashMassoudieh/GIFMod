@@ -373,8 +373,9 @@ void CMediumSet::set_default()
 	SP.epoch_limit = 500000;
 	SP.avg_dt_limit = 1e-5;
 	SP.restore_interval = 20;
-
-	set_formulas();
+	if (!get_formulas_from_file("formulas.txt"))
+		set_formulas();
+	
 }
 
 void CMediumSet::f_get_environmental_params(CLIDconfig &lid_config)
@@ -1029,9 +1030,84 @@ void CMediumSet::clear()
 	Medium.clear();
 }
 
+int CMediumSet::get_block_type(string s)
+{
+	if (tolower(trim(s)) == "soil") return Block_types::Soil;
+	if (tolower(trim(s)) == "darcy") return Block_types::Darcy;
+	if (tolower(trim(s)) == "pond") return Block_types::Pond;
+	if (tolower(trim(s)) == "stream") return Block_types::Stream;
+	if (tolower(trim(s)) == "plant") return Block_types::Plant;
+	if (tolower(trim(s)) == "catchment") return Block_types::Catchment;
+	if (tolower(trim(s)) == "storage") return Block_types::Storage;
+
+	if (tolower(trim(s)) == "normal") return Normal; 
+	if (tolower(trim(s)) == "qdarcy") return QDarcy;
+	if (tolower(trim(s)) == "vapor") return Vapor;
+	if (tolower(trim(s)) == "pipe1") return Pipe1;
+	if (tolower(trim(s)) == "pipe2") return Pipe2;
+	if (tolower(trim(s)) == "rating_curve") return Rating_curve;
+}
+
 bool CMediumSet::get_formulas_from_file(string filename)
 {
-    fstream file(file_name,std::);
+	formulas.formulasH.resize(10);
+	formulas.formulas.resize(10);
+	formulas.formulasQ.resize(10);
+	formulas.formulasA.resize(10);
+	formulas.const_area.resize(10);
+
+	for (int i = 0; i < formulas.formulasQ.size(); i++)	 formulas.formulasQ[i].resize(10);
+	for (int i = 0; i < formulas.formulasA.size(); i++)
+	{
+		formulas.formulasA[i].resize(10);
+		for (int j = 0; j < formulas.formulasA[i].size(); j++) formulas.formulasA[i][j] = "(s[2]+e[2])/2";
+	}
+
+	for (int i = 0; i < formulas.const_area.size(); i++) {
+		formulas.const_area[i].resize(10); for (int j = 0; j < formulas.const_area[i].size(); j++) formulas.const_area[i][j] = true;}
+	
+	formulas.vaporTransport.resize(10);
+	for (int i = 0; i < formulas.vaporTransport.size(); i++)	 formulas.vaporTransport[i].resize(10);
+
+	formulas.settling.resize(10);
+	for (int i = 0; i <formulas.settling.size(); i++) formulas.settling[i].resize(10);
+
+	formulas.air_phase.resize(10);
+	formulas.air_phase[Soil] = 1;
+
+	formulas.formulasQ2 = formulas.formulasQ;
+
+	ifstream file(filename);
+	if (!file.good()) return false; 
+	while (!file.eof())
+	{
+		vector<string> s = getline(file);
+		if (s.size() != 0)
+		{
+			if (s[0].substr(0, 2) != "\\" && s[0].substr(0, 2) != "//")
+			{
+				if (trim(tolower(s[0])) == "h-s" && s.size()>=3)
+					formulas.formulasH[get_block_type(s[1])] = s[2];
+				if (trim(tolower(s[0])) == "vapor" && s.size()>=4)
+					formulas.vaporTransport[get_block_type(s[1])][get_block_type(s[2])] = atoi(s[3].c_str());
+				if (trim(tolower(s[0])) == "settling" && s.size() >= 4)
+					formulas.settling[get_block_type(s[1])][get_block_type(s[2])] = atoi(s[3].c_str());
+				if (trim(tolower(s[0])) == "area" && s.size() >= 4)
+					formulas.formulasA[get_block_type(s[1])][get_block_type(s[2])] = s[3];
+				if (trim(tolower(s[0])) == "const_area" && s.size() >= 4)
+					formulas.const_area[get_block_type(s[1])][get_block_type(s[2])] = atoi(s[3].c_str());
+				if (trim(tolower(s[0])) == "flow" && s.size() >= 4)
+					formulas.formulasQ[get_block_type(s[1])][get_block_type(s[2])] = s[3];
+				if (trim(tolower(s[0])) == "flow2" && s.size() >= 4)
+					formulas.formulasQ2[get_block_type(s[1])][get_block_type(s[2])] = s[3];
+				if (trim(tolower(s[0])) == "connector" && s.size() >= 3)
+					formulas.formulas[get_block_type(s[1])] = s[2];
+			}
+		}
+	}
+
+	set_features.formulas = true;
+	return true; 
 }
 
 #endif

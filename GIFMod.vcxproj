@@ -106,6 +106,7 @@
       <Command>copy /Y $(RootFolder)\libs\lapack-blas_lib_win64\release\lapack_win64_MT.dll $(RootFolder)\builds\release 
 copy /Y $(RootFolder)\libs\lapack-blas_lib_win64\release\blas_win64_MT.dll $(RootFolder)\builds\release 
 copy /Y $(RootFolder)\src\resources\GIFModGUIPropList.csv $(RootFolder)\builds\release 
+copy /Y $(RootFolder)\src\resources\formulas.txt $(RootFolder)\builds\release 
 copy /Y $(RootFolder)\src\resources\help.txt $(RootFolder)\builds\release 
 xcopy /Y /I $(RootFolder)\src\resources\Icons $(RootFolder)\builds\release\Icons  
 xcopy /Y /I $(RootFolder)\src\resources\Templates $(RootFolder)\builds\release\templates
@@ -156,7 +157,8 @@ echo</Command>
     <PostBuildEvent>
       <Command>copy /Y $(RootFolder)\libs\lapack-blas_lib_win64\debug\lapack_win64_MTd.dll $(RootFolder)\builds\debug  
 copy /Y $(RootFolder)\libs\lapack-blas_lib_win64\debug\blas_win64_MTd.dll $(RootFolder)\builds\debug 
-copy /Y $(RootFolder)\src\resources\GIFModGUIPropList.csv $(RootFolder)\builds\debug 
+copy /Y $(RootFolder)\src\resources\GIFModGUIPropList.csv $(RootFolder)\builds\debug
+copy /Y $(RootFolder)\src\resources\formulas.txt $(RootFolder)\builds\debug 
 copy /Y $(RootFolder)\src\resources\help.txt $(RootFolder)\builds\debug 
 xcopy /Y /I $(RootFolder)\src\resources\Icons $(RootFolder)\builds\debug\Icons  
 xcopy /Y /I $(RootFolder)\src\resources\Templates $(RootFolder)\builds\debug\templates

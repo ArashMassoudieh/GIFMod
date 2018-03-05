@@ -154,6 +154,7 @@ public:
     void finalize_set_param();
     int epoch_count();
 	void clear();
+	int get_block_type(string s);
 	string ID;
 //GUI
 	GraphWidget *gw = 0;
