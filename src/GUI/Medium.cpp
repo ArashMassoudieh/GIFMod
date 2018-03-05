@@ -4834,7 +4834,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 				return;
 			}
 
-			if ((err == err) != true)
+			if ((err == err) != true || !isfinite(err))
 			{
 				if ((X == X) != true)
 					X.writetofile("X.txt");
