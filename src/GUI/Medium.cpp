@@ -4707,15 +4707,6 @@ void CMedium::onestepsolve_flow_ar(double dt)
 			
 			if ((F == F) != true || (X == X) != true || (F.is_finite() == false) || (X.is_finite() == false))
 			{
-				if ((X == X) != true)
-					X.writetofile("X.txt");
-				if ((F == F) != true)
-					F.writetofile("F.txt");
-				if (X.is_finite() == false)
-					X.writetofile("X.txt");
-				if (F.is_finite() == false)
-					F.writetofile("F.txt");
-				
 				vector<int> nans = F.get_nan_elements();
                 Solution_State.fail_reason = "indefinite X or F in hydro @";
 				solution_detail = "indefinite X or F in hydro @";
@@ -4836,15 +4827,6 @@ void CMedium::onestepsolve_flow_ar(double dt)
 
 			if ((err == err) != true || !isfinite(err))
 			{
-				if ((X == X) != true)
-					X.writetofile("X.txt");
-				if ((F == F) != true)
-					F.writetofile("F.txt");
-				if (X.is_finite() == false)
-					X.writetofile("X.txt");
-				if (F.is_finite() == false)
-					F.writetofile("F.txt");
-				
 				vector<int> nans = F.get_nan_elements();
                 Solution_State.fail_reason = "indefinite X or F in hydro @";
 				solution_detail = "indefinite X or F in hydro @";
