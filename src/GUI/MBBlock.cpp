@@ -58,7 +58,9 @@ CMBBlock::CMBBlock(string s)
 	light_swch = true;
 	air_phase = -1;
 	bulk_density = 1;
+#ifndef QT_version
 	showmessages = true;
+#endif // QT_version
 	set_properties(s);
 	show_message("Block: '" + ID + "' was created");
 

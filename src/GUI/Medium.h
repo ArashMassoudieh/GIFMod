@@ -35,13 +35,13 @@ using namespace std;
 struct redo_parameters
 {
 	int redo_counter;
-	bool redo; 
-	double redo_time; 
-	double redo_dt; 
+	bool redo;
+	double redo_time;
+	double redo_dt;
 	double redo_to_time;
-	bool in_redo; 
+	bool in_redo;
 	vector<CRestoreInfo> Res;
-	bool restore; 
+	bool restore;
 };
 
 struct measured_chrc //Properties of observed data
@@ -277,6 +277,7 @@ public:
     void set_default();
     bool show_messages();
     void show_message(string s);
+    void show_status(string s);
     bool showmessages;
     bool set_property(const string &S, const string &v);
     bool set_properties(const string &S);
@@ -412,7 +413,7 @@ private:
     void evaluate_area(bool all=false);
 
     void correct_S(double dtt);
- 
+
     bool& uniformoutput();
     bool& mass_balance_check();
 
@@ -425,7 +426,7 @@ private:
 
 
     int& restore_interval();
-   
+
     int where_base_dtt_changed = 0;
     double avg_redo_dtt=0;
     int redo_count = 0;

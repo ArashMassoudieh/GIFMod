@@ -55,7 +55,9 @@ CConnection::CConnection(string s)
 	const_area = true;
 	presc_flow = false;
 	control = false;
+#ifndef QT_version
 	showmessages = true;
+#endif // QT_version
 	set_properties(s);
 }
 
