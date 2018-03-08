@@ -24,12 +24,22 @@ friend class CMedium;
 public:
 	CConnection(void);
 	CConnection(const CConnection &CC); // copy constructor (Creating a new Object as a copy of an existing object)//should be CConnection(const CConnection& CC); however, both are the same
+	CConnection(string properties);
 	CConnection& operator=(const CConnection &CC);//equal operator
 	~CConnection(void);
 	string Block1ID, Block2ID;
 	CMBBlock *Block1, *Block2; //The blocks connected via this connection AM
     string ID;
+    bool set_properties(string s);
+    bool set_property(string s, double value);
+    bool set_property(string s, string value);
+    void show_message(string s);
+    bool show_messages();
+    bool settype(string s);
+    bool showmessages;
+    vector<string> errors;
 private:
+    CMedium *parent;
     vector<CSolid_Phase*> Solid_phase;
     vector<int> Solid_phase_id;
     vector <double> flow_params;
@@ -65,7 +75,7 @@ private:
     double get_val(string S);
     double set_val(int i, double val);// set the value of physical properties, variables and parameters
     double set_val_star(int i, double val); //set the value of physical properties, variables and parameters based on star values
-    void set_val(string SS, double val); //set the values of physical parameters
+    bool set_val(string SS, double val); //set the values of physical parameters
 
     vector<CFunction> funcs;
     void get_funcs(CStringOP &term);

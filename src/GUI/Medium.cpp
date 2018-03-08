@@ -26,9 +26,14 @@ using namespace std;
 
 CMedium::CMedium(void)
 {
+    parent = 0;
 
+#ifdef QT_version
+    showmessages = false;
+#else
+    showmessages = true;
+#endif // QT_version
 }
-
 
 CMedium::~CMedium(void)
 {
@@ -623,6 +628,37 @@ void CMedium::set_var(const string &S, const double &v)
 	for (int j=0; j<Blocks.size(); j++)
 		Blocks[j].set_val(tolower(trim(S)), v);
 }
+
+bool CMedium::set_property(const string &S, const string &v)
+{
+	bool success = true;
+	if (tolower(trim(S))=="dtt") {Solution_State.dtt = atof(v.c_str()); return true;}
+	if (tolower(trim(S))=="dt") {dt() = atof(v.c_str()); return true;}
+    if (tolower(trim(S))=="name") {name = v; return true;}
+
+    for (unsigned int j=0; j<Connectors.size(); j++)
+        success &= Connectors[j].set_val(tolower(trim(S)), atof(v.c_str()));
+
+
+	for (unsigned int j=0; j<Blocks.size(); j++)
+		success &= Blocks[j].set_val(tolower(trim(S)), atof(v.c_str()));
+
+    show_message("Property [" + S + "] was set to " + v);
+	return success;
+}
+
+bool CMedium::set_properties(const string &S)
+{
+    bool success = true;
+    vector<string> ss = split(S);
+    for (unsigned int i=0; i<ss.size(); i++)
+    {
+        vector<string> prop = split(ss[i],'=');
+        success &= set_property(prop[0],prop[1]);
+    }
+    return success;
+}
+
 
 void CMedium::set_var(const string &S, int i, const double &v)
 {
@@ -1519,7 +1555,7 @@ void CMedium::initialize_ANSs()
 		for (unsigned int i = 0; i < Blocks.size(); i++)
 			Results.ANS_MB.pushBackName("S_" + Blocks[i].ID);
 	}
-	Results.ANS.names.clear(); 
+	Results.ANS.names.clear();
 	for (unsigned int i = 0; i < Blocks.size(); i++) Results.ANS.pushBackName("S_" + Blocks[i].ID);
 	for (unsigned int i = 0; i < Connectors.size(); i++) Results.ANS.pushBackName("Q_" + Connectors[i].ID);
 	for (unsigned int i = 0; i < Blocks.size(); i++) Results.ANS.pushBackName("H_" + Blocks[i].ID);
@@ -1570,14 +1606,14 @@ void CMedium::initialize_ANSs()
 	for (unsigned int i = 0; i < controllers().size(); i++)
 		controllers()[i].output.clear();
 
-	
+
 }
 
 void CMedium::solve_fts_m2(double dt)
 {
 
 	FILE *FILEBTC;
-	
+
 	int max_phase;
 	if (sorption())
 		max_phase = 10000;
@@ -1589,26 +1625,26 @@ void CMedium::solve_fts_m2(double dt)
     Results.Solution_dt = CBTCSet(3);
     Solution_State.dt_fail = 10000;
     Solution_State.epoch_count = 0;
-   
 
-	redo_parameters Redo_parameters; 
+
+	redo_parameters Redo_parameters;
 	Redo_parameters.redo_time = Solution_State.t;
 	Redo_parameters.redo_dt = 10000;
 	Redo_parameters.redo_to_time = Solution_State.t;
 	Redo_parameters.in_redo = false;
-   
+
 	initialize_ANSs();
 
 	int iii = 0;
 	int jjj = 0;
 	int fail_counter = 0;
-    
+
 	Solution_State.dtt = dt;
 	Solution_State.base_dtt = dt;
 	dt0 = dt;
 
 	if (write_details()) write_to_detail_file("Experiment " + name + ":");
-	
+
 	setH();
 	if (steady_state_hydro())
 	{
@@ -1622,7 +1658,7 @@ void CMedium::solve_fts_m2(double dt)
 	setQ0();
 
 
-	
+
 	Redo_parameters.Res.push_back(getrestoreinfo());
 	CRestoreInfo Res_temp;
 
@@ -1633,7 +1669,11 @@ void CMedium::solve_fts_m2(double dt)
 
     while (Solution_State.t - Solution_State.dtt < Timemax)
 	{
+
 		Redo_parameters.in_redo = (Solution_State.t < Redo_parameters.redo_time);
+
+        show_status("t = " + numbertostring(Solution_State.t));
+        Redo_parameters.in_redo = (Solution_State.t < Redo_parameters.redo_time);
 		update_light_temperature();
 		iii++;
         Solution_State.failed = true; Solution_State.failed_colloid = true; Solution_State.failed_const = true;
@@ -1654,7 +1694,7 @@ void CMedium::solve_fts_m2(double dt)
 				onestepsolve_flow_bioest(Solution_State.dtt);
             vector<int> max_wiggle_v = Results.ANS.max_wiggle_sl(Blocks.size(), wiggle_tolerance());
             Solution_State.max_wiggle = max_wiggle_v[0]; Solution_State.max_wiggle_id = max_wiggle_v[1];
-			
+
 
             if (Solution_State.failed == false)
 			{
@@ -1662,7 +1702,7 @@ void CMedium::solve_fts_m2(double dt)
                 if ((Redo_parameters.restore == true) && (dt_last <= Solution_State.dtt) && (Redo_parameters.redo == false) && Solution_State.t > Redo_parameters.redo_time)
 				{
 					if (write_details()) write_to_detail_file("Restore point: " + numbertostring(int(Redo_parameters.Res.size())) + ", dt = " + numbertostring(Res_temp.dt_res));
-							
+
 					Redo_parameters.Res.push_back(Res_temp);
 					Redo_parameters.restore = false;
 				}
@@ -1733,12 +1773,12 @@ void CMedium::solve_fts_m2(double dt)
 				{
                     Solution_State.fail_reason = "Oscillation at: " + Blocks[Solution_State.max_wiggle_id].ID + " Redoing";
 					doredo(Redo_parameters);
-					
+
 					iii = Redo_parameters.Res[max(int(Redo_parameters.Res.size()) - Redo_parameters.redo_counter, 0)].iii;
 
 					if (write_details())
 						write_to_detail_file("Redoing due to Oscillation!");
-					
+
 				}
 				else
 				{
@@ -1748,7 +1788,7 @@ void CMedium::solve_fts_m2(double dt)
 			}
 			else
 				if (write_details()) writedetails();
-			
+
 
 #ifdef QT_version
 			updateProgress();
@@ -1765,7 +1805,7 @@ void CMedium::solve_fts_m2(double dt)
                 Solution_State.dt_fail = Solution_State.dtt;
 
 				Solution_State.dtt = min(Solution_State.base_dtt, 1000 * avg_redo_dtt*1.2);
-				
+
 				if (controllers().size())
 					Solution_State.dtt = min(Solution_State.dtt, get_nextcontrolinterval(Solution_State.t) - Solution_State.t);
 
@@ -1775,9 +1815,9 @@ void CMedium::solve_fts_m2(double dt)
 						Solution_State.fail_reason += " Redoing! Time step < " + numbertostring(Solution_State.dtt);
 					if (fail_counter>3)
 						Solution_State.fail_reason += " Redoing! Failed with three attempts";
-					
+
 					doredo(Redo_parameters);
-					
+
 					iii = Redo_parameters.Res[max(int(Redo_parameters.Res.size()) - Redo_parameters.redo_counter, 0)].iii;
 					if (write_details())
 					{
@@ -1786,7 +1826,7 @@ void CMedium::solve_fts_m2(double dt)
 						if (fail_counter>3)
 							write_to_detail_file("Redoing! Failed with three attempts");
 					}
-					
+
 				}
 				else Redo_parameters.redo_counter = 0;
 			}
@@ -1796,13 +1836,13 @@ void CMedium::solve_fts_m2(double dt)
 			}
 			if (fail_counter > 30)
 			{
-				if (write_details()) 
+				if (write_details())
 				{
 					write_to_detail_file("Failed count > 30");
 					write_state(outputpathname() + "state.txt");
 					write_flows(outputpathname() + "flows.txt");
 				}
-				
+
                 Solution_State.failed = true;
                 Solution_State.fail_reason = "failed count > 30";
                 for (unsigned int i=0; i < controllers().size(); i++)
@@ -1818,7 +1858,7 @@ void CMedium::solve_fts_m2(double dt)
 				write_flows(outputpathname() + "flows.txt");
 				return;
 			}
-			
+
 			if (stop_triggered)
 			{
                 Solution_State.failed = true;
@@ -1829,7 +1869,7 @@ void CMedium::solve_fts_m2(double dt)
 				if (write_details())
 				{
 					write_to_detail_file("Simulation ended by the user");
-					
+
 #ifdef QT_version
 					if (runtimewindow != 0)
 					{
@@ -1851,8 +1891,8 @@ void CMedium::solve_fts_m2(double dt)
                     Results.ANS_control.BTC[i] = controllers()[i].output;
 				write_flows(outputpathname() + "flows.txt");
 				if (write_details()) write_to_detail_file("Simulation time exceeded the maximum simulation time");
-					
-				
+
+
 #ifdef QT_version
 				if (runtimewindow != 0)
 				{
@@ -1870,15 +1910,15 @@ void CMedium::solve_fts_m2(double dt)
 				{
 					if (Solution_State.dtt<1e-20)
 						write_to_detail_file("dt = " + numbertostring(Solution_State.dtt) + " too small, epoch = " + numbertostring(Solution_State.epoch_count) + " average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)));
-					
+
 					if ((Solution_State.t - Timemin) / double(iii) / dt0 < avg_dt_limit())
 						write_to_detail_file("dt = " + numbertostring(Solution_State.dtt) + ", epoch = " + numbertostring(Solution_State.epoch_count) + " average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + " < " + numbertostring(avg_dt_limit()*dt0));
 
 					if (Solution_State.epoch_count > epoch_limit())
 						write_to_detail_file("epoch = " + numbertostring(Solution_State.epoch_count) + " > " + numbertostring(epoch_limit()));
-					
+
 					write_state(outputpathname() + "state.txt");
-                  
+
 				}
                 Solution_State.fail_reason = "dt = " + numbertostring(Solution_State.dtt) + " too small, epoch = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii);
                 Solution_State.failed = true;
@@ -2068,7 +2108,7 @@ void CMedium::solve_fts_m2(double dt)
 			}
 
 			setQ();
-			
+
 			if (!Redo_parameters.redo)
 			{
 				renew();
@@ -2112,6 +2152,7 @@ void CMedium::solve_fts_m2(double dt)
 
 bool CMedium::solve()
 {
+	show_message("Solving started...");
 	evaluate_functions();
 	setH();	// Set Total Head for all blocks
 	evaluate_area(true);  //Update connector areas;
@@ -2177,7 +2218,12 @@ void CMedium::set_param(int param_no, double _value)
 
 void CMedium::finalize_set_param()
 {
-	for (int ii=0; ii<Blocks.size(); ii++)
+	if (parent==nullptr)
+    {
+        parent = new CMediumSet();
+        show_message("Setting a dummy parent...");
+    }
+	for (unsigned int ii=0; ii<Blocks.size(); ii++)
 	{
 		Blocks[ii].parent = this;
 		if (Blocks[ii].fs_params[5]==0)
@@ -2225,7 +2271,7 @@ void CMedium::finalize_set_param()
 		Blocks[ii].CG.resize(RXN().cons.size());
 		Blocks[ii].CG_star.resize(RXN().cons.size());
 		Blocks[ii].CG_stored_mass.resize(RXN().cons.size());//newly added
-		for (int kk = 0; kk<RXN().cons.size(); kk++)
+		for (unsigned int kk = 0; kk<RXN().cons.size(); kk++)
 		{
 
 			Blocks[ii].CG[kk].resize(Blocks[ii].get_tot_num_phases() + n_default_phases);
@@ -2366,7 +2412,11 @@ void CMedium::set_default_params()
 
 void CMedium::set_default()
 {
-
+    if (!parent)
+    {
+        parent = new CMediumSet();
+        show_message("Assigned a dummy parent");
+    }
 	nr_iteration_treshold_max() = 8;
 	nr_iteration_treshold_min() = 4;
 	dt_change_rate() = 0.75;
@@ -4704,7 +4754,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 		int ini_max_error_elements = -1;
 		while (err>tol())
 		{
-			
+
 			if ((F == F) != true || (X == X) != true || (F.is_finite() == false) || (X.is_finite() == false))
 			{
 				vector<int> nans = F.get_nan_elements();
@@ -5486,10 +5536,13 @@ bool CMedium::AddBlock(const CMBBlock &B )
 {
     if (getblocksq(B.ID) != -1)
     {   build_errors.push_back("Block "+ B.ID + " already exists!");
+        show_message("Block [" + B.ID + "] already exists!");
         return false;
     }
     else
     {   Blocks.push_back(B);
+        Block(B.ID)->parent = this;
+        show_message("Block [" + B.ID + "] was added to model [" + name + "]");
         return true;
     }
 }
@@ -5497,6 +5550,7 @@ bool CMedium::AddBlock(const CMBBlock &B )
 bool CMedium::AddConnector(string source, string destination, const CConnection &C)
 {
     Connectors.push_back(C);
+    Connector(C.ID)->parent = this;
     if (getblocksq(source) == -1)
     {
         build_errors.push_back("Block "+ source + " does not exist!");
@@ -5539,6 +5593,30 @@ CConnection* CMedium::Connector(string C)
         return &Connectors[getconnectorsq(C)];
     else
         return NULL;
+}
+
+bool CMedium::show_messages()
+{
+    if (showmessages)
+        return true;
+    else
+        return false;
+}
+
+void CMedium::show_message(string s)
+{
+    if (show_messages())
+    {
+        cout << "Model [" + name + "]:" + s << endl;
+    }
+}
+
+void CMedium::show_status(string s)
+{
+    if (show_messages())
+    {
+        cout << "\rModel [" + name + "]:" + s << endl;
+    }
 }
 
 #endif

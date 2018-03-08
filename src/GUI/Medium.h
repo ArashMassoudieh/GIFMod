@@ -114,7 +114,7 @@ public:
     CMBBlock *Block(string B);
     CConnection *Connector(string C);
 	string name;
-	CMediumSet *parent;
+	CMediumSet *parent = nullptr;
 	CMedium(void);
 	~CMedium(void);
 	CMedium(const CMedium &M);
@@ -274,8 +274,15 @@ public:
     string& log_file_name();
 
     void set_control_params(int);
+    void set_default();
+    bool show_messages();
+    void show_message(string s);
+    bool showmessages;
+    bool set_property(const string &S, const string &v);
+    bool set_properties(const string &S);
 
 private:
+
     bool use_arma = true;
     CMatrix Jacobian_S(const CVector &X, double dt, bool);
     CVector Jacobian_S(const CVector &V, int &i, double &dt);
@@ -433,7 +440,7 @@ private:
     void set_G(const CVector &X);
     CVector get_X_from_CG();
     CVector get_X_from_G();
-    void set_default();
+
     CMatrix M_Q;
     CMatrix M_C;
     CMatrix_arma M_Q_arma;

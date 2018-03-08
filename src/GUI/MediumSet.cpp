@@ -1,11 +1,13 @@
 #ifdef GIFMOD
 #include "MediumSet.h"
 
-using namespace std; 
+using namespace std;
 
 
 CMediumSet::CMediumSet()
 {
+    showmessages = true;
+
 }
 
 
@@ -138,9 +140,8 @@ CMediumSet& CMediumSet::operator=(const CMediumSet &M)
 
 void CMediumSet::set_formulas()
 {
+	show_message(string("Setting formulas..."));
 	formulas.formulasH.resize(10);
-
-
 	formulas.formulasH[Soil] = "_frs[(f[5]-(((1/f[53])*(((_max(_min(f[9]:1):0.001)^(f[54]/(1-f[54])))-1)^(1/f[54])))*((1-_min(f[9]:1))/(0.01+1-_min(f[9]:1))))+(_mon((f[9]-1):0.05)*(_pos(f[9]-1)*f[51]/f[57])))]";
 	formulas.formulasH[Darcy] = "f[6]+f[5]+((f[10]-f[51])/f[57])";
     formulas.formulasH[Storage] = "f[5]+(_pos(f[4])/(f[2]*f[51]))+(_mon((f[9]-1):0.01)*(f[9]-1)*f[51]/f[57])-(f[65]/((f[9]+0.0000001)^f[66]))";
@@ -375,7 +376,7 @@ void CMediumSet::set_default()
 	SP.restore_interval = 20;
 	if (!get_formulas_from_file("formulas.txt"))
 		set_formulas();
-	
+
 }
 
 void CMediumSet::f_get_environmental_params(CLIDconfig &lid_config)
@@ -1040,7 +1041,7 @@ int CMediumSet::get_block_type(string s)
 	if (tolower(trim(s)) == "catchment") return Block_types::Catchment;
 	if (tolower(trim(s)) == "storage") return Block_types::Storage;
 
-	if (tolower(trim(s)) == "normal") return Normal; 
+	if (tolower(trim(s)) == "normal") return Normal;
 	if (tolower(trim(s)) == "qdarcy") return QDarcy;
 	if (tolower(trim(s)) == "vapor") return Vapor;
 	if (tolower(trim(s)) == "pipe1") return Pipe1;
@@ -1065,7 +1066,7 @@ bool CMediumSet::get_formulas_from_file(string filename)
 
 	for (int i = 0; i < formulas.const_area.size(); i++) {
 		formulas.const_area[i].resize(10); for (int j = 0; j < formulas.const_area[i].size(); j++) formulas.const_area[i][j] = true;}
-	
+
 	formulas.vaporTransport.resize(10);
 	for (int i = 0; i < formulas.vaporTransport.size(); i++)	 formulas.vaporTransport[i].resize(10);
 
@@ -1078,7 +1079,7 @@ bool CMediumSet::get_formulas_from_file(string filename)
 	formulas.formulasQ2 = formulas.formulasQ;
 
 	ifstream file(filename);
-	if (!file.good()) return false; 
+	if (!file.good()) return false;
 	while (!file.eof())
 	{
 		vector<string> s = getline(file);
@@ -1107,7 +1108,16 @@ bool CMediumSet::get_formulas_from_file(string filename)
 	}
 
 	set_features.formulas = true;
-	return true; 
+	return true;
+}
+
+void CMediumSet::show_message(string s)
+{
+    if (showmessages)
+    {
+        cout << "ModelSet:" + s << endl;
+    }
+
 }
 
 #endif

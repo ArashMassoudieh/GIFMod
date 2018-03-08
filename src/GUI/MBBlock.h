@@ -35,7 +35,7 @@ struct plant_props // plant properties
 		return -1;
 	}
 	CStringOP plant_growth_rate_expression;
-	CStringOP LAI_growth_rate_expression; 
+	CStringOP LAI_growth_rate_expression;
 
 };
 
@@ -46,27 +46,35 @@ friend class CConnection;
 friend class CEnvExchange;
 friend class CEvaporation;
 public:
+
 	CMBBlock(void);// default constructor
 	~CMBBlock(void);
+	CMBBlock(string properties);
 	CMBBlock(const CMBBlock& BB);// copy constructor
 
     CMBBlock& operator=(const CMBBlock &BB); //equal operator
 	string ID; //Identification of the Mass Balance Block
 
-    void set_val(const string &SS, double val); //set the value of physical properties, variables and parameters based on star values
+    bool set_properties(string s);
+    bool set_property(string s, double value);
+    bool set_property(string s, string value);
+    bool set_val(const string &SS, double val); //set the value of physical properties, variables and parameters based on star values
 	vector<CBTCSet> inflow; //inflow time-series
     int n_constts; 	int n_phases; //number of chemical species, number of phases;
-	
+    bool settype(string s); //sets the type of the block
 	vector<string> inflow_filename;
+	void show_message(string s);
 	int indicator; //specify block medium 0: soil, 1: pond
-
+    bool show_messages();
 #ifdef GIFMOD
-	CMedium *parent; 
+	CMedium *parent;
 #endif
 #ifdef GWA
 	CGWA *parent;
 #endif
 private:
+    bool showmessages;
+    vector<string> errors;
     vector<vector<double>> phi; //Capacities
     vector<CVector> capacity_c; // colloid capacities
     vector<CVector> capacity_c_star;

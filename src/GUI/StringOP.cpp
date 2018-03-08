@@ -790,7 +790,7 @@ vector<string> split(const string &s, const vector<char> &del)
 
 }
 
-vector<string> split(const string &s, char del=',')
+vector<string> split(const string &s, char del)
 {
 	int lastdel=0;
 	vector<string> strings;

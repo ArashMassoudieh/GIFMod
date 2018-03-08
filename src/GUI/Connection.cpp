@@ -2,6 +2,7 @@
 #include "Connection.h"
 //QUI
 #include "enums.h"
+#include "Medium.h"
 
 
 CConnection::CConnection(void)
@@ -29,6 +30,35 @@ CConnection::CConnection(void)
 	presc_flow = false;
 	control = false;
 }
+
+CConnection::CConnection(string s)
+{
+	fixed = false;
+	A=0;
+	d=0;
+	v=0;
+	A_star=0;
+	Q_star=0;
+	v_star=0;
+	Q=0;
+	flow_factor=1;
+	Q_v=0;
+	Q_v_star=0;
+	flow_params.resize(n_flow_params);
+	flow_params[z1] = -1000000;
+	flow_params[z2] = -1000000;
+	flow_params[flow_exponent] = 0.6667;
+	dispersivity = 0;
+	dispersion_expression = string("f[14]*f[7]/(f[2]+0.00000001)");
+	dispersion_strng = "f[14]*f[7]/f[2]";
+	settling = -1;
+	const_area = true;
+	presc_flow = false;
+	control = false;
+	showmessages = true;
+	set_properties(s);
+}
+
 
 
 CConnection::~CConnection(void)
@@ -68,7 +98,7 @@ CConnection::CConnection(const CConnection &CC)
 	fixed_val = CC.fixed_val;
 	funcs = CC.funcs;
 	flow_factor=CC.flow_factor;
-	flow_expression_v = CC.flow_expression_v; 
+	flow_expression_v = CC.flow_expression_v;
 	flow_expression_strng_v = CC.flow_expression_strng_v;
 	dispersivity = CC.dispersivity;
 	dispersion_expression = CC.dispersion_expression;
@@ -113,7 +143,7 @@ CConnection& CConnection::operator=(const CConnection &CC)
 	fixed_val = CC.fixed_val;
 	funcs = CC.funcs;
 	flow_factor=CC.flow_factor;
-	flow_expression_v = CC.flow_expression_v; 
+	flow_expression_v = CC.flow_expression_v;
 	flow_expression_strng_v = CC.flow_expression_strng_v;
 	dispersivity = CC.dispersivity;
 	dispersion_expression = CC.dispersion_expression;
@@ -142,7 +172,7 @@ double CConnection::calc(CStringOP &term, int ii) //The function to calculate an
 		else if (term.concentration == true)
 			if (Q>0) out = Block1->CG[term.number][term.phase]; else out = Block2->CG[term.number][term.phase];
 		else if (term.s_concentration == true)
-			if (term.number == -1) 
+			if (term.number == -1)
 				if (Q>0) out = Block1->G[ii][term.phase]; else out = Block2->G[ii][term.phase];
 			else
 				if (Q>0) out = Block1->G[term.number][term.phase]; else out = Block2->G[term.number][term.phase];
@@ -160,7 +190,7 @@ double CConnection::calc(CStringOP &term, int ii) //The function to calculate an
 			vector<int> jj; jj.push_back(ii);
 			out = Block2->get_val(term.number, jj);
 		}
-		else 
+		else
 			out = calc(term.terms[0],ii);
 	}
 
@@ -202,7 +232,7 @@ double CConnection::calc(CStringOP &term, int ii) //The function to calculate an
 			sum = calc(term.terms[0],ii);
 		else if (term.operators[0] == 1)
 			sum = -calc(term.terms[0],ii);
-		
+
 		if (term.operators[1] == 0)
 			out = sum+calc(term.terms[1],ii);
 		if (term.operators[1] == 1)
@@ -213,14 +243,14 @@ double CConnection::calc(CStringOP &term, int ii) //The function to calculate an
 			out = sum/calc(term.terms[1],ii);
 		if (term.operators[1] == 4)
 			out = pow(fabs(sum),calc(term.terms[1],ii))*fabs(sum)/sum;
-		
+
 	}
 
 	if ((term.nterms>2) && (term.nopts == term.nterms-1))
-	{	
+	{
 		out = calc(term.terms[0],ii);
 		for (int j=1; j<term.nterms; j++)
-		{	
+		{
 			if (term.operators[j-1] == 0)
 				out+=calc(term.terms[j],ii);
 			if (term.operators[j-1] == 1)
@@ -238,21 +268,21 @@ double CConnection::calc(CStringOP &term, int ii) //The function to calculate an
 			if (term.operators[j-1] == 4)
 				out=pow(out,calc(term.terms[j],ii));
 		}
-		
+
 	}
 
 
 	if ((term.nterms>2) && (term.nopts == term.nterms))
-	{	
+	{
 		out = 0;
-		if (term.operators[0] == 0)	
+		if (term.operators[0] == 0)
 			out = calc(term.terms[0],ii);
 		else if (term.operators[0] == 1)
 			out = -calc(term.terms[0],ii);
-	
-		
+
+
 		for (int j=1; j<term.nterms; j++)
-		{	
+		{
 			if (term.operators[j] == 0)
 				out+=calc(term.terms[j],ii);
 			if (term.operators[j] == 1)
@@ -264,7 +294,7 @@ double CConnection::calc(CStringOP &term, int ii) //The function to calculate an
 			if (term.operators[j] == 4)
 				out=pow(out,calc(term.terms[j],ii));
 		}
-		
+
 	}
 		if (term.function==true)
 	{	if (term.number == exp_)
@@ -326,7 +356,7 @@ double CConnection::calc_star(CStringOP &term, int ii)
 		else if (term.concentration == true)
 			if (Q>0) out = Block1->CG_star[term.number][term.phase]; else out = Block2->CG_star[term.number][term.phase];
 		else if (term.s_concentration == true)
-			if (term.number == -1) 
+			if (term.number == -1)
 				if (Q>0) out = Block1->G_star[ii][term.phase]; else out = Block2->G_star[ii][term.phase];
 			else
 				if (Q>0) out = Block1->G_star[term.number][term.phase]; else out = Block2->G_star[term.number][term.phase];
@@ -383,7 +413,7 @@ double CConnection::calc_star(CStringOP &term, int ii)
 				out = 0;
 			else
 				out = a / b;
-		
+
 		}
 		if (term.operators[0] == 4)
 			out = pow(calc_star(term.terms[0],ii),calc_star(term.terms[1],ii));
@@ -397,7 +427,7 @@ double CConnection::calc_star(CStringOP &term, int ii)
 			sum = calc_star(term.terms[0],ii);
 		else if (term.operators[0] == 1)
 			sum = -calc_star(term.terms[0],ii);
-		
+
 		if (term.operators[1] == 0)
 			out = sum+calc_star(term.terms[1],ii);
 		if (term.operators[1] == 1)
@@ -412,7 +442,7 @@ double CConnection::calc_star(CStringOP &term, int ii)
 	}
 
 	if ((term.nterms>2) && (term.nopts == term.nterms-1))
-	{	
+	{
 		out = calc_star(term.terms[0],ii);
 		for (int j = 1; j < term.nterms; j++)
 		{
@@ -437,16 +467,16 @@ double CConnection::calc_star(CStringOP &term, int ii)
 
 
 	if ((term.nterms>2) && (term.nopts == term.nterms))
-	{	
+	{
 		out = 0;
-		if (term.operators[0] == 0)	
+		if (term.operators[0] == 0)
 			out = calc_star(term.terms[0],ii);
 		else if (term.operators[0] == 1)
 			out = -calc_star(term.terms[0],ii);
-	
-		
+
+
 		for (int j=1; j<term.nterms; j++)
-		{	
+		{
 			if (term.operators[j] == 0)
 				out+=calc_star(term.terms[j],ii);
 			if (term.operators[j] == 1)
@@ -459,7 +489,7 @@ double CConnection::calc_star(CStringOP &term, int ii)
 				out=pow(out,calc_star(term.terms[j],ii));
 
 		}
-		
+
 	}
 	if (term.function==true)
 	{	if (term.number == exp_)
@@ -508,7 +538,7 @@ double CConnection::calc_star(CStringOP &term, int ii)
 		if (term.number = mo1_)
 			return mon(calc_star(term.terms[0], ii), calc_star(term.terms[1], ii))*calc_star(term.terms[0], ii) + mon(-calc_star(term.terms[0], ii), calc_star(term.terms[1], ii))*calc_star(term.terms[0], ii);
 
-		
+
 	}
 
 	else
@@ -517,7 +547,7 @@ double CConnection::calc_star(CStringOP &term, int ii)
 
 double CConnection::get_val(int i, int ii)
 {
-	/* variable codes: 
+	/* variable codes:
 	H: 1
 	A: 2
 	V: 3
@@ -559,7 +589,7 @@ double CConnection::get_val(int i, int ii)
 	}
 	if (i==6) return d;
 	if (i==7) return Q;
-	if (i==8) return (Q-Q_v)/A*flow_factor;  
+	if (i==8) return (Q-Q_v)/A*flow_factor;
 
 	if (i==9)
 	{
@@ -571,7 +601,7 @@ double CConnection::get_val(int i, int ii)
 				jj.push_back(ii);
 				return max(Block1->get_val(9,jj),Block2->get_val(9,jj));
 			}
-			else 
+			else
 			{
 				vector<int> jj;
 				jj.push_back(ii);
@@ -586,19 +616,19 @@ double CConnection::get_val(int i, int ii)
 				jj.push_back(ii);
 				return Block2->get_val(9,jj);
 			}
-			else 
+			else
 			{
 				return 0;   //error output should be displayed here
 			}
 		}
 	}
-	//if (i==11) return Q*flow_factor;  
+	//if (i==11) return Q*flow_factor;
 	if (i==13) return Q_v;
 	if (i==14) return dispersivity;
-	
+
 	if ((i>=50) && (i<100)) return flow_params[i-50];
-	
-	if (i>=100 && i<2000) 
+
+	if (i>=100 && i<2000)
 	{	if (Q>0)
 		return Block1->get_val(i);
 	else
@@ -612,7 +642,7 @@ double CConnection::get_val(int i, int ii)
 
 double CConnection::get_val_star(int i, int ii)
 {
-	/* variable codes: 
+	/* variable codes:
 	H: 1
 	A: 2
 	V: 3
@@ -654,8 +684,8 @@ double CConnection::get_val_star(int i, int ii)
 	}
 	if (i==6) return d;
 	if (i==7) return Q_star;
-	if (i==8) return (Q_star-Q_v_star)/A_star*flow_factor;  
-	
+	if (i==8) return (Q_star-Q_v_star)/A_star*flow_factor;
+
 	if (i==9)
 	{
 		if ((Block1->indicator==Soil) || (Block1->indicator == Plant) || (Block1->indicator == Darcy) || (Block1->indicator == Storage))
@@ -664,95 +694,103 @@ double CConnection::get_val_star(int i, int ii)
 			{
 				return max(Block1->get_val_star(9),Block2->get_val_star(9));
 			}
-			else 
+			else
 			{
 				return Block1->get_val_star(9);
 			}
 		}
 		else
 		{
-			if (Block2->indicator==Soil) 
+			if (Block2->indicator==Soil)
 			{
 				return Block2->get_val_star(9);
 			}
-			else 
+			else
 			{
 				return 0;   //error output should be displayed here
 			}
 		}
 	}
-	
-	
+
+
 	if (i==13) return Q_v_star;
 	if (i==14) return dispersivity;
-	
+
 	if ((i>=50) && (i<100)) return flow_params[i-50];
-	if (i>=100 && i<2000) 
+	if (i>=100 && i<2000)
 	{	if (Q_star>0)
 		return Block1->get_val_star(i);
 	else
 		return Block2->get_val_star(i);
 	}
-	
+
 	if (i>=3000 && i<4000) return Solid_phase[ii]->c_params[i-3000];
 	if (i==4000) return c_dispersion_star[i-4000];
 	if ((i>=5000) && (i<5100)) 	return dispersion_star[i-5000];
-	
-	
+
+
 }
 
-void CConnection::set_val(string SS, double val)
+bool CConnection::set_val(string SS, double val)
 {
 	vector<string> s = split(SS,',');
 	if (s.size()==1)
 	{
-		if (tolower(trim(s[0]))=="a") A = val;
-		if (tolower(trim(s[0]))=="d") d = val;
-		if (tolower(trim(s[0]))=="q") Q = val;
-		if (tolower(trim(s[0]))=="vel") v = val;
-			
-		if (tolower(trim(s[0]))=="a*") A_star = val;
-		if (tolower(trim(s[0]))=="q*") Q_star = val;
-		if (tolower(trim(s[0]))=="vel*") v_star = val;
+		if (tolower(trim(s[0]))=="a") {A = val; return true; }
+		if (tolower(trim(s[0]))=="d") {d = val; return true; }
+		if (tolower(trim(s[0]))=="q") {Q = val;return true; }
+		if (tolower(trim(s[0]))=="vel") {v = val;return true; }
 
-		if (tolower(trim(s[0]))=="width") flow_params[width] = val;	
-		if (tolower(trim(s[0]))=="nmanning") flow_params[n_manning] = val;	
-		if (tolower(trim(s[0]))=="flow_exponent") flow_params[flow_exponent] = val;	
+		if (tolower(trim(s[0]))=="a*") {A_star = val;return true; }
+		if (tolower(trim(s[0]))=="q*") {Q_star = val;return true; }
+		if (tolower(trim(s[0]))=="vel*") {v_star = val;return true; }
+
+		if (tolower(trim(s[0]))=="width") {flow_params[width] = val;return true; }
+		if (tolower(trim(s[0]))=="nmanning") {flow_params[n_manning] = val;return true; }
+		if (tolower(trim(s[0]))=="flow_exponent") {flow_params[flow_exponent] = val;return true; }
 
 
-		if (tolower(trim(s[0]))=="ks") flow_params[ks] = val;	
-		if (tolower(trim(s[0]))=="theta_s") flow_params[theta_s] = val;
-		if (tolower(trim(s[0]))=="theta_r") flow_params[theta_r] = val;
-		if (tolower(trim(s[0]))=="vg_alpha") flow_params[vg_alpha] = val;
-		if (tolower(trim(s[0]))=="vg_n") flow_params[vg_n] = val;
-		if (tolower(trim(s[0]))=="vg_m") flow_params[vg_m] = val;
-		if (tolower(trim(s[0]))=="lambda") flow_params[lambda] = val;
+		if (tolower(trim(s[0]))=="ks") {flow_params[ks] = val;return true; }
+		if (tolower(trim(s[0]))=="theta_s") {flow_params[theta_s] = val;return true; }
+		if (tolower(trim(s[0]))=="theta_r") {flow_params[theta_r] = val;return true; }
+		if (tolower(trim(s[0]))=="vg_alpha") {flow_params[vg_alpha] = val;return true; }
+		if (tolower(trim(s[0]))=="vg_n") {flow_params[vg_n] = val;return true; }
+		if (tolower(trim(s[0]))=="vg_m") {flow_params[vg_m] = val;return true; }
+		if (tolower(trim(s[0]))=="lambda") {flow_params[lambda] = val;return true; }
 
-		if (tolower(trim(s[0]))=="z1") flow_params[z1] = val;	
-		if (tolower(trim(s[0]))=="z2") flow_params[z2] = val;
+		if (tolower(trim(s[0]))=="z1") {flow_params[z1] = val;return true; }
+		if (tolower(trim(s[0]))=="z2") {flow_params[z2] = val;return true; }
 		if (tolower(trim(s[0])) == "dam")
 		{
 			flow_params[z1] = val;
 			flow_params[z2] = val;
+			return true;
 		}
-		if (tolower(trim(s[0])) == "rating_curve_coeff") flow_params[rating_curve_coeff] = val;
-		if (tolower(trim(s[0])) == "rating_curve_power") flow_params[rating_curve_power] = val;
-		if (tolower(trim(s[0])) == "rating_curve_datum") 
-			flow_params[rating_curve_datum] = val;
-		
-		if (tolower(trim(s[0]))=="diameter") 
+		if (tolower(trim(s[0])) == "rating_curve_coeff") {flow_params[rating_curve_coeff] = val;return true; }
+		if (tolower(trim(s[0])) == "rating_curve_power") {flow_params[rating_curve_power] = val;return true; }
+		if (tolower(trim(s[0])) == "rating_curve_datum")
+		{
+		    flow_params[rating_curve_datum] = val;
+		    return true;
+		}
+
+
+		if (tolower(trim(s[0]))=="diameter")
 		{
 			flow_params[2] = val;
 			A_star=atan(1.0)*4*pow(val/2,2);
 			A=atan(1.0)*4*pow(val/2,2);
-		}
-		if (tolower(trim(s[0]))=="pipe_c") flow_params[pipe_c] = val;
+			return true;
 
-		if (tolower(trim(s[0]))=="q_v*") Q_v_star = val; 
-		if (tolower(trim(s[0]))=="q_v") Q_v = val;		 
-		if (tolower(trim(s[0]))=="dispersivity") dispersivity = val;		 
+		}
+		if (tolower(trim(s[0]))=="pipe_c") {flow_params[pipe_c] = val;return true; }
+
+		if (tolower(trim(s[0]))=="q_v*") {Q_v_star = val;return true; }
+		if (tolower(trim(s[0]))=="q_v") {Q_v = val;return true; }
+		if (tolower(trim(s[0]))=="dispersivity") {dispersivity = val;return true; }
 	}
-	
+	return false;
+
 }
 
 
@@ -775,23 +813,23 @@ void CConnection::get_funcs(CStringOP &term)  //Works w/o reference(&)
 	{
 		get_funcs(term.terms[0]);
 		get_funcs(term.terms[1]);
-		
+
 	}
 
 	if ((term.nterms>2) && (term.nopts == term.nterms-1))
-	{	
+	{
 		for (int j=0; j<term.nterms; j++)
 			get_funcs(term.terms[j]);
 	}
 
 
 	if ((term.nterms>2) && (term.nopts == term.nterms))
-	{	
+	{
 		for (int j=0; j<term.nterms; j++)
 			get_funcs(term.terms[j]);
-		
+
 	}
-	if (term.function==true) 
+	if (term.function==true)
 		if (term.number == 11)
 		{	CFunction XX;
 			XX.Expression = term;
@@ -817,7 +855,7 @@ void CConnection::evaluate_functions(int i) //i=0->small s; i=1->large S
 {
 	funcs[i].X.clear();
 	funcs[i].X.structured = true;
-		
+
 	for (double x=funcs[i]._min; x<=funcs[i]._max; x+=(funcs[i]._max-funcs[i]._min)/double(funcs[i].n_steps))
 	{	if (funcs[i].var_id==0)
 		{	Block1->set_val_star(9,x);
@@ -827,7 +865,7 @@ void CConnection::evaluate_functions(int i) //i=0->small s; i=1->large S
 		{	Block1->set_val_star(4,x);
 			Block2->set_val_star(4,x);
 		}
-				
+
 		funcs[i].X.append(x,calc_star(funcs[i].Expression));
 	}
 
@@ -836,7 +874,7 @@ void CConnection::evaluate_functions(int i) //i=0->small s; i=1->large S
 
 }
 
-void CConnection::evaluate_functions() 
+void CConnection::evaluate_functions()
 {
 	for (int i=0; i<funcs.size(); i++) evaluate_functions(i);
 }
@@ -845,21 +883,21 @@ void CConnection::evaluate_dispersion()
 {
 	for (int i=0; i<Solid_phase.size(); i++)
 		c_dispersion[i] = calc(Solid_phase[i]->dispersion, i) + Solid_phase[i]->diffusion;
-	
+
 }
 
 void CConnection::evaluate_dispersion_star()
 {
 	for (int i=0; i<Solid_phase.size(); i++)
 		c_dispersion_star[i] = calc_star(Solid_phase[i]->dispersion, i) + Solid_phase[i]->diffusion;
-	
+
 }
 
 void CConnection::evaluate_const_dispersion()
 {
 	for (int i=0; i<RXN->cons.size(); i++)
 		dispersion[i] = calc(dispersion_expression)+RXN->cons[i].diffusion;
-	
+
 }
 
 void CConnection::evaluate_const_dispersion_star()
@@ -943,8 +981,94 @@ double CConnection::get_val(string S)
 			}
 		}
 	}
-	
+
 	if (tolower(S) == "qv") return Q_v;
 	if (tolower(S) == "dispersivity") return dispersivity;
-		
+
+}
+
+bool CConnection::set_properties(string s)
+{
+        bool success = true;
+        vector<string> ss = split(s);
+        for (unsigned int i=0; i<ss.size(); i++)
+        {
+            vector<string> prop = split(ss[i],'=');
+            if (prop.size()!=2)
+            {
+                errors.push_back(string("Syntax error in '") + ss[i] + string("' in command ") + s);
+                show_message(string("Syntax error in '") + ss[i] + string("' in command ") + s);
+                success = false;
+            }
+            bool done = set_property(prop[0],prop[1]);
+            if (!done)
+            {
+                success = false;
+            }
+
+        }
+
+        return success;
+
+}
+
+bool CConnection::set_property(string s, double value)
+{
+    bool success = true;
+    bool done = set_val(s,value);
+    if (!done)
+    {
+        errors.push_back("Property " + s + " was not found");
+        show_message("Property " + s + " was not found");
+        success = false;
+    }
+
+    return success;
+}
+
+bool CConnection::set_property(string s, string value)
+{
+    bool success = true;
+    if (tolower(trim(s))=="name") {ID = value; show_message("Property [" + s + "] was set to " + value); return success;}
+    if (tolower(trim(s))=="type")
+    {
+        bool done = settype(value);
+        if (!done) {success = false; show_message("Property [" + s + "] was set to " + value); return success;}
+    }
+    bool done = set_val(s,atof(value.c_str()));
+    if (!done)
+    {
+        errors.push_back("Property " + s + " was not found. In " + s);
+        show_message("Property " + s + " was not found. In " + s);
+        success = false;
+    }
+
+
+    show_message("Property [" + s + "] was set to " + value);
+
+    return success;
+}
+
+void CConnection::show_message(string s)
+{
+    if (show_messages())
+    {
+        cout << "Connector [" + ID + "]:" + s << endl;
+    }
+}
+
+bool CConnection::show_messages()
+{
+    bool parent_showmessages=false;
+    if (parent)
+        parent_showmessages = parent->showmessages;
+    if (showmessages || parent_showmessages)
+        return true;
+    else
+        return false;
+}
+
+bool CConnection::settype(string s)
+{
+
 }
