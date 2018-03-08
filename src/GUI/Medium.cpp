@@ -5568,27 +5568,30 @@ bool CMedium::AddBlock(const CMBBlock &B )
 
 bool CMedium::AddConnector(string source, string destination, const CConnection &C)
 {
-    Connectors.push_back(C);
-    Connector(C.ID)->parent = this;
+
     if (getblocksq(source) == -1)
     {
         build_errors.push_back("Block "+ source + " does not exist!");
+        show_message("Block "+ source + " does not exist!");
         return false;
     }
 
     if (getblocksq(destination) == -1)
     {
         build_errors.push_back("Block "+ destination + " does not exist!");
+        show_message("Block "+ destination + " does not exist!");
         return false;
     }
 
     if (getconnectorsq(C.ID) !=-1)
     {
         build_errors.push_back("Connector "+ C.ID + " already exists!");
+        show_message("Connector "+ C.ID + " already exists!");
         return false;
     }
 
-
+    Connectors.push_back(C);
+    Connector(C.ID)->parent = this;
     Connectors[Connectors.size()-1].Block1ID = source;
     Connectors[Connectors.size()-1].Block2ID = destination;
     if (Connectors[Connectors.size()-1].ID == "");
