@@ -6,10 +6,41 @@ using namespace std;
 
 CMediumSet::CMediumSet()
 {
+
+    SetDefaultSolverParameters();
+#ifndef QT_version
     showmessages = true;
+#else
+    showmessages = false;
+#endif
 
 }
 
+void CMediumSet::SetDefaultSolverParameters()
+{
+    SP.restore_interval = 100;
+    SP.avg_dt_limit = 1e-5;
+    SP.colloid_transport = false;
+    SP.constituent_transport = false;
+    SP.dt = 0.01;
+    SP.dt_change_failure = 0.1;
+    SP.dt_change_rate = 0.75;
+    SP.epoch_limit = 1e6;
+    SP.mass_balance_check = false;
+    SP.maximum_run_time = 1e6;
+    SP.max_J_interval = 20;
+    SP.minimum_acceptable_negative_conc = -1e-13;
+    SP.negative_concentration_allowed = false;
+    SP.nr_failure_criteria = 200;
+    SP.nr_iteration_treshold_max = 80;
+    SP.nr_iteration_treshold_min = 30;
+    SP.pos_def_limit = false;
+    SP.steady_state_hydro = false;
+    SP.tol = 1e-3;
+    SP.w = 0;
+    SP.solution_method=0;
+    SP.max_dt = 1;
+}
 
 CMediumSet::~CMediumSet()
 {

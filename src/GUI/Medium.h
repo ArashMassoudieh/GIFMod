@@ -115,7 +115,7 @@ public:
     CConnection *Connector(string C);
 	string name;
 	CMediumSet *parent = nullptr;
-	CMedium(void);
+	CMedium(bool createparent=false);
 	~CMedium(void);
 	CMedium(const CMedium &M);
 	CMedium(string filename, CMediumSet *P = 0);

@@ -25,10 +25,12 @@
 
 using namespace std;
 
-CMedium::CMedium(void)
+CMedium::CMedium(bool create_parent)
 {
-    parent = 0;
-
+    if (create_parent)
+        parent = new CMediumSet();
+    else
+        parent = 0;
 #ifdef QT_version
     showmessages = false;
 #else
@@ -636,6 +638,8 @@ bool CMedium::set_property(const string &S, const string &v)
 	if (tolower(trim(S))=="dtt") {Solution_State.dtt = atof(v.c_str()); return true;}
 	if (tolower(trim(S))=="dt") {dt() = atof(v.c_str()); return true;}
     if (tolower(trim(S))=="name") {name = v; return true;}
+    if (tolower(trim(S))=="tstart") {Timemin = atof(v.c_str()); return true;}
+    if (tolower(trim(S))=="tend") {Timemax = atof(v.c_str()); return true;}
 
     for (unsigned int j=0; j<Connectors.size(); j++)
         success &= Connectors[j].set_val(tolower(trim(S)), atof(v.c_str()));
@@ -644,8 +648,7 @@ bool CMedium::set_property(const string &S, const string &v)
 	for (unsigned int j=0; j<Blocks.size(); j++)
 		success &= Blocks[j].set_val(tolower(trim(S)), atof(v.c_str()));
 
-    show_message("Property [" + S + "] was set to " + v);
-	return success;
+    return success;
 }
 
 bool CMedium::set_properties(const string &S)
@@ -655,7 +658,22 @@ bool CMedium::set_properties(const string &S)
     for (unsigned int i=0; i<ss.size(); i++)
     {
         vector<string> prop = split(ss[i],'=');
-        success &= set_property(prop[0],prop[1]);
+        if (prop.size()!=2)
+        {
+            build_errors.push_back("Syntax error [" + ss[i] + "] in '" + S + "'");
+            show_message("Syntax error [" + ss[i] + "] in '" + S + "'");
+            return false;
+        }
+        if (set_property(prop[0],prop[1]))
+        {   show_message("Property [" + prop[0] + "] was set to " + prop[1]);
+            success&=true;
+        }
+        else
+        {
+            build_errors.push_back("Property [" + prop[0] + "] was not found!");
+            show_message("Property [" + prop[0] + "] was not found!");
+            success&=false;
+        }
     }
     return success;
 }
@@ -774,8 +792,8 @@ CVector CMedium::getres_S(const CVector &X, double dt)
 
     for (unsigned int i=0; i<Blocks.size(); i++)
 	{	if (Blocks[i].setzero==1) {dt=X.vec[i]; Blocks[i].S_star=0;}
-	if (Blocks[i].setzero==2) {Blocks[i].outflow_corr_factor=X1[i];	Blocks[i].S_star=0;}
-	if (Blocks[i].setzero!=0) X1[i]=0; else Blocks[i].outflow_corr_factor = 1;
+        if (Blocks[i].setzero==2) {Blocks[i].outflow_corr_factor=X1[i];	Blocks[i].S_star=0;}
+        if (Blocks[i].setzero!=0) X1[i]=0; else Blocks[i].outflow_corr_factor = 1;
 	}
 
 
@@ -5616,7 +5634,7 @@ void CMedium::show_status(string s)
 {
     if (show_messages())
     {
-        cout << string("\rModel [") + name + "]:" + s << std::endl;
+        cout << "\rModel [" + name + "]:" + s << std::flush;
     }
 }
 

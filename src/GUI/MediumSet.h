@@ -99,6 +99,7 @@ public:
 	~CMediumSet();
 	CMediumSet(const CMediumSet &M);
     CMediumSet& operator=(const CMediumSet &BB);
+	void SetDefaultSolverParameters();
 	vector<CMedium> Medium;
 	Solver_parameters SP; //current time weight for CN solution
 	vector<CSolid_Phase> Solid_phase;
