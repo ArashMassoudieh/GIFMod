@@ -1072,5 +1072,5 @@ bool CConnection::show_messages()
 
 bool CConnection::settype(string s)
 {
-
+	return 0; 
 }

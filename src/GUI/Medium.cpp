@@ -15,6 +15,7 @@
 #endif // QT_version
 #include "Vector.h"
 
+
 #ifndef QT_version
 #define string2QString string2QString_nqt
 #else
@@ -5607,7 +5608,7 @@ void CMedium::show_message(string s)
 {
     if (show_messages())
     {
-        cout << "Model [" + name + "]:" + s << endl;
+        cout << string("Model [") + name + "]:" + s << std::endl;
     }
 }
 
@@ -5615,7 +5616,7 @@ void CMedium::show_status(string s)
 {
     if (show_messages())
     {
-        cout << "\rModel [" + name + "]:" + s << endl;
+        cout << string("\rModel [") + name + "]:" + s << std::endl;
     }
 }
 

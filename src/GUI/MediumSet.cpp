@@ -1115,7 +1115,7 @@ void CMediumSet::show_message(string s)
 {
     if (showmessages)
     {
-        cout << "ModelSet:" + s << endl;
+        std::cout<< string("ModelSet:") + s << std::endl;
     }
 
 }
