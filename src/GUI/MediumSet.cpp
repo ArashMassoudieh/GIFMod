@@ -7,7 +7,7 @@ using namespace std;
 CMediumSet::CMediumSet()
 {
 
-    SetDefaultSolverParameters();
+    set_default();
 #ifndef QT_version
     showmessages = true;
 #else
@@ -18,28 +18,36 @@ CMediumSet::CMediumSet()
 
 void CMediumSet::SetDefaultSolverParameters()
 {
-    SP.restore_interval = 100;
-    SP.avg_dt_limit = 1e-5;
-    SP.colloid_transport = false;
-    SP.constituent_transport = false;
     SP.dt = 0.01;
-    SP.dt_change_failure = 0.1;
-    SP.dt_change_rate = 0.75;
     SP.epoch_limit = 1e6;
     SP.mass_balance_check = false;
     SP.maximum_run_time = 1e6;
-    SP.max_J_interval = 20;
     SP.minimum_acceptable_negative_conc = -1e-13;
     SP.negative_concentration_allowed = false;
-    SP.nr_failure_criteria = 200;
-    SP.nr_iteration_treshold_max = 80;
-    SP.nr_iteration_treshold_min = 30;
     SP.pos_def_limit = false;
     SP.steady_state_hydro = false;
     SP.tol = 1e-3;
     SP.w = 0;
     SP.solution_method=0;
     SP.max_dt = 1;
+
+    SP.nr_iteration_treshold_max = 8;
+	SP.nr_iteration_treshold_min = 4;
+	SP.dt_change_rate = 0.75;
+	SP.dt_change_failure = 0.1;
+	SP.nr_failure_criteria = 100;
+	SP.max_J_interval = 100;
+	FI.write_interval = 1;
+	FI.write_details = false;
+	SP.wiggle_tolerance = 0.02;
+	FI.uniformoutput = true;
+	SP.mass_balance_check = false;
+	SP.forward = false;
+	SP.colloid_transport = false;
+	SP.constituent_transport = false;
+	SP.epoch_limit = 500000;
+	SP.avg_dt_limit = 1e-5;
+	SP.restore_interval = 20;
 }
 
 CMediumSet::~CMediumSet()
@@ -388,23 +396,7 @@ void CMediumSet::solve()
 void CMediumSet::set_default()
 {
 
-	SP.nr_iteration_treshold_max = 8;
-	SP.nr_iteration_treshold_min = 4;
-	SP.dt_change_rate = 0.75;
-	SP.dt_change_failure = 0.1;
-	SP.nr_failure_criteria = 100;
-	SP.max_J_interval = 100;
-	FI.write_interval = 1;
-	FI.write_details = false;
-	SP.wiggle_tolerance = 0.02;
-	FI.uniformoutput = true;
-	SP.mass_balance_check = false;
-	SP.forward = false;
-	SP.colloid_transport = false;
-	SP.constituent_transport = false;
-	SP.epoch_limit = 500000;
-	SP.avg_dt_limit = 1e-5;
-	SP.restore_interval = 20;
+	SetDefaultSolverParameters();
 	if (!get_formulas_from_file("formulas.txt"))
 		set_formulas();
 
