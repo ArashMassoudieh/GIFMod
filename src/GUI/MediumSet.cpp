@@ -18,6 +18,9 @@ CMediumSet::CMediumSet()
 
 void CMediumSet::SetDefaultSolverParameters()
 {
+#ifdef Debug_API
+    show_message("Setting default solver parameters");
+#endif // Debug_API
     SP.dt = 0.01;
     SP.epoch_limit = 1e6;
     SP.mass_balance_check = false;

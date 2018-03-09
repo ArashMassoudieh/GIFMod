@@ -38,6 +38,7 @@ public:
     bool settype(string s);
     bool showmessages;
     vector<string> errors;
+    string tostring();
 private:
     CMedium *parent;
     vector<CSolid_Phase*> Solid_phase;

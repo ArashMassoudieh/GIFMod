@@ -1017,6 +1017,7 @@ bool CConnection::set_properties(string s)
 bool CConnection::set_property(string s, double value)
 {
     bool success = true;
+
     bool done = set_val(s,value);
     if (!done)
     {
@@ -1072,5 +1073,36 @@ bool CConnection::show_messages()
 
 bool CConnection::settype(string s)
 {
-	return 0; 
+	return 0;
+}
+
+string CConnection::tostring()
+{
+    string s;
+    s += "Connector [" + ID + "]:\n";
+    s += "   Name = " + ID + "\n";
+    s += "   Area = " + numbertostring(A) + "\n";
+    s += "   Flow_expression = " + flow_expression.expression + "\n";
+    s += "   Flow = " + numbertostring(Q) + "\n";
+    s += "   Velocity = " + numbertostring(v) + "\n";
+    s += "   Width =" + numbertostring(flow_params[width]) + "\n";
+    s += "   Manning coefficient =" + numbertostring(flow_params[n_manning]) + "\n";
+    s += "   flow_exponent = " + numbertostring(flow_params[flow_exponent]) + "\n";
+    s += "   Hydraulic conductivity = " + numbertostring(flow_params[ks]) + "\n";
+    s += "   Theta_s = " + numbertostring(flow_params[theta_s]) + "\n";
+    s += "   Theta_r = " + numbertostring(flow_params[theta_r]) + "\n";
+    s += "   VG_alpha = " + numbertostring(flow_params[vg_alpha]) + "\n";
+    s += "   VG_n = " + numbertostring(flow_params[vg_n]) + "\n";
+    s += "   VG_m = " + numbertostring(flow_params[vg_m]) + "\n";
+    s += "   VG_lambda = " + numbertostring(flow_params[lambda]) + "\n";
+    s += "   start elevation = " + numbertostring(flow_params[z1]) + "\n";
+    s += "   end elevation = " + numbertostring(flow_params[z2]) + "\n";
+    s += "   rating curve coefficient = " + numbertostring(flow_params[rating_curve_coeff]) + "\n";
+    s += "   rating curve power = " + numbertostring(flow_params[rating_curve_power]) + "\n";
+    s += "   rating curve datum = " + numbertostring(flow_params[rating_curve_datum]) + "\n";
+    s += "   Hazen-Williams Coefficient = " + numbertostring(flow_params[pipe_c]) + "\n";
+    s += "   Dispersivity = " + numbertostring(dispersivity) + "\n";
+
+	return s;
+
 }

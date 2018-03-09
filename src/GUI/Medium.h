@@ -281,7 +281,7 @@ public:
     bool showmessages;
     bool set_property(const string &S, const string &v);
     bool set_properties(const string &S);
-
+    bool& write_details();
 private:
 
     bool use_arma = true;
@@ -394,7 +394,7 @@ private:
     vector<vector<bool>>& settling();
 
     void evaluate_functions();
-    bool& write_details();
+
 	void write_to_detail_file(string s);
     bool is_there_any_fixed_connectors();
     double& wiggle_tolerance();

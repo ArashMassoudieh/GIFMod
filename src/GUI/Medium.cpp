@@ -1866,6 +1866,8 @@ void CMedium::solve_fts_m2(double dt)
                 Solution_State.fail_reason = "failed count > 30";
                 for (unsigned int i=0; i < controllers().size(); i++)
 					Results.ANS_control.BTC[i] = controllers()[i].output;
+
+                show_message("Simulation Failed! + Number of unsuccessful time-step reductions > 30");
 #ifdef QT_version
 				updateProgress();
 
@@ -1940,6 +1942,7 @@ void CMedium::solve_fts_m2(double dt)
 
 				}
                 Solution_State.fail_reason = "dt = " + numbertostring(Solution_State.dtt) + " too small, epoch = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii);
+                show_message("dt = " + numbertostring(Solution_State.dtt) + " too small, epoch = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii));
                 Solution_State.failed = true;
 				write_flows(outputpathname() + "flows.txt");
                 for (unsigned int i=0; i < controllers().size(); i++)
@@ -2411,7 +2414,6 @@ void CMedium::set_default_params()
     //for (unsigned int i=0; i<parameters().size(); i++)
 	//	set_param(i, parameters()[i].value);
 
-
 	finalize_set_param();
 
 	if (!Solid_phase().size())
@@ -2426,6 +2428,12 @@ void CMedium::set_default_params()
 	if (steady_state_hydro())
         for (unsigned int i=0; i < Connectors.size(); i++)
             if (Connectors[i].d == 0) Connectors[i].d = 1;
+
+#ifdef API_version
+        f_set_default_block_expressions();
+        f_set_default_connector_expressions();
+#endif // API_version
+
 }
 
 
@@ -5594,7 +5602,7 @@ bool CMedium::AddConnector(string source, string destination, const CConnection 
     Connector(C.ID)->parent = this;
     Connectors[Connectors.size()-1].Block1ID = source;
     Connectors[Connectors.size()-1].Block2ID = destination;
-    if (Connectors[Connectors.size()-1].ID == "");
+    if (Connectors[Connectors.size()-1].ID == "")
         Connectors[Connectors.size()-1].ID = source + "-" + destination;
 
     return true;

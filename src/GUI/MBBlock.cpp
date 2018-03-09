@@ -1608,3 +1608,85 @@ bool CMBBlock::settype(string s)
     errors.push_back("Type '" + s + " was not recognized!");
     return false;
 }
+
+string CMBBlock::gettype()
+{
+    if (indicator == Block_types::Soil) return "soil";
+    if (indicator == Block_types::Darcy) return "darcy";
+    if (indicator == Block_types::Plant) return "plant";
+    if (indicator == Block_types::Pond) return "pond";
+    if (indicator == Block_types::Storage) return "storage";
+    if (indicator == Block_types::Stream) return "stream";
+    if (indicator == Block_types::Catchment) return "catchment";
+
+    return "";
+}
+
+string CMBBlock::tostring()
+{
+    string s;
+    s += "Block [" + ID + "]:\n";
+    s += "   Name = " + ID + "\n";
+    s += "   Type = " + gettype() + "\n";
+    s += "   Area = " + numbertostring(A) + "\n";
+    s += "   Head = " + numbertostring(H) + "\n";
+    s += "   Volume = " + numbertostring(V) + "\n";
+    s += "   Storage = " + numbertostring(S) + "\n";
+    s += "   Bottom Elevation = " + numbertostring(z0) + "\n";
+	s += "   Moisture Content = " + numbertostring(S/V) + "\n";
+    s += "   Vapor Diffusion = " + numbertostring(vapor_diffusion) + "\n";
+	s += "   Bulk Density = " + numbertostring(bulk_density) + "\n";
+	s += "   Depth = " + numbertostring(V/A) + "\n";
+    s += "   Porosity = " + numbertostring(fs_params[theta_s]) + "\n";
+    s += "   Depression Storage  = " + numbertostring(fs_params[depression_storage]) + "\n";
+	s += "   Saturated Hydraulic Conductivity  = " + numbertostring(fs_params[ks]) + "\n";
+    s += "   Theta_s  = " + numbertostring(fs_params[theta_s]) + "\n";
+    s += "   Theta_r  = " + numbertostring(fs_params[theta_r]) + "\n";
+    s += "   VG_alpha  = " + numbertostring(fs_params[vg_alpha]) + "\n";
+    s += "   VG_n  = " + numbertostring(fs_params[vg_n]) + "\n";
+    s += "   VG_m  = " + numbertostring(fs_params[vg_m]) + "\n";
+    s += "   VG_lambda  = " + numbertostring(fs_params[lambda]) + "\n";
+    s += "   Storativity  = " + numbertostring(fs_params[storativity]) + "\n";
+	s += "   Storage epsilon  = " + numbertostring(fs_params[storage_epsilon]) + "\n";
+    s += "   Storage n  = " + numbertostring(fs_params[storage_n]) + "\n";
+    if (indicator==Block_types::Plant)
+    {
+        s += "   Leaf Area Index  = " + numbertostring(plant_prop.LAI) + "\n";
+        s += "   Maximum Leaf Area Index  = " + numbertostring(plant_prop.LAI) + "\n";
+        s += "   Leaf Area Index  = " + numbertostring(fs_params[LAI_max]) + "\n";
+        s += "   Area Index Growth rate  = " + numbertostring(fs_params[K_LAI]) + "\n";
+        s += "   Plant Growth rate coefficient = " + numbertostring(fs_params[plant_growth_rate_coefficient]) + "\n";
+        s += "   Base Temperature = " + numbertostring(fs_params[temperature_base]) + "\n";
+        s += "   Temperature Spread Factor = " + numbertostring(fs_params[temperature_spread_factor]) + "\n";
+        s += "   Plant Leaf Decay Factor = " + numbertostring(fs_params[plant_leaf_decay_factor]) + "\n";
+        s += "   Plant Biomass Decay Factor = " + numbertostring(fs_params[plant_biomass_decay_factor]) + "\n";
+        s += "   Optimal Temperature = " + numbertostring(fs_params[optimal_temperature]) + "\n";
+        s += "   Maximum Biovolume = " + numbertostring(fs_params[maximum_bio_volume]) + "\n";
+    }
+
+	s += "   Air Phase = " + numbertostring(air_phase) + "\n";
+	s += "   Light reduction factor = " + numbertostring(light_reduction_factor) + "\n";
+
+	return s;
+	/*else if (s.size()==2)
+	{
+		if (tolower(trim(s[0])) == "fp") {fs_params[atoi(s[1].c_str())] = val;success = true;}
+		if (tolower(trim(s[0])) == "p") {rxn_params[atoi(s[1].c_str())] = val;success = true;}
+		if (tolower(trim(s[0])) == "g") { initial_g_counter_p.push_back(s[1]); initial_g_counter_l.push_back("mobile"); initial_g.push_back(val); success = true;}
+		if (tolower(trim(s[0])) == "cg") { initial_cg_counter_p.push_back(""); initial_cg_counter_l.push_back(""); initial_cg_counter_c.push_back(s[1]);  initial_cg.push_back(val); success = true;}
+		if (tolower(trim(s[0])) == "hsc") { plant_prop.limiting_nutrients.push_back(s[1]);  plant_prop.half_saturation_constants.push_back(val); success = true;}
+	}
+	else if (s.size()==3)
+	{
+		if (tolower(trim(s[0])) == "g") {initial_g_counter_p.push_back(s[1]); initial_g_counter_l.push_back(s[2]); initial_g.push_back(val);success = true;}
+		if (tolower(trim(s[0])) == "cg") { initial_cg_counter_p.push_back(s[2]); initial_cg_counter_l.push_back(""); initial_cg_counter_c.push_back(s[1]);  initial_cg.push_back(val); success = true;}
+	}
+
+	else if (s.size() == 4)
+	{
+		if (tolower(trim(s[0])) == "cg") { initial_cg_counter_p.push_back(s[2]); initial_cg_counter_l.push_back(s[3]); initial_cg_counter_c.push_back(s[1]);  initial_cg.push_back(val); success = true;}
+	}
+
+    */
+
+}

@@ -62,10 +62,12 @@ public:
 	vector<CBTCSet> inflow; //inflow time-series
     int n_constts; 	int n_phases; //number of chemical species, number of phases;
     bool settype(string s); //sets the type of the block
+    string gettype(); // gets the type of the block as a string
 	vector<string> inflow_filename;
 	void show_message(string s);
 	int indicator; //specify block medium 0: soil, 1: pond
     bool show_messages();
+    string tostring(); //converts the information of the block to a string
 #ifdef GIFMOD
 	CMedium *parent;
 #endif
