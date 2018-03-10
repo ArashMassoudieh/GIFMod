@@ -26,8 +26,8 @@ CPrecipitation::CPrecipitation(const CPrecipitation &Precip)
 	s = Precip.s;
 	e = Precip.e;
 	i = Precip.i;
-	
-	
+
+
 }
 
 CPrecipitation CPrecipitation::operator = (const CPrecipitation &Precip)
@@ -42,16 +42,16 @@ CPrecipitation CPrecipitation::operator = (const CPrecipitation &Precip)
 
 CPrecipitation::~CPrecipitation(void)
 {
-	
+
 }
 
 double CPrecipitation::getval(double time)
 {
-	
+
 	structured = false;
 	double res = 0;
 	if (!structured)
-	{	
+	{
 		for (int ii=0; ii<n; ii++)
 			if ((time<e[ii]) && (time>=s[ii]))
 				res = i[ii]/(e[ii]-s[ii]);
@@ -118,7 +118,7 @@ bool CPrecipitation::isFileValid(string filename)
 		return false;
 	if (temp.e.size() < 1 || temp.s.size() < 1)
 		return false;
-	for (int i = 0; i < temp.e.size(); i++)
+	for (unsigned int i = 0; i < temp.e.size(); i++)
 		if (temp.e[i] - temp.s[i] <= 0)
 			return false;
 //	temp.dt = temp.e[1] - temp.s[1];
@@ -154,7 +154,7 @@ CBTCSet CPrecipitation::getflow (double A, double dt)
 	Rainflowout.names.push_back("flow");
 	for (double t = s[0]; t<e[n-1]; t+=dt)
 		Rainflowout.BTC[0].append(t,getval(t)*A);  //i [m]
-	
+
 	Rainflowout.BTC[0].assign_D();
 	return Rainflowout;
 }

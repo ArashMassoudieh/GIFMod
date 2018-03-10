@@ -76,6 +76,7 @@ double mon(double x, double y);
 vector<int> look_up(string s, char del);
 string numbertostring(double x);
 string numbertostring(int x);
+string numbertostring(unsigned int x);
 string numbertostring(vector<int> x);
 string numbertostring(vector<double> x);
 bool isintegernumber(string S);

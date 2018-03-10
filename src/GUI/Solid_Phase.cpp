@@ -13,15 +13,15 @@ CSolid_Phase::CSolid_Phase(int n)
 	dispersion=CStringOP("f[3011]*_abs(f[8])");
 	mobility_factor.resize(3);
 	mobility_factor[0]=1;
-	K[0][1]=CStringOP("f[3003]*f[3004]*f[3005]*f[3006]*_abs(f[8])*(f[3007]-g[1]-g[2])/f[3007]") ;  
+	K[0][1]=CStringOP("f[3003]*f[3004]*f[3005]*f[3006]*_abs(f[8])*(f[3007]-g[1]-g[2])/f[3007]") ;
 	K[0][2]=CStringOP("(1-f[3003])*f[3004]*f[3005]*f[3006]*_abs(f[8])*(f[3007]-g[1]-g[2])/f[3007]") ;  //abs was added
-	K[2][0]=CStringOP("f[3004]*f[3008]*_pos(_abs(f[8])-f[3009])") ;  
+	K[2][0]=CStringOP("f[3004]*f[3008]*_pos(_abs(f[8])-f[3009])") ;
 	capacity[0]=CStringOP("_max((f[4]+(f[3002]*f[15])):0.0000000001)");
 	capacity[1]=CStringOP("f[3010]*f[3]");
 	capacity[2]=CStringOP("f[3010]*f[3]");
 	vs = 0;
 	diffusion = 0;
-	
+
 }
 
 CSolid_Phase::CSolid_Phase(string m)
@@ -73,10 +73,10 @@ CSolid_Phase::CSolid_Phase(string m)
 
 		mobility_factor.resize(n_phases);
 		mobility_factor[0]=1;
-		K[0][1]=CStringOP("f[3003]*f[3004]*f[3005]*f[3006]*_abs(f[8])*(f[3007]-g[1])/f[3007]") ;  
-		K[1][0]=CStringOP("f[3004]*f[3008]*_pos(_abs(f[8])-f[3009])") ;  
+		K[0][1]=CStringOP("f[3003]*f[3004]*f[3005]*f[3006]*_abs(f[8])*(f[3007]-g[1])/f[3007]") ;
+		K[1][0]=CStringOP("f[3004]*f[3008]*_pos(_abs(f[8])-f[3009])") ;
 		capacity[0] = CStringOP("_max((f[4]+(f[3002]*f[15])):0.0000000001)");
-		capacity[1] = CStringOP("f[3010]*f[3]"); 
+		capacity[1] = CStringOP("f[3010]*f[3]");
 		capacity_c[0]=CStringOP("_max((g[0]):0.0000000000000000001)");
 		capacity_c[1]=CStringOP("_max((g[1]):0.0000000000000000001)");
 		phase_names[0] = "mobile";
@@ -96,9 +96,9 @@ CSolid_Phase::CSolid_Phase(string m)
 		mobility_factor.resize(n_phases);
 		capacity_c.resize(n_phases);
 		mobility_factor[0]=1;
-		K[0][1]=CStringOP("f[3003]*f[3004]*f[3005]*f[3006]*_abs(f[8])*(f[3007]-g[1]-g[2])/f[3007]") ;  
+		K[0][1]=CStringOP("f[3003]*f[3004]*f[3005]*f[3006]*_abs(f[8])*(f[3007]-g[1]-g[2])/f[3007]") ;
 		K[0][2]=CStringOP("(1-f[3003])*f[3004]*f[3005]*f[3006]*_abs(f[8])*(f[3007]-g[1]-g[2])/f[3007]") ;  //abs was added
-		K[2][0]=CStringOP("f[3004]*f[3008]*_pos(_abs(f[8])-f[3009])") ;  
+		K[2][0]=CStringOP("f[3004]*f[3008]*_pos(_abs(f[8])-f[3009])") ;
 		capacity[0] = CStringOP("_max((f[4]+(f[3002]*f[15])):0.0000000001)");
 		capacity[1]=CStringOP("f[3010]*f[3]");
 		capacity[2]=CStringOP("f[3010]*f[3]");
@@ -124,9 +124,9 @@ CSolid_Phase::CSolid_Phase(string m)
 
 		mobility_factor.resize(n_phases);
 		mobility_factor[0]=1;
-		K[0][1]=CStringOP("f[3003]*f[3004]*f[3005]*f[3006]*_abs(f[8])*(f[3007]-g[1]-g[2])/f[3007]") ;  
+		K[0][1]=CStringOP("f[3003]*f[3004]*f[3005]*f[3006]*_abs(f[8])*(f[3007]-g[1]-g[2])/f[3007]") ;
 		K[0][2]=CStringOP("(1-f[3003])*f[3004]*f[3005]*f[3006]*_abs(f[8])*(f[3007]-g[1]-g[2])/f[3007]") ;  //abs was added
-		K[2][0]=CStringOP("f[3004]*f[3008]*_pos(_abs(f[8])-f[3009])") ;  
+		K[2][0]=CStringOP("f[3004]*f[3008]*_pos(_abs(f[8])-f[3009])") ;
 		capacity[0] = CStringOP("_max((f[4]+(f[3002]*f[15])):0.0000000001)");
 		capacity[1]=CStringOP("f[3010]*f[3]");
 		capacity[2]=CStringOP("f[3010]*f[3]");
@@ -137,7 +137,7 @@ CSolid_Phase::CSolid_Phase(string m)
 		phase_names[1] = "ir_attached";
 		phase_names[2] = "r_attached";
 	}
-	
+
 }
 
 
@@ -195,13 +195,14 @@ double CSolid_Phase::get_val(int i)
 		return c_params[i - 3000];
 	else if (i >= 3050)
 		return settling_parameters[i - 3050];
+    return 0;
 
 }
 
 void CSolid_Phase::set_val(int i, double val)
 {
 	c_params[i-3000] = val;
-	
+
 }
 
 void CSolid_Phase::set_val(string SS, double val)
@@ -210,10 +211,10 @@ void CSolid_Phase::set_val(string SS, double val)
 	del.push_back('[');
 	del.push_back(']');
 	vector<string> s = split(SS,del);
-	
-	if (s.size()==1)  
-	{ 
-		if (tolower(trim(s[0]))=="kair") c_params[kair] = val;              //ka    
+
+	if (s.size()==1)
+	{
+		if (tolower(trim(s[0]))=="kair") c_params[kair] = val;              //ka
 		if (tolower(trim(s[0]))=="irrevcolfraction")  c_params[irrevcolfraction]= val;  //betai
 		if (tolower(trim(s[0]))=="specsurfarea")  c_params[specsurfarea]= val;      //f
 		if (tolower(trim(s[0]))=="attachmenteff") c_params[attachmenteff] = val;     //alphap
@@ -235,7 +236,7 @@ void CSolid_Phase::set_val(string SS, double val)
 
 void CSolid_Phase::set_settling_model(string _settling_model)
 {
-	
+
 	settling_model = _settling_model;
 	if (settling_model == "constant_velocity")
 	{
@@ -253,7 +254,7 @@ int CSolid_Phase::lookup_phase(string S)
 {
 	int out = -1;
 	if (S == "") return out=0;
-	for (int i = 0; i < phase_names.size(); i++)
+	for (unsigned int i = 0; i < phase_names.size(); i++)
 		if (tolower(S) == tolower(phase_names[i]))
 			out = i;
 

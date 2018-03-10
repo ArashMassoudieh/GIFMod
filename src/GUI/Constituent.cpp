@@ -16,7 +16,7 @@ CConstituent::CConstituent(string _settling_model)
 	settling_model = _settling_model;
 	if (settling_model == "constant_velocity")
 	{
-		
+
 	}
 	if (settling_model == "double_exponential")
 	{
@@ -40,7 +40,7 @@ CConstituent& CConstituent::operator==(const CConstituent& CC)
 	influx = CC.influx;
 	inlflux_model = CC.inlflux_model;
 	rate_constant_influx = CC.rate_constant_influx;
-	ini_conc = CC.ini_conc; 
+	ini_conc = CC.ini_conc;
 	set_ini_conc = CC.set_ini_conc;
 	equilibrium_conc = CC.equilibrium_conc;
 	value_fixed = CC.value_fixed;
@@ -48,7 +48,7 @@ CConstituent& CConstituent::operator==(const CConstituent& CC)
 	fixed_file = CC.fixed_file;
 	fixed_val = CC.fixed_val;
 	fixed_val_ts = CC.fixed_val_ts;
-	fixedts = CC.fixedts; 
+	fixedts = CC.fixedts;
 	fixedts_avg = CC.fixedts_avg;
 	rate_exchange = CC.rate_exchange;
 	rate_exchange_ptr = CC.rate_exchange_ptr;
@@ -75,7 +75,7 @@ CConstituent::CConstituent(const CConstituent &CC)
 	influx = CC.influx;
 	inlflux_model = CC.inlflux_model;
 	rate_constant_influx = CC.rate_constant_influx;
-	ini_conc = CC.ini_conc; 
+	ini_conc = CC.ini_conc;
 	set_ini_conc = CC.set_ini_conc;
 	equilibrium_conc = CC.equilibrium_conc;
 	value_fixed = CC.value_fixed;
@@ -83,7 +83,7 @@ CConstituent::CConstituent(const CConstituent &CC)
 	fixed_file = CC.fixed_file;
 	fixed_val = CC.fixed_val;
 	fixed_val_ts = CC.fixed_val_ts;
-	fixedts = CC.fixedts; 
+	fixedts = CC.fixedts;
 	fixedts_avg = CC.fixedts_avg;
 	rate_exchange = CC.rate_exchange;
 	rate_exchange_ptr = CC.rate_exchange_ptr;
@@ -150,7 +150,7 @@ void CConstituent::set_val(string S, double val)
 		}
 
 	}
-	
+
 }
 
 double CConstituent::get_val(int i)
@@ -159,4 +159,5 @@ double CConstituent::get_val(int i)
 		return exchange_params[i - 5000];
 	else if (i >= 5050)
 		return settling_parameters[i - 5050];
+    return 0;
 }

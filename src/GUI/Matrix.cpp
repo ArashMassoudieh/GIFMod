@@ -526,7 +526,7 @@ CMatrix CMatrix::LU_decomposition()
     CMatrix A = *this;
 	double AMAX,DUM, SUM;
 	int  I,IMAX,J,K;
-	int d;
+
 	int n = A.getnumrows();
 	CVector VV(n);
 
@@ -707,7 +707,6 @@ CVector solve_ar(CMatrix &M, CVector &V)
 
 	catch(int rtt)
 	{
-		int a = 1;
 
 	}
 	for (int i = 0;i<V.getsize(); ++i)
@@ -722,7 +721,7 @@ CMatrix inv(CMatrix M)
 	mat A(M.getnumrows(),M.getnumcols());
 
 	CMatrix inv_M;
-	bool indef = false;
+
 	for (int i = 0;i<M.getnumrows(); ++i)
 	{
 		for (int j = 0;j<M.getnumcols(); ++j)
@@ -784,7 +783,7 @@ void write_to_file(vector<CMatrix> M, string filename)
 	ofstream Afile;
 	Afile.open(filename);
 	M.push_back(Average(M));
-	for (int k = 0; k<M.size(); k++)
+	for (unsigned int k = 0; k<M.size(); k++)
 	{	for (int i = 0; i<M[k].numrows; ++i)
 		{
 			for (int j = 0; j<M[k].numcols; ++j)
@@ -803,7 +802,7 @@ CMatrix Average(vector<CMatrix> M)
 {
 	CMatrix AVG(M[0].numrows, M[0].numcols);
 	int n = M.size();
-	for (int k = 0; k<M.size(); k++)
+	for (unsigned int k = 0; k<M.size(); k++)
 		for (int i = 0; i<M[k].numrows; ++i)
 			for (int j = 0; j<M[k].numcols; ++j)
 				AVG[i][j] += M[k][i][j]/n;
@@ -898,13 +897,13 @@ vector<string> CMatrix::toString(string format, vector<string> columnHeaders, ve
 {
 	vector<string> r;
 	bool rowH = false, colH = false;
-	int rowOffset = 0, colOffset = 0;
-	if (columnHeaders.size() && columnHeaders.size() == numcols)
+	int rowOffset = 0, colOffset=0;
+	if (columnHeaders.size() && int(columnHeaders.size()) == numcols)
 	{
 		colH = true;
 		rowOffset = 1;
 	}
-	if (rowHeaders.size() && rowHeaders.size() == numrows)
+	if (rowHeaders.size() && int(rowHeaders.size()) == numrows)
 	{
 		rowH = true;
 		colOffset = 1;

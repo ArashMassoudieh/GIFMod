@@ -69,9 +69,9 @@ CMBBlock::CMBBlock(string s)
 
 CMBBlock::~CMBBlock(void)
 {
-	for (int i=0; i<Solid_phase.size(); i++) Solid_phase[i] = NULL;
-	for (int i = 0; i<evaporation_m.size(); i++) evaporation_m[i] = NULL;
-	for (int i = 0; i<buildup.size(); i++) buildup[i] = NULL;
+	for (unsigned int i=0; i<Solid_phase.size(); i++) Solid_phase[i] = NULL;
+	for (unsigned int i = 0; i<evaporation_m.size(); i++) evaporation_m[i] = NULL;
+	for (unsigned int i = 0; i<buildup.size(); i++) buildup[i] = NULL;
 	light = NULL;
 	temperature = NULL;
 	current_temperature = NULL;
@@ -319,7 +319,7 @@ double CMBBlock::get_val(int i, vector<int> ii)
 		plant_prop.half_saturation_constants[i - 7000];
 	if (i >= 10000 && i<20000) return G[(i-10000)/1000][(i-10000)%1000];
 	if (i >= 100000 && i<200000) return CG[(i-100000)/10000][(i-100000)%10000];
-
+    return 0;
 }
 
 double CMBBlock::get_val(string SS)
@@ -460,7 +460,7 @@ double CMBBlock::get_val(string SS)
 			if ((l != -1) && (k != -1)) return CG[k][get_member_no(p, l)];
 		}
 	}
-
+    return 0;
 }
 
 double CMBBlock::get_val_star(int i, vector<int> ii)
@@ -543,6 +543,8 @@ double CMBBlock::get_val_star(int i, vector<int> ii)
 	if (i >= 7000 && 8000) return plant_prop.half_saturation_constants[i - 7000];
 	if (i >= 10000 && i<20000) return G_star[(i - 10000) / 1000][(i - 10000) % 1000];
 	if (i >= 100000 && i<200000) return CG_star[(i - 100000) / 10000][(i - 100000) % 10000];
+
+	return 0;
 }
 
 double CMBBlock::calc(CStringOP &term, vector<int> ii)  //Works w/o reference(&)
@@ -698,18 +700,20 @@ double CMBBlock::calc(CStringOP &term, vector<int> ii)  //Works w/o reference(&)
 		if (term.number==abs_)
 			return fabs(out);
 		if (term.number==sqs_)
-			if (out!=0)
+		{
+		 	if (out!=0)
 				return out/fabs(out)*sqrt(fabs(out));
 			else
 				return 0;
+		}
 		if (term.number == sig_)
 		{
 			return exp(out) / (1 + exp(out));
 		}
 	}
 
-	else
-		return out;
+	return out;
+
 }
 
 double CMBBlock::calc_star(CStringOP &term, vector<int> ii)
@@ -866,18 +870,19 @@ double CMBBlock::calc_star(CStringOP &term, vector<int> ii)
 		if (term.number==abs_)
 			return fabs(out);
 		if (term.number==sqs_)
+		{
 			if (out!=0)
 				return out/fabs(out)*sqrt(fabs(out));
 			else
 				return 0;
+		}
 		if (term.number == sig_)
 		{
 			return exp(out) / (1 + exp(out));
 		}
 	}
 
-	else
-		return out;
+	return out;
 }
 
 void CMBBlock::set_val(int i, double val)
@@ -1029,7 +1034,6 @@ void CMBBlock::set_num_constts(int m)
 
 void CMBBlock::get_funcs(CStringOP &term)  //Works w/o reference(&)
 {
-	double out = 0;
 	if ((term.nterms == 1) && (term.nopts == 0))
 	{
 		if (term.terms.size()>0)
@@ -1064,6 +1068,7 @@ void CMBBlock::get_funcs(CStringOP &term)  //Works w/o reference(&)
 
 	}
 	if (term.function==true)
+	{
 		if (term.number == 11)
 		{	CFunction XX;
 			XX.Expression = term;
@@ -1082,7 +1087,7 @@ void CMBBlock::get_funcs(CStringOP &term)  //Works w/o reference(&)
 			XX._max = 1.1*V;
 			funcs.push_back(XX);
 		}
-
+	}
 }
 
 void CMBBlock::evaluate_functions(int i) //i=0->small s; i=1->large S
@@ -1105,14 +1110,14 @@ void CMBBlock::evaluate_functions(int i) //i=0->small s; i=1->large S
 
 void CMBBlock::evaluate_functions()
 {
-	for (int i=0; i<funcs.size(); i++) evaluate_functions(i);
+	for (unsigned int i=0; i<funcs.size(); i++) evaluate_functions(i);
 }
 
 double CMBBlock::get_evaporation(double t)
 {
 
 		double sum=0;
-		for (int j = 0; j < evaporation_m.size(); j++)
+		for (unsigned int j = 0; j < evaporation_m.size(); j++)
 		{
 			if (evaporation_m[j]->model != "time_series")
 				sum += evaporation_m[j]->calculate_star(this);
@@ -1137,7 +1142,7 @@ double CMBBlock::get_evaporation(int j, double t)
 
 void CMBBlock::evaluate_K()
 {
-	for (int ii=0; ii<Solid_phase.size(); ii++)
+	for (unsigned int ii=0; ii<Solid_phase.size(); ii++)
 	{
 		K[ii] = CMatrix(Solid_phase[ii]->n_phases);
 		for (int i=0; i<K[ii].getnumrows(); i++)
@@ -1155,7 +1160,7 @@ void CMBBlock::evaluate_K()
 
 void CMBBlock::evaluate_K_star()
 {
-	for (int ii=0; ii<Solid_phase.size(); ii++)
+	for (unsigned int ii=0; ii<Solid_phase.size(); ii++)
 	{
 		K_star[ii] = CMatrix(Solid_phase[ii]->n_phases);
 		for (int i=0; i<K_star[ii].getnumrows(); i++)
@@ -1175,7 +1180,7 @@ void CMBBlock::evaluate_K_star()
 
 void CMBBlock::evaluate_capacity()
 {
-	for (int ii=0; ii<Solid_phase.size(); ii++)
+	for (unsigned int ii=0; ii<Solid_phase.size(); ii++)
 	{
 		capacity_c[ii] = CVector(Solid_phase[ii]->n_phases);
 		for (int j = 0; j < Solid_phase[ii]->n_phases; j++)
@@ -1190,7 +1195,7 @@ void CMBBlock::evaluate_capacity()
 
 void CMBBlock::evaluate_capacity_star()
 {
-	for (int ii=0; ii<Solid_phase.size(); ii++)
+	for (unsigned int ii=0; ii<Solid_phase.size(); ii++)
 	{
 		capacity_c_star[ii] = CVector(Solid_phase[ii]->n_phases);
 		for (int j = 0; j < Solid_phase[ii]->n_phases; j++)
@@ -1204,7 +1209,7 @@ void CMBBlock::evaluate_capacity_star()
 
 void CMBBlock::evaluate_capacity_c()
 {
-	for (int ii=0; ii<Solid_phase.size(); ii++)
+	for (unsigned int ii=0; ii<Solid_phase.size(); ii++)
 	{
 		capacity_c_Q[ii] = CVector(Solid_phase[ii]->n_phases);
 		for (int j = 0; j < Solid_phase[ii]->n_phases; j++)
@@ -1219,7 +1224,7 @@ void CMBBlock::evaluate_capacity_c()
 
 void CMBBlock::evaluate_capacity_c_star()
 {
-	for (int ii=0; ii<Solid_phase.size(); ii++)
+	for (unsigned int ii=0; ii<Solid_phase.size(); ii++)
 	{
 		capacity_c_star_Q[ii] = CVector(Solid_phase[ii]->n_phases);
 		for (int j = 0; j < Solid_phase[ii]->n_phases; j++)
@@ -1234,7 +1239,7 @@ void CMBBlock::evaluate_capacity_c_star()
 int CMBBlock::get_tot_num_phases()
 {
 	int out = 0;
-	for (int i=0; i<Solid_phase.size(); i++)
+	for (unsigned int i=0; i<Solid_phase.size(); i++)
 		out+=Solid_phase[i]->n_phases;
 
 	return out;
@@ -1365,7 +1370,7 @@ CVector CMBBlock::get_reaction_rates(CVector &X, bool star)
 	CVector X_old = get_X_from_CG();
 	set_CG_star(X);
 	CVector R(RXN->Rxts.size());
-	for (int i=0; i<RXN->Rxts.size(); i++)
+	for (unsigned int i=0; i<RXN->Rxts.size(); i++)
 	{	if (star==true)
 			R[i] = calc_star(RXN->Rxts[i].rate);
 		else
@@ -1380,7 +1385,7 @@ CVector CMBBlock::get_reaction_rates(bool star)
 {
 
 	CVector X(RXN->Rxts.size()) ;
-	for (int i=0; i<RXN->Rxts.size(); i++)
+	for (unsigned int i=0; i<RXN->Rxts.size(); i++)
 	{	if (star==true)
 			X[i] = calc_star(RXN->Rxts[i].rate);
 		else
@@ -1409,8 +1414,8 @@ CVector CMBBlock::get_rxn_change(CVector &X, bool star)
 CMatrix CMBBlock::Eval_Stoichiometry(bool star)
 {
 	CMatrix M(RXN->Rxts.size(),(n_phases+2)*RXN->cons.size());
-	for (int i=0; i<RXN->Rxts.size(); i++)
-		for (int j=0; j<RXN->Rxts[i].prodrates.size(); j++)
+	for (unsigned int i=0; i<RXN->Rxts.size(); i++)
+		for (unsigned int j=0; j<RXN->Rxts[i].prodrates.size(); j++)
 			if (star)
 				M[i][get_member_no(RXN->Rxts[i].product_p_type[j], RXN->Rxts[i].product_phase[j], RXN->Rxts[i].products[j])] = calc_star(RXN->Rxts[i].prodrates[j]);
 			else
@@ -1425,8 +1430,8 @@ CVector CMBBlock::get_X_from_CG()
 {
 	CVector X((n_phases+2)*RXN->cons.size());
 
-	for (int k=0; k<RXN->cons.size(); k++)
-		for (int p=-2; p<int (Solid_phase.size()); p++)
+	for (unsigned int k=0; k<RXN->cons.size(); k++)
+		for (int p=-2; p<int(Solid_phase.size()); p++)
 		{	int _t=1; if (p>-1) _t=Solid_phase[p]->n_phases;
 			for (int l=0; l<_t; l++)
 				X[get_member_no(p,l,k)] = get_CG(p,l,k);
@@ -1436,7 +1441,7 @@ CVector CMBBlock::get_X_from_CG()
 
 void CMBBlock::set_CG_star(const CVector &X)
 {
-	for (int k=0; k<RXN->cons.size(); k++)
+	for (unsigned int k=0; k<RXN->cons.size(); k++)
 		for (int p=-2; p<int(Solid_phase.size()); p++)
 		{	int _t=1; if (p>-1) _t=Solid_phase[p]->n_phases;
 			for (int l=0; l<_t; l++)
@@ -1448,7 +1453,7 @@ void CMBBlock::set_CG_star(const CVector &X)
 int CMBBlock::lookup_particle_type(string S)
 {
 	int out = -1;
-	for (int i = 0; i < Solid_phase.size(); i++)
+	for (unsigned int i = 0; i < Solid_phase.size(); i++)
 		if (tolower(S) == tolower(Solid_phase[i]->name))
 			out = i;
 
@@ -1458,7 +1463,7 @@ int CMBBlock::lookup_particle_type(string S)
 int CMBBlock::lookup_env_exchange(string S)
 {
 	int out = -1;
-	for (int i = 0; i <  envexchange.size(); i++)
+	for (unsigned int i = 0; i <  envexchange.size(); i++)
 		if (tolower(S) == tolower(envexchange[i]->name))
 			out = i;
 
@@ -1469,7 +1474,7 @@ void CMBBlock::set_up_plant_growth_expressions()
 {
 	string s = "86400*(1.0-(f[3]/f[84]))*f[77]*f[2]*f[18]*_max((1-_exp(-0.65*f[24])):0)";
 	string l_constituent;
-	for (int i = 0; i < plant_prop.limiting_nutrients.size(); i++)
+	for (unsigned int i = 0; i < plant_prop.limiting_nutrients.size(); i++)
 	{
 		string CG = "cg[" + numbertostring(parent->RXN().look_up_constituent_no(plant_prop.limiting_nutrients[i])) + "]";
 		l_constituent += "*(" + CG + "/(" + CG + "+f["+ numbertostring(7000+i) + "]))";

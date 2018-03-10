@@ -71,7 +71,6 @@ CMediumSet::CMediumSet(string filename)
 
 	CLIDconfig lid(filename);
 
-	int n_experiments = lid.lookupkeyword("n_experiments");
 	vector<string> names = lid.get_experiment_names();
 	if (lid.lookupkeyword("n_experiments") != -1)
 		Medium.resize(atoi(lid.value[lid.lookupkeyword("n_experiments")].c_str()));
@@ -80,7 +79,7 @@ CMediumSet::CMediumSet(string filename)
 	else
 		Medium.resize(1);
 
-	for (int i = 0; i < Medium.size(); i++)
+	for (unsigned int i = 0; i < Medium.size(); i++)
 	{
 		if (names.size() == 0)
 			Medium[i].name = numbertostring(i);
@@ -103,7 +102,7 @@ CMediumSet::CMediumSet(string filename)
 
 	vector<CLIDconfig> L = lid.extract_subsets();
 
-	for (int i = 0; i < Medium.size(); i++)
+	for (unsigned int i = 0; i < Medium.size(); i++)
 		Medium[i].create(L[i], this);
 
 }
@@ -120,7 +119,7 @@ CMediumSet::CMediumSet(const CMediumSet &M)
 	PE_info_filename = M.PE_info_filename;
 	formulas = M.formulas;
 	RXN = M.RXN;
-	for (int i = 0; i < Medium.size(); i++)
+	for (unsigned int i = 0; i < Medium.size(); i++)
 		Medium[i].parent = this;
 	set_features = M.set_features;
 	measured_quan = M.measured_quan;
@@ -129,7 +128,7 @@ CMediumSet::CMediumSet(const CMediumSet &M)
 	externalflux = M.externalflux;
 	evaporation_model = M.evaporation_model;
 	ANS_obs = M.ANS_obs;
-	for (int i = 0; i < Medium.size(); i++)
+	for (unsigned int i = 0; i < Medium.size(); i++)
 	{
         ANS_hyd.push_back(&Medium[i].Results.ANS);
         ANS_colloids.push_back(&Medium[i].Results.ANS_colloids);
@@ -154,7 +153,7 @@ CMediumSet& CMediumSet::operator=(const CMediumSet &M)
 	PE_info_filename = M.PE_info_filename;
 	formulas = M.formulas;
 	RXN = M.RXN;
-	for (int i = 0; i < Medium.size(); i++)
+	for (unsigned int i = 0; i < Medium.size(); i++)
 		Medium[i].parent = this;
 	set_features = M.set_features;
 	measured_quan = M.measured_quan;
@@ -166,7 +165,7 @@ CMediumSet& CMediumSet::operator=(const CMediumSet &M)
 	ANS_colloids.clear();
 	ANS_constituents.clear();
 	ANS_control.clear();
-	for (int i = 0; i < Medium.size(); i++)
+	for (unsigned int i = 0; i < Medium.size(); i++)
 	{
         ANS_hyd.push_back(&Medium[i].Results.ANS);
         ANS_colloids.push_back(&Medium[i].Results.ANS_colloids);
@@ -198,24 +197,24 @@ void CMediumSet::set_formulas()
 	formulas.formulasA.resize(10);
 	formulas.const_area.resize(10);
 
-	for (int i = 0; i < formulas.formulasQ.size(); i++)	 formulas.formulasQ[i].resize(10);
-	for (int i = 0; i < formulas.formulasA.size(); i++)
+	for (unsigned int i = 0; i < formulas.formulasQ.size(); i++)	 formulas.formulasQ[i].resize(10);
+	for (unsigned int i = 0; i < formulas.formulasA.size(); i++)
 	{
 		formulas.formulasA[i].resize(10);
-		for (int j = 0; j < formulas.formulasA[i].size(); j++) formulas.formulasA[i][j] = "(s[2]+e[2])/2";
+		for (unsigned int j = 0; j < formulas.formulasA[i].size(); j++) formulas.formulasA[i][j] = "(s[2]+e[2])/2";
 	}
 
-	for (int i = 0; i < formulas.const_area.size(); i++)	 {
-		formulas.const_area[i].resize(10); for (int j = 0; j < formulas.const_area[i].size(); j++) formulas.const_area[i][j] = true;
+	for (unsigned int i = 0; i < formulas.const_area.size(); i++)	 {
+		formulas.const_area[i].resize(10); for (unsigned int j = 0; j < formulas.const_area[i].size(); j++) formulas.const_area[i][j] = true;
 
 	}
 
 
 	formulas.vaporTransport.resize(10);
-	for (int i = 0; i < formulas.vaporTransport.size(); i++)	 formulas.vaporTransport[i].resize(10);
+	for (unsigned int i = 0; i < formulas.vaporTransport.size(); i++)	 formulas.vaporTransport[i].resize(10);
 
 	formulas.settling.resize(10);
-	for (int i = 0; i <formulas.settling.size(); i++) formulas.settling[i].resize(10);
+	for (unsigned int i = 0; i <formulas.settling.size(); i++) formulas.settling[i].resize(10);
 
 	formulas.vaporTransport[Soil][Soil] = 1;
 	formulas.vaporTransport[Soil][Pond] = 1;
@@ -373,7 +372,7 @@ void CMediumSet::solve()
 	ANS_colloids.clear();
 	ANS_constituents.clear();
 	ANS_control.clear();
-	for (int i = 0; i < Medium.size(); i++)
+	for (unsigned int i = 0; i < Medium.size(); i++)
 	{
 		Medium[i].solve();
         failed = failed || Medium[i].Solution_State.failed;
@@ -384,7 +383,7 @@ void CMediumSet::solve()
 	}
 
 	ANS_obs = CBTCSet(measured_quan.size());
-	for (int i = 0; i < measured_quan.size(); i++)
+	for (unsigned int i = 0; i < measured_quan.size(); i++)
 	{
 		if (lookup_medium(measured_quan[i].experiment) != -1)
 		{
@@ -409,7 +408,7 @@ void CMediumSet::f_get_environmental_params(CLIDconfig &lid_config)
 {
 	SP.pos_def_limit = true;
 	SP.negative_concentration_allowed = false;
-	for (int i = 0; i<lid_config.keyword.size(); i++)
+	for (unsigned int i = 0; i<lid_config.keyword.size(); i++)
 	{
 		if (tolower(lid_config.keyword[i]) == "path") FI.pathname = lid_config.value[i].c_str();
 		if (tolower(lid_config.keyword[i]) == "outputpath") FI.outputpathname = lid_config.value[i].c_str();
@@ -448,7 +447,7 @@ void CMediumSet::f_get_environmental_params(CLIDconfig &lid_config)
 		if (tolower(lid_config.keyword[i]) == "detout_obs_filename")
 		{
 			vector<string> names = split_curly_semicolon(lid_config.value[i]);
-			for (int ii = 0; ii<names.size(); ii++)
+			for (unsigned int ii = 0; ii<names.size(); ii++)
 				FI.detoutfilename_obs = names[ii];
 		}
 	}
@@ -460,7 +459,7 @@ void CMediumSet::f_get_environmental_params(CLIDconfig &lid_config)
 
 void CMediumSet::f_get_params(CLIDconfig &lid_config)
 {
-	for (int i = 0; i<lid_config.keyword.size(); i++)
+	for (unsigned int i = 0; i<lid_config.keyword.size(); i++)
 	{
 		if (tolower(lid_config.keyword[i]) == "parameter")
 		{
@@ -473,7 +472,7 @@ void CMediumSet::f_get_params(CLIDconfig &lid_config)
 			P.tempcorr = 1;
 			P.name = lid_config.value[i];
 
-			for (int j = 0; j<lid_config.param_names[i].size(); j++)
+			for (unsigned int j = 0; j<lid_config.param_names[i].size(); j++)
 			{
 				if (tolower(lid_config.param_names[i][j]) == "low") P.low = atof(lid_config.param_vals[i][j].c_str());  //low range
 				if (tolower(lid_config.param_names[i][j]) == "high") P.high = atof(lid_config.param_vals[i][j].c_str());
@@ -495,17 +494,17 @@ void CMediumSet::f_get_params(CLIDconfig &lid_config)
 
 void CMediumSet::f_get_observed(CLIDconfig &lid_config)
 {
-	for (int i = 0; i<lid_config.keyword.size(); i++)
+	for (unsigned int i = 0; i<lid_config.keyword.size(); i++)
 	{
 		if (tolower(lid_config.keyword[i]) == "observed")
 		{
 			measured_chrc M;
 			M.error_structure = 0;
 			M.name = lid_config.value[i];
-			for (int j = 0; j<lid_config.param_names[i].size(); j++)
+			for (unsigned int j = 0; j<lid_config.param_names[i].size(); j++)
 			{
 				if (tolower(lid_config.param_names[i][j]) == "id") M.id = split(lid_config.param_vals[i][j], '+');  //location id
-				if (tolower(lid_config.param_names[i][j]) == "loc_type") if (tolower(lid_config.param_vals[i][j]) == "b") M.loc_type = 0; else if (tolower(lid_config.param_vals[i][j]) == "c") M.loc_type = 1;
+				if (tolower(lid_config.param_names[i][j]) == "loc_type") {if (tolower(lid_config.param_vals[i][j]) == "b") M.loc_type = 0; else if (tolower(lid_config.param_vals[i][j]) == "c") M.loc_type = 1;}
 				if (tolower(lid_config.param_names[i][j]) == "quan") M.quan = lid_config.param_vals[i][j].c_str();
 				if (tolower(lid_config.param_names[i][j]) == "std_no") M.std_no = atoi(lid_config.param_vals[i][j].c_str());
 				if (tolower(lid_config.param_names[i][j]) == "error_structure") M.error_structure = atoi(lid_config.param_vals[i][j].c_str());
@@ -523,7 +522,7 @@ void CMediumSet::f_get_observed(CLIDconfig &lid_config)
 	}
 
 	vector<int> stds;
-	for (int i = 0; i<measured_quan.size(); i++)
+	for (unsigned int i = 0; i<measured_quan.size(); i++)
 	{
 		if (lookup(stds, measured_quan[i].std_no) == -1)
 		{
@@ -550,17 +549,17 @@ void CMediumSet::f_get_observed(CLIDconfig &lid_config)
 
 void CMediumSet::f_get_sensors(CLIDconfig &lid_config)
 {
-	for (int i = 0; i < lid_config.keyword.size(); i++)
+	for (unsigned int i = 0; i < lid_config.keyword.size(); i++)
 	{
 		if (tolower(lid_config.keyword[i]) == "sensor")
 		{
 			CSensor M;
 			M.error_structure = 0;
 			M.name = lid_config.value[i];
-			for (int j = 0; j < lid_config.param_names[i].size(); j++)
+			for (unsigned int j = 0; j < lid_config.param_names[i].size(); j++)
 			{
 				if (tolower(lid_config.param_names[i][j]) == "id") M.id = lid_config.param_vals[i][j];  //location id
-				if (tolower(lid_config.param_names[i][j]) == "loc_type") if (tolower(lid_config.param_vals[i][j]) == "b") M.loc_type = 0; else if (tolower(lid_config.param_vals[i][j]) == "c") M.loc_type = 1;
+				if (tolower(lid_config.param_names[i][j]) == "loc_type") {if (tolower(lid_config.param_vals[i][j]) == "b") M.loc_type = 0; else if (tolower(lid_config.param_vals[i][j]) == "c") M.loc_type = 1;}
 				if (tolower(lid_config.param_names[i][j]) == "quan") M.quan = CStringOP(lid_config.param_vals[i][j].c_str());
 				if (tolower(lid_config.param_names[i][j]) == "error_std") M.error_std = atof(lid_config.param_vals[i][j].c_str());
 				if (tolower(lid_config.param_names[i][j]) == "error_structure") M.error_structure = atoi(lid_config.param_vals[i][j].c_str());
@@ -575,14 +574,14 @@ void CMediumSet::f_get_sensors(CLIDconfig &lid_config)
 
 void CMediumSet::f_get_controller(CLIDconfig &lid_config)
 {
-	for (int i = 0; i < lid_config.keyword.size(); i++)
+	for (unsigned int i = 0; i < lid_config.keyword.size(); i++)
 	{
 		if (tolower(lid_config.keyword[i]) == "controller")
 		{
 			CController M;
 
 			M.name = lid_config.value[i];
-			for (int j = 0; j < lid_config.param_names[i].size(); j++)
+			for (unsigned int j = 0; j < lid_config.param_names[i].size(); j++)
 			{
 				M.set_val(lid_config.param_names[i][j], atof(lid_config.param_vals[i][j].c_str()));
 				if (tolower(lid_config.param_names[i][j]) == "interval") M.interval = atof(lid_config.param_vals[i][j].c_str());
@@ -605,7 +604,7 @@ void CMediumSet::writetolog(string S)
 
 void CMediumSet::f_get_particle_types(CLIDconfig &lid_config)
 {
-	for (int i = 0; i<lid_config.keyword.size(); i++)
+	for (unsigned int i = 0; i<lid_config.keyword.size(); i++)
 	{
 		if ((tolower(lid_config.keyword[i]) == "particulate_phase") || (tolower(lid_config.keyword[i]) == "solid_phase") || (tolower(lid_config.keyword[i]) == "particle"))
 		{
@@ -614,7 +613,7 @@ void CMediumSet::f_get_particle_types(CLIDconfig &lid_config)
 			S.name = lid_config.value[i];
 
 
-			for (int j = 0; j<lid_config.param_names[i].size(); j++)
+			for (unsigned int j = 0; j<lid_config.param_names[i].size(); j++)
 			{
 				S.set_val(lid_config.param_names[i][j], atof(lid_config.param_vals[i][j].c_str()));
 			}
@@ -628,14 +627,14 @@ void CMediumSet::f_get_particle_types(CLIDconfig &lid_config)
 
 void CMediumSet::f_get_constituents(CLIDconfig &lid_config)
 {
-	for (int i = 0; i<lid_config.keyword.size(); i++)
+	for (unsigned int i = 0; i<lid_config.keyword.size(); i++)
 	{
 		if (tolower(lid_config.keyword[i]) == "constituent")
 		{
 			CConstituent S;
 			S.name = lid_config.value[i];
 
-			for (int j = 0; j<lid_config.param_names[i].size(); j++)
+			for (unsigned int j = 0; j<lid_config.param_names[i].size(); j++)
 			{
 				vector<char> del2; del2.push_back('['); del2.push_back(']'); del2.push_back(':');
 				if (tolower(split(lid_config.param_names[i][j], del2)[0]) == "kd")
@@ -668,7 +667,7 @@ void CMediumSet::f_get_constituents(CLIDconfig &lid_config)
 			}
 			RXN.cons.push_back(S);
 
-			for (int ii = 0; ii<lid_config.est_param[i].size(); ii++)
+			for (unsigned int ii = 0; ii<lid_config.est_param[i].size(); ii++)
 			{
 				if (lookup_parameters(lid_config.est_param[i][ii]) != -1)
 				{
@@ -687,7 +686,7 @@ void CMediumSet::f_get_constituents(CLIDconfig &lid_config)
 int CMediumSet::lookup_parameters(string S)
 {
 	int out = -1;
-	for (int i = 0; i < parameters.size(); i++)
+	for (unsigned int i = 0; i < parameters.size(); i++)
 		if (tolower(S) == tolower(parameters[i].name))
 
 			return i;
@@ -698,7 +697,7 @@ int CMediumSet::lookup_parameters(string S)
 int CMediumSet::lookup_controllers(string S)
 {
 	int out = -1;
-	for (int i = 0; i < Control.Controllers.size(); i++)
+	for (unsigned int i = 0; i < Control.Controllers.size(); i++)
 		if (tolower(S) == tolower(Control.Controllers[i].name))
 			return i;
 
@@ -708,7 +707,7 @@ int CMediumSet::lookup_controllers(string S)
 int CMediumSet::lookup_observation(string S) const
 {
 	int out = -1;
-	for (int i = 0; i < measured_quan.size(); i++)
+	for (unsigned int i = 0; i < measured_quan.size(); i++)
 		if (tolower(S) == tolower(measured_quan[i].name))
 
 			return i;
@@ -719,20 +718,20 @@ int CMediumSet::lookup_observation(string S) const
 void CMediumSet::f_get_reactions(CLIDconfig &lid_config)
 {
 
-	for (int i = 0; i < lid_config.keyword.size(); i++)
+	for (unsigned int i = 0; i < lid_config.keyword.size(); i++)
 	{
 		if (tolower(lid_config.keyword[i]) == "reaction_parameter")
 		{
 			rxparam rxparameter;
 			rxparameter.tempcorr = 1;
 			rxparameter.name = lid_config.value[i];
-			for (int j = 0; j < lid_config.param_names[i].size(); j++)
+			for (unsigned int j = 0; j < lid_config.param_names[i].size(); j++)
 			{
 				if (tolower(lid_config.param_names[i][j]) == "value") rxparameter.value = atof(lid_config.param_vals[i][j].c_str());
 				if (tolower(lid_config.param_names[i][j]) == "temperature_correction") { rxparameter.tempcorr = atof(lid_config.param_vals[i][j].c_str()); }
 			}
 			RXN.parameters.push_back(rxparameter);
-			for (int ii = 0; ii < lid_config.est_param[i].size(); ii++)
+			for (unsigned int ii = 0; ii < lid_config.est_param[i].size(); ii++)
 			{
 				if (lookup_parameters(lid_config.est_param[i][ii]) != -1)
 				{
@@ -745,13 +744,13 @@ void CMediumSet::f_get_reactions(CLIDconfig &lid_config)
 		}
 	}
 
-	for (int i = 0; i<lid_config.keyword.size(); i++)
+	for (unsigned int i = 0; i<lid_config.keyword.size(); i++)
 	{
 		if (tolower(lid_config.keyword[i]) == "reaction")
 		{
 			CReaction Rx;
 			Rx.name = lid_config.value[i];
-			for (int j = 0; j<lid_config.param_names[i].size(); j++)
+			for (unsigned int j = 0; j<lid_config.param_names[i].size(); j++)
 			{
 				vector<char> del2; del2.push_back('['); del2.push_back(']'); del2.push_back(':');
 				if (tolower(split(lid_config.param_names[i][j], del2)[0]) == "rate") Rx.rate = CStringOP(lid_config.param_vals[i][j], &RXN);
@@ -779,7 +778,7 @@ void CMediumSet::f_get_reactions(CLIDconfig &lid_config)
 
 void CMediumSet::f_get_buildup(CLIDconfig &lid_config)
 {
-	for (int i = 0; i<lid_config.keyword.size(); i++)
+	for (unsigned int i = 0; i<lid_config.keyword.size(); i++)
 	{
 		if ((tolower(lid_config.keyword[i]) == "build_up") || (tolower(lid_config.keyword[i]) == "buildup"))
 		{
@@ -787,7 +786,7 @@ void CMediumSet::f_get_buildup(CLIDconfig &lid_config)
 			CBuildup S(lid_config.param_vals[i][lookup(lid_config.param_names[i], "model")]);
 			S.name = lid_config.value[i];
 
-			for (int j = 0; j<lid_config.param_names[i].size(); j++)
+			for (unsigned int j = 0; j<lid_config.param_names[i].size(); j++)
 			{
 				if (lid_config.param_names[i][j] == "constituent") S.constituent = lid_config.param_vals[i][j];
 				if (lid_config.param_names[i][j] == "solid") S.solid = lid_config.param_vals[i][j];
@@ -798,7 +797,7 @@ void CMediumSet::f_get_buildup(CLIDconfig &lid_config)
 			if ((S.solid == "") && (S.constituent != "") && (S.phase == "")) S.phase = "sorbed";
 			buildup.push_back(S);
 
-			for (int ii = 0; ii<lid_config.est_param[i].size(); ii++)
+			for (unsigned int ii = 0; ii<lid_config.est_param[i].size(); ii++)
 			{
 				if (lookup_parameters(lid_config.est_param[i][ii]) != -1)
 				{
@@ -816,14 +815,14 @@ void CMediumSet::f_get_buildup(CLIDconfig &lid_config)
 
 void CMediumSet::f_get_external_flux(CLIDconfig &lid_config)
 {
-	for (int i = 0; i<lid_config.keyword.size(); i++)
+	for (unsigned int i = 0; i<lid_config.keyword.size(); i++)
 	{
 		if ((tolower(lid_config.keyword[i]) == "external_flux") || (tolower(lid_config.keyword[i]) == "externalflux"))
 		{
 			CEnvExchange S(lid_config.param_vals[i][lookup(lid_config.param_names[i], "model")]);
 			S.name = lid_config.value[i];
 
-			for (int j = 0; j<lid_config.param_names[i].size(); j++)
+			for (unsigned int j = 0; j<lid_config.param_names[i].size(); j++)
 			{
 				if (lid_config.param_names[i][j] == "constituent") S.constituent = lid_config.param_vals[i][j];
 				if (lid_config.param_names[i][j] == "solid") S.solid = lid_config.param_vals[i][j];
@@ -833,7 +832,7 @@ void CMediumSet::f_get_external_flux(CLIDconfig &lid_config)
 
 			externalflux.push_back(S);
 
-			for (int ii = 0; ii<lid_config.est_param[i].size(); ii++)
+			for (unsigned int ii = 0; ii<lid_config.est_param[i].size(); ii++)
 			{
 				if (lookup_parameters(lid_config.est_param[i][ii]) != -1)
 				{
@@ -850,14 +849,14 @@ void CMediumSet::f_get_external_flux(CLIDconfig &lid_config)
 
 void CMediumSet::f_get_evaporation_model(CLIDconfig &lid_config)
 {
-	for (int i = 0; i<lid_config.keyword.size(); i++)
+	for (unsigned int i = 0; i<lid_config.keyword.size(); i++)
 	{
 		if ((tolower(lid_config.keyword[i]) == "evaporation_model"))
 		{
 			CEvaporation S(lid_config.param_vals[i][lookup(lid_config.param_names[i], "model")]);
 			S.name = lid_config.value[i];
 
-			for (int j = 0; j<lid_config.param_names[i].size(); j++)
+			for (unsigned int j = 0; j<lid_config.param_names[i].size(); j++)
 			{
 				if (lid_config.param_names[i][j] == "expression") S.expression = lid_config.param_vals[i][j];
 				S.set_val(lid_config.param_names[i][j], atof(lid_config.param_vals[i][j].c_str()));
@@ -868,7 +867,7 @@ void CMediumSet::f_get_evaporation_model(CLIDconfig &lid_config)
 
 			evaporation_model.push_back(S);
 
-			for (int ii = 0; ii<lid_config.est_param[i].size(); ii++)
+			for (unsigned int ii = 0; ii<lid_config.est_param[i].size(); ii++)
 			{
 				if (lookup_parameters(lid_config.est_param[i][ii]) != -1)
 				{
@@ -887,7 +886,7 @@ void CMediumSet::f_get_evaporation_model(CLIDconfig &lid_config)
 void CMediumSet::set_param(int param_no, double _value)
 {
 
-	for (int i = 0; i<parameters[param_no].location.size(); i++)
+	for (unsigned int i = 0; i<parameters[param_no].location.size(); i++)
 	{
 		double value;
 		if (parameters[param_no].conversion_factor.size())
@@ -897,7 +896,7 @@ void CMediumSet::set_param(int param_no, double _value)
 
 		if ((parameters[param_no].location_type[i] == 2) || (parameters[param_no].location_type[i] == 1) || (parameters[param_no].location_type[i] == 0))
 		{
-			for (int j = 0; j < Medium.size(); j++)
+			for (unsigned int j = 0; j < Medium.size(); j++)
 				if (parameters[param_no].experiment_id[i] == Medium[j].name)
 					Medium[j].set_param(param_no, value);
 		}
@@ -913,21 +912,21 @@ void CMediumSet::set_param(int param_no, double _value)
 			evaporation_model[parameters[param_no].location[i]].set_val(parameters[param_no].quan[i], value);
 	}
 
-	for (int i = 0; i<measured_quan.size(); i++)
+	for (unsigned int i = 0; i<measured_quan.size(); i++)
 		if (measured_quan[i].std_to_param == param_no)
 			std[measured_quan[i].std_no] = _value;
 }
 
 void CMediumSet::set_control_param(int controller_no, int experiment_id)
 {
-	for (int i = 0; i<Control.Controllers[controller_no].application_spec.location.size(); i++)
+	for (unsigned int i = 0; i<Control.Controllers[controller_no].application_spec.location.size(); i++)
 	{
-		double value;
+		/*double value;
 		if (Control.Controllers[controller_no].application_spec.conversion_factor.size())
 			value = Control.Controllers[controller_no].value*Control.Controllers[controller_no].application_spec.conversion_factor[i];
 		else
 			value = Control.Controllers[controller_no].value;
-
+        */
 		if ((Control.Controllers[controller_no].application_spec.location_type[i] == 2) || (Control.Controllers[controller_no].application_spec.location_type[i] == 1) || (Control.Controllers[controller_no].application_spec.location_type[i] == 0))
 		{
 			if (Control.Controllers[controller_no].application_spec.experiment_id[i] == Medium[experiment_id].name)
@@ -950,7 +949,7 @@ void CMediumSet::set_control_param(int controller_no, int experiment_id)
 int CMediumSet::lookup_medium(string S)
 {
 	int j = -1;
-	for (int i = 0; i < Medium.size(); i++)
+	for (unsigned int i = 0; i < Medium.size(); i++)
 		if (Medium[i].name == S) return i;
 	return j;
 }
@@ -962,7 +961,7 @@ double CMediumSet::calc_log_likelihood() //calculate sum log likelihood for time
 	solve();
 	if (failed == true) return -1e30;
 
-	for (int i = 0; i<measured_quan.size(); i++)
+	for (unsigned int i = 0; i<measured_quan.size(); i++)
 		sum += calc_log_likelihood(i);
 
 	return sum;
@@ -1008,7 +1007,7 @@ double CMediumSet::calc_log_likelihood(int i) //calculate sum log likelihood for
 
 double CMediumSet::calc_MSE(int i)
 {
-	double sum = 0;
+
 	int k = measured_data.lookup(measured_quan[i].name);
 	double MSE;
 	if (k != -1)
@@ -1033,14 +1032,14 @@ double CMediumSet::calc_MSE(int i)
 
 void CMediumSet::finalize_set_param()
 {
-	for (int i = 0; i < Medium.size(); i++)
+	for (unsigned int i = 0; i < Medium.size(); i++)
 		Medium[i].finalize_set_param();
 }
 
 int CMediumSet::epoch_count()
 {
 	int out = 0;
-    for (int i = 0; i < Medium.size(); i++) out += Medium[i].Solution_State.epoch_count;
+    for (unsigned int i = 0; i < Medium.size(); i++) out += Medium[i].Solution_State.epoch_count;
 
 	return out;
 }
@@ -1073,6 +1072,8 @@ int CMediumSet::get_block_type(string s)
 	if (tolower(trim(s)) == "pipe1") return Pipe1;
 	if (tolower(trim(s)) == "pipe2") return Pipe2;
 	if (tolower(trim(s)) == "rating_curve") return Rating_curve;
+
+	return -1;
 }
 
 bool CMediumSet::get_formulas_from_file(string filename)
@@ -1083,21 +1084,21 @@ bool CMediumSet::get_formulas_from_file(string filename)
 	formulas.formulasA.resize(10);
 	formulas.const_area.resize(10);
 
-	for (int i = 0; i < formulas.formulasQ.size(); i++)	 formulas.formulasQ[i].resize(10);
-	for (int i = 0; i < formulas.formulasA.size(); i++)
+	for (unsigned int i = 0; i < formulas.formulasQ.size(); i++)	 formulas.formulasQ[i].resize(10);
+	for (unsigned int i = 0; i < formulas.formulasA.size(); i++)
 	{
 		formulas.formulasA[i].resize(10);
-		for (int j = 0; j < formulas.formulasA[i].size(); j++) formulas.formulasA[i][j] = "(s[2]+e[2])/2";
+		for (unsigned int j = 0; j < formulas.formulasA[i].size(); j++) formulas.formulasA[i][j] = "(s[2]+e[2])/2";
 	}
 
-	for (int i = 0; i < formulas.const_area.size(); i++) {
-		formulas.const_area[i].resize(10); for (int j = 0; j < formulas.const_area[i].size(); j++) formulas.const_area[i][j] = true;}
+	for (unsigned int i = 0; i < formulas.const_area.size(); i++) {
+		formulas.const_area[i].resize(10); for (unsigned int j = 0; j < formulas.const_area[i].size(); j++) formulas.const_area[i][j] = true;}
 
 	formulas.vaporTransport.resize(10);
-	for (int i = 0; i < formulas.vaporTransport.size(); i++)	 formulas.vaporTransport[i].resize(10);
+	for (unsigned int i = 0; i < formulas.vaporTransport.size(); i++)	 formulas.vaporTransport[i].resize(10);
 
 	formulas.settling.resize(10);
-	for (int i = 0; i <formulas.settling.size(); i++) formulas.settling[i].resize(10);
+	for (unsigned int i = 0; i <formulas.settling.size(); i++) formulas.settling[i].resize(10);
 
 	formulas.air_phase.resize(10);
 	formulas.air_phase[Soil] = 1;

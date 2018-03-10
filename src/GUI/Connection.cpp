@@ -65,7 +65,7 @@ CConnection::CConnection(string s)
 
 CConnection::~CConnection(void)
 {
-	for (int i=0; i<Solid_phase.size(); i++) Solid_phase[i] = NULL;
+	for (unsigned int i=0; i<Solid_phase.size(); i++) Solid_phase[i] = NULL;
 	Block1 = NULL;
 	Block2 = NULL;
 	RXN = NULL;
@@ -335,17 +335,18 @@ double CConnection::calc(CStringOP &term, int ii) //The function to calculate an
 		if (term.number==abs_)
 			return fabs(out);
 		if (term.number==sqs_)
+		{
 			if (out!=0)
 				return out/fabs(out)*sqrt(fabs(out));
 			else
 				return 0;
-		if (term.number = mo1_)
+		}
+		if (term.number == mo1_)
 			return mon(calc(term.terms[0], ii), calc(term.terms[1], ii))*calc(term.terms[0], ii) + mon(-calc(term.terms[0], ii), calc(term.terms[1], ii))*calc(term.terms[0], ii);
 
 	}
 
-	else
-		return out;
+	return out;
 }
 
 double CConnection::calc_star(CStringOP &term, int ii)
@@ -537,14 +538,13 @@ double CConnection::calc_star(CStringOP &term, int ii)
 			else
 				return 0;
 		}
-		if (term.number = mo1_)
+		if (term.number == mo1_)
 			return mon(calc_star(term.terms[0], ii), calc_star(term.terms[1], ii))*calc_star(term.terms[0], ii) + mon(-calc_star(term.terms[0], ii), calc_star(term.terms[1], ii))*calc_star(term.terms[0], ii);
 
 
 	}
 
-	else
-		return out;
+	return out;
 }
 
 double CConnection::get_val(int i, int ii)
@@ -640,6 +640,8 @@ double CConnection::get_val(int i, int ii)
 	if (i==4000) return c_dispersion[i-4000];
 	if ((i>=5000) && (i<5100))
 		return dispersion[i-5000];
+
+    return 0;
 }
 
 double CConnection::get_val_star(int i, int ii)
@@ -730,7 +732,7 @@ double CConnection::get_val_star(int i, int ii)
 	if (i==4000) return c_dispersion_star[i-4000];
 	if ((i>=5000) && (i<5100)) 	return dispersion_star[i-5000];
 
-
+    return 0;
 }
 
 bool CConnection::set_val(string SS, double val)
@@ -798,7 +800,6 @@ bool CConnection::set_val(string SS, double val)
 
 void CConnection::get_funcs(CStringOP &term)  //Works w/o reference(&)
 {
-	double out = 0;
 	if ((term.nterms == 1) && (term.nopts == 0))
 	{
 		if (term.terms.size()>0)
@@ -832,7 +833,8 @@ void CConnection::get_funcs(CStringOP &term)  //Works w/o reference(&)
 
 	}
 	if (term.function==true)
-		if (term.number == 11)
+	{
+	    if (term.number == 11)
 		{	CFunction XX;
 			XX.Expression = term;
 			XX.Expression.function=false;
@@ -850,7 +852,7 @@ void CConnection::get_funcs(CStringOP &term)  //Works w/o reference(&)
 			XX._max = 1.3*max(Block1->V,Block2->V);
 			funcs.push_back(XX);
 		}
-
+	}
 }
 
 void CConnection::evaluate_functions(int i) //i=0->small s; i=1->large S
@@ -878,33 +880,33 @@ void CConnection::evaluate_functions(int i) //i=0->small s; i=1->large S
 
 void CConnection::evaluate_functions()
 {
-	for (int i=0; i<funcs.size(); i++) evaluate_functions(i);
+	for (unsigned int i=0; i<funcs.size(); i++) evaluate_functions(i);
 }
 
 void CConnection::evaluate_dispersion()
 {
-	for (int i=0; i<Solid_phase.size(); i++)
+	for (unsigned int i=0; i<Solid_phase.size(); i++)
 		c_dispersion[i] = calc(Solid_phase[i]->dispersion, i) + Solid_phase[i]->diffusion;
 
 }
 
 void CConnection::evaluate_dispersion_star()
 {
-	for (int i=0; i<Solid_phase.size(); i++)
+	for (unsigned int i=0; i<Solid_phase.size(); i++)
 		c_dispersion_star[i] = calc_star(Solid_phase[i]->dispersion, i) + Solid_phase[i]->diffusion;
 
 }
 
 void CConnection::evaluate_const_dispersion()
 {
-	for (int i=0; i<RXN->cons.size(); i++)
+	for (unsigned int i=0; i<RXN->cons.size(); i++)
 		dispersion[i] = calc(dispersion_expression)+RXN->cons[i].diffusion;
 
 }
 
 void CConnection::evaluate_const_dispersion_star()
 {
-	for (int i=0; i<RXN->cons.size(); i++)
+	for (unsigned int i=0; i<RXN->cons.size(); i++)
 		dispersion_star[i] = calc_star(dispersion_expression)+RXN->cons[i].diffusion;
 }
 
@@ -987,6 +989,7 @@ double CConnection::get_val(string S)
 	if (tolower(S) == "qv") return Q_v;
 	if (tolower(S) == "dispersivity") return dispersivity;
 
+    return 0;
 }
 
 bool CConnection::set_properties(string s)

@@ -13,9 +13,9 @@
 
 CDistributionNUnif::CDistributionNUnif()
 {
-	
+
 	set = false;
-	
+
 }
 
 CDistributionNUnif::CDistributionNUnif(int n_n)
@@ -23,7 +23,7 @@ CDistributionNUnif::CDistributionNUnif(int n_n)
 	n = n_n;
 	x.resize(n);
 	y.resize(n);
-	
+
 	set = false;
 }
 
@@ -32,7 +32,7 @@ CDistributionNUnif::CDistributionNUnif(const CDistributionNUnif &D)
 	n = D.n;
 	x = D.x;
 	y = D.y;
-	
+
 	set = D.set;
 }
 
@@ -48,12 +48,12 @@ CDistributionNUnif CDistributionNUnif::operator = (const CDistributionNUnif &D)
 
 CDistributionNUnif::~CDistributionNUnif()
 {
-	
+
 }
 
 void CDistributionNUnif::initializeGamma(double dx0, double dxmult, int nint, double r, double lambda)
 {
-	double mmax = dx0*pow(dxmult,n);
+
 	x[0] = 0;
 	y[0] = 0;
 	double x0 = 0;
@@ -65,18 +65,18 @@ void CDistributionNUnif::initializeGamma(double dx0, double dxmult, int nint, do
 		for (double xi = x0+dx/2; xi<=x1; xi+=dx)
 			y[i] += Gammapdf(xi,r,lambda)*dx;
 		if (i==1)
-		{	
+		{
 			x0 = dx0;
 			x1 = dx0*dxmult;
 		}
 		else
-		{	
+		{
 			x0 = x0*dxmult;
 			x1 = x0*dxmult;
 		}
 
 	}
-	set = true;	
+	set = true;
 	symetrical = false;
 
 }
@@ -84,7 +84,7 @@ void CDistributionNUnif::initializeGamma(double dx0, double dxmult, int nint, do
 
 void CDistributionNUnif::initializeNormal(double dx0, double dxmult,int nint)
 {
-	double mmax = dx0*pow(dxmult,n);
+
 	x[0] = 0;
 	y[0] = 0;
 	double x0 = 0;
@@ -96,18 +96,18 @@ void CDistributionNUnif::initializeNormal(double dx0, double dxmult,int nint)
 		for (double xi = x0+dx/2; xi<=x1; xi+=dx)
 			y[i] += NormalStdpdf(xi)*dx;
 		if (i==1)
-		{	
+		{
 			x0 = dx0;
 			x1 = dx0*dxmult;
 		}
 		else
-		{	
+		{
 			x0 = x0*dxmult;
 			x1 = x0*dxmult;
 		}
 
 	}
-	set = true;		
+	set = true;
 	symetrical = true;
 
 }
@@ -213,6 +213,7 @@ double CDistributionNUnif::GetRndNorm(double mean, double std)
 	}
 	else
 		return -1;
+    return -1;
 }
 
 double CDistributionNUnif::GetRndGamma()
@@ -227,7 +228,7 @@ double CDistributionNUnif::GetRndGamma()
 	}
 	else
 		return -1;
-
+    return -1;
 }
 
 double GetRndUniF(double xmin, double xmax)

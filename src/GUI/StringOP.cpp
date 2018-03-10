@@ -64,17 +64,17 @@ CStringOP::CStringOP(string S)
 
 	int op_count = 0;
 	int terms_count = 0;
-	for (int i=0; i<S.size(); i++)
+	for (unsigned int i=0; i<S.size(); i++)
 	{
-		if ((i<S.size()) && (opertr(S[min(i,(int)S.size()-1)]) < 6))
+		if ((i<S.size()) && (opertr(S[min(int(i),int(S.size()-1))]) < 6))
 		{
 			operators.push_back(opertr(S[i]));
 			op_count++;
 		}
-		if ((i<S.size()) && (S[min(i,(int)S.size()-1)]=='('))
+		if ((i<S.size()) && (S[min(int(i),(int)S.size()-1)]=='('))
 		{
 			int prntcnt = 1;
-			for (int j=i+1; j<S.size(); j++)
+			for (unsigned int j=i+1; j<S.size(); j++)
 			{
 				if(S[j] == '(')
 				{
@@ -95,7 +95,7 @@ CStringOP::CStringOP(string S)
 			}
 		}
 
-		if ((i<S.size()) && (S[min(i,(int)S.size()-1)]=='_'))
+		if ((i<S.size()) && (S[min(int(i),(int)S.size()-1)]=='_'))
 		{
 			int prntcnt = 0;
 			string a = S.substr(i+1,4);
@@ -141,7 +141,7 @@ CStringOP::CStringOP(string S)
 			if (S.substr(i + 1, 3) == "toy")
 				nn = toy_;
 
-			for (int j=i+4; j<S.size(); j++)
+			for (unsigned int j=i+4; j<S.size(); j++)
 			{
 				if(S[j] == '(')
 				{
@@ -164,10 +164,10 @@ CStringOP::CStringOP(string S)
 			}
 		}
 
-		if ((i<S.size()) && (isnumber(S[min(i,(int)S.size()-1)]) == true))
+		if ((i<S.size()) && (isnumber(S[min(int(i),(int)S.size()-1)]) == true))
 		{
-			int j=i+1;
-			while ((j<S.size()) && (isnumber(S[min(j,(int)S.size()-1)]) == true)) j++;
+			unsigned int j=i+1;
+			while ((j<S.size()) && (isnumber(S[min(int(j),(int)S.size()-1)]) == true)) j++;
 			terms.push_back(CStringOP());
 			terms[terms_count].value = atof(S.substr(i,j-i).c_str());
 			terms_count++;
@@ -175,7 +175,7 @@ CStringOP::CStringOP(string S)
 			terms[terms_count-1].nterms = 1;
 			i=j-1;
 		}
-		if ((i<S.size()) && (S[min(i,(int)S.size()-1)]=='k'))
+		if ((i<S.size()) && (S[min(int(i),(int)S.size()-1)]=='k'))
 		{
 			int j=i+1;
 			while (S[j] != ']') j++;
@@ -189,7 +189,7 @@ CStringOP::CStringOP(string S)
 			}
 		}
 
-		if ((i<S.size()) && (S[min(i,(int)S.size()-1)]=='c'))
+		if ((i<S.size()) && (S[min(int(i),(int)S.size()-1)]=='c'))
 		{
 			int j=i+1;
 			while (S[j] != ']') j++;
@@ -216,7 +216,7 @@ CStringOP::CStringOP(string S)
 			}
 		}
 
-		if ((i<S.size()) && (S[min(i,(int)S.size()-1)]=='g'))
+		if ((i<S.size()) && (S[min(int(i),(int)S.size()-1)]=='g'))
 		{
 			int j=i+1;
 			while (S[j] != ']') j++;
@@ -238,7 +238,7 @@ CStringOP::CStringOP(string S)
 			}
 		}
 
-		if ((i<S.size()) && (S[min(i,(int)S.size()-1)]=='s'))
+		if ((i<S.size()) && (S[min(int(i),(int)S.size()-1)]=='s'))
 		{
 			int j=i+1;
 			while (S[j] != ']') j++;
@@ -258,7 +258,7 @@ CStringOP::CStringOP(string S)
 
 		}
 
-		if ((i<S.size()) && (S[min(i,(int)S.size()-1)]=='e'))
+		if ((i<S.size()) && (S[min(int(i),(int)S.size()-1)]=='e'))
 		{
 			int j=i+1;
 			while (S[j] != ']') j++;
@@ -276,7 +276,7 @@ CStringOP::CStringOP(string S)
 
 		}
 
-		if ((i<S.size()) && (S[min(i,(int)S.size()-1)]=='a'))
+		if ((i<S.size()) && (S[min(int(i),(int)S.size()-1)]=='a'))
 		{
 			int j=i+1;
 			while (S[j] != ']') j++;
@@ -296,7 +296,7 @@ CStringOP::CStringOP(string S)
 
 
 
-		if ((i<S.size()) && (S[min(i,(int)S.size()-1)]=='f'))
+		if ((i<S.size()) && (S[min(int(i),(int)S.size()-1)]=='f'))
 		{
 			int j=i+1;
 			while (S[j] != ']') j++;
@@ -352,17 +352,17 @@ CStringOP::CStringOP(string S, CRxnNetwork *R)
 
 	int op_count = 0;
 	int terms_count = 0;
-	for (int i = 0; i<S.size(); i++)
+	for (unsigned int i = 0; i<S.size(); i++)
 	{
-		if ((i<S.size()) && (opertr(S[min(i, (int)S.size() - 1)]) < 6))
+		if ((i<S.size()) && (opertr(S[min(int(i), int(S.size() - 1))]) < 6))
 		{
 			operators.push_back(opertr(S[i]));
 			op_count++;
 		}
-		if ((i<S.size()) && (S[min(i, (int)S.size() - 1)] == '('))
+		if ((i<S.size()) && (S[min(int(i), (int)S.size() - 1)] == '('))
 		{
 			int prntcnt = 1;
-			for (int j = i + 1; j<S.size(); j++)
+			for (unsigned int j = i + 1; j<S.size(); j++)
 			{
 				if (S[j] == '(')
 				{
@@ -383,7 +383,7 @@ CStringOP::CStringOP(string S, CRxnNetwork *R)
 			}
 		}
 
-		if ((i<S.size()) && (S[min(i, (int)S.size() - 1)] == '_'))
+		if ((i<S.size()) && (S[min(int(i), (int)S.size() - 1)] == '_'))
 		{
 			int prntcnt = 0;
 			string a = S.substr(i + 1, 4);
@@ -429,7 +429,7 @@ CStringOP::CStringOP(string S, CRxnNetwork *R)
 			if (S.substr(i + 1, 3) == "sig")
 				nn = sig_;
 
-			for (int j = i + 4; j<S.size(); j++)
+			for (unsigned int j = i + 4; j<S.size(); j++)
 			{
 				if (S[j] == '(')
 				{
@@ -452,10 +452,10 @@ CStringOP::CStringOP(string S, CRxnNetwork *R)
 			}
 		}
 
-		if ((i<S.size()) && (isnumber(S[min(i, (int)S.size() - 1)]) == true))
+		if ((i<S.size()) && (isnumber(S[min(int(i), (int)S.size() - 1)]) == true))
 		{
-			int j = i + 1;
-			while ((j<S.size()) && (isnumber(S[min(j, (int)S.size() - 1)]) == true)) j++;
+			unsigned int j = i + 1;
+			while ((j<S.size()) && (isnumber(S[min(int(j), (int)S.size() - 1)]) == true)) j++;
 			terms.push_back(CStringOP());
 			terms[terms_count].value = atof(S.substr(i, j - i).c_str());
 			terms_count++;
@@ -463,7 +463,7 @@ CStringOP::CStringOP(string S, CRxnNetwork *R)
 			terms[terms_count - 1].nterms = 1;
 			i = j - 1;
 		}
-		if ((i<S.size()) && (S[min(i, (int)S.size() - 1)] == 'k'))
+		if ((i<S.size()) && (S[min(int(i), int(S.size() - 1))] == 'k'))
 		{
 			int j = i + 1;
 			while (S[j] != ']') j++;
@@ -477,9 +477,9 @@ CStringOP::CStringOP(string S, CRxnNetwork *R)
 			}
 		}
 
-		if ((i<S.size()) && (S[min(i, (int)S.size() - 1)] == 'c'))
+		if ((i<S.size()) && (S[min(int(i), (int)S.size() - 1)] == 'c'))
 		{
-			int j = i + 1;
+			unsigned int j = i + 1;
 			while (S[j] != ']') j++;
 			{
 				terms.push_back(CStringOP());
@@ -510,9 +510,9 @@ CStringOP::CStringOP(string S, CRxnNetwork *R)
 			}
 		}
 
-		if ((i<S.size()) && (S[min(i, (int)S.size() - 1)] == 'g'))
+		if ((i<S.size()) && (S[min(int(i), (int)S.size() - 1)] == 'g'))
 		{
-			int j = i + 1;
+			unsigned int j = i + 1;
 			while (S[j] != ']') j++;
 			{
 				terms.push_back(CStringOP());
@@ -533,7 +533,7 @@ CStringOP::CStringOP(string S, CRxnNetwork *R)
 			}
 		}
 
-		if ((i<S.size()) && (S[min(i, (int)S.size() - 1)] == 's'))
+		if ((i<S.size()) && (S[min(int(i), (int)S.size() - 1)] == 's'))
 		{
 			int j = i + 1;
 			while (S[j] != ']') j++;
@@ -553,7 +553,7 @@ CStringOP::CStringOP(string S, CRxnNetwork *R)
 
 		}
 
-		if ((i<S.size()) && (S[min(i, (int)S.size() - 1)] == 'e'))
+		if ((i<S.size()) && (S[min(int(i), (int)S.size() - 1)] == 'e'))
 		{
 			int j = i + 1;
 			while (S[j] != ']') j++;
@@ -571,7 +571,7 @@ CStringOP::CStringOP(string S, CRxnNetwork *R)
 
 		}
 
-		if ((i<S.size()) && (S[min(i, (int)S.size() - 1)] == 'a'))
+		if ((i<S.size()) && (S[min(int(i), (int)S.size() - 1)] == 'a'))
 		{
 			int j = i + 1;
 			while (S[j] != ']') j++;
@@ -591,7 +591,7 @@ CStringOP::CStringOP(string S, CRxnNetwork *R)
 
 
 
-		if ((i<S.size()) && (S[min(i, (int)S.size() - 1)] == 'f'))
+		if ((i<S.size()) && (S[min(int(i), (int)S.size() - 1)] == 'f'))
 		{
 			int j = i + 1;
 			while (S[j] != ']') j++;
@@ -638,7 +638,7 @@ int opertr(char a)
 int getoperator(string S)
 {
 	int k=-1;
-	for (int i=0; i<S.size(); i++)
+	for (unsigned int i=0; i<S.size(); i++)
 		if (opertr(S[i])!=999)
 			{	k=opertr(S[i]);
 				break;}
@@ -657,7 +657,7 @@ bool isnumber(char S)
 bool isnumber(string S)
 {
 	bool res = true;
-	for (int i = 0; i < S.size(); i++)
+	for (unsigned int i = 0; i < S.size(); i++)
 		if (!isnumber(S[i]))
 			res = false;
 
@@ -668,7 +668,7 @@ bool isnumber(string S)
 bool isintegernumber(string S)
 {
 	bool out = true;
-	for (int i = 0; i < S.size(); i++)
+	for (unsigned int i = 0; i < S.size(); i++)
 	{
 		if (((int)S[i] <= 47) || ((int)S[i] >= 58))
 			out = false;
@@ -708,8 +708,8 @@ int quan(string S)
 vector<string> getline(ifstream& file)
 {
 	string line;
-	bool e = file.eof();
-	while (file.good())
+
+	while (!file.eof())
 	{
 		std::getline(file, line);
 		return split(line,',');
@@ -727,7 +727,7 @@ vector<vector<string>> getline_op(ifstream& file,char del1)
 	{
 		getline(file, line);
 		ss = split(line,',');
-		for (int i=0; i<ss.size(); i++)
+		for (unsigned int i=0; i<ss.size(); i++)
 			s.push_back(split(ss[i],del1));
 	}
 	return s;
@@ -743,7 +743,7 @@ vector<vector<string>> getline_op(ifstream& file,vector<char> del1)
 	{
 		getline(file, line);
 		ss = split(line,',');
-		for (int i=0; i<ss.size(); i++)
+		for (unsigned int i=0; i<ss.size(); i++)
 			s.push_back(split(ss[i],del1));
 	}
 	return s;
@@ -761,7 +761,7 @@ vector<vector<string>> getline_op_eqplus(ifstream& file)
 	{
 		getline(file, line);
 		ss = split(line,',');
-		for (int i=0; i<ss.size(); i++)
+		for (unsigned int i=0; i<ss.size(); i++)
 			s.push_back(split(ss[i],del1));
 	}
 	return s;
@@ -771,12 +771,12 @@ vector<vector<string>> getline_op_eqplus(ifstream& file)
 
 vector<string> split(const string &s, const vector<char> &del)
 {
-	int lastdel=0;
-	int j=0;
+	unsigned int lastdel=0;
+	unsigned int j=0;
 	vector<string> strings;
-	for (int i=0; i<s.size(); i++)
+	for (unsigned int i=0; i<s.size(); i++)
 	{
-		for (int jj=0; jj<del.size(); jj++)
+		for (unsigned int jj=0; jj<del.size(); jj++)
 		if (s[i]==del[jj])
 		{
 			strings.push_back(s.substr(lastdel, i-lastdel));
@@ -785,16 +785,16 @@ vector<string> split(const string &s, const vector<char> &del)
 		}
 	}
 	if (lastdel<s.size()) strings.push_back(trim(s.substr(lastdel, s.size()-lastdel)));
-	for (int i=0; i<strings.size(); i++) strings[i] = trim(strings[i]);
+	for (unsigned int i=0; i<strings.size(); i++) strings[i] = trim(strings[i]);
 	return strings;
 
 }
 
 vector<string> split(const string &s, char del)
 {
-	int lastdel=0;
+	unsigned int lastdel=0;
 	vector<string> strings;
-	for (int i=0; i<s.size(); i++)
+	for (unsigned int i=0; i<s.size(); i++)
 	{
 		if (s[i]==del)
 		{
@@ -803,7 +803,7 @@ vector<string> split(const string &s, char del)
 		}
 	}
     if (lastdel<s.size() && trim(s.substr(lastdel, s.size()-lastdel))!="\r") strings.push_back(trim(s.substr(lastdel, s.size()-lastdel)));  // works w/o trim- Trim can be deleted
-	for (int i=0; i<strings.size(); i++) strings[i] = trim(strings[i]);					// Trim can be deleted
+	for (unsigned int i=0; i<strings.size(); i++) strings[i] = trim(strings[i]);					// Trim can be deleted
 	return strings;
 
 }
@@ -816,10 +816,8 @@ vector<string> split_curly_semicolon(string s)
 
 vector<int> look_up(string s, char del)  //Returns a vector with indices of "del"
 {
-	int lastdel=0;		//not used
-	int j=0;			// j is Not Used- can be deleted
 	vector<int> out;
-	for (int i=0; i<s.size(); i++)
+	for (unsigned int i=0; i<s.size(); i++)
 		if (s[i]==del)
 			out.push_back(i);
 
@@ -830,7 +828,7 @@ vector<int> look_up(string s, char del)  //Returns a vector with indices of "del
 vector<int> ATOI(vector<string> ii)
 {
 	vector<int> res;
-	for (int i=0; i<ii.size(); i++)
+	for (unsigned int i=0; i<ii.size(); i++)
 		res.push_back(atoi(ii[i].c_str()));
 
 	return res;
@@ -839,7 +837,7 @@ vector<int> ATOI(vector<string> ii)
 vector<double> ATOF(vector<string> ii)
 {
 	vector<double> res;
-	for (int i=0; i<ii.size(); i++)
+	for (unsigned int i=0; i<ii.size(); i++)
 		res.push_back(atof(ii[i].c_str()));
 
 	return res;
@@ -847,9 +845,6 @@ vector<double> ATOF(vector<string> ii)
 
 string trim(string s)
 {
-	int a = s.find_first_not_of(' ');
-	int b = s.find_last_not_of(' ');
-	if (a==-1) return "";
 	return s.substr( s.find_first_not_of(' '), s.find_last_not_of(' ') + 1 );
 }
 
@@ -908,7 +903,7 @@ void make_a_folder_if_can(string path)
 string tolower(string S)
 {
 	string SS = S;
-	for (int i=0; i<S.size(); i++)
+	for (unsigned int i=0; i<S.size(); i++)
 	{
 		SS[i] = tolower(S[i]);
 	}
@@ -918,7 +913,7 @@ string tolower(string S)
 vector<string> tolower(vector<string> S)
 {
 	vector<string> SS = S;
-	for (int i = 0; i<S.size(); i++)
+	for (unsigned int i = 0; i<S.size(); i++)
 	{
 		SS[i] = tolower(S[i]);
 	}
@@ -927,15 +922,15 @@ vector<string> tolower(vector<string> S)
 
 void writeline(ofstream& f, vector<string> s, string del=",")
 {
-	for (int i=0; i<s.size()-1; i++)
+	for (unsigned int i=0; i<s.size()-1; i++)
 		f<<s[i]<<del;
 	f<<s[s.size()-1]<<endl;
 }
 
 void writeline(ofstream& f, vector<vector<string>> s, string del=",", string del2="&")
 {
-	for (int i=0; i<s.size()-1; i++)
-	{	for (int j=0; j<s[i].size()-1; j++)
+	for (unsigned int i=0; i<s.size()-1; i++)
+	{	for (unsigned int j=0; j<s[i].size()-1; j++)
 			f<<s[i][j]<<del2;
 		f<<s[i][s[i].size()-1]<<del;
 	}
@@ -948,11 +943,9 @@ void writestring(ofstream& f, string s)
 
 void writestring(string filename, string s)
 {
-	FILE *FILEBTC;
-	FILEBTC = fopen((filename).c_str(), "a");
-	fprintf(FILEBTC, s.c_str());
-	fprintf(FILEBTC, "\n");
-	fclose(FILEBTC);
+	ofstream file(filename);
+	file << s + "\n";
+	file.close();
 
 }
 void writenumber(ofstream& f, double s)
@@ -1002,10 +995,20 @@ string numbertostring(int x)
 	return Result;
 }
 
+string numbertostring(unsigned int x)
+{
+    string Result;          // string which will contain the result
+	ostringstream convert;   // stream used for the conversion
+	convert << x;      // insert the textual representation of 'Number' in the characters in the stream
+	Result = convert.str();
+	return Result;
+}
+
+
 string numbertostring(vector<int> x)
 {
 	string xx;
-	for (int i = 0; i < x.size(); i++)
+	for (unsigned int i = 0; i < x.size(); i++)
 	{
 		xx = xx + numbertostring(x[i]);
 		if (i < x.size() - 1) xx = xx + ", ";
@@ -1016,7 +1019,7 @@ string numbertostring(vector<int> x)
 string numbertostring(vector<double> x)
 {
 	string xx;
-	for (int i = 0; i < x.size(); i++)
+	for (unsigned int i = 0; i < x.size(); i++)
 	{
 		xx = xx + numbertostring(x[i]);
 		if (i < x.size() - 1) xx = xx + ", ";

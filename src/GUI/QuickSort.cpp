@@ -144,7 +144,7 @@ vector<int> reverse_order(const vector<int> &V)
 
 vector<double> bubbleSort(const vector<double> &V)
 {
-	clock_t t0 = clock();
+
 	if (V.size() <= 1) return V;
 	vector<double> A;
 	if (V[V.size() - 1] < V[0])
@@ -153,7 +153,7 @@ vector<double> bubbleSort(const vector<double> &V)
 		A = V;
 
 	int n = A.size();
-	double temp;
+
 	bool swapped = false;
 	do
 	{
@@ -170,8 +170,8 @@ vector<double> bubbleSort(const vector<double> &V)
 			}
 		}
 	} while (swapped);
-	clock_t t1 = clock() - t0;
-	float run_time = ((float)t1) / CLOCKS_PER_SEC;
+	//clock_t t1 = clock() - t0;
+	//float run_time = ((float)t1) / CLOCKS_PER_SEC;
 	//qDebug() << "sorting finished in" << run_time << " sec";
 	return A;
 }
@@ -184,7 +184,7 @@ vector<int> bubbleSort(const vector<int> &V)
 	else
 		A = V;
 	int n = A.size();
-	int temp;
+
 	bool swapped = false;
 	do
 	{

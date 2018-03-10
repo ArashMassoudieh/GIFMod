@@ -43,6 +43,7 @@ double CBuildup::buildup(double C, CMBBlock *B)
 {
 	if (model=="linear") return parameters[0];
 	if (model=="exponential") return parameters[0]-parameters[0]*C/parameters[1];
+	return 0;
 }
 
 void CBuildup::set_val(string S, double val)

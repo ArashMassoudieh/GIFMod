@@ -6,7 +6,7 @@
 
 CEvaporation::CEvaporation(void)
 {
-	
+
 }
 
 
@@ -89,7 +89,7 @@ CEvaporation::CEvaporation(string _model)
 		string stress_term = "(_max(_min(((f[10] - f[6001]) / (f[6002] - f[6001])) : 1) :0))";
 
 		expression = CStringOP("(" + light_term +"+"+ wind_term + ")*" + stress_term + "*f[6501]*86400*f[2]");
-		
+
 		//expression = CStringOP("((f[6004]*f[18]/(1+(0.0000004*f[6003]*((237.3+f[19])^2)*_exp(17.27*f[19]/(237.3+f[19]))))/(2501000-(2370*f[19]))/1000*86.400)+((f[6000]*611*f[6003])/((f[6003]*_exp(-17.27*f[19]/(237.3 + f[19])))+(2503878/((237.3+f[19])^2)))*f[20]*(1-f[21]))*86.400))*_max(_min(((f[10]-f[6001])/(f[6002]-f[6001])):1):0)*f[6501]");
 		parameters.resize(5);
 		parameters[3] = 66;
@@ -153,7 +153,7 @@ double CEvaporation::calculate(CMBBlock *Block)
 double CEvaporation::calculate_star(CMBBlock *Block)
 {
 	vector<int> ii;
-	for (int j = 0; j < Block->evaporation_m.size(); j++)
+	for (unsigned int j = 0; j < Block->evaporation_m.size(); j++)
 		if (name == Block->evaporation_m[j]->name) ii.push_back(j);
 	return Block->calc_star(expression, ii);
 }
@@ -171,7 +171,7 @@ void CEvaporation::set_val(string S, double val)
 	if (S == "psychrometric_constant") parameters[3] = val;
 	if (S == "coefficient_light") parameters[4] = val;
 	if (S == "half_evaporation_lai") parameters[6] = val;
-	
+
 }
 
 void CEvaporation::set_val(int i, double val)

@@ -66,8 +66,8 @@ struct solution_state
 
     double pos_def_mult;
     double pos_def_mult_Q;
-    double max_wiggle, wiggle_dt_mult, dt_fail, max_wiggle_id;
-
+    double max_wiggle, wiggle_dt_mult, dt_fail;
+    int max_wiggle_id;
     double t; // time
     int counter_flow, counter_colloid, counter_const; // counter for number of iteration
 

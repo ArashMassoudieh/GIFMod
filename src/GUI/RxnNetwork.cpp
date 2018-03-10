@@ -3,7 +3,7 @@
 
 CRxnNetwork::CRxnNetwork(void)
 {
-	
+
 }
 
 
@@ -28,7 +28,7 @@ CRxnNetwork::CRxnNetwork(const CRxnNetwork &CRxnNetwork)
 	Rxts = CRxnNetwork.Rxts;
 	params = CRxnNetwork.params;
 	param_corrected = CRxnNetwork.param_corrected;
-	volume = CRxnNetwork.volume; 
+	volume = CRxnNetwork.volume;
 	inflows = CRxnNetwork.inflows; //added
 	inflowconsts = CRxnNetwork.inflowconsts; //added
 	controlconsts = CRxnNetwork.inflowconsts;
@@ -51,7 +51,7 @@ CRxnNetwork CRxnNetwork::operator=(const CRxnNetwork &CR)
 	Rxts = CR.Rxts;
 	params = CR.params;
 	param_corrected = CR.param_corrected;
-	volume = CR.volume; 
+	volume = CR.volume;
 	inflows = CR.inflows; //added
 	inflowconsts = CR.inflowconsts; //added
 	controlconsts = CR.inflowconsts;
@@ -93,15 +93,15 @@ void CRxnNetwork::getreactions(ifstream& file)
 	while (file.eof()==false)
 	{
 		s = getline(file);
-				
+
 		if (s[0].substr(0,2)!="//")
 		{
-			Rxts[i].set_n_prdcts(atoi(s[0].c_str())); 
+			Rxts[i].set_n_prdcts(atoi(s[0].c_str()));
 			Rxts[i].rate = CStringOP(s[1]);
 			for (int j=0; j<Rxts[i].nproducts; j++)
 			{
-				Rxts[i].products[j] = atoi(s[2*j+2].c_str()); 
-				Rxts[i].prodrates[j] = CStringOP(s[2*j+3]); 
+				Rxts[i].products[j] = atoi(s[2*j+2].c_str());
+				Rxts[i].prodrates[j] = CStringOP(s[2*j+3]);
 			}
 			i++;
 			n_Rxns++;
@@ -112,18 +112,18 @@ void CRxnNetwork::getreactions(ifstream& file)
 
 
 CVector CRxnNetwork::getrate(vector<CConstituent> &c_star, int ts)
-{	
+{
 	CVector rates(n_Rxns);  // rate of each reaction
 
 	for (int i=0; i<n_Rxns; i++)
-	{  
+	{
 		if (temperature.size()==0)
 			rates[i] = calcterm(Rxts[i].rate, c_star);
 		else
-			rates[i] = calcterm(Rxts[i].rate,ts,temperature_avg[ts], c_star);		
+			rates[i] = calcterm(Rxts[i].rate,ts,temperature_avg[ts], c_star);
 	}
 
-	return rates;	
+	return rates;
 }
 
 double CRxnNetwork::calcterm(CStringOP &term)
@@ -137,7 +137,7 @@ double CRxnNetwork::calcterm(CStringOP &term)
 			out = H(cons[term.number].conc);
 		else if (term.constant == true)
 			out = term.value;
-		else 
+		else
 			out = calcterm(term.terms[0]);
 	}
 
@@ -171,7 +171,7 @@ double CRxnNetwork::calcterm(CStringOP &term)
 			sum = calcterm(term.terms[0]);
 		else if (term.operators[0] == 1)
 			sum = -calcterm(term.terms[0]);
-		
+
 		if (term.operators[1] == 0)
 			out = sum+calcterm(term.terms[1]);
 		if (term.operators[1] == 1)
@@ -186,10 +186,10 @@ double CRxnNetwork::calcterm(CStringOP &term)
 	}
 
 	if ((term.nterms>2) && (term.nopts == term.nterms-1))
-	{	
+	{
 		out = calcterm(term.terms[0]);
 		for (int j=1; j<term.nterms; j++)
-		{	
+		{
 			if (term.operators[j-1] == 0)
 				out+=calcterm(term.terms[j]);
 			if (term.operators[j-1] == 1)
@@ -201,21 +201,21 @@ double CRxnNetwork::calcterm(CStringOP &term)
 			if (term.operators[j-1] == 4)
 				out = pow(out,calcterm(term.terms[j]));
 		}
-		
+
 	}
 
 
 	if ((term.nterms>2) && (term.nopts == term.nterms))
-	{	
+	{
 		out = 0;
-		if (term.operators[0] == 0)	
+		if (term.operators[0] == 0)
 			out = calcterm(term.terms[0]);
 		else if (term.operators[0] == 1)
 			out = -calcterm(term.terms[0]);
-	
-		
+
+
 		for (int j=1; j<term.nterms; j++)
-		{	
+		{
 			if (term.operators[j] == 0)
 				out+=calcterm(term.terms[j]);
 			if (term.operators[j] == 1)
@@ -228,7 +228,7 @@ double CRxnNetwork::calcterm(CStringOP &term)
 				out=pow(out,calcterm(term.terms[j]));
 
 		}
-		
+
 	}
 	if (term.function==true)
 	{	if (term.number == 1)
@@ -252,8 +252,8 @@ double CRxnNetwork::calcterm(CStringOP &term)
 		if (term.number == 10)
 			return sqrt(out);
 	}
-	else
-		return out;
+
+	return out;
 }
 
 double CRxnNetwork::calcterm(CStringOP &term, vector<CConstituent> &C_prime)
@@ -267,7 +267,7 @@ double CRxnNetwork::calcterm(CStringOP &term, vector<CConstituent> &C_prime)
 			out = H(C_prime[term.number].conc);
 		else if (term.constant == true)
 			out = term.value;
-		else 
+		else
 			out = calcterm(term.terms[0],C_prime);
 	}
 
@@ -301,7 +301,7 @@ double CRxnNetwork::calcterm(CStringOP &term, vector<CConstituent> &C_prime)
 			sum = calcterm(term.terms[0],C_prime);
 		else if (term.operators[0] == 1)
 			sum = -calcterm(term.terms[0],C_prime);
-		
+
 		if (term.operators[1] == 0)
 			out = sum+calcterm(term.terms[1],C_prime);
 		if (term.operators[1] == 1)
@@ -315,10 +315,10 @@ double CRxnNetwork::calcterm(CStringOP &term, vector<CConstituent> &C_prime)
 	}
 
 	if ((term.nterms>2) && (term.nopts == term.nterms-1))
-	{	
+	{
 		out = calcterm(term.terms[0]);
 		for (int j=1; j<term.nterms; j++)
-		{	
+		{
 			if (term.operators[j-1] == 0)
 				out+=calcterm(term.terms[j],C_prime);
 			if (term.operators[j-1] == 1)
@@ -330,21 +330,21 @@ double CRxnNetwork::calcterm(CStringOP &term, vector<CConstituent> &C_prime)
 			if (term.operators[j-1] == 4)
 				out=pow(out,calcterm(term.terms[j],C_prime));
 		}
-		
+
 	}
 
 
 	if ((term.nterms>2) && (term.nopts == term.nterms))
-	{	
+	{
 		out = 0;
-		if (term.operators[0] == 0)	
+		if (term.operators[0] == 0)
 			out = calcterm(term.terms[0],C_prime);
 		else if (term.operators[0] == 1)
 			out = -calcterm(term.terms[0],C_prime);
-	
-		
+
+
 		for (int j=1; j<term.nterms; j++)
-		{	
+		{
 			if (term.operators[j] == 0)
 				out+=calcterm(term.terms[j],C_prime);
 			if (term.operators[j] == 1)
@@ -356,7 +356,7 @@ double CRxnNetwork::calcterm(CStringOP &term, vector<CConstituent> &C_prime)
 			if (term.operators[j] == 4)
 				out=pow(out,calcterm(term.terms[j],C_prime));
 		}
-		
+
 	}
 	if (term.function==true)
 	{	if (term.number == 1)
@@ -379,10 +379,10 @@ double CRxnNetwork::calcterm(CStringOP &term, vector<CConstituent> &C_prime)
 			return 0.5/calcterm(term.terms[1],C_prime)*(calcterm(term.terms[0],C_prime)*calcterm(term.terms[1],C_prime)+sqrt(pow(calcterm(term.terms[0],C_prime)*calcterm(term.terms[1],C_prime),2)+1));
 		if (term.number == 10)
 			return sqrt(out);
-	
+
 	}
-	else
-		return out;
+
+	return out;
 }
 
 
@@ -397,7 +397,7 @@ double CRxnNetwork::calcterm(CStringOP &term, int ts, double temperature)
 			out = H(cons[term.number].conc);
 		else if (term.constant == true)
 			out = term.value;
-		else 
+		else
 			out = calcterm(term.terms[0], ts, temperature);
 	}
 
@@ -431,7 +431,7 @@ double CRxnNetwork::calcterm(CStringOP &term, int ts, double temperature)
 			sum = calcterm(term.terms[0], ts, temperature);
 		else if (term.operators[0] == 1)
 			sum = -calcterm(term.terms[0], ts, temperature);
-		
+
 		if (term.operators[1] == 0)
 			out = sum+calcterm(term.terms[1], ts, temperature);
 		if (term.operators[1] == 1)
@@ -445,10 +445,10 @@ double CRxnNetwork::calcterm(CStringOP &term, int ts, double temperature)
 	}
 
 	if ((term.nterms>2) && (term.nopts == term.nterms-1))
-	{	
+	{
 		out = calcterm(term.terms[0], ts, temperature);
 		for (int j=1; j<term.nterms; j++)
-		{	
+		{
 			if (term.operators[j-1] == 0)
 				out+=calcterm(term.terms[j], ts, temperature);
 			if (term.operators[j-1] == 1)
@@ -460,21 +460,21 @@ double CRxnNetwork::calcterm(CStringOP &term, int ts, double temperature)
 			if (term.operators[j-1] == 4)
 				out=pow(out,calcterm(term.terms[j], ts, temperature));
 		}
-		
+
 	}
 
 
 	if ((term.nterms>2) && (term.nopts == term.nterms))
-	{	
+	{
 		out = 0;
-		if (term.operators[0] == 0)	
+		if (term.operators[0] == 0)
 			out = calcterm(term.terms[0], ts, temperature);
 		else if (term.operators[0] == 1)
 			out = -calcterm(term.terms[0], ts, temperature);
-	
-		
+
+
 		for (int j=1; j<term.nterms; j++)
-		{	
+		{
 			if (term.operators[j] == 0)
 				out+=calcterm(term.terms[j], ts, temperature);
 			if (term.operators[j] == 1)
@@ -486,7 +486,7 @@ double CRxnNetwork::calcterm(CStringOP &term, int ts, double temperature)
 			if (term.operators[j] == 4)
 				out=pow(out,calcterm(term.terms[j], ts, temperature));
 		}
-		
+
 	}
 	if (term.function==true)
 	{	if (term.number == 1)
@@ -510,8 +510,8 @@ double CRxnNetwork::calcterm(CStringOP &term, int ts, double temperature)
 		if (term.number == 10)
 			return sqrt(out);
 	}
-	else
-		return out;
+
+	return out;
 }
 
 double CRxnNetwork::calcterm(CStringOP &term, int ts, double temperature, vector<CConstituent> &C_prime)
@@ -525,7 +525,7 @@ double CRxnNetwork::calcterm(CStringOP &term, int ts, double temperature, vector
 			out = H(C_prime[term.number].conc);
 		else if (term.constant == true)
 			out = term.value;
-		else 
+		else
 			out = calcterm(term.terms[0], ts, temperature, C_prime);
 	}
 
@@ -559,7 +559,7 @@ double CRxnNetwork::calcterm(CStringOP &term, int ts, double temperature, vector
 			sum = calcterm(term.terms[0], ts, temperature, C_prime);
 		else if (term.operators[0] == 1)
 			sum = -calcterm(term.terms[0], ts, temperature, C_prime);
-		
+
 		if (term.operators[1] == 0)
 			out = sum+calcterm(term.terms[1], ts, temperature, C_prime);
 		if (term.operators[1] == 1)
@@ -573,10 +573,10 @@ double CRxnNetwork::calcterm(CStringOP &term, int ts, double temperature, vector
 	}
 
 	if ((term.nterms>2) && (term.nopts == term.nterms-1))
-	{	
+	{
 		out = calcterm(term.terms[0], ts, temperature, C_prime);
 		for (int j=1; j<term.nterms; j++)
-		{	
+		{
 			if (term.operators[j-1] == 0)
 				out+=calcterm(term.terms[j], ts, temperature, C_prime);
 			if (term.operators[j-1] == 1)
@@ -588,21 +588,21 @@ double CRxnNetwork::calcterm(CStringOP &term, int ts, double temperature, vector
 			if (term.operators[j-1] == 4)
 				out=pow(out,calcterm(term.terms[j], ts, temperature, C_prime));
 		}
-		
+
 	}
 
 
 	if ((term.nterms>2) && (term.nopts == term.nterms))
-	{	
+	{
 		out = 0;
-		if (term.operators[0] == 0)	
+		if (term.operators[0] == 0)
 			out = calcterm(term.terms[0], ts, temperature, C_prime);
 		else if (term.operators[0] == 1)
 			out = -calcterm(term.terms[0], ts, temperature, C_prime);
-	
-		
+
+
 		for (int j=1; j<term.nterms; j++)
-		{	
+		{
 			if (term.operators[j] == 0)
 				out+=calcterm(term.terms[j], ts, temperature, C_prime);
 			if (term.operators[j] == 1)
@@ -614,7 +614,7 @@ double CRxnNetwork::calcterm(CStringOP &term, int ts, double temperature, vector
 			if (term.operators[j] == 4)
 				out=pow(out,calcterm(term.terms[j], ts, temperature, C_prime));
 		}
-		
+
 	}
 	if (term.function==true)
 	{	if (term.number == 1)
@@ -638,26 +638,26 @@ double CRxnNetwork::calcterm(CStringOP &term, int ts, double temperature, vector
 		if (term.number == 10)
 			return sqrt(out);
 	}
-	else
-		return out;
+
+	return out;
 }
 
 void CRxnNetwork::fixed_val(double &c, int cons_num, int ts)
 {
-	int j = cons_num;	 
-	
+	int j = cons_num;
+
 	if (cons[j].fixed_file == true)
 		c = cons[j].fixedts_avg[ts];
-				
+
 	if (cons[j].fixed_val == true)
-		c = cons[j].value_fixed[ts];		
-		
+		c = cons[j].value_fixed[ts];
+
 	if (cons[j].fixed_val_ts[ts] == true)
-		c = cons[j].value_fixed_ts[ts];		
+		c = cons[j].value_fixed_ts[ts];
 }
 
 bool CRxnNetwork::fixed_val_check(int j, int ts)
-{	
+{
 	bool fixed_cons = false;
 	if (cons[j].fixed_file == true || cons[j].fixed_val == true || cons[j].fixed_val_ts[ts] == true)
 		fixed_cons = true;
@@ -667,49 +667,49 @@ bool CRxnNetwork::fixed_val_check(int j, int ts)
 
 
 CVector CRxnNetwork::influx_rate(vector<CConstituent> &c_star, int ts)
-{	
-	CVector influx_C(n_constts);  // influx of each constituent 
+{
+	CVector influx_C(n_constts);  // influx of each constituent
 
 	for (int j=0; j<n_constts; j++)
-	{	
+	{
 		if ((cons[j].influx) && (cons[j].inlflux_model == 'r'))
 			influx_C[j] += cons[j].rate_constant_influx[ts]* (cons[j].equilibrium_conc[ts] - c_star[j].conc);
-			
+
 		else if ((cons[j].influx) && (cons[j].inlflux_model == 'a'))
-			influx_C[j] += cons[j].rate_constant_influx[ts]/volume; 
+			influx_C[j] += cons[j].rate_constant_influx[ts]/volume;
 
 		else if ((cons[j].influx) && ((cons[j].inlflux_model == 'z')||(cons[j].inlflux_model == 'x')))
 			influx_C[j] += inflows_avg[inflowconsts[j][ts]]/volume;
 
 		else if ((cons[j].influx) && ((cons[j].inlflux_model == 'v')||(cons[j].inlflux_model == 'w')))
 			influx_C[j] += cons[j].rate_constant_influx[ts]* (inflows_avg[inflowconsts[j][ts]] - c_star[j].conc);
-				
-	}	
 
-	return influx_C;	
+	}
+
+	return influx_C;
 }
 
 
 CVector CRxnNetwork::reaction_rate(vector<CConstituent> &c_star, int ts)
 {
-	CVector rate_C(n_constts);     // rate of each constituent 
+	CVector rate_C(n_constts);     // rate of each constituent
 	vector<double> rates(n_Rxns);  // rate of each reaction
 
 	for (int i=0; i<n_Rxns; i++)
-	{  
+	{
 		if (temperature.size()==0)
 			rates[i] = calcterm(Rxts[i].rate, c_star);
 		else
 			rates[i] = calcterm(Rxts[i].rate,ts,temperature_avg[ts], c_star);
-		
+
 		for (int j=0; j<Rxts[i].nproducts; j++)
 			if (temperature.size()==0)
-				rate_C[Rxts[i].products[j]] += calcterm(Rxts[i].prodrates[j], c_star)*rates[i]; 
+				rate_C[Rxts[i].products[j]] += calcterm(Rxts[i].prodrates[j], c_star)*rates[i];
 			else
 				rate_C[Rxts[i].products[j]] += calcterm(Rxts[i].prodrates[j],ts,temperature_avg[ts],c_star)*rates[i];
 	}
 
-	return rate_C;	
+	return rate_C;
 }
 
 void CRxnNetwork::onestepbatchsolve(double dt)
@@ -717,7 +717,7 @@ void CRxnNetwork::onestepbatchsolve(double dt)
 	vector<CConstituent> c_new = cons;
 	for (int i=0; i<n_Rxns; i++)
 		for (int j=0; j<Rxts[i].nproducts; j++)
-			c_new[Rxts[i].products[j]].conc = cons[Rxts[i].products[j]].conc + dt*calcterm(Rxts[i].prodrates[j])*calcterm(Rxts[i].rate); 
+			c_new[Rxts[i].products[j]].conc = cons[Rxts[i].products[j]].conc + dt*calcterm(Rxts[i].prodrates[j])*calcterm(Rxts[i].rate);
 
 	for (int i=0; i<n_constts; i++) cons[i].conc_0 = cons[i].conc;
 	cons = c_new;
@@ -730,36 +730,36 @@ void CRxnNetwork::setfixedvals(int ts, double t)
 	{
 		if (cons[i].fixed_file == true)
 		{
-			if (cons[i].fixedts.size()<ntseris)
+			if (int(cons[i].fixedts.size())<ntseris)
 				cons[i].conc = cons[i].conc_0 = cons[i].fixedts[0].interpol(t);
 			else
 				cons[i].conc = cons[i].conc_0 = cons[i].fixedts[ts].interpol(t);
 		}
 		if (cons[i].fixed_val == true)
 		{
-			if (cons[i].value_fixed.size()<ntseris) 
+			if (int(cons[i].value_fixed.size())<ntseris)
 				cons[i].conc = cons[i].conc_0 = cons[i].value_fixed[0];
 			else
 				cons[i].conc = cons[i].conc_0 = cons[i].value_fixed[ts];
 		}
 		if (cons[i].fixed_val_ts[ts] == true)
 			cons[i].conc = cons[i].conc_0 = cons[i].value_fixed_ts[ts];
-		
+
 	}
 }
 
 void CRxnNetwork::setiniconcs(int ts)
 {
 	for (int i=0; i<n_constts; i++)
-		if (cons[i].set_ini_conc[ts]==true) 
-			{cons[i].conc = cons[i].conc_0 = cons[i].ini_conc[ts];} 
+		if (cons[i].set_ini_conc[ts]==true)
+			{cons[i].conc = cons[i].conc_0 = cons[i].ini_conc[ts];}
 }
 
 
 int CRxnNetwork::look_up_constituent_no(string const_name)
 {
 	int ii=-1;
-	for (int i=0; i<cons.size(); i++)
+	for (unsigned int i=0; i<cons.size(); i++)
 		if (tolower(cons[i].name) == tolower(const_name)) ii = i;
 
 	return ii;
@@ -768,7 +768,7 @@ int CRxnNetwork::look_up_constituent_no(string const_name)
 int CRxnNetwork::look_up_rxn_parameters(string S)
 {
 	int ii = -1;
-	for (int i = 0; i<parameters.size(); i++)
+	for (unsigned int i = 0; i<parameters.size(); i++)
 		if (parameters[i].name == S) ii = i;
 
 	return ii;

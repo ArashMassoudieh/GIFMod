@@ -29,7 +29,7 @@ struct plant_props // plant properties
 	vector<double> half_saturation_constants; //half saturation factors corresponding to each limiting nutrient
 	int look_up_limiting_nutrient(string s)
 	{
-		for (int i = 0; i < limiting_nutrients.size(); i++)
+		for (unsigned int i = 0; i < limiting_nutrients.size(); i++)
 			if (s == limiting_nutrients[i])
 				return i;
 		return -1;

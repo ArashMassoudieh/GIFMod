@@ -38,7 +38,7 @@ CTimeSeries::CTimeSeries(vector<double> &data, int writeInterval)
 {
 	n = 0;
 	structured = 0;
-	for (int i = 0; i < data.size(); i++)
+	for (unsigned int i = 0; i < data.size(); i++)
 		if (i%writeInterval == 0)
 		{
 			n++;
@@ -257,7 +257,7 @@ double CTimeSeries::interpol_D(double x)
 CTimeSeries CTimeSeries::interpol(vector<double> x)
 {
 	CTimeSeries BTCout;
-	for (int i=0; i<x.size(); i++)
+	for (unsigned int i=0; i<x.size(); i++)
 		BTCout.append(x[i],interpol(x[i]));
 	return BTCout;
 
@@ -616,13 +616,13 @@ void CTimeSeries::readfile(string Filename)
 
 void CTimeSeries::writefile(string Filename)
 {
-	FILE *FILEBTC;
-	FILEBTC = fopen(Filename.c_str(), "w");
-	fprintf(FILEBTC, "n %i, BTC size %i\n", n, C.size());
-	for (int i=0; i<n; i++)
-		fprintf(FILEBTC, "%lf, %le\n", t[i], C[i]);
+	ofstream file(Filename);
+	file<< "n " << n <<", BTC size " << C.size() << std::endl;
 
-	fclose(FILEBTC);
+	for (int i=0; i<n; i++)
+		file << t[i] << ", " << C[i] << std::endl;
+
+	file.close();
 
 }
 
@@ -870,20 +870,27 @@ double CTimeSeries::integrate(double tt)
 
 double CTimeSeries::integrate(double t1, double t2)
 {
+	double sum;
 	if (structured)
 	{
 		int i1 = int(t1 - t[0]) / (t[1] - t[0]);
 		int i2 = int(t1 - t[0]) / (t[1] - t[0]);
-		double sum;
+
 		for (int i = i1; i <= i2; i++)
 			sum += C[i] / (i2+1 - i1)*(t2-t1);
-		return sum;
+
 	}
 	else
 	{
+        int i1 = int(t1 - t[0]) / (t[1] - t[0]);
+		int i2 = int(t1 - t[0]) / (t[1] - t[0]);
+
+		for (int i = i1; i < i2; i++)
+			sum += (C[i] + C[i+1]) * 0.5 * (t[i+1]-t[i]);
 
 
 	}
+	return sum;
 }
 
 int CTimeSeries::lookupt(double _t)
@@ -891,6 +898,7 @@ int CTimeSeries::lookupt(double _t)
 	for (int i = 0; i < n - 1; i++)
 		if ((t[i]<_t) && (t[i + 1]>_t))
 			return i;
+	return -1;
 }
 
 double CTimeSeries::average()
@@ -927,7 +935,7 @@ double CTimeSeries::percentile(double x)
 double CTimeSeries::percentile(double x, int limit)
 {
 	vector<double> C1(C.size()-limit);
-	for (int i=0; i<C1.size(); i++)
+	for (unsigned int i=0; i<C1.size(); i++)
 		C1[i] = C[i+limit];
 	vector<double> X = bubbleSort(C1);
 	//vector<double> X = bubbleSort(C1);
@@ -1039,7 +1047,7 @@ vector<double> prcntl(vector<double> C, vector<double> x)
 {
 	vector<double> X = QSort(C);
 	vector<double> Xout = x;
-	for(int j =0; j< x.size(); j++)
+	for(unsigned int j =0; j< x.size(); j++)
 	{
 		int ii = int(x[j]*double(X.size()));
 		Xout[j] = X[ii];
@@ -1138,7 +1146,7 @@ CTimeSeries CTimeSeries::add_noise(double std, bool logd)
 double sum_interpolate(vector<CTimeSeries> BTC, double t)
 {
 	double sum=0;
-	for (int i=0; i<BTC.size(); i++)
+	for (unsigned int i=0; i<BTC.size(); i++)
 	{
 		sum+=BTC[i].interpol(t);
 	}

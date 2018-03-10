@@ -122,14 +122,14 @@ CVector& CVector::operator=(const double &v)
 	return *this;
 }
 
-CVector& CVector::operator+() 
+CVector& CVector::operator+()
 {return *this;}
 
 void CVector::swap(int i, int j)
 {	double tmp = vec[range(i)];
 	vec[i] = vec[range(j)];
 	vec[j] = tmp;
-	
+
 }
 
 int CVector::getsize() {return num;}
@@ -166,29 +166,30 @@ CVector& CVector::operator-=(const CVector &v)
 
 CVector operator+(CVector v1, CVector v2)
 {
-	CVector v=v1; 
+	CVector v=v1;
 	for (int i=0; i<v1.num; i++) v[i]=v1.vec[i]+v2.vec[i];
 	return v;
 }
 
 CVector operator-(CVector v1, CVector v2)
 {
-	CVector v=v1; 
+	CVector v=v1;
 	for (int i=0; i<v1.num; i++) v[i]=v1.vec[i]-v2.vec[i];
 	return v;
 
 }
 
-double dotproduct(CVector v1, CVector v2) 
+double dotproduct(CVector v1, CVector v2)
 {
 	double d;
-	if (v1.num = v2.num) 
+	if (v1.num == v2.num)
 	{
-	d = 0;
-	for (int i=0; i<v1.num; ++i)
-		d += v1.vec[i]*v2.vec[i];
-	return d;
+        d = 0;
+        for (int i=0; i<v1.num; ++i)
+            d += v1.vec[i]*v2.vec[i];
+        return d;
 	}
+	return 0;
 }
 
 CVector& CVector::operator*=(const CVector& v)
@@ -197,9 +198,9 @@ CVector& CVector::operator*=(const CVector& v)
 		vec[i] *= v.vec[i];
 	return *this;
 }
-	
 
-CVector operator*(CVector v1, CVector v2) 
+
+CVector operator*(CVector v1, CVector v2)
 {
 	return v1 *= v2;
 }
@@ -309,7 +310,7 @@ double CVector::max()
 }
 
 double max(CVector &V)
-{	
+{
 	return V.max();
 }
 
@@ -326,7 +327,7 @@ double CVector::min()
 }
 
 double min(CVector &V)
-{	
+{
 	return V.min();
 }
 double CVector::abs_max()
@@ -356,7 +357,7 @@ int CVector::abs_max_elems()
 }
 
 double abs_max(CVector &V)
-{	
+{
 	return V.abs_max();
 }
 
@@ -456,7 +457,7 @@ void CVector::writetofile(ofstream &f)
 	for (int i=0; i<num-1; i++)
 		f<<vec[i]<<",";
 	f<<vec[num-1]<<endl;
-		
+
 }
 
 void CVector::writetofile(string filename)
@@ -545,7 +546,7 @@ CVector combinesort_s(const CVector V1, const CVector V2)
 			}
 		}
 	}
-	
+
 	return V3;
 
 }
@@ -553,7 +554,7 @@ CVector combinesort_s(const CVector V1, const CVector V2)
 int lookup(vector<int> v, int val)
 {
 	int res = -1;
-	for (int i=0; i<v.size(); i++)
+	for (unsigned int i=0; i<v.size(); i++)
 		if (v[i] == val)
 			res = i;
 
@@ -564,7 +565,7 @@ int lookup(vector<int> v, int val)
 int lookup(vector<string> v, string val)
 {
 	int res = -1;
-	for (int i=0; i<v.size(); i++)
+	for (unsigned int i=0; i<v.size(); i++)
 		if (v[i] == val)
 			res = i;
 
@@ -575,7 +576,7 @@ int lookup(vector<string> v, string val)
 int lookup(vector<double> v, double val)
 {
 	int res = -1;
-	for (int i=0; i<v.size(); i++)
+	for (unsigned int i=0; i<v.size(); i++)
 		if (v[i] == val)
 			res = i;
 	return res;
@@ -608,32 +609,32 @@ double H(double x)
 vector<double> H(vector<double> x)
 {
 	vector<double> X(x.size());
-	for (int i=0; i<x.size(); i++)
+	for (unsigned int i=0; i<x.size(); i++)
 		X[i] = H(x[i]);
 
 	return X;
 }
 
 void CVector::print(string s)
-{		
+{
 	ofstream Afile;
-	Afile.open(s);	
+	Afile.open(s);
 
 	for (int i=0; i<num; ++i)
 		Afile << vec[i] << endl;
 
-	Afile.close();							
-	
+	Afile.close();
+
 }
 
 CVector CVector::operator=(mat A)
 {
 	num = A.n_rows;
 	vec.resize(num);
-		
-	for (int i = 0; i<num; ++i)		
+
+	for (int i = 0; i<num; ++i)
 			vec[i]=A(i,0);
-	
+
 	return *this;
 }
 
@@ -649,10 +650,10 @@ CVector CVector::sub(int i, int j)
 //mat CVector::operator=(const CVector&V)
 //{
 //	mat A(num,1);
-		
-//	for (int i = 0; i<num; ++i)		
+
+//	for (int i = 0; i<num; ++i)
 //			A(i,0) = vec[i];
-	
+
 //	return A;
 //}
 
@@ -668,8 +669,8 @@ vector<vector<double>> create_vector(int i, int j)
 	vector<vector<double>> X(i);
 	for (int ii=0; ii<i; i++)
 		X[i].resize(j);
-	
+
 	return X;
-	
+
 }
 
