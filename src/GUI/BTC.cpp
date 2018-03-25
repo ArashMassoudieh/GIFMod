@@ -1227,7 +1227,7 @@ void CTimeSeries::knock_out(double tt)
 {
 	int i=n-1;
 	if (n>0)
-		while (t[i]>tt)
+    {	while (t[i]>tt)
 		{	if (i<n);
 			{	t.pop_back();
 				C.pop_back();
@@ -1235,6 +1235,7 @@ void CTimeSeries::knock_out(double tt)
 				i--;
 			}
 		}
+    }
 }
 
 double CTimeSeries::AutoCor1(int k)
@@ -1375,7 +1376,7 @@ void CTimeSeries::compact(QDataStream &data) const
 	data << CList;
 
 	QList<QVariant> DList;
-	for (int i = 0; i < D.size(); i++)
+    for (unsigned int i = 0; i < D.size(); i++)
 		tList.append(D[i]);
 	data << DList;
 

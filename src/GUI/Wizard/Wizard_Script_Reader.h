@@ -7,6 +7,7 @@
 #include "Wizard/wiz_parameter_group.h"
 #include "Command.h"
 #include "mProplist.h"
+#include "Expression.h"
 
 #define x_base 500
 #define y_base 500
@@ -14,6 +15,13 @@
 #define h_interval 250
 #define v_big_interval 180
 #define h_big_interval 280
+
+struct wiz_criterion
+{
+    CExpression expressionless;
+    CExpression expressiongreater;
+    QString ErrorMessage;
+};
 
 class Wizard_Script_Reader
 {
@@ -27,8 +35,9 @@ public:
 	bool add_command(QString line);
 	~Wizard_Script_Reader();
 	CCommand get_script_commands_entities(wiz_entity * wiz_ent);
-	CCommand get_script_commands_project_settings(wiz_entity * wiz_ent);
+    CCommand get_script_commands_project_settings(wiz_entity * wiz_ent);
 	CCommand get_script_change_properties(wiz_entity * wiz_ent);
+    QStringList validate();
 	QList<CCommand> get_script_commands_major_blocks(wiz_entity * wiz_ent, int & x, int & y);
 		
 	QMap<QString, wiz_entity> &get_major_blocks()
@@ -74,6 +83,7 @@ public:
 	QList<CCommand> do_2dh(QString configuration, wiz_entity * wiz_ent, int & x, int & y); //creates commands for a 2d-horizontal grid object
 	private:
 	QMap<QString, wiz_entity> major_blocks;
+    QMap<QString, wiz_criterion> criteria;
 	QMap<QString, wiz_entity> major_connections;
 	QMap<QString, wiz_entity> entities;
 	QMap<QString, wiz_entity> project_settings;
@@ -84,7 +94,7 @@ public:
 	QString script_name; 
 	QString icon_file; 
 	QString description; 
-	
+
 
 };
 

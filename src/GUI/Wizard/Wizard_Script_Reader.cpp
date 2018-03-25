@@ -93,6 +93,17 @@ Wizard_Script_Reader::Wizard_Script_Reader(QString filename)
 
 }
 
+QStringList Wizard_Script_Reader::validate()
+{
+    QStringList out;
+    for (QString key : criteria.keys())
+    {
+        if (criteria[key].expressiongreater.calc(this)<=criteria[key].expressionless.calc(this))
+            out.append(criteria[key].ErrorMessage);
+
+    }
+    return out;
+}
 
 bool Wizard_Script_Reader::add_command(QString line)
 {
@@ -135,6 +146,15 @@ bool Wizard_Script_Reader::add_command(QString line)
 			{
 				entities[entty.name()] = entty;
 			}
+
+            else if (entty.entity() == "criteria")
+            {
+                wiz_criterion w;
+                w.expressionless = entty.get_parameter("less").value;
+                w.expressiongreater = entty.get_parameter("greater").value;
+                w.ErrorMessage = entty.get_parameter("ErrorMessage").value;
+                criteria[entty.name()] = w;
+            }
 
 		}
 		else

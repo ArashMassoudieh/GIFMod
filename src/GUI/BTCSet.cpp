@@ -999,7 +999,7 @@ void CTimeSeriesSet::compact(QDataStream &data) const
 	QMap<QString, QVariant> r;
 	r.insert("nvars",nvars);
 	QStringList namesList;
-	for (int i = 0; i < names.size(); i++)
+    for (unsigned int i = 0; i < names.size(); i++)
 		namesList.append(QString::fromStdString(names[i]));
 	r.insert("names", namesList);
 	r.insert("unif",unif);
