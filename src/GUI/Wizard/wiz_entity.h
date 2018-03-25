@@ -67,6 +67,22 @@ public:
 			return QString("1");
 	}
 
+	QString first_index_x()
+	{
+		if (parameters.count("first_index_x") > 0)
+			return get_value(parameters["first_index_x"]);
+		else
+			return QString("1");
+	}
+
+	QString first_index_y()
+	{
+		if (parameters.count("first_index_y") > 0)
+			return get_value(parameters["first_index_y"]);
+		else
+			return QString("1");
+	}
+
 	QString type()
 	{
 		if (parameters.count("type") > 0)
