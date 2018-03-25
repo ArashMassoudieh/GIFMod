@@ -73,7 +73,7 @@ QString wiz_entity::get_configuration()
 {
 	QString s; 
 	if (parameters.count("configuration") > 0)
-		s = parameters["configuration"].value;
+		s = parameters["configuration"].value.toLower().trimmed();
 
 	return s;
 }

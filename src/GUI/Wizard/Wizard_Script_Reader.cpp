@@ -115,7 +115,7 @@ bool Wizard_Script_Reader::add_command(QString line)
 	if (line.split(":")[0].toLower().trimmed() == "settings" || line.split(":")[0].toLower().trimmed() == "major_block" || line.split(":")[0].toLower().trimmed() == "major_connection" || line.split(":")[0].toLower().trimmed() == "entity" || line.split(":")[0].toLower().trimmed() == "change_property")
 	{
 		wiz_entity entty(line, this); 
-		if (entty.name() == "" & entty.entity() == "settings")
+		if (entty.name() == "" && entty.entity() == "settings")
 		{
 			entty.name() = "settings_" + QString::number(project_settings.count());
 			entty.get_last_error() = "";
@@ -399,6 +399,17 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
 	QString configuration = wiz_ent->get_configuration();
 	wiz_entity *source = &major_blocks[wiz_ent->get_parameter("source").value];
 	wiz_entity *target = &major_blocks[wiz_ent->get_parameter("target").value];
+	if (source == nullptr)
+	{
+		error_list.append(wiz_ent->get_parameter("source").value + " was not found!");
+		return commands;
+	}
+	if (target == nullptr)
+	{
+		error_list.append(wiz_ent->get_parameter("target").value + " was not found!");
+		return commands;
+	}
+
 	if (source->get_configuration() != "2dv" && source->get_configuration() != "2dh" && target->get_configuration() != "2dv" && target->get_configuration() != "2dh")
 	{	if (configuration == "")
 			{
@@ -521,11 +532,11 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
 
 		}
 	}
-	else if (source->get_configuration() != "2dv" && (target->get_configuration() == "1dv"))
+	else if (source->get_configuration() == "2dv" && target->get_configuration() == "1dv")
 	{
 		if (configuration == "l2a")
 		{
-			int n_source = source->get_value(QString("ny")).toInt();
+			int n_source = source->get_value(QString("nv")).toInt();
 			int n_target = target->get_value(QString("n")).toInt();
 			if (n_source != n_target)
 				error_list.append("Number of cells in source and target are different");
@@ -791,7 +802,10 @@ QList<CCommand> Wizard_Script_Reader::do_2dv(QString configuration, wiz_entity *
 
 		}
 		x += h_interval;
-		y = y_base;
+		if (wiz_ent->get_parameters().count("y"))
+			y = wiz_ent->get_value("y").toDouble();
+		else
+			y = y_base;
 		z0 -= slope*length;
 	}
 	
@@ -943,7 +957,10 @@ QList<CCommand> Wizard_Script_Reader::do_2dh(QString configuration, wiz_entity *
 		}
 						
 		x += h_interval;
-		y = y_base;
+		if (wiz_ent->get_parameters().count("y"))
+			y = wiz_ent->get_value("y").toDouble();
+		else
+			y = y_base;
 		
 	}
 
