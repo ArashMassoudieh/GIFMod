@@ -538,7 +538,7 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
 		{
 			int n_source = source->get_value(QString("nv")).toInt();
 			int n_target = target->get_value(QString("n")).toInt();
-			if (n_source != n_target)
+			if (n_source != n_target && n_target!=1)
 				error_list.append("Number of cells in source and target are different");
 			else
 			{
@@ -550,7 +550,10 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
 						command.values.append(source->name() + " (" + source->first_index_x() + "," + QString::number(i + source->first_index_y().toInt()) + ")");
 					if (configuration == "r2a")
 						command.values.append(source->name() + " (" + QString::number(source->get_value(QString("nh")).toInt() + source->first_index_x().toInt() - 1) + "," + QString::number(i + source->first_index_y().toInt()) + ")");
-					command.values.append(target->name() + " (" + QString::number(i + target->first_index().toInt()) + ")");
+					if (n_target>1)
+						command.values.append(target->name() + " (" + QString::number(i + target->first_index().toInt()) + ")");
+					else if (n_target==1)
+						command.values.append(target->name());
 					if (wiz_ent->type() != "*") command.parameters["Type"] = wiz_ent->type();
 					if (wiz_ent->name() != "*") command.parameters["Name"] = wiz_ent->name() + " (" + QString::number(i+1) + ")";
 					mProp _filter;
