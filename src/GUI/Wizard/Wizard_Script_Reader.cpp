@@ -534,7 +534,7 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
 	}
 	else if (source->get_configuration() == "2dv" && target->get_configuration() == "1dv")
 	{
-		if (configuration == "l2a")
+		if (configuration == "l2a" || configuration == "r2a")
 		{
 			int n_source = source->get_value(QString("nv")).toInt();
 			int n_target = target->get_value(QString("n")).toInt();
@@ -546,10 +546,13 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
 				{
 					CCommand command;
 					command.command = "connect";
-					command.values.append(source->name() + " (" + QString::number(source->get_value(QString("nx")).toInt() + source->first_index_x().toInt()) + "," + QString::number(i + source->first_index_y().toInt()) + ")");
+					if (configuration == "l2a")
+						command.values.append(source->name() + " (" + source->first_index_x() + "," + QString::number(i + source->first_index_y().toInt()) + ")");
+					if (configuration == "r2a")
+						command.values.append(source->name() + " (" + QString::number(source->get_value(QString("nh")).toInt() + source->first_index_x().toInt() - 1) + "," + QString::number(i + source->first_index_y().toInt()) + ")");
 					command.values.append(target->name() + " (" + QString::number(i + target->first_index().toInt()) + ")");
 					if (wiz_ent->type() != "*") command.parameters["Type"] = wiz_ent->type();
-					if (wiz_ent->name() != "*") command.parameters["Name"] = wiz_ent->name();
+					if (wiz_ent->name() != "*") command.parameters["Name"] = wiz_ent->name() + " (" + QString::number(i+1) + ")";
 					mProp _filter;
 					_filter.setstar();
 					_filter.GuiObject = "Connector";
@@ -570,6 +573,9 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
 
 				}
 			}
+
+
+
 		}
 	}
 	return commands; 
