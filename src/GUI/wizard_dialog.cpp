@@ -6,6 +6,7 @@
 #include "commandWindow.h"
 #include "filebutton.h"
 #include "imageviewer_window.h"
+#include "logwindow.h"
 
 Wizard_Dialog::Wizard_Dialog(QString *template_selected, MainWindow *parent)
 	: QDialog(parent)
@@ -38,17 +39,30 @@ void Wizard_Dialog::on_next_clicked()
 
 void Wizard_Dialog::on_ok_clicked()
 {
-	ui.Button_Ok->setEnabled(false);
+	
 	wiz = Wizard_Script_Reader(_template_selected);
 	wiz.mproplist = mproplist;
 	set_wiz_parameters();
-	QList<CCommand> commands = wiz.get_script_commands();
-	commandWindow *cwindow = new commandWindow(_parent->mainGraphWidget);
-	QVariantList output = _parent->mainGraphWidget->runCommands(commands);
-	for (int i=0; i<commands.size(); i++)
-		cwindow->append(commands[i].toQString());
+	QStringList errors = wiz.validate(); 
+	if (errors.size() == 0)
+	{
+		ui.Button_Ok->setEnabled(false);
+		QList<CCommand> commands = wiz.get_script_commands();
+		save_script(commands);
+		commandWindow *cwindow = new commandWindow(_parent->mainGraphWidget);
+		QVariantList output = _parent->mainGraphWidget->runCommands(commands);
+		for (int i = 0; i<commands.size(); i++)
+			cwindow->append(commands[i].toQString());
+
+		cwindow->show();
+	}
+	else
+	{
+		logWindow msgBox(this, "Errors!", "Logfile (*.log)", true);
+		msgBox.append(errors);
+		msgBox.exec();
+	}
 	
-	cwindow->show();
 	
 
 }
@@ -58,8 +72,19 @@ void Wizard_Dialog::on_create_script_clicked()
 	wiz = Wizard_Script_Reader(_template_selected);
 	wiz.mproplist = mproplist;
 	set_wiz_parameters();
-	QList<CCommand> commands = wiz.get_script_commands();
-	save_script(commands);
+	QStringList errors = wiz.validate();
+	if (errors.size() == 0)
+	{
+		QList<CCommand> commands = wiz.get_script_commands();
+		save_script(commands);
+	}
+	else
+	{
+		logWindow msgBox(this, "Errors!", "Logfile (*.log)", true);
+		msgBox.append(errors);
+		msgBox.exec();
+	}
+	
 	
 }
 

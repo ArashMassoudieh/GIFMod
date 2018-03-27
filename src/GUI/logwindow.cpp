@@ -26,6 +26,25 @@ logWindow::logWindow(MainWindow *parent, QString title, QString fileType, bool m
   }
 
 }
+
+logWindow::logWindow(QDialog *parent, QString title, QString fileType, bool modal) :
+	QDialog(parent),
+	ui(new Ui::logWindow)
+{
+	ui->setupUi(this);
+	wtitle = title;
+	setWindowTitle(wtitle);
+	this->fileType = fileType;
+	setModal(modal);
+	ui->textEdit->setLineWrapMode(QTextEdit::NoWrap);
+	if (title == "Log Window")
+	{
+		ui->textEdit->setPalette(QPalette(Qt::black));
+		ui->textEdit->setTextColor(QColor(Qt::green));
+	}
+
+}
+
 void logWindow::append(QString text)
 {
 	ui->textEdit->append(QTime::currentTime().toString().append(", ").append(text));

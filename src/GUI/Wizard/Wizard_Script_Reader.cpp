@@ -112,7 +112,7 @@ bool Wizard_Script_Reader::add_command(QString line)
 	if (line.split(":")[0].toLower().trimmed() == "icon") icon_file = line.split(":")[1].trimmed();
 	if (line.split(":")[0].toLower().trimmed() == "description") description = line.split(":")[1].trimmed().replace("#",",");
 
-	if (line.split(":")[0].toLower().trimmed() == "settings" || line.split(":")[0].toLower().trimmed() == "major_block" || line.split(":")[0].toLower().trimmed() == "major_connection" || line.split(":")[0].toLower().trimmed() == "entity" || line.split(":")[0].toLower().trimmed() == "change_property")
+	if (line.split(":")[0].toLower().trimmed() == "settings" || line.split(":")[0].toLower().trimmed() == "major_block" || line.split(":")[0].toLower().trimmed() == "major_connection" || line.split(":")[0].toLower().trimmed() == "entity" || line.split(":")[0].toLower().trimmed() == "change_property" || line.split(":")[0].toLower().trimmed() == "criteria")
 	{
 		wiz_entity entty(line, this); 
 		if (entty.name() == "" && entty.entity() == "settings")
@@ -796,7 +796,7 @@ QList<CCommand> Wizard_Script_Reader::do_2dv(QString configuration, wiz_entity *
 			command.parameters["x"] = x;
 			command.parameters["y"] = y;
 
-			if (direction == "up")
+			if (direction.contains("up"))
 				y -= v_interval;
 			else
 				y += v_interval;
@@ -824,7 +824,10 @@ QList<CCommand> Wizard_Script_Reader::do_2dv(QString configuration, wiz_entity *
 			commands.append(command);
 
 		}
-		x += h_interval;
+		if (direction.contains("right"))
+			x -= h_interval;
+		else
+			x += h_interval;
 		if (wiz_ent->get_parameters().count("y"))
 			y = wiz_ent->get_value("y").toDouble();
 		else
@@ -959,7 +962,7 @@ QList<CCommand> Wizard_Script_Reader::do_2dh(QString configuration, wiz_entity *
 			command.parameters["x"] = x;
 			command.parameters["y"] = y;
 
-			if (direction == "up")
+			if (direction.contains("up"))
 				y -= v_interval;
 			else
 				y += v_interval;
@@ -979,7 +982,10 @@ QList<CCommand> Wizard_Script_Reader::do_2dh(QString configuration, wiz_entity *
 			commands.append(command);
 		}
 						
-		x += h_interval;
+		if (direction.contains("right"))
+			x -= h_interval;
+		else
+			x += h_interval;
 		if (wiz_ent->get_parameters().count("y"))
 			y = wiz_ent->get_value("y").toDouble();
 		else
@@ -1054,6 +1060,7 @@ QList<CCommand> Wizard_Script_Reader::do_2dh(QString configuration, wiz_entity *
 
 	y = y_base;
 	x += h_big_interval;
+	
 
 	return commands;
 
