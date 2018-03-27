@@ -534,16 +534,16 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
 	}
 	else if (source->get_configuration() == "2dv" && (target->get_configuration() == "1dv" || target->get_configuration() == "1dh"))
 	{
-		if (configuration == "l2a" || configuration == "r2a" || configuration == "t2a" || configuration == "b2a")
+		if (configuration == "l2a" || configuration == "r2a" || configuration == "t2a" || configuration == "b2a" || configuration == "l2s" || configuration == "r2s" || configuration == "t2s" || configuration=="b2s" || configuration == "l2e" || configuration == "r2e" || configuration == "t2e" || configuration == "b2e")
 		{
 			int n_source;
-			if (configuration == "l2a" || configuration == "r2a")
+			if (configuration == "l2a" || configuration == "r2a" || configuration == "l2s" || configuration == "r2s" || configuration == "l2e" || configuration == "r2e")
 				n_source = source->get_value(QString("nv")).toInt();
-			if (configuration == "t2a" || configuration == "b2a")
+			if (configuration == "t2a" || configuration == "b2a" || configuration == "t2s" || configuration == "t2s" || configuration == "b2e" || configuration == "b2e")
 				n_source = source->get_value(QString("nh")).toInt();
 
 			int n_target = target->get_value(QString("n")).toInt();
-			if (n_source != n_target && n_target!=1)
+			if (n_source != n_target && n_target!=1 && (configuration=="r2a" || configuration=="l2a" || configuration=="t2a" || configuration=="b2a"))
 				error_list.append("Number of cells in source and target are different");
 			else
 			{
@@ -551,18 +551,23 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
 				{
 					CCommand command;
 					command.command = "connect";
-					if (configuration == "l2a")
+					if (configuration == "l2a" || configuration == "l2e" || configuration == "l2s")
 						command.values.append(source->name() + " (" + source->first_index_x() + "," + QString::number(i + source->first_index_y().toInt()) + ")");
-					if (configuration == "r2a")
+					if (configuration == "r2a" || configuration == "r2e" || configuration == "r2s")
 						command.values.append(source->name() + " (" + QString::number(source->get_value(QString("nh")).toInt() + source->first_index_x().toInt() - 1) + "," + QString::number(i + source->first_index_y().toInt()) + ")");
-					if (configuration == "t2a")
+					if (configuration == "t2a" || configuration == "t2e" || configuration == "t2s")
 						command.values.append(source->name() + " (" + QString::number(source->first_index_x().toInt() + i) + "," + QString::number(source->first_index_y().toInt()) + ")");
-					if (configuration == "b2a")
+					if (configuration == "b2a" || configuration == "b2e" || configuration == "b2s")
 						command.values.append(source->name() + " (" + QString::number(source->first_index_x().toInt() + i) + "," + QString::number(source->get_value(QString("nv")).toInt() + source->first_index_y().toInt() - 1) + ")");
-					if (n_target>1)
+					if (n_target>1 && configuration.right(1)==QString("a"))
 						command.values.append(target->name() + " (" + QString::number(i + target->first_index().toInt()) + ")");
+					else if (n_target>1 && configuration.right(1) == QString("s"))
+						command.values.append(target->name() + " (" + QString::number(target->first_index().toInt()) + ")");
+					else if (n_target>1 && configuration.right(1) == QString("e"))
+						command.values.append(target->name() + " (" + QString::number(target->get_value(QString("n")).toInt() + target->first_index().toInt()-1) + ")");
 					else if (n_target==1)
 						command.values.append(target->name());
+
 					if (wiz_ent->type() != "*") command.parameters["Type"] = wiz_ent->type();
 					if (wiz_ent->name() != "*") command.parameters["Name"] = wiz_ent->name() + " (" + QString::number(i+1) + ")";
 					mProp _filter;
