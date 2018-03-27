@@ -532,11 +532,16 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
 
 		}
 	}
-	else if (source->get_configuration() == "2dv" && target->get_configuration() == "1dv")
+	else if (source->get_configuration() == "2dv" && (target->get_configuration() == "1dv" || target->get_configuration() == "1dh"))
 	{
-		if (configuration == "l2a" || configuration == "r2a")
+		if (configuration == "l2a" || configuration == "r2a" || configuration == "t2a" || configuration == "b2a")
 		{
-			int n_source = source->get_value(QString("nv")).toInt();
+			int n_source;
+			if (configuration == "l2a" || configuration == "r2a")
+				n_source = source->get_value(QString("nv")).toInt();
+			if (configuration == "t2a" || configuration == "b2a")
+				n_source = source->get_value(QString("nh")).toInt();
+
 			int n_target = target->get_value(QString("n")).toInt();
 			if (n_source != n_target && n_target!=1)
 				error_list.append("Number of cells in source and target are different");
@@ -550,6 +555,10 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
 						command.values.append(source->name() + " (" + source->first_index_x() + "," + QString::number(i + source->first_index_y().toInt()) + ")");
 					if (configuration == "r2a")
 						command.values.append(source->name() + " (" + QString::number(source->get_value(QString("nh")).toInt() + source->first_index_x().toInt() - 1) + "," + QString::number(i + source->first_index_y().toInt()) + ")");
+					if (configuration == "t2a")
+						command.values.append(source->name() + " (" + QString::number(source->first_index_x().toInt() + i) + "," + QString::number(source->first_index_y().toInt()) + ")");
+					if (configuration == "b2a")
+						command.values.append(source->name() + " (" + QString::number(source->first_index_x().toInt() + i) + "," + QString::number(source->get_value(QString("nv")).toInt() + source->first_index_y().toInt() - 1) + ")");
 					if (n_target>1)
 						command.values.append(target->name() + " (" + QString::number(i + target->first_index().toInt()) + ")");
 					else if (n_target==1)
