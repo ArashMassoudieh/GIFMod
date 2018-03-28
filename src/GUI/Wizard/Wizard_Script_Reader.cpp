@@ -475,7 +475,8 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
 
 			}
 
-			mProp _filter;
+            command.parameters["Name"] = wiz_ent->name();
+            mProp _filter;
 			_filter.setstar();
 			_filter.GuiObject = "Connector";
 			_filter.ObjectType = wiz_ent->type();
@@ -508,7 +509,9 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
 					command.values.append(source->name() + " (" + QString::number(i + source->first_index().toInt()) + ")");
 					command.values.append(target->name() + " (" + QString::number(i + source->first_index().toInt()) + ")");
 					if (wiz_ent->type() != "*") command.parameters["Type"] = wiz_ent->type();
-					if (wiz_ent->name() != "*") command.parameters["Name"] = wiz_ent->name();
+                    int j=0;
+                    if (source->first_index()==target->first_index()) j=source->first_index().toInt()-1;
+                    if (wiz_ent->name() != "*") command.parameters["Name"] = wiz_ent->name() + " (" + QString::number(i+j) + ")";
 					mProp _filter;
 					_filter.setstar();
 					_filter.GuiObject = "Connector";
@@ -569,7 +572,14 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
 						command.values.append(target->name());
 
 					if (wiz_ent->type() != "*") command.parameters["Type"] = wiz_ent->type();
-					if (wiz_ent->name() != "*") command.parameters["Name"] = wiz_ent->name() + " (" + QString::number(i+1) + ")";
+
+                    int j=0;
+                    if (target->first_index_x()==source->first_index() && (configuration.left(1)=="b" || configuration.left(1)=="t"))
+                        j=target->first_index_x().toInt()-1;
+                    if (target->first_index_y()==source->first_index() && (configuration.left(1)=="l" || configuration.left(1)=="r"))
+                        j=target->first_index_y().toInt()-1;
+
+                    if (wiz_ent->name() != "*") command.parameters["Name"] = wiz_ent->name() + " (" + QString::number(i+1+j) + ")";
 					mProp _filter;
 					_filter.setstar();
 					_filter.GuiObject = "Connector";
@@ -632,7 +642,13 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
                         command.values.append(target->name() + " (" + QString::number(target->first_index_x().toInt() + i) + "," + QString::number(target->get_value(QString("nv")).toInt() + target->first_index_y().toInt() - 1) + ")");
 
                     if (wiz_ent->type() != "*") command.parameters["Type"] = wiz_ent->type();
-                    if (wiz_ent->name() != "*") command.parameters["Name"] = wiz_ent->name() + " (" + QString::number(i+1) + ")";
+                    int j=0;
+                    if (target->first_index_x()==source->first_index() && (configuration.right(1)=="b" || configuration.right(1)=="t"))
+                        j=target->first_index_x().toInt()-1;
+                    if (target->first_index_y()==source->first_index() && (configuration.right(1)=="l" || configuration.right(1)=="r"))
+                        j=target->first_index_y().toInt()-1;
+
+                    if (wiz_ent->name() != "*") command.parameters["Name"] = wiz_ent->name() + " (" + QString::number(i+1+j) + ")";
                     mProp _filter;
                     _filter.setstar();
                     _filter.GuiObject = "Connector";
