@@ -662,10 +662,10 @@ QList<CCommand> Wizard_Script_Reader::do_1dvh(QString configuration, wiz_entity 
 		}
 		else if (configuration == "1dh")
 		{
-			if (direction == "right")
-				x += h_interval;
-			else
+			if (direction == "left")
 				x -= h_interval;
+			else
+				x += h_interval;
 		}
 		for (wiz_assigned_value item : wiz_ent->get_parameters())
 		{
@@ -679,10 +679,10 @@ QList<CCommand> Wizard_Script_Reader::do_1dvh(QString configuration, wiz_entity 
 		{
 			if (configuration == "1dv")
 			{
-				if (direction == "down")
-					command.parameters["Bottom elevation"] = z0 + (n - i - 1)*Depth;
+				if (direction == "up")
+					command.parameters["Bottom elevation"] = z0 + i * Depth;
 				else
-					command.parameters["Bottom elevation"] = z0 + i*Depth;
+					command.parameters["Bottom elevation"] = z0 + (n - i - 1)*Depth; 
 			}
 		}
 		if (configuration == "1dh")
@@ -813,10 +813,10 @@ QList<CCommand> Wizard_Script_Reader::do_2dv(QString configuration, wiz_entity *
 			if (has_depth)
 			{
 				{
-					if (direction == "down")
-						command.parameters["Bottom elevation"] = z0 + (nv - j - 1)*Depth;
+					if (direction == "up")
+						command.parameters["Bottom elevation"] = z0 + j * Depth;
 					else
-						command.parameters["Bottom elevation"] = z0 + j*Depth;
+						command.parameters["Bottom elevation"] = z0 + (nv - j - 1)*Depth; 
 				}
 			}
 
@@ -824,7 +824,7 @@ QList<CCommand> Wizard_Script_Reader::do_2dv(QString configuration, wiz_entity *
 			commands.append(command);
 
 		}
-		if (direction.contains("right"))
+		if (direction.contains("left"))
 			x -= h_interval;
 		else
 			x += h_interval;
@@ -982,7 +982,7 @@ QList<CCommand> Wizard_Script_Reader::do_2dh(QString configuration, wiz_entity *
 			commands.append(command);
 		}
 						
-		if (direction.contains("right"))
+		if (direction.contains("left"))
 			x -= h_interval;
 		else
 			x += h_interval;

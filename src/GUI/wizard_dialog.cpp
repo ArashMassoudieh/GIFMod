@@ -48,7 +48,6 @@ void Wizard_Dialog::on_ok_clicked()
 	{
 		ui.Button_Ok->setEnabled(false);
 		QList<CCommand> commands = wiz.get_script_commands();
-		save_script(commands);
 		commandWindow *cwindow = new commandWindow(_parent->mainGraphWidget);
 		QVariantList output = _parent->mainGraphWidget->runCommands(commands);
 		for (int i = 0; i<commands.size(); i++)
