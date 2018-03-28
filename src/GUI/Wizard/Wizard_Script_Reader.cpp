@@ -539,7 +539,7 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
 			int n_source;
 			if (configuration == "l2a" || configuration == "r2a" || configuration == "l2s" || configuration == "r2s" || configuration == "l2e" || configuration == "r2e")
 				n_source = source->get_value(QString("nv")).toInt();
-			if (configuration == "t2a" || configuration == "b2a" || configuration == "t2s" || configuration == "t2s" || configuration == "b2e" || configuration == "b2e")
+            if (configuration == "t2a" || configuration == "b2a" || configuration == "t2s" || configuration == "b2s" || configuration == "t2e" || configuration == "b2e")
 				n_source = source->get_value(QString("nh")).toInt();
 
 			int n_target = target->get_value(QString("n")).toInt();
@@ -590,11 +590,71 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
 
 				}
 			}
-
-
-
 		}
 	}
+    else if (target->get_configuration() == "2dv" && (source->get_configuration() == "1dv" || source->get_configuration() == "1dh"))
+    {
+        if (configuration == "a2l" || configuration == "a2r" || configuration == "a2t" || configuration == "a2b" || configuration == "s2l" || configuration == "s2r" || configuration == "s2t" || configuration=="s2b" || configuration == "e2l" || configuration == "e2r" || configuration == "e2t" || configuration == "e2b")
+        {
+            int n_target;
+            if (configuration == "a2l" || configuration == "a2r" || configuration == "s2l" || configuration == "s2r" || configuration == "e2l" || configuration == "e2r")
+                n_target = target->get_value(QString("nv")).toInt();
+            if (configuration == "a2t" || configuration == "a2b" || configuration == "s2t" || configuration == "s2b" || configuration == "e2b" || configuration == "e2t")
+                n_target = target->get_value(QString("nh")).toInt();
+
+            int n_source = source->get_value(QString("n")).toInt();
+            if (n_source != n_target && n_source!=1 && (configuration=="a2r" || configuration=="a2l" || configuration=="a2t" || configuration=="a2b"))
+                error_list.append("Number of cells in source and target are different");
+            else
+            {
+                for (int i = 0; i < n_target; i++)
+                {
+                    CCommand command;
+                    command.command = "connect";
+
+                    if (n_source>1 && configuration.left(1)==QString("a"))
+                        command.values.append(source->name() + " (" + QString::number(i + source->first_index().toInt()) + ")");
+                    else if (n_source>1 && configuration.left(1) == QString("s"))
+                        command.values.append(source->name() + " (" + QString::number(source->first_index().toInt()) + ")");
+                    else if (n_source>1 && configuration.left(1) == QString("e"))
+                        command.values.append(source->name() + " (" + QString::number(source->get_value(QString("n")).toInt() + source->first_index().toInt()-1) + ")");
+                    else if (n_target==1)
+                        command.values.append(source->name());
+
+
+                    if (configuration == "a2l" || configuration == "e2l" || configuration == "s2l")
+                        command.values.append(target->name() + " (" + target->first_index_x() + "," + QString::number(i + target->first_index_y().toInt()) + ")");
+                    if (configuration == "a2r" || configuration == "e2r" || configuration == "s2r")
+                        command.values.append(target->name() + " (" + QString::number(target->get_value(QString("nh")).toInt() + target->first_index_x().toInt() - 1) + "," + QString::number(i + target->first_index_y().toInt()) + ")");
+                    if (configuration == "a2t" || configuration == "e2t" || configuration == "s2t")
+                        command.values.append(target->name() + " (" + QString::number(target->first_index_x().toInt() + i) + "," + QString::number(target->first_index_y().toInt()) + ")");
+                    if (configuration == "a2b" || configuration == "e2b" || configuration == "s2b")
+                        command.values.append(target->name() + " (" + QString::number(target->first_index_x().toInt() + i) + "," + QString::number(target->get_value(QString("nv")).toInt() + target->first_index_y().toInt() - 1) + ")");
+
+                    if (wiz_ent->type() != "*") command.parameters["Type"] = wiz_ent->type();
+                    if (wiz_ent->name() != "*") command.parameters["Name"] = wiz_ent->name() + " (" + QString::number(i+1) + ")";
+                    mProp _filter;
+                    _filter.setstar();
+                    _filter.GuiObject = "Connector";
+                    _filter.ObjectType = wiz_ent->type();
+                    mPropList m = mproplist->filter(_filter);
+
+                    for (wiz_assigned_value item : wiz_ent->get_parameters())
+                    {
+                        if (!script_specific_params.contains(item.entity))
+                        {
+                            if (m.VariableNames_w_abv().contains(item.entity))
+                                command.parameters[item.entity] = wiz_ent->get_value(item);
+                            if (item.entity.toLower() == "area")
+                                command.parameters["Interface/cross sectional area"] = wiz_ent->get_value(item);
+                        }
+                    }
+                    commands.append(command);
+
+                }
+            }
+        }
+    }
 	return commands; 
 }
 
