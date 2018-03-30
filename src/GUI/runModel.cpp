@@ -1261,7 +1261,7 @@ void CMediumSet::g_get_environmental_params()
 //			if (key == "forward")
 //				SP.forward = (e->val(key) == "Forward") ? 1 : 0;
 			if (key == "solution_method")
-				SP.solution_method = e->val(key).toSolutionMethod();
+				SP.solution_method = e->val(key).toStdString();
 			if (key == "sorption")
 				SP.sorption = e->val(key).toBool();
 			if (key == "wiggle_tolerance")

@@ -151,7 +151,7 @@ public:
     void set_param(int param_no, double value); //set the value of an unknown parameter
     void finalize_set_param();
     void set_default_params(); //set the value of the parameters to the default values
-	int& solution_method(); //0: Fixed timestep 1: variable timestep
+	string& solution_method(); //0: Fixed timestep 1: variable timestep
 	string& PE_info_filename(); //file name containing parameter estimation configuration
 	string detoutfilename_hydro; //file name where the deterministic hydraulic output is saved
 	string detoutfilename_wq; //file name where the deterministic water quality output is saved
@@ -341,7 +341,7 @@ private:
     CMatrix_arma InvJ2_arma; //Inverse Jacobian Matrix
     CMatrix_arma InvJ_C_arma;
     CMatrix_arma InvJ_Q_arma;
-    //arma
+	//arma
 
     double& w(); //current time weight for CN solution
 

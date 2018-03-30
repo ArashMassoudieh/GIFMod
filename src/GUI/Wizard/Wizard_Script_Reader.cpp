@@ -535,7 +535,7 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
 
 		}
 	}
-	else if (source->get_configuration() == "2dv" && (target->get_configuration() == "1dv" || target->get_configuration() == "1dh"))
+	else if (source->get_configuration() == "2dv" && target->get_configuration() != "2dv" && target->get_configuration() != "2dh")
 	{
 		if (configuration == "l2a" || configuration == "r2a" || configuration == "t2a" || configuration == "b2a" || configuration == "l2s" || configuration == "r2s" || configuration == "t2s" || configuration=="b2s" || configuration == "l2e" || configuration == "r2e" || configuration == "t2e" || configuration == "b2e")
 		{
@@ -546,6 +546,8 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
 				n_source = source->get_value(QString("nh")).toInt();
 
 			int n_target = target->get_value(QString("n")).toInt();
+			if (!target->has_parameter("n") || target->get_value("n")=="") 
+				n_target = 1; 
 			if (n_source != n_target && n_target!=1 && (configuration=="r2a" || configuration=="l2a" || configuration=="t2a" || configuration=="b2a"))
 				error_list.append("Number of cells in source and target are different");
 			else
@@ -602,7 +604,7 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
 			}
 		}
 	}
-    else if (target->get_configuration() == "2dv" && (source->get_configuration() == "1dv" || source->get_configuration() == "1dh"))
+    else if (target->get_configuration() == "2dv" && source->get_configuration() != "2dv" && target->get_configuration() != "2dh")
     {
         if (configuration == "a2l" || configuration == "a2r" || configuration == "a2t" || configuration == "a2b" || configuration == "s2l" || configuration == "s2r" || configuration == "s2t" || configuration=="s2b" || configuration == "e2l" || configuration == "e2r" || configuration == "e2t" || configuration == "e2b")
         {
@@ -613,6 +615,7 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
                 n_target = target->get_value(QString("nh")).toInt();
 
             int n_source = source->get_value(QString("n")).toInt();
+			if (!source->has_parameter("n") || source->get_value("n")=="") n_source = 1;
             if (n_source != n_target && n_source!=1 && (configuration=="a2r" || configuration=="a2l" || configuration=="a2t" || configuration=="a2b"))
                 error_list.append("Number of cells in source and target are different");
             else

@@ -31,7 +31,7 @@ void CMediumSet::SetDefaultSolverParameters()
     SP.steady_state_hydro = false;
     SP.tol = 1e-3;
     SP.w = 0;
-    SP.solution_method=0;
+    SP.solution_method="Partial Inverse Jacobian Evaluation";
     SP.max_dt = 1;
 
     SP.nr_iteration_treshold_max = 8;
@@ -413,7 +413,7 @@ void CMediumSet::f_get_environmental_params(CLIDconfig &lid_config)
 		if (tolower(lid_config.keyword[i]) == "path") FI.pathname = lid_config.value[i].c_str();
 		if (tolower(lid_config.keyword[i]) == "outputpath") FI.outputpathname = lid_config.value[i].c_str();
 		if (tolower(lid_config.keyword[i]) == "forward") SP.forward = atoi(lid_config.value[i].c_str());
-		if (tolower(lid_config.keyword[i]) == "solution_method") SP.solution_method = atoi(lid_config.value[i].c_str());
+		if (tolower(lid_config.keyword[i]) == "solution_method") SP.solution_method = lid_config.value[i];
 		if (tolower(lid_config.keyword[i]) == "wiggle_tolerance") SP.wiggle_tolerance = atof(lid_config.value[i].c_str());
 		if (tolower(lid_config.keyword[i]) == "max_j_update_interval") SP.max_J_interval = atoi(lid_config.value[i].c_str());
 		if (tolower(lid_config.keyword[i]) == "dt") SP.dt = atof(lid_config.value[i].c_str());

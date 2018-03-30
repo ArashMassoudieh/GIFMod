@@ -944,7 +944,7 @@ double CMedium::calc_log_likelihood() //calculate sum log likelihood for time se
 	solve();
     if (Solution_State.failed==true) return -1e30;
 
-    if (solution_method()==1) Results.ANS_obs.make_uniform(dt());
+    Results.ANS_obs.make_uniform(dt());
     for (unsigned int i=0; i<measured_quan().size(); i++)
 		sum+=calc_log_likelihood(i);
 
@@ -2183,8 +2183,10 @@ bool CMedium::solve()
     for (unsigned int i=0; i < measured_quan().size(); i++)
         Results.ANS_obs.pushBackName(measured_quan()[i].name);
 
-	if (solution_method() == 0)
-		solve_fts_m2(dt());   //fts= fixed time steps
+	if (solution_method() == "Partial Inverse Jacobian Evaluation")
+		solve_fts_m2(dt());   
+	else
+		solve_fts_m2(dt());
 
 	return true;
 }
@@ -4436,7 +4438,7 @@ string& CMedium::outputpathname()
 	return parent->FI.outputpathname;
 }
 
-int& CMedium::solution_method()
+string& CMedium::solution_method()
 {
 	return parent->SP.solution_method;
 }
@@ -4811,61 +4813,77 @@ void CMedium::onestepsolve_flow_ar(double dt)
 				return;
 			}
 
-
-			if (((J_update1 == true) || (InvJ1_arma.getnumrows() == 0)) && (fixed_connect == false))
+			CVector_arma dx;
+			CMatrix_arma M1; 
+			if (((J_update1 == true) || M_arma.getnumrows() == 0 || (InvJ1_arma.getnumrows() == 0) && (solution_method() == "Partial Inverse Jacobian Evaluation")) && (fixed_connect == false))
 			{
-                Solution_State.J_h_update_count++;
-				M_arma = Jacobian_S(X, dt,true);
-				CMatrix_arma M1 = normalize_diag(M_arma, M_arma);
+				Solution_State.J_h_update_count++;
+				M_arma = Jacobian_S(X, dt, true);
+				M1 = normalize_diag(M_arma, M_arma);
 				pos_def = M_arma.diag_ratio();
-                Solution_State.epoch_count++;
+				Solution_State.epoch_count++;
 
-				InvJ1_arma = inv(M1);
-				if (InvJ1_arma.getnumcols() != int(Blocks.size()))
+				if (solution_method() == "Partial Inverse Jacobian Evaluation")
 				{
-                    Solution_State.fail_reason = "Hydro Jacobian in not inversible";
-					set_flow_factors(correction_factor_old);
-					set_fixed_connect_status(old_fixed_connect_status);
-					return;
+					InvJ1_arma = inv(M1);
+					if (InvJ1_arma.getnumcols() != int(Blocks.size()))
+					{
+						Solution_State.fail_reason = "Hydro Jacobian in not inversible";
+						set_flow_factors(correction_factor_old);
+						set_fixed_connect_status(old_fixed_connect_status);
+						return;
+					}
 				}
-                Solution_State.dtt_J_h1 = dt;
+				Solution_State.dtt_J_h1 = dt;
 				J_update1 = false;
 			}
 
-			if (((J_update2 == true) || (InvJ2_arma.getnumrows() == 0)) && (fixed_connect == true))
+			if (((J_update2 == true) || M_arma.getnumrows() == 0 || (InvJ2_arma.getnumrows() == 0 && (solution_method() == "Partial Inverse Jacobian Evaluation"))) && (fixed_connect == true))
 			{
-                Solution_State.J_h_update_count++;
+				Solution_State.J_h_update_count++;
 				M_arma = Jacobian_S(X, dt, true);
-				CMatrix_arma M1 = normalize_diag(M_arma, M_arma);
-                Solution_State.epoch_count++;
+				M1 = normalize_diag(M_arma, M_arma);
+				Solution_State.epoch_count++;
 				pos_def = M_arma.diag_ratio();
 
-				InvJ2_arma = inv(M1);
-				if (InvJ2_arma.getnumcols() != int(Blocks.size()))
+				if (solution_method() == "Partial Inverse Jacobian Evaluation")
 				{
-                    Solution_State.fail_reason = "Hydro Jacobian in not inversible";
-					solution_detail = "Hydro Jacobian in not inversible";
-					set_flow_factors(correction_factor_old);
-					set_fixed_connect_status(old_fixed_connect_status);
-					return;
+					InvJ2_arma = inv(M1);
+
+					if (InvJ2_arma.getnumcols() != int(Blocks.size()))
+					{
+						Solution_State.fail_reason = "Hydro Jacobian in not inversible";
+						solution_detail = "Hydro Jacobian in not inversible";
+						set_flow_factors(correction_factor_old);
+						set_fixed_connect_status(old_fixed_connect_status);
+						return;
+					}
 				}
-                Solution_State.dtt_J_h2 = dt;
+				
+				Solution_State.dtt_J_h2 = dt;
 				J_update2 = false;
 			}
 
-			CVector_arma dx;
 			if (fixed_connect)
 			{
-				dx = (InvJ2_arma*normalize_diag(F, M_arma));
-                X -= lambda*((dt / Solution_State.dtt_J_h2)*dx);
+				if (solution_method() == "Partial Inverse Jacobian Evaluation")
+					dx = (InvJ2_arma*normalize_diag(F, M_arma));
+				else if (solution_method() == "Direct Solution")
+					dx = F / M_arma;
+				X -= lambda * ((dt / Solution_State.dtt_J_h2)*dx);
 			}
 			else
 			{
-				dx = (InvJ1_arma*normalize_diag(F, M_arma));
-                X -= lambda*((dt / Solution_State.dtt_J_h1)*dx);
+				if (solution_method() == "Partial Inverse Jacobian Evaluation")
+					dx = (InvJ1_arma*normalize_diag(F, M_arma));
+				else if (solution_method() == "Direct Solution")
+					dx = F/ M_arma;
+
+				X -= lambda * ((dt / Solution_State.dtt_J_h1)*dx);
 			}
-
-
+			
+		
+			
 			F = getres_S(X, dt);
 
 			err_p = err;
@@ -5143,24 +5161,20 @@ void CMedium::onestepsolve_const_ar(double dtt)
 				return;
 
 			}
-
-			InvJ_Q_arma = inv(M1);
-			if (InvJ_Q_arma.getnumcols() == 0)
+			if (solution_method() == "Partial Inverse Jacobian Evaluation")
 			{
-				//set_CG_star(X_old);
-				//fail_reason = "Matrix not invertible in wq";
-				//failed_const = true;
+				InvJ_Q_arma = inv(M1);
+				J_update_Q = false;
 			}
-			J_update_Q = false;
-            Solution_State.dtt_J_q = dtt;
+			Solution_State.dtt_J_q = dtt;
 		}
 
-
-		if (InvJ_Q_arma.getnumcols() != 0)
+		
+		if (InvJ_Q_arma.getnumcols() != 0 && solution_method() == "Partial Inverse Jacobian Evaluation")
 		{
-            dx = dtt / Solution_State.dtt_J_q*(InvJ_Q_arma*normalize_diag(F, M_Q_arma));
+			dx = dtt / Solution_State.dtt_J_q*(InvJ_Q_arma*normalize_diag(F, M_Q_arma));
 		}
-		else if (M_Q_arma.getnumcols() > 0 || (dx==dx)!=true)
+		else if (M_Q_arma.getnumcols() > 0 || (dx == dx) != true || solution_method()=="Direct Solution")
 		{
 #ifdef DEBUG_MATRIX
 			CVector FF = F;
@@ -5170,14 +5184,16 @@ void CMedium::onestepsolve_const_ar(double dtt)
 			CMatrix Precond_Q = Preconditioner_Q_arma;
 			Precond_Q.writetofile("Precond.txt");
 #endif
-            dx = dtt/Solution_State.dtt_J_q*solve_ar(M_Q_arma, F);
-			if ((dx.num==0) || (dx==dx)!=true)
-			{   set_CG_star(X_old);
-                Solution_State.fail_reason = "Matrix not invertible in wq";
+			dx = dtt / Solution_State.dtt_J_q*solve_ar(M_Q_arma, F);
+			if ((dx.num == 0) || (dx == dx) != true)
+			{
+				set_CG_star(X_old);
+				Solution_State.fail_reason = "Matrix not invertible in wq";
 				Solution_State.failed_const = true;
 				return;
 			}
 		}
+		
 
 
 		X -= lambda*dx;
