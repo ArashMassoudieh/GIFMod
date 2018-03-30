@@ -409,7 +409,7 @@ CVector_arma solve_ar(CMatrix_arma &M, CVector_arma &V)
 
 	CVector_arma ansr;
 	solve(ansr.vect, M.matr,V.vect);
-		
+	if (ansr.vect.n_rows > 0) ansr.num = ansr.vect.n_rows;
 	return ansr;
 }
 

@@ -5176,14 +5176,14 @@ void CMedium::onestepsolve_const_ar(double dtt)
 		}
 		else if (M_Q_arma.getnumcols() > 0 || (dx == dx) != true || solution_method()=="Direct Solution")
 		{
-#ifdef DEBUG_MATRIX
+
 			CVector FF = F;
 			CMatrix M_Q = M_Q_arma;
 			FF.writetofile("F.txt");
 			M_Q.writetofile("m.txt");
 			CMatrix Precond_Q = Preconditioner_Q_arma;
 			Precond_Q.writetofile("Precond.txt");
-#endif
+
 			dx = dtt / Solution_State.dtt_J_q*solve_ar(M_Q_arma, F);
 			if ((dx.num == 0) || (dx == dx) != true)
 			{
