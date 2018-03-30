@@ -1627,8 +1627,6 @@ void CMedium::initialize_ANSs()
 void CMedium::solve_fts_m2(double dt)
 {
 
-	FILE *FILEBTC;
-
 	int max_phase;
 	if (sorption())
 		max_phase = 10000;
@@ -1894,7 +1892,7 @@ void CMedium::solve_fts_m2(double dt)
 						QMessageBox::question(runtimewindow, "Simulation Stopped by the user", "Simulation Ended", QMessageBox::Ok);
 					}
 #endif // QT_version
-					fclose(FILEBTC);
+					
 				}
 
 				return;
@@ -2018,9 +2016,9 @@ void CMedium::solve_fts_m2(double dt)
 				doredo(Redo_parameters);
 				iii = Redo_parameters.Res[max(int(Redo_parameters.Res.size()) - Redo_parameters.redo_counter, 0)].iii;
 				if (write_details())
-				{
-					FILEBTC = fopen((outputpathname() + "Solution_details_" + parent->ID + ".txt").c_str(), "a");  fprintf(FILEBTC, "redo\n"); fclose(FILEBTC);
-				}
+					write_to_detail_file("redo");
+					
+				
 			}
 		}
 		if (iii%max_J_interval() == 0)
