@@ -19,7 +19,7 @@ public:
     CBinary operator + (const CBinary &B);
     CBinary extract(int spoint, int epoint);
     double decode(double minrange);
-    int& operator[](int i);
+    int& operator[](unsigned int i);
     void show();
 	bool sign;
     void mutate(double mu);

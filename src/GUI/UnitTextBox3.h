@@ -79,7 +79,7 @@ public:
     QString defaultUnit;
 
     XString toXString() {
-        XString(list());
+        return XString(list());
     }
 
 public slots:

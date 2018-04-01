@@ -83,7 +83,7 @@ double CController::D(double t, int experiment_id)
 	
 	if (Sensor->output[experiment_id].n == 0) return 0;
 		if (Sensor->output[experiment_id].n > 1)
-			return (Sensor->output[experiment_id].slope(t));
+            return (Sensor->output[experiment_id].slope());
 		else
 			return 0;
 }

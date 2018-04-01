@@ -917,7 +917,7 @@ double CTimeSeries::average(double tt)
 		return 0;
 }
 
-double CTimeSeries::slope(double tt)
+double CTimeSeries::slope()
 {
 	return (C[n - 1] - C[n - 2]) / (t[n - 1] - t[n - 2]);
 }
@@ -1227,16 +1227,14 @@ void CTimeSeries::knock_out(double tt)
 {
 	int i=n-1;
 	if (n>0)
-    {	while (t[i]>tt)
-		{	if (i<n);
-			{	t.pop_back();
-				C.pop_back();
-				n--;
-				i--;
-			}
+		while (t[i]>tt)
+        {	t.pop_back();
+            C.pop_back();
+            n--;
+            i--;
 		}
-    }
 }
+
 
 double CTimeSeries::AutoCor1(int k)
 {

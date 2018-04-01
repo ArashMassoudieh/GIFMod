@@ -1678,7 +1678,7 @@ void CMedium::solve_fts_m2(double dt)
 	double dt_last = Solution_State.dtt;
 	avg_redo_dtt = Solution_State.dtt;
 
-	clock_t time_start = clock();
+    time_t time_start = time(NULL);
 
     while (Solution_State.t - Solution_State.dtt < Timemax)
 	{
@@ -1897,7 +1897,8 @@ void CMedium::solve_fts_m2(double dt)
 
 				return;
 			}
-			double runtime = ((float)(clock() - time_start)) / CLOCKS_PER_SEC;
+            //double runtime = ((float)(clock() - time_start)) / CLOCKS_PER_SEC;
+            long int runtime = (time(NULL) - time_start);
 			if (runtime > maximum_run_time())
 			{
                 Solution_State.failed = true;

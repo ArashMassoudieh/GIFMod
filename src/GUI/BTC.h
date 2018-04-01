@@ -65,7 +65,7 @@ public:
 	int lookupt(double t); // finds the index of the datapoint with time t
 	double average(); //integral of time-series devided by the domail length
 	double average(double t); // integral to time t devided by domain length
-	double slope(double tt); //slope of time-series at time tt
+    double slope(); //slope of time-series at its end
 	CTimeSeries distribution(int n_bins, int limit); //extract the histogram of values
 	void append(double x); //appends a data point with value x
 	void append(double tt, double xx); //appends a datapoint with value xx at time tt

@@ -83,7 +83,7 @@ private slots:
 	
 	void on_btnStop_clicked();
 	void on_button1_clicked(){
-		int i = 0;
+
 	};
 	void on_slndtls_clicked();
 

@@ -262,7 +262,7 @@ private slots:
 	void getNumber(double initial = -1);
 	void recentItem()
 	{
-		int i = 0;
+
 	}
 
 private:

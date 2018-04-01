@@ -73,7 +73,7 @@ public:
 	QStringList units() const { QStringList R; for (int i = 0; i < unitBox->count(); i++) R.append(unitBox->itemText(i)); return R; };
 	QStringList list() const { return QStringList() << text() << unit() << units() << defaultUnit; };
 	XString toXString() {
-		XString(list());
+        return XString(list());
 	}
 
 	void setGeometry(const QRect &R) {Rect = R;};
