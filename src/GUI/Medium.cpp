@@ -5644,18 +5644,22 @@ bool CMedium::show_messages()
 
 void CMedium::show_message(string s)
 {
+#ifndef QT_version
     if (show_messages())
     {
         cout << string("Model [") + name + "]:" + s << std::endl;
     }
+#endif
 }
 
 void CMedium::show_status(string s)
 {
+#ifndef QT_version
     if (show_messages())
     {
         cout << "\rModel [" + name + "]:" + s << std::flush;
     }
+#endif
 }
 
 #endif
