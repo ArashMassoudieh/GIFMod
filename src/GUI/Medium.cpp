@@ -1633,7 +1633,7 @@ void CMedium::solve_fts_m2(double dt)
 	else
 		max_phase = -1;
 
-	//int oscillation_counter;
+	Solution_State.t = Timemin; //int oscillation_counter;
     Results.Solution_dt.clear();
     Results.Solution_dt = CBTCSet(3);
     Solution_State.dt_fail = 10000;
@@ -1892,7 +1892,7 @@ void CMedium::solve_fts_m2(double dt)
 						QMessageBox::question(runtimewindow, "Simulation Stopped by the user", "Simulation Ended", QMessageBox::Ok);
 					}
 #endif // QT_version
-					
+
 				}
 
 				return;
@@ -2018,8 +2018,8 @@ void CMedium::solve_fts_m2(double dt)
 				iii = Redo_parameters.Res[max(int(Redo_parameters.Res.size()) - Redo_parameters.redo_counter, 0)].iii;
 				if (write_details())
 					write_to_detail_file("redo");
-					
-				
+
+
 			}
 		}
 		if (iii%max_J_interval() == 0)
@@ -2183,7 +2183,7 @@ bool CMedium::solve()
         Results.ANS_obs.pushBackName(measured_quan()[i].name);
 
 	if (solution_method() == "Partial Inverse Jacobian Evaluation")
-		solve_fts_m2(dt());   
+		solve_fts_m2(dt());
 	else
 		solve_fts_m2(dt());
 
@@ -2431,6 +2431,7 @@ void CMedium::set_default_params()
 #ifdef API_version
         f_set_default_block_expressions();
         f_set_default_connector_expressions();
+        get_funcs();
 #endif // API_version
 
 }
@@ -3927,7 +3928,7 @@ void CMedium::writedetails()
 {
 	FILE *FILEBTC;
 	FILEBTC = fopen((outputpathname() + "Solution_details_" + parent->ID + ".txt").c_str(), "a");
-    fprintf(FILEBTC, "dt:, %lf, %le, %le(%i), %le, counters:, %i, %i, %i, J_updates:, %i, %i, %i, update_counts: %i, %i, %i, multis: %le, %le, pos_defs: %le, %le, wiggle: %le, %le, %le, %i, %s\n", Solution_State.t, Solution_State.dtt, Solution_State.base_dtt, where_base_dtt_changed, avg_redo_dtt, Solution_State.counter_flow, Solution_State.counter_colloid, Solution_State.counter_const, J_update, J_update_C, J_update_Q, Solution_State.J_h_update_count, Solution_State.J_c_update_count, Solution_State.J_q_update_count, Solution_State.pos_def_mult, Solution_State.pos_def_mult_Q, Solution_State.pos_def_ratio, Solution_State.pos_def_ratio_const, Solution_State.max_wiggle, Solution_State.wiggle_dt_mult, Solution_State.dt_fail, Solution_State.max_wiggle_id, Solution_State.fail_reason.c_str());
+    fprintf(FILEBTC, "t: %lf, %le, %le(%i), %le, counters:, %i, %i, %i, J_updates:, %i, %i, %i, update_counts: %i, %i, %i, multis: %le, %le, pos_defs: %le, %le, wiggle: %le, %le, %le, %i, %s\n", Solution_State.t, Solution_State.dtt, Solution_State.base_dtt, where_base_dtt_changed, avg_redo_dtt, Solution_State.counter_flow, Solution_State.counter_colloid, Solution_State.counter_const, J_update, J_update_C, J_update_Q, Solution_State.J_h_update_count, Solution_State.J_c_update_count, Solution_State.J_q_update_count, Solution_State.pos_def_mult, Solution_State.pos_def_mult_Q, Solution_State.pos_def_ratio, Solution_State.pos_def_ratio_const, Solution_State.max_wiggle, Solution_State.wiggle_dt_mult, Solution_State.dt_fail, Solution_State.max_wiggle_id, Solution_State.fail_reason.c_str());
 	fclose(FILEBTC);
 }
 
@@ -4813,7 +4814,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 			}
 
 			CVector_arma dx;
-			CMatrix_arma M1; 
+			CMatrix_arma M1;
 			if (((J_update1 == true) || M_arma.getnumrows() == 0 || (InvJ1_arma.getnumrows() == 0) && (solution_method() == "Partial Inverse Jacobian Evaluation")) && (fixed_connect == false))
 			{
 				Solution_State.J_h_update_count++;
@@ -4858,7 +4859,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 						return;
 					}
 				}
-				
+
 				Solution_State.dtt_J_h2 = dt;
 				J_update2 = false;
 			}
@@ -4880,9 +4881,9 @@ void CMedium::onestepsolve_flow_ar(double dt)
 
 				X -= lambda * ((dt / Solution_State.dtt_J_h1)*dx);
 			}
-			
-		
-			
+
+
+
 			F = getres_S(X, dt);
 
 			err_p = err;
@@ -5168,7 +5169,7 @@ void CMedium::onestepsolve_const_ar(double dtt)
 			Solution_State.dtt_J_q = dtt;
 		}
 
-		
+
 		if (InvJ_Q_arma.getnumcols() != 0 && solution_method() == "Partial Inverse Jacobian Evaluation")
 		{
 			dx = dtt / Solution_State.dtt_J_q*(InvJ_Q_arma*normalize_diag(F, M_Q_arma));
@@ -5192,7 +5193,7 @@ void CMedium::onestepsolve_const_ar(double dtt)
 				return;
 			}
 		}
-		
+
 
 
 		X -= lambda*dx;

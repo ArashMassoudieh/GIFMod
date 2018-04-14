@@ -981,7 +981,9 @@ bool CMBBlock::set_val(const string &SS, double val)
 		if (tolower(trim(s[0]))=="se*") {S_star = V*(val*(fs_params[theta_s]-fs_params[theta_r]) + fs_params[theta_r]);success = true;}
 		if (tolower(trim(s[0]))=="theta*") {S_star = V*val;success = true;}
 		if (tolower(trim(s[0])) == "light_reduction_factor") {light_reduction_factor = val;success = true;}
-
+        if (tolower(trim(s[0])) == "x") location.x = val;
+        if (tolower(trim(s[0])) == "y") location.y = val;
+        if (tolower(trim(s[0])) == "z") location.z = val;
 	}
 	else if (s.size()==2)
 	{

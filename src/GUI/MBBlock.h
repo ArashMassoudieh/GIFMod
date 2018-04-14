@@ -22,6 +22,10 @@ enum Block_types { Soil, Pond, Storage, Catchment, Manhole, Darcy, Stream, Plant
 class CGWA;
 class CMedium;
 
+struct point{
+    double x,y,z;
+};
+
 struct plant_props // plant properties
 {
 	double LAI; // Leaf area index
@@ -75,6 +79,7 @@ public:
 	CGWA *parent;
 #endif
 private:
+    point location;
     bool showmessages;
     vector<string> errors;
     vector<vector<double>> phi; //Capacities

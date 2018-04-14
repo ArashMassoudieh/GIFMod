@@ -20,7 +20,9 @@
 #include "Vector_arma.h"
 #include "Matrix_arma.h"
 
-
+#ifdef USE_VTK
+    #include "VTK.h"
+#endif
 #ifdef QT_version
 #include "qstring.h"
 #endif // QT_version
@@ -36,10 +38,10 @@ struct redo_parameters
 {
 	int redo_counter;
 	bool redo;
-	double redo_time;
-	double redo_dt;
-	double redo_to_time;
-	bool in_redo;
+	double redo_time=0;
+	double redo_dt=1;
+	double redo_to_time=0;
+	bool in_redo=false;
 	vector<CRestoreInfo> Res;
 	bool restore;
 };

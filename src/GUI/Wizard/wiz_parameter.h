@@ -31,6 +31,14 @@ public:
 		return parameters["delegate"].value.trimmed(); 
 	}
 
+    QString get_units()
+    {
+        if (parameters.count("unit")>0)
+            return XString::reform(parameters["unit"].value.trimmed());
+        else
+            return "";
+    }
+
 	bool get_bold()
 	{
 		if (parameters["bold"].value.trimmed() == "true") return true;
