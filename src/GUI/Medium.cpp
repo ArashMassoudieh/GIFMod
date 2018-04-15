@@ -5663,4 +5663,20 @@ void CMedium::show_status(string s)
 #endif
 }
 
+VTK_grid CMedium::VTK_get_snap_shot(string var, double t)
+{
+    VTK_grid out;
+    for (unsigned int i=0; i<Blocks.size(); i++)
+    {
+        VTK_point pt;
+        pt.x = Block[i].location.x;
+        pt.y = Block[i].location.y;
+        pt.z = Block[i].location.z;
+        if (var=="s")
+            pt.vals.push_back(ANS.BTC[i].interpolate(t));
+        out.push_back(pt);
+    }
+    return out;
+}
+
 #endif

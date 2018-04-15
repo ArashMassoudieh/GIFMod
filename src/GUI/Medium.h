@@ -284,6 +284,11 @@ public:
     bool set_property(const string &S, const string &v);
     bool set_properties(const string &S);
     bool& write_details();
+
+    #ifdef USE_VTK
+        VTK_grid VTK_get_snap_shot(string var, double t);
+    #endif
+
 private:
 
     bool use_arma = true;

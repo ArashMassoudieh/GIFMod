@@ -152,6 +152,7 @@ CMBBlock::CMBBlock(const CMBBlock& BB)// copy constructor
 	evaporation_m = BB.evaporation_m;
 	light_reduction_factor = BB.light_reduction_factor;
 	perform_rxn = BB.perform_rxn;
+	location = BB.location;
 }
 
 CMBBlock& CMBBlock::operator=(const CMBBlock &BB)
@@ -221,6 +222,7 @@ CMBBlock& CMBBlock::operator=(const CMBBlock &BB)
 	evaporation_m = BB.evaporation_m;
 	light_reduction_factor = BB.light_reduction_factor;
 	perform_rxn = BB.perform_rxn;
+	location = BB.location;
 	return *this;
 }
 
