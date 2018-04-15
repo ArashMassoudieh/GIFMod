@@ -5663,20 +5663,160 @@ void CMedium::show_status(string s)
 #endif
 }
 
+
+#ifdef USE_VTK
 VTK_grid CMedium::VTK_get_snap_shot(string var, double t)
 {
     VTK_grid out;
     for (unsigned int i=0; i<Blocks.size(); i++)
     {
         VTK_point pt;
-        pt.x = Block[i].location.x;
-        pt.y = Block[i].location.y;
-        pt.z = Block[i].location.z;
+        pt.x = Blocks[i].location.x;
+        pt.y = Blocks[i].location.y;
+        pt.z = Blocks[i].location.z;
         if (var=="s")
-            pt.vals.push_back(ANS.BTC[i].interpolate(t));
-        out.push_back(pt);
+            pt.vals.push_back(Results.ANS.BTC[i].interpol(t));
+        else if (var=="h")
+            pt.vals.push_back(Results.ANS.BTC[i + Blocks.size() + Connectors.size()].interpol(t));
+        else if (var=="theta")
+        {
+            if (Blocks[i].indicator == Block_types::Soil || Blocks[i].indicator == Block_types::Darcy)
+                pt.vals.push_back(Results.ANS.BTC[i].interpol(t)/Blocks[i].V);
+            else
+                pt.vals.push_back(0);
+        }
+        else if (var=="depth")
+        {
+            if (Blocks[i].indicator != Block_types::Soil && Blocks[i].indicator != Block_types::Darcy)
+                pt.vals.push_back(Results.ANS.BTC[i + Blocks.size() + Connectors.size()].interpol(t)-Blocks[i].z0);
+            else
+                pt.vals.push_back(0);
+        }
+        else
+            pt.vals.push_back(Blocks[i].get_val(var));
+        out.p.push_back(pt);
     }
     return out;
 }
+
+
+void CMedium::merge_to_snapshot(VTK_grid& grid, string var, double t)
+{
+    for (unsigned int i=0; i<Blocks.size(); i++)
+    {
+        if (var=="s")
+            grid.p[i].vals.push_back(Results.ANS.BTC[i].interpol(t));
+        else if (var=="h")
+            grid.p[i].vals.push_back(Results.ANS.BTC[i + Blocks.size() + Connectors.size()].interpol(t));
+        else if (var=="theta")
+        {
+            if (Blocks[i].indicator == Block_types::Soil || Blocks[i].indicator == Block_types::Darcy)
+                grid.p[i].vals.push_back(Results.ANS.BTC[i].interpol(t)/Blocks[i].V);
+            else
+                grid.p[i].vals.push_back(0);
+        }
+        else if (var=="depth")
+        {
+            if (Blocks[i].indicator != Block_types::Soil && Blocks[i].indicator != Block_types::Darcy)
+                grid.p[i].vals.push_back(Results.ANS.BTC[i + Blocks.size() + Connectors.size()].interpol(t)-Blocks[i].z0);
+            else
+                grid.p[i].vals.push_back(0);
+        }
+        else
+            grid.p[i].vals.push_back(Blocks[i].get_val(var));
+    }
+}
+
+void CMedium::write_grid_to_text(VTK_grid& grid, string filename, vector<string> names)
+{
+
+}
+
+void CMedium::write_grid_to_vtp(VTK_grid& grid, string filename, vector<string> names)
+{
+    vtkSmartPointer<vtkNamedColors> colors =
+    vtkSmartPointer<vtkNamedColors>::New();
+
+  // Create the geometry of a point (the coordinate)
+  vtkSmartPointer<vtkPoints> points =
+    vtkSmartPointer<vtkPoints>::New();
+
+  // Create the topology of the point (a vertex)
+    vtkSmartPointer<vtkCellArray> vertices =
+        vtkSmartPointer<vtkCellArray>::New();
+
+    vector<vtkSmartPointer<vtkDoubleArray>> vals;
+
+    for (unsigned int i=0; i<grid.p[0].vals.size(); i++)
+    {
+        vals.push_back(vtkSmartPointer<vtkDoubleArray>::New());
+        vals[i]->SetName(names[i].c_str());
+    }
+
+
+    for (unsigned int i=0;i<grid.p.size(); i++)
+        {
+
+            const float p[3] = {grid.p[i].x, grid.p[i].y, grid.p[i].z};
+
+            // We need an an array of point id's for InsertNextCell.
+
+            vtkIdType pid[1];
+            pid[0] = points->InsertNextPoint(p);
+            vertices->InsertNextCell(1,pid);
+            for (unsigned int j=0; j<grid.p[i].vals.size(); j++)
+                vals[i]->InsertNextValue(grid.p[i].vals[j]);
+        }
+    // Create a polydata object
+    vtkSmartPointer<vtkPolyData> point =
+    vtkSmartPointer<vtkPolyData>::New();
+
+  // Set the points and vertices we created as the geometry and topology of the polydata
+  point->SetPoints(points);
+  point->SetVerts(vertices);
+
+  for (unsigned int j=0; j<grid.p[0].vals.size(); j++)
+    point->GetPointData()->AddArray(vals[j]);
+  // Visualize
+  vtkSmartPointer<vtkPolyDataMapper> mapper =
+    vtkSmartPointer<vtkPolyDataMapper>::New();
+#if VTK_MAJOR_VERSION <= 5
+  mapper->SetInput(point);
+#else
+  mapper->SetInputData(point);
+#endif
+
+  vtkSmartPointer<vtkActor> actor =
+    vtkSmartPointer<vtkActor>::New();
+  actor->SetMapper(mapper);
+  actor->GetProperty()->SetColor(colors->GetColor3d("Tomato").GetData());
+  actor->GetProperty()->SetPointSize(20);
+
+  vtkSmartPointer<vtkRenderer> renderer =
+    vtkSmartPointer<vtkRenderer>::New();
+  vtkSmartPointer<vtkRenderWindow> renderWindow =
+    vtkSmartPointer<vtkRenderWindow>::New();
+  renderWindow->SetWindowName("Point");
+  renderWindow->AddRenderer(renderer);
+  vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor =
+    vtkSmartPointer<vtkRenderWindowInteractor>::New();
+  renderWindowInteractor->SetRenderWindow(renderWindow);
+
+  renderer->AddActor(actor);
+  renderer->SetBackground(colors->GetColor3d("DarkOliveGreen").GetData());
+
+  renderWindow->Render();
+  renderWindowInteractor->Start();
+
+  vtkSmartPointer<vtkXMLPolyDataWriter> writer =
+		vtkSmartPointer<vtkXMLPolyDataWriter>::New();
+	writer->SetFileName(filename.c_str());
+	writer->SetInputData(mapper->GetInput());
+	// This is set so we can see the data in a text editor.
+	writer->SetDataModeToAscii();
+	writer->Write();
+  return;
+}
+#endif // USE_VTK
 
 #endif
