@@ -5665,15 +5665,16 @@ void CMedium::show_status(string s)
 
 
 #ifdef USE_VTK
-VTK_grid CMedium::VTK_get_snap_shot(string var, double t)
+VTK_grid CMedium::VTK_get_snap_shot(string var, double t, double z_scale)
 {
     VTK_grid out;
+    out.names.push_back(var);
     for (unsigned int i=0; i<Blocks.size(); i++)
     {
         VTK_point pt;
         pt.x = Blocks[i].location.x;
         pt.y = Blocks[i].location.y;
-        pt.z = Blocks[i].location.z;
+        pt.z = Blocks[i].location.z*z_scale;
         if (var=="s")
             pt.vals.push_back(Results.ANS.BTC[i].interpol(t));
         else if (var=="h")
@@ -5702,6 +5703,10 @@ VTK_grid CMedium::VTK_get_snap_shot(string var, double t)
 
 void CMedium::merge_to_snapshot(VTK_grid& grid, string var, double t)
 {
+    if (t!=0)
+        grid.names.push_back(var + "_" + numbertostring(t));
+    else
+        grid.names.push_back(var);
     for (unsigned int i=0; i<Blocks.size(); i++)
     {
         if (var=="s")
@@ -5727,12 +5732,31 @@ void CMedium::merge_to_snapshot(VTK_grid& grid, string var, double t)
     }
 }
 
-void CMedium::write_grid_to_text(VTK_grid& grid, string filename, vector<string> names)
+void CMedium::write_grid_to_text(VTK_grid& grid, string filename, const vector<string> &names)
 {
-
+    ofstream file(filename);
+    file << "Block_name, x, y, z";
+    for (unsigned int i=0; i<grid.p[0].vals.size(); i++)
+    {
+        if (names.size())
+            file << names[i];
+        else if (grid.names.size())
+            file << ","<< grid.names[i];
+        else
+            file << ", var_" + numbertostring(i);
+    }
+    file << endl;
+    for (unsigned int j=0; j<Blocks.size(); j++)
+    {
+        file << Blocks[j].ID << "," << Blocks[j].location.x << "," << Blocks[j].location.y << "," << Blocks[j].location.z;
+        for (unsigned int i=0; i<grid.p[0].vals.size(); i++)
+            file << "," << grid.p[j].vals[i];
+        file << endl;
+    }
+    file.close();
 }
 
-void CMedium::write_grid_to_vtp(VTK_grid& grid, string filename, vector<string> names)
+void CMedium::write_grid_to_vtp(VTK_grid& grid, string filename, const vector<string> &names)
 {
     vtkSmartPointer<vtkNamedColors> colors =
     vtkSmartPointer<vtkNamedColors>::New();
@@ -5750,7 +5774,12 @@ void CMedium::write_grid_to_vtp(VTK_grid& grid, string filename, vector<string> 
     for (unsigned int i=0; i<grid.p[0].vals.size(); i++)
     {
         vals.push_back(vtkSmartPointer<vtkDoubleArray>::New());
-        vals[i]->SetName(names[i].c_str());
+        if (names.size())
+            vals[i]->SetName(names[i].c_str());
+        else if (grid.names.size())
+            vals[i]->SetName(grid.names[i].c_str());
+        else
+            vals[i]->SetName(("var_" + numbertostring(i)).c_str());
     }
 
 
@@ -5765,7 +5794,7 @@ void CMedium::write_grid_to_vtp(VTK_grid& grid, string filename, vector<string> 
             pid[0] = points->InsertNextPoint(p);
             vertices->InsertNextCell(1,pid);
             for (unsigned int j=0; j<grid.p[i].vals.size(); j++)
-                vals[i]->InsertNextValue(grid.p[i].vals[j]);
+                vals[j]->InsertNextValue(grid.p[i].vals[j]);
         }
     // Create a polydata object
     vtkSmartPointer<vtkPolyData> point =
