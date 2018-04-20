@@ -5821,17 +5821,17 @@ void CMedium::write_grid_to_vtp(VTK_grid& grid, const string &filename, const ve
   for (unsigned int j=0; j<grid.p[0].vals.size(); j++)
     point->GetPointData()->AddArray(vals[j]);
 
-    vtkSmartPointer<vtkCleanPolyData> cleaner =
-    vtkSmartPointer<vtkCleanPolyData>::New();
-  cleaner->SetInputConnection (point);
+    //vtkSmartPointer<vtkCleanPolyData> cleaner =
+    //vtkSmartPointer<vtkCleanPolyData>::New();
+  //cleaner->SetInputConnection (point);
 
   // Triangulate the grid points
 	vtkSmartPointer<vtkDelaunay3D> delaunay =
 		vtkSmartPointer<vtkDelaunay3D>::New();
 #if VTK_MAJOR_VERSION <= 5
-	delaunay->SetInput(cleaner);
+	delaunay->SetInput(point);
 #else
-	delaunay->SetInputData(cleaner);
+	delaunay->SetInputData(point);
 #endif
 	delaunay->Update();
 	vtkSmartPointer<vtkDataSetMapper> delaunayMapper =
