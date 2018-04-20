@@ -4815,7 +4815,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 
 			CVector_arma dx;
 			CMatrix_arma M1;
-			if (((J_update1 == true) || M_arma.getnumrows() == 0 || (InvJ1_arma.getnumrows() == 0) && (solution_method() == "Partial Inverse Jacobian Evaluation")) && (fixed_connect == false))
+			if ((((J_update1 == true) || M_arma.getnumrows() == 0 || (InvJ1_arma.getnumrows() == 0)) && (solution_method() == "Partial Inverse Jacobian Evaluation")) && (fixed_connect == false))
 			{
 				Solution_State.J_h_update_count++;
 				M_arma = Jacobian_S(X, dt, true);
@@ -4870,7 +4870,15 @@ void CMedium::onestepsolve_flow_ar(double dt)
 					dx = (InvJ2_arma*normalize_diag(F, M_arma));
 				else if (solution_method() == "Direct Solution")
 					dx = F / M_arma;
-				X -= lambda * ((dt / Solution_State.dtt_J_h2)*dx);
+                if (dx.num==0)
+                {
+                    Solution_State.fail_reason = "Hydro Jacobian in not inversible";
+                    solution_detail = "Hydro Jacobian in not inversible";
+                    set_flow_factors(correction_factor_old);
+                    set_fixed_connect_status(old_fixed_connect_status);
+                    return;
+                }
+                X -= lambda * ((dt / Solution_State.dtt_J_h2)*dx);
 			}
 			else
 			{
@@ -4878,6 +4886,14 @@ void CMedium::onestepsolve_flow_ar(double dt)
 					dx = (InvJ1_arma*normalize_diag(F, M_arma));
 				else if (solution_method() == "Direct Solution")
 					dx = F/ M_arma;
+                if (dx.num==0)
+                {
+                    Solution_State.fail_reason = "Hydro Jacobian in not inversible";
+                    solution_detail = "Hydro Jacobian in not inversible";
+                    set_flow_factors(correction_factor_old);
+                    set_fixed_connect_status(old_fixed_connect_status);
+                    return;
+                }
 
 				X -= lambda * ((dt / Solution_State.dtt_J_h1)*dx);
 			}
@@ -5732,7 +5748,7 @@ void CMedium::merge_to_snapshot(VTK_grid& grid, string var, double t)
     }
 }
 
-void CMedium::write_grid_to_text(VTK_grid& grid, string filename, const vector<string> &names)
+void CMedium::write_grid_to_text(VTK_grid& grid, const string &filename, const vector<string> &names)
 {
     ofstream file(filename);
     file << "Block_name, x, y, z";
@@ -5756,10 +5772,8 @@ void CMedium::write_grid_to_text(VTK_grid& grid, string filename, const vector<s
     file.close();
 }
 
-void CMedium::write_grid_to_vtp(VTK_grid& grid, string filename, const vector<string> &names)
+void CMedium::write_grid_to_vtp(VTK_grid& grid, const string &filename, const vector<string> &names)
 {
-    vtkSmartPointer<vtkNamedColors> colors =
-    vtkSmartPointer<vtkNamedColors>::New();
 
   // Create the geometry of a point (the coordinate)
   vtkSmartPointer<vtkPoints> points =
@@ -5786,7 +5800,7 @@ void CMedium::write_grid_to_vtp(VTK_grid& grid, string filename, const vector<st
     for (unsigned int i=0;i<grid.p.size(); i++)
         {
 
-            const float p[3] = {grid.p[i].x, grid.p[i].y, grid.p[i].z};
+            const double p[3] = {grid.p[i].x, grid.p[i].y, grid.p[i].z};
 
             // We need an an array of point id's for InsertNextCell.
 
@@ -5815,8 +5829,18 @@ void CMedium::write_grid_to_vtp(VTK_grid& grid, string filename, const vector<st
   mapper->SetInputData(point);
 #endif
 
+  show_VTK(mapper, filename);
+
+  return;
+}
+
+void CMedium::show_VTK(vtkSmartPointer<vtkPolyDataMapper> mapper, const string &filename)
+{
   vtkSmartPointer<vtkActor> actor =
-    vtkSmartPointer<vtkActor>::New();
+  vtkSmartPointer<vtkActor>::New();
+  vtkSmartPointer<vtkNamedColors> colors =
+  vtkSmartPointer<vtkNamedColors>::New();
+
   actor->SetMapper(mapper);
   actor->GetProperty()->SetColor(colors->GetColor3d("Tomato").GetData());
   actor->GetProperty()->SetPointSize(20);
@@ -5844,8 +5868,73 @@ void CMedium::write_grid_to_vtp(VTK_grid& grid, string filename, const vector<st
 	// This is set so we can see the data in a text editor.
 	writer->SetDataModeToAscii();
 	writer->Write();
+
+	return;
+}
+
+void CMedium::write_grid_to_vtp_boxes(VTK_grid& grid, const string &filename, const vector<string> &names)
+{
+
+  // Create the geometry of a point (the coordinate)
+  vtkSmartPointer<vtkPoints> points =
+    vtkSmartPointer<vtkPoints>::New();
+
+  // Create the topology of the point (a vertex)
+    vtkSmartPointer<vtkCellArray> vertices =
+        vtkSmartPointer<vtkCellArray>::New();
+
+    vector<vtkSmartPointer<vtkDoubleArray>> vals;
+
+    for (unsigned int i=0; i<grid.p[0].vals.size(); i++)
+    {
+        vals.push_back(vtkSmartPointer<vtkDoubleArray>::New());
+        if (names.size())
+            vals[i]->SetName(names[i].c_str());
+        else if (grid.names.size())
+            vals[i]->SetName(grid.names[i].c_str());
+        else
+            vals[i]->SetName(("var_" + numbertostring(i)).c_str());
+    }
+
+
+    for (unsigned int i=0;i<grid.p.size(); i++)
+        {
+
+            const double p[3] = {grid.p[i].x, grid.p[i].y, grid.p[i].z};
+
+            // We need an an array of point id's for InsertNextCell.
+
+            vtkIdType pid[1];
+            pid[0] = points->InsertNextPoint(p);
+            vertices->InsertNextCell(1,pid);
+            for (unsigned int j=0; j<grid.p[i].vals.size(); j++)
+                vals[j]->InsertNextValue(grid.p[i].vals[j]);
+        }
+    // Create a polydata object
+    vtkSmartPointer<vtkPolyData> point =
+    vtkSmartPointer<vtkPolyData>::New();
+
+  // Set the points and vertices we created as the geometry and topology of the polydata
+  point->SetPoints(points);
+  point->SetVerts(vertices);
+
+  for (unsigned int j=0; j<grid.p[0].vals.size(); j++)
+    point->GetPointData()->AddArray(vals[j]);
+  // Visualize
+  vtkSmartPointer<vtkPolyDataMapper> mapper =
+    vtkSmartPointer<vtkPolyDataMapper>::New();
+#if VTK_MAJOR_VERSION <= 5
+  mapper->SetInput(point);
+#else
+  mapper->SetInputData(point);
+#endif
+
+  show_VTK(mapper, filename);
+
   return;
 }
+
+
 #endif // USE_VTK
 
 #endif
