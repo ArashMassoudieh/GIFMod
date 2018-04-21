@@ -4870,6 +4870,9 @@ void CMedium::onestepsolve_flow_ar(double dt)
 					dx = (InvJ2_arma*normalize_diag(F, M_arma));
 				else if (solution_method() == "Direct Solution")
 					dx = F / M_arma;
+				else 
+					dx = (InvJ2_arma*normalize_diag(F, M_arma));
+
                 if (dx.num==0)
                 {
                     Solution_State.fail_reason = "Hydro Jacobian in not inversible";
@@ -4886,6 +4889,9 @@ void CMedium::onestepsolve_flow_ar(double dt)
 					dx = (InvJ1_arma*normalize_diag(F, M_arma));
 				else if (solution_method() == "Direct Solution")
 					dx = F/ M_arma;
+				else
+					dx = (InvJ1_arma*normalize_diag(F, M_arma));
+
                 if (dx.num==0)
                 {
                     Solution_State.fail_reason = "Hydro Jacobian in not inversible";
