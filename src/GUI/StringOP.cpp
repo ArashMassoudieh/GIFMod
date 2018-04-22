@@ -804,6 +804,9 @@ vector<string> split(const string &s, char del)
 	}
     if (lastdel<s.size() && trim(s.substr(lastdel, s.size()-lastdel))!="\r" && trim(s.substr(lastdel, s.size() - lastdel)) != "") strings.push_back(trim(s.substr(lastdel, s.size()-lastdel)));  // works w/o trim- Trim can be deleted
 	for (unsigned int i=0; i<strings.size(); i++) strings[i] = trim(strings[i]);					// Trim can be deleted
+	if (strings.size()==1)
+        if (strings[0]=="")
+            strings.pop_back();
 	return strings;
 
 }
@@ -846,7 +849,7 @@ vector<double> ATOF(vector<string> ii)
 string trim(string s)
 {
 	if (s.find_first_not_of(' ') == string::npos) return "";
-	
+
 	return s.substr( s.find_first_not_of(' '), s.find_last_not_of(' ') + 1 );
 }
 

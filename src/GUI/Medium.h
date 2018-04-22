@@ -131,7 +131,7 @@ public:
     CMBBlock *Block(string B);
     CConnection *Connector(string C);
 	string name;
-	CMediumSet *parent = nullptr;
+	CMediumSet *parent;
 	CMedium(bool createparent=false);
 	~CMedium(void);
 	CMedium(const CMedium &M);

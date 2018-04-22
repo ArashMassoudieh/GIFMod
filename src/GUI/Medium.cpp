@@ -27,6 +27,9 @@ using namespace std;
 
 CMedium::CMedium(bool create_parent)
 {
+    #ifdef Debug_API
+    show_message("Creating MediumSet...");
+    #endif // Debug_API
     if (create_parent)
         parent = new CMediumSet();
     else
@@ -36,6 +39,9 @@ CMedium::CMedium(bool create_parent)
 #else
     showmessages = true;
 #endif // QT_version
+#ifdef Debug_API
+    show_message("CMedium Created!");
+#endif // Debug_API
 }
 
 CMedium::~CMedium(void)
@@ -4870,7 +4876,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 					dx = (InvJ2_arma*normalize_diag(F, M_arma));
 				else if (solution_method() == "Direct Solution")
 					dx = F / M_arma;
-				else 
+				else
 					dx = (InvJ2_arma*normalize_diag(F, M_arma));
 
                 if (dx.num==0)

@@ -7,7 +7,11 @@ using namespace std;
 CMediumSet::CMediumSet()
 {
 
+#ifdef Debug_API
+    showmessages = true;
+#endif // Debug_API
     set_default();
+    show_message("CMediumSet Created!");
 #ifndef QT_version
     showmessages = true;
 #else
@@ -401,8 +405,16 @@ void CMediumSet::set_default()
 {
 
 	SetDefaultSolverParameters();
+	#ifdef Debug_API
+	show_message("Setting formulas");
+	#endif // Debug_API
 	if (!get_formulas_from_file("formulas.txt"))
-		set_formulas();
+	{
+	    #ifdef Debug_API
+	    show_message("Setting hardcoded formulas");
+	    #endif // Debug_API
+	    set_formulas();
+	}
 
 }
 
@@ -1080,6 +1092,7 @@ int CMediumSet::get_block_type(string s)
 
 bool CMediumSet::get_formulas_from_file(string filename)
 {
+	show_message("Attempting to load formulas from file...");
 	formulas.formulasH.resize(10);
 	formulas.formulas.resize(10);
 	formulas.formulasQ.resize(10);
@@ -1107,13 +1120,21 @@ bool CMediumSet::get_formulas_from_file(string filename)
 
 	formulas.formulasQ2 = formulas.formulasQ;
 
-	ifstream file(filename);
-	if (!file.good()) return false;
+	ifstream file(filename, std::ifstream::in);
+	if (!file.good())
+    {
+        show_message("File not found! ");
+        return false;
+    }
+	show_message("Reading formulas from file...");
 	while (!file.eof())
 	{
+
 		vector<string> s = getline(file);
-		if (s.size() != 0)
+
+		if (s.size() > 2)
 		{
+			show_message(s[0]);
 			if (s[0].substr(0, 2) != "\\" && s[0].substr(0, 2) != "//")
 			{
 				if (trim(tolower(s[0])) == "h-s" && s.size()>=3)
@@ -1137,6 +1158,7 @@ bool CMediumSet::get_formulas_from_file(string filename)
 	}
 
 	set_features.formulas = true;
+	show_message("Done!");
 	return true;
 }
 
