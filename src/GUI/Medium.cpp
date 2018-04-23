@@ -27,6 +27,9 @@ using namespace std;
 
 CMedium::CMedium(bool create_parent)
 {
+    #ifdef Debug_API
+    show_message("Creating MediumSet...");
+    #endif // Debug_API
     if (create_parent)
         parent = new CMediumSet();
     else
@@ -36,6 +39,9 @@ CMedium::CMedium(bool create_parent)
 #else
     showmessages = true;
 #endif // QT_version
+#ifdef Debug_API
+    show_message("CMedium Created!");
+#endif // Debug_API
 }
 
 CMedium::~CMedium(void)
@@ -4815,7 +4821,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 
 			CVector_arma dx;
 			CMatrix_arma M1;
-			if ((((J_update1 == true) || M_arma.getnumrows() == 0 || (InvJ1_arma.getnumrows() == 0)) && (solution_method() == "Partial Inverse Jacobian Evaluation")) && (fixed_connect == false))
+			if ((((J_update1 == true) || M_arma.getnumrows() == 0 || ((InvJ1_arma.getnumrows() == 0)) && solution_method() == "Partial Inverse Jacobian Evaluation")) && (fixed_connect == false))
 			{
 				Solution_State.J_h_update_count++;
 				M_arma = Jacobian_S(X, dt, true);
@@ -4838,7 +4844,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 				J_update1 = false;
 			}
 
-			if (((J_update2 == true) || M_arma.getnumrows() == 0 || (InvJ2_arma.getnumrows() == 0 && (solution_method() == "Partial Inverse Jacobian Evaluation"))) && (fixed_connect == true))
+			if (((J_update2 == true) || M_arma.getnumrows() == 0 || ((InvJ2_arma.getnumrows() == 0 && solution_method() == "Partial Inverse Jacobian Evaluation"))) && (fixed_connect == true))
 			{
 				Solution_State.J_h_update_count++;
 				M_arma = Jacobian_S(X, dt, true);
@@ -4870,7 +4876,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 					dx = (InvJ2_arma*normalize_diag(F, M_arma));
 				else if (solution_method() == "Direct Solution")
 					dx = F / M_arma;
-				else 
+				else
 					dx = (InvJ2_arma*normalize_diag(F, M_arma));
 
                 if (dx.num==0)

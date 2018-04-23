@@ -73,7 +73,7 @@ public:
     bool show_messages();
     string tostring(); //converts the information of the block to a string
 #ifdef GIFMOD
-	CMedium *parent;
+	CMedium *parent = nullptr;
 #endif
 #ifdef GWA
 	CGWA *parent;

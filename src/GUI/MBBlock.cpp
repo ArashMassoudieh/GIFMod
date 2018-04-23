@@ -7,6 +7,11 @@
 
 CMBBlock::CMBBlock(void)
 {
+	cout<< "check" << endl;
+	#ifdef Debug_API
+        show_message("Creating default block");
+	#endif // Debug_API
+	cout<< "check done!" << endl;
 	n_constts = 0;
 	n_phases = 0;
 	fixed = false;
@@ -35,6 +40,11 @@ CMBBlock::CMBBlock(void)
 
 CMBBlock::CMBBlock(string s)
 {
+	cout<< "set properties check" << endl;
+	#ifdef Debug_API
+	show_message("Inside Setting Blocks ");
+	#endif // Debug_API
+	cout<< "check done!" << endl;
 	n_constts = 0;
 	n_phases = 0;
 	fixed = false;
@@ -61,6 +71,9 @@ CMBBlock::CMBBlock(string s)
 #ifndef QT_version
 	showmessages = true;
 #endif // QT_version
+	#ifdef Debug_API
+	show_message("setting properties for block " + ID);
+	#endif // Debug_API
 	set_properties(s);
 	show_message("Block: '" + ID + "' was created");
 
@@ -157,6 +170,10 @@ CMBBlock::CMBBlock(const CMBBlock& BB)// copy constructor
 
 CMBBlock& CMBBlock::operator=(const CMBBlock &BB)
 {
+	#ifdef Debug_API
+	show_message("Assigning Block");
+	#endif // Debug_API
+
 	n_constts = BB.n_constts;
 	n_phases = BB.n_phases;
 	G = BB.G;
