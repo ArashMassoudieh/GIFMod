@@ -1112,7 +1112,7 @@ bool CMediumSet::get_formulas_from_file(string filename)
 	while (!file.eof())
 	{
 		vector<string> s = getline(file);
-		if (s.size() != 0)
+		if (s.size() > 2)
 		{
 			if (s[0].substr(0, 2) != "\\" && s[0].substr(0, 2) != "//")
 			{
