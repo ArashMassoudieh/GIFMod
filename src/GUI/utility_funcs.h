@@ -6,7 +6,7 @@
 #endif // QT_version
 using namespace std;
 #ifdef GIFMOD
-struct range //properties of unknown parameters
+struct param_range //properties of unknown parameters
 {
 	string name;
 	double low;

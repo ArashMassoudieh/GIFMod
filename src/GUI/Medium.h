@@ -154,7 +154,7 @@ public:
 	double Timemin,Timemax;
 	CLIDconfig lid_config;
 	double& dt();
-	vector<range>& parameters(); // properties of unknown parameters
+	vector<param_range>& parameters(); // properties of unknown parameters
 	vector<CSensor>& sensors(); // properties of sensors
 	vector<CController>& controllers(); //propoerties of controllers;
 	vector<CObjectiveFunction>& objective_functions(); //objective functions for control;
@@ -301,8 +301,8 @@ public:
     bool& write_details();
 
     #ifdef USE_VTK
-        VTK_grid VTK_get_snap_shot(string var, double t=0, double z_scale=1);
-        void merge_to_snapshot(VTK_grid&, string var, double t=0);
+        VTK_grid VTK_get_snap_shot(string var, double t=0, double z_scale=1, string field_name="");
+        void merge_to_snapshot(VTK_grid&, string var, double t=0, string fieldname="");
         void write_grid_to_vtp(VTK_grid&, const string &filename, const vector<string> &names=vector<string>());
         void write_grid_to_text(VTK_grid& grid, const string &filename, const vector<string> &names = vector<string>());
         void show_VTK(vtkSmartPointer<vtkPolyDataMapper>, const string &filename);

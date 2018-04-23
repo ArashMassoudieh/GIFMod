@@ -4409,7 +4409,7 @@ double& CMedium::dt()
 	return parent->SP.dt;
 }
 
-vector<range>& CMedium::parameters()
+vector<param_range>& CMedium::parameters()
 {
 	return parent->parameters;
 }
@@ -5693,10 +5693,13 @@ void CMedium::show_status(string s)
 
 
 #ifdef USE_VTK
-VTK_grid CMedium::VTK_get_snap_shot(string var, double t, double z_scale)
+VTK_grid CMedium::VTK_get_snap_shot(string var, double t, double z_scale, string fieldname)
 {
     VTK_grid out;
-    out.names.push_back(var);
+    if (fieldname!="")
+        out.names.push_back(fieldname);
+    else
+        out.names.push_back(var);
     for (unsigned int i=0; i<Blocks.size(); i++)
     {
         VTK_point pt;
@@ -5729,9 +5732,10 @@ VTK_grid CMedium::VTK_get_snap_shot(string var, double t, double z_scale)
 }
 
 
-void CMedium::merge_to_snapshot(VTK_grid& grid, string var, double t)
+void CMedium::merge_to_snapshot(VTK_grid& grid, string var, double t, string fieldname)
 {
-    if (t!=0)
+    if (fieldname!="") grid.names.push_back(fieldname);
+    else if (t!=0)
         grid.names.push_back(var + "_" + numbertostring(t));
     else
         grid.names.push_back(var);
@@ -5855,6 +5859,7 @@ void CMedium::write_grid_to_vtp(VTK_grid& grid, const string &filename, const ve
   delaunayActor->SetMapper(delaunayMapper);
   delaunayActor->GetProperty()->SetColor(1,0,0);
 
+  /*
    vtkSmartPointer<vtkRenderer> renderer =
     vtkSmartPointer<vtkRenderer>::New();
   vtkSmartPointer<vtkRenderWindow> renderWindow =
@@ -5866,10 +5871,11 @@ void CMedium::write_grid_to_vtp(VTK_grid& grid, const string &filename, const ve
   renderWindowInteractor->SetRenderWindow(renderWindow);
 
   renderer->AddActor(delaunayActor);
-  //renderer->SetBackground(colors->GetColor3d("DarkOliveGreen").GetData());
+  renderer->SetBackground(colors->GetColor3d("DarkOliveGreen").GetData());
 
   renderWindow->Render();
   renderWindowInteractor->Start();
+  */
 
   vtkSmartPointer<vtkXMLUnstructuredGridWriter> writer =
 		vtkSmartPointer<vtkXMLUnstructuredGridWriter>::New();

@@ -10,13 +10,13 @@ public:
 	~CController();
 	CController(const CController &M);
     CController& operator=(const CController &BB);
-	string name; 
+	string name;
 	CBTC output;
 	string type;
 	CSensor *Sensor;
 	string sensor_id;
 	double calc_value(double t, int experiment_id);
-	void append(double t, double C); 
+	void append(double t, double C);
 	vector<double> params; // for PID controller params[0] = k_p, params[1] = k_i, params[2] = k_d; params[3] = set point
 	double P(double t, int experiment_id);
 	double I(double t, int experiment_id);
@@ -27,10 +27,10 @@ public:
 	double min_val = 0;
 	double max_val = 1e12;
 #ifdef GIFMOD
-	range application_spec;
+	param_range application_spec;
 #endif
 	string zn_controller_type;
-	double integral = 0; 
+	double integral = 0;
 	void set_zn();
 };
 
