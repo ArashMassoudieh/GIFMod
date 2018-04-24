@@ -54,7 +54,7 @@ private:
     double v, v_star;
     double dispersivity;
     int settling;
-
+    bool vapor_transport;
     vector<double> c_dispersion; //4000
     vector<double> c_dispersion_star; //4000
     vector <double> dispersion; //5000-5099

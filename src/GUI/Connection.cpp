@@ -29,6 +29,7 @@ CConnection::CConnection(void)
 	const_area = true;
 	presc_flow = false;
 	control = false;
+	vapor_transport = false;
 }
 
 CConnection::CConnection(string s)
@@ -55,6 +56,7 @@ CConnection::CConnection(string s)
 	const_area = true;
 	presc_flow = false;
 	control = false;
+    vapor_transport = false;
 #ifndef QT_version
 	showmessages = true;
 #endif // QT_version
@@ -115,6 +117,7 @@ CConnection::CConnection(const CConnection &CC)
 	presc_flowrate = CC.presc_flowrate;
 	control = CC.control;
 	controller_id = CC.controller_id;
+	vapor_transport = CC.vapor_transport;
 }
 
 CConnection& CConnection::operator=(const CConnection &CC)
@@ -160,6 +163,7 @@ CConnection& CConnection::operator=(const CConnection &CC)
 	presc_flowrate = CC.presc_flowrate;
 	control = CC.control;
 	controller_id = CC.controller_id;
+	vapor_transport = CC.vapor_transport;
 	return *this;
 
 }

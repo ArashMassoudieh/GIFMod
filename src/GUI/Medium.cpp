@@ -994,7 +994,8 @@ void CMedium::setQ_star()
             Connectors[i].set_val("q*", Connectors[i].presc_flowrate.interpol(Solution_State.t));
 
 
-        Connectors[i].set_val("q_v*", Connectors[i].calc_star(Connectors[i].flow_expression_v));
+        if (Connectors[i].vapor_transport)
+            Connectors[i].set_val("q_v*", Connectors[i].calc_star(Connectors[i].flow_expression_v));
         Connectors[i].flow_factor = 1;
 
 	}
@@ -2360,7 +2361,8 @@ void CMedium::finalize_set_param()
                 if (((Blocks[getblocksq(Connectors[i].Block2ID)].indicator == Soil) || (Blocks[getblocksq(Connectors[i].Block2ID)].indicator == Darcy)) && ((Blocks[getblocksq(Connectors[i].Block1ID)].indicator == Pond) || (Blocks[getblocksq(Connectors[i].Block1ID)].indicator == Stream)))
                     Connectors[i].flow_params[j] = Blocks[getblocksq(Connectors[i].Block2ID)].fs_params[j];
 
-
+                if (Blocks[getblocksq(Connectors[i].Block1ID)].vapor_diffusion!=0 && Blocks[getblocksq(Connectors[i].Block2ID)].vapor_diffusion!=0)
+                    Connectors[i].vapor_transport = true;
                 if (Blocks[getblocksq(Connectors[i].Block1ID)].indicator == Blocks[getblocksq(Connectors[i].Block2ID)].indicator)
                     Connectors[i].flow_params[j]=0.5*(Blocks[getblocksq(Connectors[i].Block1ID)].fs_params[j] + Blocks[getblocksq(Connectors[i].Block2ID)].fs_params[j]);
                 else if (Blocks[getblocksq(Connectors[i].Block1ID)].indicator==0)
