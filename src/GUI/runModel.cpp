@@ -1158,7 +1158,7 @@ void CMediumSet::g_get_observed()
 		{
 			stds.push_back(measured_quan[i].std_no);
 			measured_quan[i].std_to_param = int(parameters.size());
-			range P;
+			param_range P;
 
 			P.fixed = false;
 			P.log = true;
@@ -1384,7 +1384,7 @@ void CMediumSet::g_get_params()
 {
     foreach (Entity *e , gw->entitiesByType("Parameter"))
 	{
-		range P;
+		param_range P;
 		P.low = 0;
 		P.high = 0;
 		P.fixed = false;
