@@ -2216,6 +2216,8 @@ void CMedium::g_set_default_connector_expressions()
         for (int j = 0; j< Solid_phase().size(); j++)Connectors[i].Solid_phase_id.push_back(j);
         Connectors[i].Block1 = &Blocks[getblocksq(Connectors[i].Block1ID)];
         Connectors[i].Block2 = &Blocks[getblocksq(Connectors[i].Block2ID)];
+		Connectors[i].Block1N = getblocksq(Connectors[i].Block1ID);
+		Connectors[i].Block2N = getblocksq(Connectors[i].Block2ID);
         Blocks[getblocksq(Connectors[i].Block1ID)].connectors.push_back(i);
         Blocks[getblocksq(Connectors[i].Block1ID)].connectors_se.push_back(0);
         Blocks[getblocksq(Connectors[i].Block2ID)].connectors.push_back(i);
