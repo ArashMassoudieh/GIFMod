@@ -805,6 +805,29 @@ bool CConnection::set_val(const string &SS, const double &val)
 
 }
 
+bool CConnection::set_val(int i, const double &val)
+{
+	if (i==2) {A = val; return true; }
+	if (i==6) {d = val; return true; }
+	if (i==7) {Q = val;return true; }
+	if (i==13) {Q_v = val;return true; }
+
+
+	return false;
+}
+
+bool CConnection::set_val_star(int i, const double &val)
+{
+	if (i==2) {A_star = val; return true; }
+	if (i==6) {d = val; return true; }
+	if (i==7) {Q_star = val;return true; }
+	if (i==13) {Q_v_star = val;return true; }
+
+
+	return false;
+}
+
+
 
 void CConnection::get_funcs(CStringOP &term)  //Works w/o reference(&)
 {

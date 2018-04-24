@@ -62,7 +62,7 @@ public:
     bool set_properties(string s);
     bool set_property(string s, double value);
     bool set_property(string s, string value);
-    bool set_val(const string &SS, double val); //set the value of physical properties, variables and parameters based on star values
+    bool set_val(const string &SS, const double &val); //set the value of physical properties, variables and parameters based on star values
 	vector<CBTCSet> inflow; //inflow time-series
     int n_constts; 	int n_phases; //number of chemical species, number of phases;
     bool settype(string s); //sets the type of the block
@@ -131,8 +131,8 @@ private:
     double get_val(int i);// get the value of physical properties, variables and parameters
     double get_val_star(int i); //get the value of physical properties, variables and parameters based on star values
     double get_val(const string &SS); //get the value of physical properties, variables and parameters
-    void set_val(int i, double &val);// set the value of physical properties, variables and parameters
-    void set_val_star(int i, double &val); //set the value of physical properties, variables and parameters based on star values
+    void set_val(int i, const double &val);// set the value of physical properties, variables and parameters
+    void set_val_star(int i, const double &val); //set the value of physical properties, variables and parameters based on star values
 
     vector<int> connectors; //the id of connectors attached to the block
     vector<int> connectors_se;// 0: block1 of the connector 1: block 2 of the connector

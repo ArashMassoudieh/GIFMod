@@ -75,8 +75,8 @@ private:
     double get_val(int i, int ii=0); // get the value of physical properties, variables and parameters
     double get_val_star(int i,int ii=0); //get the value of physical properties, variables and parameters based on star values
     double get_val(const string &S);
-    double set_val(int i, const double &val);// set the value of physical properties, variables and parameters
-    double set_val_star(int i, const double &val); //set the value of physical properties, variables and parameters based on star values
+    bool set_val(int i, const double &val);// set the value of physical properties, variables and parameters
+    bool set_val_star(int i, const double &val); //set the value of physical properties, variables and parameters based on star values
     bool set_val(const string &SS, const double &val); //set the values of physical parameters
 
     vector<CFunction> funcs;

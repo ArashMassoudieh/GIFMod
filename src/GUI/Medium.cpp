@@ -914,14 +914,14 @@ CVector_arma CMedium::getres_S(CVector_arma &X, const double &dt)
 void CMedium::setS_star(const CVector &X)
 {
     for (unsigned int i=0; i<Blocks.size(); i++)
-		Blocks[i].set_val("s*", X.vec[i]);
+		Blocks[i].set_val_star(4, X.vec[i]);
 
 }
 
 void CMedium::setS_star(CVector_arma &X)
 {
     for (unsigned int i=0; i<Blocks.size(); i++)
-		Blocks[i].set_val("s*", X[i]);
+		Blocks[i].set_val_star(4, X[i]);
 
 }
 
@@ -937,14 +937,14 @@ void CMedium::setH_star()
 {
 	if (!steady_state_hydro())
         for (unsigned int i=0; i<Blocks.size(); i++)
-			Blocks[i].set_val("h*", Blocks[i].calc_star(Blocks[i].H_S_expression));
+			Blocks[i].set_val_star(1, Blocks[i].calc_star(Blocks[i].H_S_expression));
 }
 
 void CMedium::setH()
 {
 	if (!steady_state_hydro())
         for (unsigned int i=0; i<Blocks.size(); i++)
-			Blocks[i].set_val("h", Blocks[i].calc(Blocks[i].H_S_expression));
+			Blocks[i].set_val(1, Blocks[i].calc(Blocks[i].H_S_expression));
 }
 
 
@@ -988,18 +988,18 @@ void CMedium::setQ_star()
         if (Connectors[i].control)
 		{
             if (Connectors[i].Controller->output.n>0)
-                Connectors[i].set_val("q*", Connectors[i].Controller->output.interpol(Solution_State.t));
+                Connectors[i].set_val_star(7, Connectors[i].Controller->output.interpol(Solution_State.t));
 			else
-                Connectors[i].set_val("q*", Connectors[i].Controller->value);
+                Connectors[i].set_val_star(7, Connectors[i].Controller->value);
 		}
         else if (!Connectors[i].presc_flow)
-            Connectors[i].set_val("q*", Connectors[i].calc_star(Connectors[i].flow_expression));
+            Connectors[i].set_val_star(7, Connectors[i].calc_star(Connectors[i].flow_expression));
 		else
-            Connectors[i].set_val("q*", Connectors[i].presc_flowrate.interpol(Solution_State.t));
+            Connectors[i].set_val_star(7, Connectors[i].presc_flowrate.interpol(Solution_State.t));
 
 
         if (Connectors[i].vapor_transport)
-            Connectors[i].set_val("q_v*", Connectors[i].calc_star(Connectors[i].flow_expression_v));
+            Connectors[i].set_val_star(13, Connectors[i].calc_star(Connectors[i].flow_expression_v));
         Connectors[i].flow_factor = 1;
 
 	}

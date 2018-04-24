@@ -904,7 +904,7 @@ double CMBBlock::calc_star(CStringOP &term, const vector<int> &ii)
 	return out;
 }
 
-void CMBBlock::set_val(int i, double &val)
+void CMBBlock::set_val(int i, const double &val)
 {
 	if (i==1) H = val;
 	if (i==2) A = val;
@@ -923,27 +923,27 @@ void CMBBlock::set_val(int i, double &val)
 
 }
 
-void CMBBlock::set_val_star(int i, double &val)
+void CMBBlock::set_val_star(int i, const double &val)
 {
-	if (i==1) H_star = val;
-	if (i==2) A_star = val;
-	if (i==3) V = val;
-	if (i==4) S_star = val;
-	if (i==5) z0 = val;
-	if (i==9) S_star = V*(val*(fs_params[theta_s]-fs_params[theta_r]) + fs_params[theta_r]);
-	if (i==10) S_star = V*val;
-	if (i==13) vapor_diffusion=val;
-	if (i==14) bulk_density = val;
+	if (i==1) {H_star = val; return;}
+	if (i==2) {A_star = val; return;}
+	if (i==3) {V = val; return;}
+	if (i==4) {S_star = val; return;}
+	if (i==5) {z0 = val; return; }
+	if (i==9) {S_star = V*(val*(fs_params[theta_s]-fs_params[theta_r]) + fs_params[theta_r]); return; }
+	if (i==10) {S_star = V*val; return; }
+	if (i==13) {vapor_diffusion=val; return; }
+	if (i==14) {bulk_density = val; return; }
 
-	if (i>=50 && i<100) fs_params[i-50] = val;
-	if (i>=100 && i<200) G[(i-100)/100][(i-100)%100] = val; // colloidal phases
-	if (i>=1000 && i<2000) CG[int((i-1000)/n_phases)][(i-1000)%n_phases] = val;
-	if (i>=2000 && i<3000) rxn_params[i-2000] = val;
+	if (i>=50 && i<100) {fs_params[i-50] = val; return;}
+	if (i>=100 && i<200) {G[(i-100)/100][(i-100)%100] = val; return;}// colloidal phases
+	if (i>=1000 && i<2000) {CG[int((i-1000)/n_phases)][(i-1000)%n_phases] = val; return;}
+	if (i>=2000 && i<3000) {rxn_params[i-2000] = val; return;}
 	// 3000-3999: solid_phase
 
 }
 
-bool CMBBlock::set_val(const string &SS, double val)
+bool CMBBlock::set_val(const string &SS, const double &val)
 {
 	bool success = false;
 	vector<char> del;
