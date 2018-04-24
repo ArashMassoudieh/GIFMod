@@ -790,14 +790,14 @@ void CMedium::set_num_constituents(int n)
 
 
 
-CVector CMedium::getres_S(const CVector &X, double dt)
+CVector CMedium::getres_S(const CVector &X, const double &dt)
 {
 	CVector F(X.num);  //Create Vector F with size num
 	setS_star(X);     //Blocks[i].set_val("S*", X[i]);
 	CVector X1 = X;
 
     for (unsigned int i=0; i<Blocks.size(); i++)
-	{	if (Blocks[i].setzero==1) {dt=X.vec[i]; Blocks[i].S_star=0;}
+	{	//if (Blocks[i].setzero==1) {dt=X.vec[i]; Blocks[i].S_star=0;}
         if (Blocks[i].setzero==2) {Blocks[i].outflow_corr_factor=X1[i];	Blocks[i].S_star=0;}
         if (Blocks[i].setzero!=0) X1[i]=0; else Blocks[i].outflow_corr_factor = 1;
 	}
@@ -851,7 +851,7 @@ CVector CMedium::getres_S(const CVector &X, double dt)
 }
 
 
-CVector_arma CMedium::getres_S(CVector_arma &X, double dt)
+CVector_arma CMedium::getres_S(CVector_arma &X, const double &dt)
 {
 	CVector_arma F(X.num);  //Create Vector F with size num
 	setS_star(X);     //Blocks[i].set_val("S*", X[i]);
@@ -859,7 +859,7 @@ CVector_arma CMedium::getres_S(CVector_arma &X, double dt)
 
     for (unsigned int i=0; i<Blocks.size(); i++)
 	{
-		if (Blocks[i].setzero == 1) { dt = X[i]; Blocks[i].S_star = 0; }
+		//if (Blocks[i].setzero == 1) { dt = X[i]; Blocks[i].S_star = 0; }
 		if (Blocks[i].setzero == 2) { Blocks[i].outflow_corr_factor = X1[i];	Blocks[i].S_star = 0; }
 		if (Blocks[i].setzero != 0) X1[i] = 0; else Blocks[i].outflow_corr_factor = 1;
 	}
@@ -2491,7 +2491,7 @@ void CMedium::get_funcs()
 
 }
 
-int CMedium::getblocksq(string id)
+int CMedium::getblocksq(const string &id)
 {
 #ifdef QT_version
 	if (!Blocks.size())
@@ -2504,7 +2504,7 @@ int CMedium::getblocksq(string id)
 	return -1;
 }
 
-int CMedium::getconnectorsq(string id)
+int CMedium::getconnectorsq(const string &id)
 {
 #ifdef QT_version
     if (!Connectors.size())
@@ -2914,7 +2914,7 @@ void CMedium::onestepsolve_const(double dtt)
 
 
 
-CVector CMedium::getres_C(const CVector &X, double dtt)
+CVector CMedium::getres_C(const CVector &X, const double &dtt)
 {
 
 	CVector F(Blocks[0].n_phases*Blocks.size());
@@ -2995,7 +2995,7 @@ CVector CMedium::getres_C(const CVector &X, double dtt)
 }
 
 
-CVector_arma CMedium::getres_C(CVector_arma &X, double dtt)
+CVector_arma CMedium::getres_C(CVector_arma &X, const double &dtt)
 {
 
 	CVector_arma F(Blocks[0].n_phases*Blocks.size());
@@ -3214,7 +3214,7 @@ vector<int> CMedium::get_phase_solid_id(int i)
 }
 
 
-CVector CMedium::getres_Q(const CVector &X, double dtt)
+CVector CMedium::getres_Q(const CVector &X, const double &dtt)
 {
 	int max_phases = 10000;
 	if (!sorption())
@@ -3477,7 +3477,7 @@ CVector CMedium::getres_Q(const CVector &X, double dtt)
 }
 
 
-CVector_arma CMedium::getres_Q(CVector_arma &X, double dtt)
+CVector_arma CMedium::getres_Q(CVector_arma &X, const double &dtt)
 {
 	int max_phases = 10000;
 	if (!sorption())
@@ -3954,7 +3954,7 @@ void CMedium::evaluate_area(bool all)
 }
 
 
-int CMedium::lookup_external_flux(string S)
+int CMedium::lookup_external_flux(const string &S)
 {
 	int out = -1;
     for (unsigned int i=0; i < externalflux().size(); i++)
@@ -3966,7 +3966,7 @@ int CMedium::lookup_external_flux(string S)
 
 }
 
-int CMedium::lookup_evaporation(string S)
+int CMedium::lookup_evaporation(const string &S)
 {
 	int out = -1;
     for (unsigned int i=0; i < evaporation_model().size(); i++)
@@ -3977,7 +3977,7 @@ int CMedium::lookup_evaporation(string S)
 
 }
 
-int CMedium::lookup_parameters(string S)
+int CMedium::lookup_parameters(const string &S)
 {
 	int out = -1;
     for (unsigned int i=0; i < parameters().size(); i++)
@@ -3989,7 +3989,7 @@ int CMedium::lookup_parameters(string S)
 }
 
 
-int CMedium::lookup_sensors(string S)
+int CMedium::lookup_sensors(const string &S)
 {
 	int out = -1;
     for (unsigned int i=0; i < sensors().size(); i++)
@@ -4012,7 +4012,7 @@ int CMedium::lookup_observation(string S)
 }
 
 */
-int CMedium::lookup_particle_type(string S)
+int CMedium::lookup_particle_type(const string &S)
 {
 	int out = -1;
     for (unsigned int i=0; i < Solid_phase().size(); i++)
@@ -4023,7 +4023,7 @@ int CMedium::lookup_particle_type(string S)
 	return out;
 }
 
-int CMedium::lookup_buildup(string S)
+int CMedium::lookup_buildup(const string &S)
 {
 	int out = -1;
     for (unsigned int i=0; i < buildup().size(); i++)
@@ -4034,7 +4034,7 @@ int CMedium::lookup_buildup(string S)
 	return out;
 }
 
-void CMedium::writetolog(string S)
+void CMedium::writetolog(const string &S)
 {
 	fstream file(outputpathname() + log_file_name());
 	file << S << std::endl;
@@ -4671,7 +4671,7 @@ vector<CEvaporation>& CMedium::evaporation_model()
 	return parent->evaporation_model;
 }
 
-int CMedium::lookup_experiment(string S)
+int CMedium::lookup_experiment(const string &S)
 {
     for (unsigned int i=0; i < parent->Medium.size(); i++)
 		if (S == parent->Medium[i].name) return i;
@@ -4683,7 +4683,7 @@ double CMedium::calc_obj_function(double time_interval)
 	return 0.0;
 }
 
-int CMedium::lookup_controllers(string S)
+int CMedium::lookup_controllers(const string &S)
 {
 	int out = -1;
     for (unsigned int i=0; i < controllers().size(); i++)
@@ -4693,7 +4693,7 @@ int CMedium::lookup_controllers(string S)
 	return out;
 }
 
-int CMedium::lookup_objective_functions(string S)
+int CMedium::lookup_objective_functions(const string &S)
 {
 	int out = -1;
     for (unsigned int i=0; i < objective_functions().size(); i++)
@@ -5326,7 +5326,7 @@ void CMedium::onestepsolve_const_ar(double dtt)
 
 
 
-CMatrix_arma CMedium::Jacobian_S(CVector_arma &X, double dt, bool base = true)
+CMatrix_arma CMedium::Jacobian_S(CVector_arma &X, const double &dt, bool base = true)
 {
 	CMatrix_arma M(X.num);
 
@@ -5356,7 +5356,7 @@ CMatrix_arma CMedium::Jacobian_S(CVector_arma &X, double dt, bool base = true)
 	return Transpose(M);
 }
 
-CVector_arma CMedium::Jacobian_S(CVector_arma &V, int &i, double &dt)  //Works also w/o reference (&)
+CVector_arma CMedium::Jacobian_S(CVector_arma &V, int &i, const double &dt)  //Works also w/o reference (&)
 {
 	double epsilon;
 	if (V[i]<1e-5) epsilon = -1e-6; else epsilon = 1e-6;
@@ -5369,7 +5369,7 @@ CVector_arma CMedium::Jacobian_S(CVector_arma &V, int &i, double &dt)  //Works a
 	return (F1 - F0) / epsilon;
 }
 
-CVector_arma CMedium::Jacobian_S(CVector_arma &V, CVector_arma &F0, int i, double dt)  //Works also w/o reference (&)
+CVector_arma CMedium::Jacobian_S(CVector_arma &V, CVector_arma &F0, int i, const double &dt)  //Works also w/o reference (&)
 {
 	double epsilon;
 	epsilon = -1e-6;
@@ -5392,7 +5392,7 @@ CVector_arma CMedium::Jacobian_S(CVector_arma &V, CVector_arma &F0, int i, doubl
 
 
 
-CMatrix_arma CMedium::Jacobian_C(CVector_arma &X, double dt, bool base)
+CMatrix_arma CMedium::Jacobian_C(CVector_arma &X, const double &dt, bool base)
 {
 	CMatrix_arma M(X.num);
 
@@ -5419,7 +5419,7 @@ CMatrix_arma CMedium::Jacobian_C(CVector_arma &X, double dt, bool base)
 	return Transpose(M);
 }
 
-CVector_arma CMedium::Jacobian_C(CVector_arma &V, int i, double dt)  //Works also w/o reference (&)
+CVector_arma CMedium::Jacobian_C(CVector_arma &V, int i, const double &dt)  //Works also w/o reference (&)
 {
 	double epsilon;
 	if (V[i]<1e-5) epsilon = -1e-6; else epsilon = 1e-6;
@@ -5441,7 +5441,7 @@ CVector_arma CMedium::Jacobian_C(CVector_arma &V, int i, double dt)  //Works als
 	return grad;
 }
 
-CVector_arma CMedium::Jacobian_C(CVector_arma &V, const CVector_arma &F0, int i, double dt)
+CVector_arma CMedium::Jacobian_C(CVector_arma &V, const CVector_arma &F0, int i, const double &dt)
 {
 	double epsilon;
 	if ((V[i]<1) && (V[i]>-1))
@@ -5475,7 +5475,7 @@ CMatrix_arma CMedium::Jacobian_Q(CVector_arma &X, double dt, bool base)
 	return Transpose(M);
 }
 
-CVector_arma CMedium::Jacobian_Q(CVector_arma &V, int i, double dt)
+CVector_arma CMedium::Jacobian_Q(CVector_arma &V, int i, const double &dt)
 {
 	double epsilon;
 	if (V[i]<1e-5) epsilon = -1e-6; else epsilon = 1e-6;
@@ -5497,7 +5497,7 @@ CVector_arma CMedium::Jacobian_Q(CVector_arma &V, int i, double dt)
 	return grad;
 }
 
-CVector_arma CMedium::Jacobian_Q(CVector_arma &V, const CVector_arma &F0, int i, double dt)
+CVector_arma CMedium::Jacobian_Q(CVector_arma &V, const CVector_arma &F0, int i, const double &dt)
 {
 	double epsilon;
 	if ((V[i]<1) && (V[i]>-1))
@@ -5671,7 +5671,7 @@ bool CMedium::show_messages()
         return false;
 }
 
-void CMedium::show_message(string s)
+void CMedium::show_message(const string &s)
 {
 #ifndef QT_version
     if (show_messages())
@@ -5681,7 +5681,7 @@ void CMedium::show_message(string s)
 #endif
 }
 
-void CMedium::show_status(string s)
+void CMedium::show_status(const string &s)
 {
 #ifndef QT_version
     if (show_messages())

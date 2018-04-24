@@ -243,7 +243,7 @@ CMBBlock& CMBBlock::operator=(const CMBBlock &BB)
 	return *this;
 }
 
-double CMBBlock::get_val(int i, vector<int> ii)
+double CMBBlock::get_val(int i, const vector<int> &ii)
 {
 	/* variable codes:
 	H: 1 : Hydraulic Head
@@ -341,7 +341,7 @@ double CMBBlock::get_val(int i, vector<int> ii)
     return 0;
 }
 
-double CMBBlock::get_val(string SS)
+double CMBBlock::get_val(const string &SS)
 {
 	/* variable codes:
 	H: 1 : Hydraulic Head
@@ -482,7 +482,7 @@ double CMBBlock::get_val(string SS)
     return 0;
 }
 
-double CMBBlock::get_val_star(int i, vector<int> ii)
+double CMBBlock::get_val_star(int i, const vector<int> &ii)
 {
 	if (i==1) return H_star;
 	if (i==2) return A_star;
@@ -566,7 +566,7 @@ double CMBBlock::get_val_star(int i, vector<int> ii)
 	return 0;
 }
 
-double CMBBlock::calc(CStringOP &term, vector<int> ii)  //Works w/o reference(&)
+double CMBBlock::calc(CStringOP &term, const vector<int> &ii)  //Works w/o reference(&)
 {
 	double out = 0;
 	if ((term.nterms == 1) && (term.nopts == 0))
@@ -735,7 +735,7 @@ double CMBBlock::calc(CStringOP &term, vector<int> ii)  //Works w/o reference(&)
 
 }
 
-double CMBBlock::calc_star(CStringOP &term, vector<int> ii)
+double CMBBlock::calc_star(CStringOP &term, const vector<int> &ii)
 {
 	double out = 0;
 	if ((term.nterms == 1) && (term.nopts == 0))
@@ -904,7 +904,7 @@ double CMBBlock::calc_star(CStringOP &term, vector<int> ii)
 	return out;
 }
 
-void CMBBlock::set_val(int i, double val)
+void CMBBlock::set_val(int i, double &val)
 {
 	if (i==1) H = val;
 	if (i==2) A = val;
@@ -923,7 +923,7 @@ void CMBBlock::set_val(int i, double val)
 
 }
 
-void CMBBlock::set_val_star(int i, double val)
+void CMBBlock::set_val_star(int i, double &val)
 {
 	if (i==1) H_star = val;
 	if (i==2) A_star = val;
@@ -1151,7 +1151,7 @@ double CMBBlock::get_evaporation(double t)
 
 double CMBBlock::get_evaporation(int j, double t)
 {
-	double sum;
+	double sum=0;
 	if (evaporation_m[j]->model != "time_series")
 		sum = evaporation_m[j]->calculate_star(this);
 	if ((evaporation_m[j]->evaporation_TS.n>0) && (evaporation_m[j]->model == "time_series"))
@@ -1512,27 +1512,23 @@ void CMBBlock::set_up_plant_growth_expressions()
 
 double CMBBlock::calc(CStringOP &C)
 {
-	vector<int> ii;
-	return calc(C, ii);
+	return calc(C, dummy_vec);
 
 }
 
 double CMBBlock::calc_star(CStringOP &C)
 {
-	vector<int> ii;
-	return calc_star(C, ii);
+	return calc_star(C, dummy_vec);
 }
 
 double CMBBlock::get_val_star(int i)
 {
-	vector<int> ii;
-	return get_val_star(i, ii);
+	return get_val_star(i, dummy_vec);
 }
 
 double CMBBlock::get_val(int i)
 {
-	vector<int> ii;
-	return get_val(i, ii);
+	return get_val(i, dummy_vec);
 }
 
 bool CMBBlock::set_properties(string s)

@@ -735,7 +735,7 @@ double CConnection::get_val_star(int i, int ii)
     return 0;
 }
 
-bool CConnection::set_val(string SS, double val)
+bool CConnection::set_val(const string &SS, const double &val)
 {
 	vector<string> s = split(SS,',');
 	if (s.size()==1)
@@ -910,7 +910,7 @@ void CConnection::evaluate_const_dispersion_star()
 		dispersion_star[i] = calc_star(dispersion_expression)+RXN->cons[i].diffusion;
 }
 
-double CConnection::get_val(string S)
+double CConnection::get_val(const string &S)
 {
 	/* variable codes:
 	H: 1

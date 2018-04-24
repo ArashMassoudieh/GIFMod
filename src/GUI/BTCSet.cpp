@@ -302,7 +302,7 @@ CTimeSeriesSet::CTimeSeriesSet(string filename, bool varytime)
 	if (nvars > 1)
 		for (int i = 0; i < nvars; i++)
 			if (names[i] == "")
-				names[i] = "Data (" + i + ')';
+				names[i] = "Data (" + numbertostring(i) + ")";
 }
 
 

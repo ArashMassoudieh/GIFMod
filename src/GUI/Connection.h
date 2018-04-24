@@ -73,10 +73,10 @@ private:
     double calc_star(CStringOP &term, int ii=-1); //The function to calculate any for star values
     double get_val(int i, int ii=0); // get the value of physical properties, variables and parameters
     double get_val_star(int i,int ii=0); //get the value of physical properties, variables and parameters based on star values
-    double get_val(string S);
-    double set_val(int i, double val);// set the value of physical properties, variables and parameters
-    double set_val_star(int i, double val); //set the value of physical properties, variables and parameters based on star values
-    bool set_val(string SS, double val); //set the values of physical parameters
+    double get_val(const string &S);
+    double set_val(int i, const double &val);// set the value of physical properties, variables and parameters
+    double set_val_star(int i, const double &val); //set the value of physical properties, variables and parameters based on star values
+    bool set_val(const string &SS, const double &val); //set the values of physical parameters
 
     vector<CFunction> funcs;
     void get_funcs(CStringOP &term);

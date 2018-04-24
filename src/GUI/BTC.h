@@ -37,7 +37,7 @@ public:
 
     vector<double> D;
 
-	double interpol(double x); //interpolate at location x
+	double interpol(const double &x); //interpolate at location x
 	CTimeSeries MA_smooth(int span); //Moving average smoothing with span of 1+2*span
 	double interpol_D(double x); //interpolate the distance to the next non-zero data point
 	CTimeSeries interpol(vector<double> x); //interpolate at each value in vector x
