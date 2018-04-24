@@ -80,6 +80,8 @@ CConnection::CConnection(const CConnection &CC)
 	Block2ID = CC.Block2ID;
 	Block1 = CC.Block1;
 	Block2 = CC.Block2;
+	Block1N = CC.Block1N;
+	Block2N = CC.Block2N;
 	A = CC.A;
 	d = CC.d;
 	v = CC.v;
@@ -126,6 +128,8 @@ CConnection& CConnection::operator=(const CConnection &CC)
 	Block2ID = CC.Block2ID;
 	Block1 = CC.Block1;
 	Block2 = CC.Block2;
+	Block1N = CC.Block1N;
+	Block2N = CC.Block2N;
 	A = CC.A;
 	d = CC.d;
 	v = CC.v;

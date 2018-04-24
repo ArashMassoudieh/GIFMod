@@ -29,6 +29,7 @@ public:
 	~CConnection(void);
 	string Block1ID, Block2ID;
 	CMBBlock *Block1, *Block2; //The blocks connected via this connection AM
+    int Block1N, Block2N;
     string ID;
     bool set_properties(string s);
     bool set_property(string s, double value);

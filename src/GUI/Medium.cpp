@@ -99,6 +99,8 @@ CMedium::CMedium(const CMedium &M)
 	{
         Connectors[i].Block1 = &Blocks[getblocksq(Connectors[i].Block1ID)];
         Connectors[i].Block2 = &Blocks[getblocksq(Connectors[i].Block2ID)];
+        Connectors[i].Block1N = getblocksq(Connectors[i].Block1ID);
+        Connectors[i].Block2N = getblocksq(Connectors[i].Block2ID);
         Connectors[i].RXN = &RXN();
 	}
 
@@ -554,6 +556,8 @@ void CMedium::f_set_default_connector_expressions()
         for (unsigned int j = 0;  j< Solid_phase().size(); j++)Connectors[i].Solid_phase_id.push_back(j);
         Connectors[i].Block1 = &Blocks[getblocksq(Connectors[i].Block1ID)];
         Connectors[i].Block2 = &Blocks[getblocksq(Connectors[i].Block2ID)];
+        Connectors[i].Block1N = getblocksq(Connectors[i].Block1ID);
+        Connectors[i].Block2N = getblocksq(Connectors[i].Block2ID);
         Blocks[getblocksq(Connectors[i].Block1ID)].connectors.push_back(i);
         Blocks[getblocksq(Connectors[i].Block1ID)].connectors_se.push_back(0);
         Blocks[getblocksq(Connectors[i].Block2ID)].connectors.push_back(i);
@@ -880,14 +884,14 @@ CVector_arma CMedium::getres_S(CVector_arma &X, const double &dt)
 
     for (unsigned int i=0; i<Connectors.size(); i++)
 	{
-        if (w()*Connectors[i].Q + (1 - w())*Connectors[i].Q_star>0) Connectors[i].flow_factor = Blocks[getblocksq(Connectors[i].Block1ID)].outflow_corr_factor;
-        if (w()*Connectors[i].Q + (1 - w())*Connectors[i].Q_star<0) Connectors[i].flow_factor = Blocks[getblocksq(Connectors[i].Block2ID)].outflow_corr_factor;
+        if (w()*Connectors[i].Q + (1 - w())*Connectors[i].Q_star>0) Connectors[i].flow_factor = Connectors[i].Block1->outflow_corr_factor;
+        if (w()*Connectors[i].Q + (1 - w())*Connectors[i].Q_star<0) Connectors[i].flow_factor = Connectors[i].Block2->outflow_corr_factor;
 	}
 
     for (unsigned int i=0; i<Connectors.size(); i++)
 	{
-        F[getblocksq(Connectors[i].Block1ID)] += (w()*Connectors[i].Q + (1 - w())*Connectors[i].Q_star)*Connectors[i].flow_factor;
-        F[getblocksq(Connectors[i].Block2ID)] -= (w()*Connectors[i].Q + (1 - w())*Connectors[i].Q_star)*Connectors[i].flow_factor;
+        F[Connectors[i].Block1N] += (w()*Connectors[i].Q + (1 - w())*Connectors[i].Q_star)*Connectors[i].flow_factor;
+        F[Connectors[i].Block2N] -= (w()*Connectors[i].Q + (1 - w())*Connectors[i].Q_star)*Connectors[i].flow_factor;
 	}
 
     for (unsigned int i=0; i<Blocks.size(); i++)
