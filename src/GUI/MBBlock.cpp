@@ -568,6 +568,28 @@ double CMBBlock::get_val_star(int i, const vector<int> &ii)
 
 double CMBBlock::calc(CStringOP &term, const vector<int> &ii)  //Works w/o reference(&)
 {
+	if (term.function==true)
+    {
+        if (term.number == min_)
+			return min(calc(term.terms[0],ii), calc(term.terms[1],ii));
+		if (term.number == max_)
+			return max(calc(term.terms[0],ii), calc(term.terms[1],ii));
+		if (term.number == sq1_)
+			return 0.5/calc(term.terms[1],ii)*(calc(term.terms[0],ii)*calc(term.terms[1],ii)+sqrt(pow(calc(term.terms[0],ii)*calc(term.terms[1],ii),2)+1));
+        if (term.number == frs_)
+			return funcs[0].evaluate(get_val(9,ii));
+		if (term.number == fas_)
+			return funcs[0].evaluate(get_val(4,ii));
+        if (term.number == mon_)
+			return mon(calc(term.terms[0],ii),calc(term.terms[1],ii));
+		if (term.number == sq2_)
+		{	double term1 = calc(term.terms[0],ii);
+			double term2 = calc(term.terms[1],ii);
+			return pow(term1,(0.5*term1+term2)/(term1+term2));
+		}
+
+    }
+
 	double out = 0;
 	if ((term.nterms == 1) && (term.nopts == 0))
 	{
@@ -687,10 +709,6 @@ double CMBBlock::calc(CStringOP &term, const vector<int> &ii)  //Works w/o refer
 			return exp(out);
 		if (term.number == hsd_)
 			return Heavyside(out);
-		if (term.number == min_)
-			return min(calc(term.terms[0],ii), calc(term.terms[1],ii));
-		if (term.number == max_)
-			return max(calc(term.terms[0],ii), calc(term.terms[1],ii));
 		if (term.number == lne_)
 			return log(out);
 		if (term.number == lnt_)
@@ -699,23 +717,10 @@ double CMBBlock::calc(CStringOP &term, const vector<int> &ii)  //Works w/o refer
 			return 1.0/(1.0+exp(-out));
 		if (term.number == pos_)
 			return 0.5*(fabs(out)+out);
-		if (term.number == sq1_)
-			return 0.5/calc(term.terms[1],ii)*(calc(term.terms[0],ii)*calc(term.terms[1],ii)+sqrt(pow(calc(term.terms[0],ii)*calc(term.terms[1],ii),2)+1));
 		if (term.number == sqr_)
 			return sqrt(out);
-		if (term.number == frs_)
-			return funcs[0].evaluate(get_val("se"));
-		if (term.number == fas_)
-			return funcs[0].evaluate(get_val("s"));
 		if (term.number == ply_)
 			return pipe_poly(out);
-		if (term.number == mon_)
-			return mon(calc(term.terms[0],ii),calc(term.terms[1],ii));
-		if (term.number == sq2_)
-		{	double term1 = calc(term.terms[0],ii);
-			double term2 = calc(term.terms[1],ii);
-			return pow(term1,(0.5*term1+term2)/(term1+term2));
-		}
 		if (term.number==abs_)
 			return fabs(out);
 		if (term.number==sqs_)
@@ -737,6 +742,28 @@ double CMBBlock::calc(CStringOP &term, const vector<int> &ii)  //Works w/o refer
 
 double CMBBlock::calc_star(CStringOP &term, const vector<int> &ii)
 {
+	if (term.function==true)
+    {
+        if (term.number == min_)
+			return min(calc_star(term.terms[0],ii), calc_star(term.terms[1],ii));
+		if (term.number == max_)
+			return max(calc_star(term.terms[0],ii), calc_star(term.terms[1],ii));
+		if (term.number == sq1_)
+			return 0.5/calc_star(term.terms[1],ii)*(calc_star(term.terms[0],ii)*calc_star(term.terms[1],ii)+sqrt(pow(calc_star(term.terms[0],ii)*calc_star(term.terms[1],ii),2)+1));
+        if (term.number == frs_)
+			return funcs[0].evaluate(get_val(9,ii));
+		if (term.number == fas_)
+			return funcs[0].evaluate(get_val(4,ii));
+        if (term.number == mon_)
+			return mon(calc_star(term.terms[0],ii),calc_star(term.terms[1],ii));
+		if (term.number == sq2_)
+		{	double term1 = calc_star(term.terms[0],ii);
+			double term2 = calc_star(term.terms[1],ii);
+			return pow(term1,(0.5*term1+term2)/(term1+term2));
+		}
+
+    }
+
 	double out = 0;
 	if ((term.nterms == 1) && (term.nopts == 0))
 	{
@@ -857,10 +884,6 @@ double CMBBlock::calc_star(CStringOP &term, const vector<int> &ii)
 			return exp(out);
 		if (term.number == hsd_)
 			return Heavyside(out);
-		if (term.number == min_)
-			return min(calc_star(term.terms[0],ii), calc_star(term.terms[1],ii));
-		if (term.number == max_)
-			return max(calc_star(term.terms[0],ii), calc_star(term.terms[1],ii));
 		if (term.number == lne_)
 			return log(out);
 		if (term.number == lnt_)
@@ -869,23 +892,10 @@ double CMBBlock::calc_star(CStringOP &term, const vector<int> &ii)
 			return 1.0/(1.0+exp(-out));
 		if (term.number == pos_)
 			return 0.5*(fabs(out)+out);
-		if (term.number == sq1_)
-			return 0.5/calc_star(term.terms[1],ii)*(calc_star(term.terms[0],ii)*calc_star(term.terms[1],ii)+sqrt(pow(calc_star(term.terms[0],ii)*calc_star(term.terms[1],ii),2)+1));
 		if (term.number == sqr_)
 			return sqrt(out);
-		if (term.number == frs_)
-			return funcs[0].evaluate(get_val("se*"));
-		if (term.number == fas_)
-			return funcs[0].evaluate(get_val("s*"));
 		if (term.number == ply_)
 			return pipe_poly(out);
-		if (term.number == mon_)
-			return mon(calc_star(term.terms[0],ii),calc_star(term.terms[1],ii));
-		if (term.number == sq2_)
-		{	double term1 = calc_star(term.terms[0],ii);
-			double term2 = calc_star(term.terms[1],ii);
-			return pow(term1,(0.5*term1+term2)/(term1+term2));
-		}
 		if (term.number==abs_)
 			return fabs(out);
 		if (term.number==sqs_)

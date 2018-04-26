@@ -2387,7 +2387,9 @@ void CMedium::finalize_set_param()
                     else if (Blocks[getblocksq(Connectors[i].Block2ID)].indicator == Soil)
                         Connectors[i].A = Connectors[i].A_star = Blocks[getblocksq(Connectors[i].Block2ID)].A;
 				}
+
 			}
+            Connectors[i].A_star = Connectors[i].A;
 
             if (Connectors[i].d==0)
 
@@ -2479,6 +2481,7 @@ void CMedium::set_default()
 
 void CMedium::evaluate_functions()
 {
+    evaluate_area(true);
     for (unsigned int i=0; i<Connectors.size(); i++)
         Connectors[i].evaluate_functions();
 
@@ -5211,12 +5214,12 @@ void CMedium::onestepsolve_const_ar(double dtt)
 		else if (M_Q_arma.getnumcols() > 0 || (dx == dx) != true || solution_method()=="Direct Solution")
 		{
 
-			CVector FF = F;
-			CMatrix M_Q = M_Q_arma;
-			FF.writetofile("F.txt");
-			M_Q.writetofile("m.txt");
-			CMatrix Precond_Q = Preconditioner_Q_arma;
-			Precond_Q.writetofile("Precond.txt");
+			//CVector FF = F;
+			//CMatrix M_Q = M_Q_arma;
+			//FF.writetofile("F.txt");
+			//M_Q.writetofile("m.txt");
+			//CMatrix Precond_Q = Preconditioner_Q_arma;
+			//Precond_Q.writetofile("Precond.txt");
 
 			dx = dtt / Solution_State.dtt_J_q*solve_ar(M_Q_arma, F);
 			if ((dx.num == 0) || (dx == dx) != true)
@@ -5227,6 +5230,8 @@ void CMedium::onestepsolve_const_ar(double dtt)
 				return;
 			}
 		}
+		else
+            dx = dtt / Solution_State.dtt_J_q*(InvJ_Q_arma*normalize_diag(F, M_Q_arma));
 
 
 

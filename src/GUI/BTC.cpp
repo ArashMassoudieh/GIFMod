@@ -177,7 +177,6 @@ CTimeSeries CTimeSeries::Log(double m)
 
 double CTimeSeries::interpol(const double &x)
 {
-	double r=0;
 	if (n>1)
 	{
 
@@ -185,10 +184,10 @@ double CTimeSeries::interpol(const double &x)
 		{	for (int i=0; i<n-1; i++)
 			{
 				if (t[i] <= x && t[i+1] >= x)
-					r=(C[i+1]-C[i])/(t[i+1]-t[i])*(x-t[i]) + C[i];
+					return (C[i+1]-C[i])/(t[i+1]-t[i])*(x-t[i]) + C[i];
 			}
-			if (x>t[n-1]) r=C[n-1];
-			if (x<t[0]) r=C[0];
+			if (x>t[n-1]) return C[n-1];
+			if (x<t[0]) return C[0];
 		}
 		else
 		{
@@ -201,8 +200,8 @@ double CTimeSeries::interpol(const double &x)
 		}
 	}
 	else
-		r = C[0];
-	return r;
+		return C[0];
+
 
 }
 
