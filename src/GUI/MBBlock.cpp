@@ -380,7 +380,7 @@ double CMBBlock::get_val(const string &SS)
 		else
 			return (S/V - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);   //allow s to be above 1
 		}
-		if (tolower(trim(s[0]))=="theta")
+        if (tolower(trim(s[0]))=="theta" || tolower(trim(s[0]))=="~theta")
 		{	if (indicator!=0)
 			if (S>0) return S/(S+1e-5*A); else return 0;
 		else
