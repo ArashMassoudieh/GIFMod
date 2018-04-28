@@ -825,14 +825,14 @@ CVector CMedium::getres_S(const CVector &X, const double &dt)
 
     for (unsigned int i=0; i<Connectors.size(); i++)
 	{
-        if  (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star>0) Connectors[i].flow_factor=Blocks[getblocksq(Connectors[i].Block1ID)].outflow_corr_factor;
-        if  (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star<0) Connectors[i].flow_factor=Blocks[getblocksq(Connectors[i].Block2ID)].outflow_corr_factor;
+        if  (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star>0) Connectors[i].flow_factor=Blocks[Connectors[i].Block1N].outflow_corr_factor;
+        if  (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star<0) Connectors[i].flow_factor=Blocks[Connectors[i].Block2N].outflow_corr_factor;
 	}
 
     for (unsigned int i=0; i<Connectors.size(); i++)
 	{
-        F[getblocksq(Connectors[i].Block1ID)] += (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star)*Connectors[i].flow_factor;
-        F[getblocksq(Connectors[i].Block2ID)] -= (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star)*Connectors[i].flow_factor;
+        F[Connectors[i].Block1N] += (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star)*Connectors[i].flow_factor;
+        F[Connectors[i].Block2N] -= (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star)*Connectors[i].flow_factor;
 	}
 
 
@@ -1484,8 +1484,8 @@ void CMedium::Blocksmassbalance()
 	}
     for (unsigned int i=0; i<Connectors.size(); i++)
 	{
-        Blocks[getblocksq(Connectors[i].Block1ID)].MBBlocks += (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star)*Solution_State.dtt*Connectors[i].flow_factor;
-        Blocks[getblocksq(Connectors[i].Block2ID)].MBBlocks -= (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star)*Solution_State.dtt*Connectors[i].flow_factor;
+        Blocks[Connectors[i].Block1N].MBBlocks += (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star)*Solution_State.dtt*Connectors[i].flow_factor;
+        Blocks[Connectors[i].Block2N].MBBlocks -= (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star)*Solution_State.dtt*Connectors[i].flow_factor;
 	}
 
 
@@ -2359,8 +2359,8 @@ void CMedium::finalize_set_param()
             if (Connectors[i].flow_params[j]==0)
 			{
 
-                if (((Blocks[getblocksq(Connectors[i].Block1ID)].indicator == Soil) || (Blocks[getblocksq(Connectors[i].Block1ID)].indicator == Darcy)) && ((Blocks[getblocksq(Connectors[i].Block2ID)].indicator == Pond) || (Blocks[getblocksq(Connectors[i].Block2ID)].indicator == Stream)))
-                    Connectors[i].flow_params[j] = Blocks[getblocksq(Connectors[i].Block1ID)].fs_params[j];
+                if (((Blocks[Connectors[i].Block1N].indicator == Soil) || (Blocks[Connectors[i].Block1N].indicator == Darcy)) && ((Blocks[getblocksq(Connectors[i].Block2ID)].indicator == Pond) || (Blocks[getblocksq(Connectors[i].Block2ID)].indicator == Stream)))
+                    Connectors[i].flow_params[j] = Blocks[Connectors[i].Block1N].fs_params[j];
 
                 if (((Blocks[getblocksq(Connectors[i].Block2ID)].indicator == Soil) || (Blocks[getblocksq(Connectors[i].Block2ID)].indicator == Darcy)) && ((Blocks[getblocksq(Connectors[i].Block1ID)].indicator == Pond) || (Blocks[getblocksq(Connectors[i].Block1ID)].indicator == Stream)))
                     Connectors[i].flow_params[j] = Blocks[getblocksq(Connectors[i].Block2ID)].fs_params[j];
@@ -2954,21 +2954,21 @@ CVector CMedium::getres_C(const CVector &X, const double &dtt)
                 double Q_adv = (Connectors[i].Q - Connectors[i].Q_v)*Connectors[i].flow_factor + Connectors[i].settling*Solid_phase()[p].vs*sgn(Connectors[i].Block1->z0 - Connectors[i].Block2->z0)*Connectors[i].A*0.5*(Connectors[i].Block1->calc(Solid_phase()[p].vs_coefficient,ii) + Connectors[i].Block2->calc(Solid_phase()[p].vs_coefficient,ii));
 
 				if (((1-w())*Q_adv_star+w()*Q_adv)>0)
-                {	F[get_member_no(getblocksq(Connectors[i].Block1ID),p,l)] += (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block1ID)].G[p][l] + (1-w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block1ID)].G_star[p][l])*Blocks[getblocksq(Connectors[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
-                    F[get_member_no(getblocksq(Connectors[i].Block2ID),p,l)] -= (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block1ID)].G[p][l] + (1-w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block1ID)].G_star[p][l])*Blocks[getblocksq(Connectors[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
+                {	F[get_member_no(Connectors[i].Block1N,p,l)] += (w()*Q_adv*Blocks[Connectors[i].Block1N].G[p][l] + (1-w())*Q_adv_star*Blocks[Connectors[i].Block1N].G_star[p][l])*Blocks[Connectors[i].Block1N].Solid_phase[p]->mobility_factor[l];
+                    F[get_member_no(Connectors[i].Block2N,p,l)] -= (w()*Q_adv*Blocks[Connectors[i].Block1N].G[p][l] + (1-w())*Q_adv_star*Blocks[Connectors[i].Block1N].G_star[p][l])*Blocks[Connectors[i].Block1N].Solid_phase[p]->mobility_factor[l];
 				}
 				if (((1 - w())*Q_adv_star + w()*Q_adv)<0)
-                {	F[get_member_no(getblocksq(Connectors[i].Block1ID),p,l)] += (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block2ID)].G[p][l] + (1-w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block2ID)].G_star[p][l])*Blocks[getblocksq(Connectors[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
-                    F[get_member_no(getblocksq(Connectors[i].Block2ID),p,l)] -= (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block2ID)].G[p][l] + (1-w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block2ID)].G_star[p][l])*Blocks[getblocksq(Connectors[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
+                {	F[get_member_no(Connectors[i].Block1N,p,l)] += (w()*Q_adv*Blocks[Connectors[i].Block2N].G[p][l] + (1-w())*Q_adv_star*Blocks[Connectors[i].Block2N].G_star[p][l])*Blocks[Connectors[i].Block2N].Solid_phase[p]->mobility_factor[l];
+                    F[get_member_no(Connectors[i].Block2N,p,l)] -= (w()*Q_adv*Blocks[Connectors[i].Block2N].G[p][l] + (1-w())*Q_adv_star*Blocks[Connectors[i].Block2N].G_star[p][l])*Blocks[Connectors[i].Block2N].Solid_phase[p]->mobility_factor[l];
 				}
 
 			}
 				//diffusion
             for (unsigned int i=0; i<Connectors.size(); i++)
 			{
-                double exchange = Connectors[i].A*(w()*Connectors[i].c_dispersion[p]+(1-w())*Connectors[i].c_dispersion_star[p])/Connectors[i].d*((w()*Blocks[getblocksq(Connectors[i].Block2ID)].G[p][l]+(1-w())*Blocks[getblocksq(Connectors[i].Block2ID)].G_star[p][l])-(w()*Blocks[getblocksq(Connectors[i].Block1ID)].G[p][l]+(1-w())*Blocks[getblocksq(Connectors[i].Block1ID)].G_star[p][l]))*Blocks[getblocksq(Connectors[i].Block1ID)].Solid_phase[p]->mobility_factor[l]*Blocks[getblocksq(Connectors[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
-                F[get_member_no(getblocksq(Connectors[i].Block1ID),p,l)] -= exchange;
-                F[get_member_no(getblocksq(Connectors[i].Block2ID),p,l)] += exchange;
+                double exchange = Connectors[i].A*(w()*Connectors[i].c_dispersion[p]+(1-w())*Connectors[i].c_dispersion_star[p])/Connectors[i].d*((w()*Blocks[Connectors[i].Block2N].G[p][l]+(1-w())*Blocks[Connectors[i].Block2N].G_star[p][l])-(w()*Blocks[Connectors[i].Block1N].G[p][l]+(1-w())*Blocks[Connectors[i].Block1N].G_star[p][l]))*Blocks[Connectors[i].Block1N].Solid_phase[p]->mobility_factor[l]*Blocks[Connectors[i].Block2N].Solid_phase[p]->mobility_factor[l];
+                F[get_member_no(Connectors[i].Block1N,p,l)] -= exchange;
+                F[get_member_no(Connectors[i].Block2N,p,l)] += exchange;
 			}
 
 		}
@@ -3037,22 +3037,22 @@ CVector_arma CMedium::getres_C(CVector_arma &X, const double &dtt)
 
 				if (((1 - w())*Q_adv_star + w()*Q_adv)>0)
 				{
-                    F[get_member_no(getblocksq(Connectors[i].Block1ID), p, l)] += (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block1ID)].G[p][l] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block1ID)].G_star[p][l])*Blocks[getblocksq(Connectors[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
-                    F[get_member_no(getblocksq(Connectors[i].Block2ID), p, l)] -= (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block1ID)].G[p][l] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block1ID)].G_star[p][l])*Blocks[getblocksq(Connectors[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
+                    F[get_member_no(Connectors[i].Block1N, p, l)] += (w()*Q_adv*Blocks[Connectors[i].Block1N].G[p][l] + (1 - w())*Q_adv_star*Blocks[Connectors[i].Block1N].G_star[p][l])*Blocks[Connectors[i].Block1N].Solid_phase[p]->mobility_factor[l];
+                    F[get_member_no(Connectors[i].Block2N, p, l)] -= (w()*Q_adv*Blocks[Connectors[i].Block1N].G[p][l] + (1 - w())*Q_adv_star*Blocks[Connectors[i].Block1N].G_star[p][l])*Blocks[Connectors[i].Block1N].Solid_phase[p]->mobility_factor[l];
 				}
 				if (((1 - w())*Q_adv_star + w()*Q_adv)<0)
 				{
-                    F[get_member_no(getblocksq(Connectors[i].Block1ID), p, l)] += (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block2ID)].G[p][l] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block2ID)].G_star[p][l])*Blocks[getblocksq(Connectors[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
-                    F[get_member_no(getblocksq(Connectors[i].Block2ID), p, l)] -= (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block2ID)].G[p][l] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block2ID)].G_star[p][l])*Blocks[getblocksq(Connectors[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
+                    F[get_member_no(Connectors[i].Block1N, p, l)] += (w()*Q_adv*Blocks[Connectors[i].Block2N].G[p][l] + (1 - w())*Q_adv_star*Blocks[Connectors[i].Block2N].G_star[p][l])*Blocks[Connectors[i].Block2N].Solid_phase[p]->mobility_factor[l];
+                    F[get_member_no(Connectors[i].Block2N, p, l)] -= (w()*Q_adv*Blocks[Connectors[i].Block2N].G[p][l] + (1 - w())*Q_adv_star*Blocks[Connectors[i].Block2N].G_star[p][l])*Blocks[Connectors[i].Block2N].Solid_phase[p]->mobility_factor[l];
 				}
 
 			}
 			//diffusion
             for (unsigned int i=0; i<Connectors.size(); i++)
 			{
-                double exchange = Connectors[i].A*(w()*Connectors[i].c_dispersion[p] + (1 - w())*Connectors[i].c_dispersion_star[p]) / Connectors[i].d*((w()*Blocks[getblocksq(Connectors[i].Block2ID)].G[p][l] + (1 - w())*Blocks[getblocksq(Connectors[i].Block2ID)].G_star[p][l]) - (w()*Blocks[getblocksq(Connectors[i].Block1ID)].G[p][l] + (1 - w())*Blocks[getblocksq(Connectors[i].Block1ID)].G_star[p][l]))*Blocks[getblocksq(Connectors[i].Block1ID)].Solid_phase[p]->mobility_factor[l] * Blocks[getblocksq(Connectors[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
-                F[get_member_no(getblocksq(Connectors[i].Block1ID), p, l)] -= exchange;
-                F[get_member_no(getblocksq(Connectors[i].Block2ID), p, l)] += exchange;
+                double exchange = Connectors[i].A*(w()*Connectors[i].c_dispersion[p] + (1 - w())*Connectors[i].c_dispersion_star[p]) / Connectors[i].d*((w()*Blocks[Connectors[i].Block2N].G[p][l] + (1 - w())*Blocks[Connectors[i].Block2N].G_star[p][l]) - (w()*Blocks[Connectors[i].Block1N].G[p][l] + (1 - w())*Blocks[Connectors[i].Block1N].G_star[p][l]))*Blocks[Connectors[i].Block1N].Solid_phase[p]->mobility_factor[l] * Blocks[Connectors[i].Block2N].Solid_phase[p]->mobility_factor[l];
+                F[get_member_no(Connectors[i].Block1N, p, l)] -= exchange;
+                F[get_member_no(Connectors[i].Block2N, p, l)] += exchange;
 			}
 
 		}
@@ -3104,8 +3104,8 @@ void CMedium::correct_S(double dtt)
 
     for (unsigned int i=0; i<Connectors.size(); i++)
 	{
-        S[getblocksq(Connectors[i].Block1ID)] -= (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star)*Connectors[i].flow_factor*dtt;
-        S[getblocksq(Connectors[i].Block2ID)] += (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star)*Connectors[i].flow_factor*dtt;
+        S[Connectors[i].Block1N] -= (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star)*Connectors[i].flow_factor*dtt;
+        S[Connectors[i].Block2N] += (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star)*Connectors[i].flow_factor*dtt;
 	}
 
     for (unsigned int i=0; i<Blocks.size(); i++) Blocks[i].S_star = max(S[i],0.0);
@@ -3272,13 +3272,13 @@ CVector CMedium::getres_Q(const CVector &X, const double &dtt)
                         double Q_adv = (Connectors[i].Q - Connectors[i].Q_v)*Connectors[i].flow_factor + Connectors[i].settling*RXN().cons[k].vs*sgn(Connectors[i].Block1->z0 - Connectors[i].Block2->z0)*Connectors[i].A*0.5*(Connectors[i].Block1->calc(RXN().cons[k].vs_coefficient,ii) + Connectors[i].Block2->calc(RXN().cons[k].vs_coefficient,ii));
 
 						if (w()*Q_adv+(1-w())*Q_adv_star>0)
-                        {	F[get_member_no(getblocksq(Connectors[i].Block1ID),p,l,k)] += (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block1ID)].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block1ID)].CG_star[k][get_member_no(p,l)]);
-                            F[get_member_no(getblocksq(Connectors[i].Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block1ID)].CG_star[k][get_member_no(p, l)]);
+                        {	F[get_member_no(Connectors[i].Block1N,p,l,k)] += (w()*Q_adv*Blocks[Connectors[i].Block1N].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[Connectors[i].Block1N].CG_star[k][get_member_no(p,l)]);
+                            F[get_member_no(Connectors[i].Block2N, p, l, k)] -= (w()*Q_adv*Blocks[Connectors[i].Block1N].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[Connectors[i].Block1N].CG_star[k][get_member_no(p, l)]);
 
 						}
 						if (Q_adv<0)
-                        {	F[get_member_no(getblocksq(Connectors[i].Block1ID),p,l,k)] += (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block2ID)].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block2ID)].CG_star[k][get_member_no(p,l)]);
-                            F[get_member_no(getblocksq(Connectors[i].Block2ID),p,l,k)] -= (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block2ID)].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block2ID)].CG_star[k][get_member_no(p,l)]);
+                        {	F[get_member_no(Connectors[i].Block1N,p,l,k)] += (w()*Q_adv*Blocks[Connectors[i].Block2N].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[Connectors[i].Block2N].CG_star[k][get_member_no(p,l)]);
+                            F[get_member_no(Connectors[i].Block2N,p,l,k)] -= (w()*Q_adv*Blocks[Connectors[i].Block2N].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[Connectors[i].Block2N].CG_star[k][get_member_no(p,l)]);
 						}
 
 					}
@@ -3294,12 +3294,12 @@ CVector CMedium::getres_Q(const CVector &X, const double &dtt)
                         double Q_adv_star = (Connectors[i].Q_star - Connectors[i].Q_v_star)*Connectors[i].flow_factor + Connectors[i].settling*Solid_phase()[p].vs*sgn(Connectors[i].Block1->z0 - Connectors[i].Block2->z0)*0.5*(Connectors[i].Block1->calc_star(Solid_phase()[p].vs_coefficient,ii)+ Connectors[i].Block2->calc_star(Solid_phase()[p].vs_coefficient,ii));
                         double Q_adv = (Connectors[i].Q - Connectors[i].Q_v)*Connectors[i].flow_factor + Connectors[i].settling*Solid_phase()[p].vs*sgn(Connectors[i].Block1->z0 - Connectors[i].Block2->z0)*0.5*(Connectors[i].Block1->calc(Solid_phase()[p].vs_coefficient,ii) + Connectors[i].Block2->calc(Solid_phase()[p].vs_coefficient,ii));
 						if (Q_adv>0)
-                        {	F[get_member_no(getblocksq(Connectors[i].Block1ID),p,l,k)] += (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block1ID)].G[p][l]*Blocks[getblocksq(Connectors[i].Block1ID)].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block1ID)].G_star[p][l]*Blocks[getblocksq(Connectors[i].Block1ID)].CG_star[k][get_member_no(p,l)])*Blocks[getblocksq(Connectors[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
-                            F[get_member_no(getblocksq(Connectors[i].Block2ID),p,l,k)] -= (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block1ID)].G[p][l]*Blocks[getblocksq(Connectors[i].Block1ID)].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block1ID)].G_star[p][l]*Blocks[getblocksq(Connectors[i].Block1ID)].CG_star[k][get_member_no(p,l)])*Blocks[getblocksq(Connectors[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
+                        {	F[get_member_no(Connectors[i].Block1N,p,l,k)] += (w()*Q_adv*Blocks[Connectors[i].Block1N].G[p][l]*Blocks[Connectors[i].Block1N].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[Connectors[i].Block1N].G_star[p][l]*Blocks[Connectors[i].Block1N].CG_star[k][get_member_no(p,l)])*Blocks[Connectors[i].Block1N].Solid_phase[p]->mobility_factor[l];
+                            F[get_member_no(Connectors[i].Block2N,p,l,k)] -= (w()*Q_adv*Blocks[Connectors[i].Block1N].G[p][l]*Blocks[Connectors[i].Block1N].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[Connectors[i].Block1N].G_star[p][l]*Blocks[Connectors[i].Block1N].CG_star[k][get_member_no(p,l)])*Blocks[Connectors[i].Block1N].Solid_phase[p]->mobility_factor[l];
 						}
 						if (Q_adv<0)
-                        {	F[get_member_no(getblocksq(Connectors[i].Block1ID),p,l,k)] += (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block2ID)].G[p][l]*Blocks[getblocksq(Connectors[i].Block2ID)].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block2ID)].G_star[p][l]*Blocks[getblocksq(Connectors[i].Block2ID)].CG_star[k][get_member_no(p,l)])*Blocks[getblocksq(Connectors[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
-                            F[get_member_no(getblocksq(Connectors[i].Block2ID),p,l,k)] -= (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block2ID)].G[p][l]*Blocks[getblocksq(Connectors[i].Block2ID)].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block2ID)].G_star[p][l]*Blocks[getblocksq(Connectors[i].Block2ID)].CG_star[k][get_member_no(p,l)])*Blocks[getblocksq(Connectors[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
+                        {	F[get_member_no(Connectors[i].Block1N,p,l,k)] += (w()*Q_adv*Blocks[Connectors[i].Block2N].G[p][l]*Blocks[Connectors[i].Block2N].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[Connectors[i].Block2N].G_star[p][l]*Blocks[Connectors[i].Block2N].CG_star[k][get_member_no(p,l)])*Blocks[Connectors[i].Block2N].Solid_phase[p]->mobility_factor[l];
+                            F[get_member_no(Connectors[i].Block2N,p,l,k)] -= (w()*Q_adv*Blocks[Connectors[i].Block2N].G[p][l]*Blocks[Connectors[i].Block2N].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[Connectors[i].Block2N].G_star[p][l]*Blocks[Connectors[i].Block2N].CG_star[k][get_member_no(p,l)])*Blocks[Connectors[i].Block2N].Solid_phase[p]->mobility_factor[l];
 						}
 					}
 
@@ -3310,12 +3310,12 @@ CVector CMedium::getres_Q(const CVector &X, const double &dtt)
 				{
 					if (p==-2)
 					{
-                        double exchange = Connectors[i].A*(w()*Connectors[i].dispersion[k] + (1 - w())*Connectors[i].dispersion_star[k]) / Connectors[i].d*min(Heavyside(get_capacity_star(getblocksq(Connectors[i].Block2ID), l, p) - 1e-13), Heavyside(get_capacity_star(getblocksq(Connectors[i].Block1ID), l, p) - 1e-13));
-                        double term1 = w()*Blocks[getblocksq(Connectors[i].Block2ID)].CG[k][get_member_no(p,l)]+(1-w())*Blocks[getblocksq(Connectors[i].Block2ID)].CG_star[k][get_member_no(p,l)];
-                        double term2 = w()*Blocks[getblocksq(Connectors[i].Block1ID)].CG[k][get_member_no(p,l)]+(1-w())*Blocks[getblocksq(Connectors[i].Block1ID)].CG_star[k][get_member_no(p,l)];
+                        double exchange = Connectors[i].A*(w()*Connectors[i].dispersion[k] + (1 - w())*Connectors[i].dispersion_star[k]) / Connectors[i].d*min(Heavyside(get_capacity_star(Connectors[i].Block2N, l, p) - 1e-13), Heavyside(get_capacity_star(Connectors[i].Block1N, l, p) - 1e-13));
+                        double term1 = w()*Blocks[Connectors[i].Block2N].CG[k][get_member_no(p,l)]+(1-w())*Blocks[Connectors[i].Block2N].CG_star[k][get_member_no(p,l)];
+                        double term2 = w()*Blocks[Connectors[i].Block1N].CG[k][get_member_no(p,l)]+(1-w())*Blocks[Connectors[i].Block1N].CG_star[k][get_member_no(p,l)];
 						exchange*=(term1-term2);
-                        F[get_member_no(getblocksq(Connectors[i].Block1ID),p,l,k)] -= exchange;
-                        F[get_member_no(getblocksq(Connectors[i].Block2ID),p,l,k)] += exchange;
+                        F[get_member_no(Connectors[i].Block1N,p,l,k)] -= exchange;
+                        F[get_member_no(Connectors[i].Block2N,p,l,k)] += exchange;
 					}
 					else if (p==-1)
 					{
@@ -3323,12 +3323,12 @@ CVector CMedium::getres_Q(const CVector &X, const double &dtt)
 					}
 					else
 					{
-                        double exchange = Connectors[i].A*(w()*Connectors[i].c_dispersion[p] + (1 - w())*Connectors[i].c_dispersion_star[p]) / Connectors[i].d*min(Heavyside(get_capacity_star(getblocksq(Connectors[i].Block1ID), l, p) - 1e-13), Heavyside(get_capacity_star(getblocksq(Connectors[i].Block2ID), l, p) - 1e-13));;
-                        double term1 = w()*Blocks[getblocksq(Connectors[i].Block2ID)].G[p][l]*Blocks[getblocksq(Connectors[i].Block2ID)].CG[k][get_member_no(p,l)]+(1-w())*Blocks[getblocksq(Connectors[i].Block2ID)].G_star[p][l]*Blocks[getblocksq(Connectors[i].Block2ID)].CG_star[k][get_member_no(p,l)];
-                        double term2 = w()*Blocks[getblocksq(Connectors[i].Block1ID)].G[p][l]*Blocks[getblocksq(Connectors[i].Block1ID)].CG[k][get_member_no(p,l)]+(1-w())*Blocks[getblocksq(Connectors[i].Block1ID)].G_star[p][l]*Blocks[getblocksq(Connectors[i].Block1ID)].CG_star[k][get_member_no(p,l)];
-                        exchange*=(Blocks[getblocksq(Connectors[i].Block1ID)].Solid_phase[p]->mobility_factor[l]*Blocks[getblocksq(Connectors[i].Block2ID)].Solid_phase[p]->mobility_factor[l])*(term1-term2);
-                        F[get_member_no(getblocksq(Connectors[i].Block1ID),p,l,k)] -= exchange;
-                        F[get_member_no(getblocksq(Connectors[i].Block2ID),p,l,k)] += exchange;
+                        double exchange = Connectors[i].A*(w()*Connectors[i].c_dispersion[p] + (1 - w())*Connectors[i].c_dispersion_star[p]) / Connectors[i].d*min(Heavyside(get_capacity_star(Connectors[i].Block1N, l, p) - 1e-13), Heavyside(get_capacity_star(Connectors[i].Block2N, l, p) - 1e-13));;
+                        double term1 = w()*Blocks[Connectors[i].Block2N].G[p][l]*Blocks[Connectors[i].Block2N].CG[k][get_member_no(p,l)]+(1-w())*Blocks[Connectors[i].Block2N].G_star[p][l]*Blocks[Connectors[i].Block2N].CG_star[k][get_member_no(p,l)];
+                        double term2 = w()*Blocks[Connectors[i].Block1N].G[p][l]*Blocks[Connectors[i].Block1N].CG[k][get_member_no(p,l)]+(1-w())*Blocks[Connectors[i].Block1N].G_star[p][l]*Blocks[Connectors[i].Block1N].CG_star[k][get_member_no(p,l)];
+                        exchange*=(Blocks[Connectors[i].Block1N].Solid_phase[p]->mobility_factor[l]*Blocks[Connectors[i].Block2N].Solid_phase[p]->mobility_factor[l])*(term1-term2);
+                        F[get_member_no(Connectors[i].Block1N,p,l,k)] -= exchange;
+                        F[get_member_no(Connectors[i].Block2N,p,l,k)] += exchange;
 					}
 				}
 
@@ -3538,14 +3538,14 @@ CVector_arma CMedium::getres_Q(CVector_arma &X, const double &dtt)
 
 						if (w()*Q_adv + (1 - w())*Q_adv_star>0)
 						{
-                            F[get_member_no(getblocksq(Connectors[i].Block1ID), p, l, k)] += (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block1ID)].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
-                            F[get_member_no(getblocksq(Connectors[i].Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block1ID)].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
+                            F[get_member_no(Connectors[i].Block1N, p, l, k)] += (w()*Q_adv*Blocks[Connectors[i].Block1N].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[Connectors[i].Block1N].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
+                            F[get_member_no(Connectors[i].Block2N, p, l, k)] -= (w()*Q_adv*Blocks[Connectors[i].Block1N].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[Connectors[i].Block1N].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
 
 						}
 						else
 						{
-                            F[get_member_no(getblocksq(Connectors[i].Block1ID), p, l, k)] += (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block2ID)].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
-                            F[get_member_no(getblocksq(Connectors[i].Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block2ID)].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
+                            F[get_member_no(Connectors[i].Block1N, p, l, k)] += (w()*Q_adv*Blocks[Connectors[i].Block2N].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[Connectors[i].Block2N].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
+                            F[get_member_no(Connectors[i].Block2N, p, l, k)] -= (w()*Q_adv*Blocks[Connectors[i].Block2N].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[Connectors[i].Block2N].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
 						}
 
 					}
@@ -3562,13 +3562,13 @@ CVector_arma CMedium::getres_Q(CVector_arma &X, const double &dtt)
                         double Q_adv = (Connectors[i].Q - Connectors[i].Q_v)*Connectors[i].flow_factor + Connectors[i].settling*Solid_phase()[p].vs*sgn(Connectors[i].Block1->z0 - Connectors[i].Block2->z0)*0.5*(Connectors[i].Block1->calc(Solid_phase()[p].vs_coefficient, ii) + Connectors[i].Block2->calc(Solid_phase()[p].vs_coefficient, ii));
 						if (Q_adv>0)
 						{
-                            F[get_member_no(getblocksq(Connectors[i].Block1ID), p, l, k)] += (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block1ID)].G[p][l] * Blocks[getblocksq(Connectors[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block1ID)].G_star[p][l] * Blocks[getblocksq(Connectors[i].Block1ID)].CG_star[k][get_member_no(p, l)])*Blocks[getblocksq(Connectors[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
-                            F[get_member_no(getblocksq(Connectors[i].Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block1ID)].G[p][l] * Blocks[getblocksq(Connectors[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block1ID)].G_star[p][l] * Blocks[getblocksq(Connectors[i].Block1ID)].CG_star[k][get_member_no(p, l)])*Blocks[getblocksq(Connectors[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
+                            F[get_member_no(Connectors[i].Block1N, p, l, k)] += (w()*Q_adv*Blocks[Connectors[i].Block1N].G[p][l] * Blocks[Connectors[i].Block1N].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[Connectors[i].Block1N].G_star[p][l] * Blocks[Connectors[i].Block1N].CG_star[k][get_member_no(p, l)])*Blocks[Connectors[i].Block1N].Solid_phase[p]->mobility_factor[l];
+                            F[get_member_no(Connectors[i].Block2N, p, l, k)] -= (w()*Q_adv*Blocks[Connectors[i].Block1N].G[p][l] * Blocks[Connectors[i].Block1N].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[Connectors[i].Block1N].G_star[p][l] * Blocks[Connectors[i].Block1N].CG_star[k][get_member_no(p, l)])*Blocks[Connectors[i].Block1N].Solid_phase[p]->mobility_factor[l];
 						}
 						if (Q_adv<0)
 						{
-                            F[get_member_no(getblocksq(Connectors[i].Block1ID), p, l, k)] += (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block2ID)].G[p][l] * Blocks[getblocksq(Connectors[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block2ID)].G_star[p][l] * Blocks[getblocksq(Connectors[i].Block2ID)].CG_star[k][get_member_no(p, l)])*Blocks[getblocksq(Connectors[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
-                            F[get_member_no(getblocksq(Connectors[i].Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block2ID)].G[p][l] * Blocks[getblocksq(Connectors[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block2ID)].G_star[p][l] * Blocks[getblocksq(Connectors[i].Block2ID)].CG_star[k][get_member_no(p, l)])*Blocks[getblocksq(Connectors[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
+                            F[get_member_no(Connectors[i].Block1N, p, l, k)] += (w()*Q_adv*Blocks[Connectors[i].Block2N].G[p][l] * Blocks[Connectors[i].Block2N].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[Connectors[i].Block2N].G_star[p][l] * Blocks[Connectors[i].Block2N].CG_star[k][get_member_no(p, l)])*Blocks[Connectors[i].Block2N].Solid_phase[p]->mobility_factor[l];
+                            F[get_member_no(Connectors[i].Block2N, p, l, k)] -= (w()*Q_adv*Blocks[Connectors[i].Block2N].G[p][l] * Blocks[Connectors[i].Block2N].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[Connectors[i].Block2N].G_star[p][l] * Blocks[Connectors[i].Block2N].CG_star[k][get_member_no(p, l)])*Blocks[Connectors[i].Block2N].Solid_phase[p]->mobility_factor[l];
 						}
 					}
 
@@ -3579,12 +3579,12 @@ CVector_arma CMedium::getres_Q(CVector_arma &X, const double &dtt)
 				{
 					if (p == -2)
 					{
-                        double exchange = Connectors[i].A*(w()*Connectors[i].dispersion[k] + (1 - w())*Connectors[i].dispersion_star[k]) / Connectors[i].d*min(Heavyside(get_capacity_star(getblocksq(Connectors[i].Block2ID), l, p) - 1e-13), Heavyside(get_capacity_star(getblocksq(Connectors[i].Block1ID), l, p) - 1e-13))*RXN().cons[k].mobile;
-                        double term1 = w()*Blocks[getblocksq(Connectors[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[getblocksq(Connectors[i].Block2ID)].CG_star[k][get_member_no(p, l)];
-                        double term2 = w()*Blocks[getblocksq(Connectors[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[getblocksq(Connectors[i].Block1ID)].CG_star[k][get_member_no(p, l)];
+                        double exchange = Connectors[i].A*(w()*Connectors[i].dispersion[k] + (1 - w())*Connectors[i].dispersion_star[k]) / Connectors[i].d*min(Heavyside(get_capacity_star(Connectors[i].Block2N, l, p) - 1e-13), Heavyside(get_capacity_star(Connectors[i].Block1N, l, p) - 1e-13))*RXN().cons[k].mobile;
+                        double term1 = w()*Blocks[Connectors[i].Block2N].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[Connectors[i].Block2N].CG_star[k][get_member_no(p, l)];
+                        double term2 = w()*Blocks[Connectors[i].Block1N].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[Connectors[i].Block1N].CG_star[k][get_member_no(p, l)];
 						exchange *= (term1 - term2);
-                        F[get_member_no(getblocksq(Connectors[i].Block1ID), p, l, k)] -= exchange;
-                        F[get_member_no(getblocksq(Connectors[i].Block2ID), p, l, k)] += exchange;
+                        F[get_member_no(Connectors[i].Block1N, p, l, k)] -= exchange;
+                        F[get_member_no(Connectors[i].Block2N, p, l, k)] += exchange;
 					}
 					else if (p == -1)
 					{
@@ -3592,12 +3592,12 @@ CVector_arma CMedium::getres_Q(CVector_arma &X, const double &dtt)
 					}
 					else
 					{
-                        double exchange = Connectors[i].A*(w()*Connectors[i].c_dispersion[p] + (1 - w())*Connectors[i].c_dispersion_star[p]) / Connectors[i].d*min(Heavyside(get_capacity_star(getblocksq(Connectors[i].Block1ID), l, p) - 1e-13), Heavyside(get_capacity_star(getblocksq(Connectors[i].Block2ID), l, p) - 1e-13));;
-                        double term1 = w()*Blocks[getblocksq(Connectors[i].Block2ID)].G[p][l] * Blocks[getblocksq(Connectors[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[getblocksq(Connectors[i].Block2ID)].G_star[p][l] * Blocks[getblocksq(Connectors[i].Block2ID)].CG_star[k][get_member_no(p, l)];
-                        double term2 = w()*Blocks[getblocksq(Connectors[i].Block1ID)].G[p][l] * Blocks[getblocksq(Connectors[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[getblocksq(Connectors[i].Block1ID)].G_star[p][l] * Blocks[getblocksq(Connectors[i].Block1ID)].CG_star[k][get_member_no(p, l)];
-                        exchange *= (Blocks[getblocksq(Connectors[i].Block1ID)].Solid_phase[p]->mobility_factor[l] * Blocks[getblocksq(Connectors[i].Block2ID)].Solid_phase[p]->mobility_factor[l])*(term1 - term2);
-                        F[get_member_no(getblocksq(Connectors[i].Block1ID), p, l, k)] -= exchange;
-                        F[get_member_no(getblocksq(Connectors[i].Block2ID), p, l, k)] += exchange;
+                        double exchange = Connectors[i].A*(w()*Connectors[i].c_dispersion[p] + (1 - w())*Connectors[i].c_dispersion_star[p]) / Connectors[i].d*min(Heavyside(get_capacity_star(Connectors[i].Block1N, l, p) - 1e-13), Heavyside(get_capacity_star(Connectors[i].Block2N, l, p) - 1e-13));;
+                        double term1 = w()*Blocks[Connectors[i].Block2N].G[p][l] * Blocks[Connectors[i].Block2N].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[Connectors[i].Block2N].G_star[p][l] * Blocks[Connectors[i].Block2N].CG_star[k][get_member_no(p, l)];
+                        double term2 = w()*Blocks[Connectors[i].Block1N].G[p][l] * Blocks[Connectors[i].Block1N].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[Connectors[i].Block1N].G_star[p][l] * Blocks[Connectors[i].Block1N].CG_star[k][get_member_no(p, l)];
+                        exchange *= (Blocks[Connectors[i].Block1N].Solid_phase[p]->mobility_factor[l] * Blocks[Connectors[i].Block2N].Solid_phase[p]->mobility_factor[l])*(term1 - term2);
+                        F[get_member_no(Connectors[i].Block1N, p, l, k)] -= exchange;
+                        F[get_member_no(Connectors[i].Block2N, p, l, k)] += exchange;
 					}
 				}
 
