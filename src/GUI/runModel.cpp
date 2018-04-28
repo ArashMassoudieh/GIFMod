@@ -1328,7 +1328,7 @@ void CMediumSet::g_get_environmental_params()
 			for (int ii = 0; ii<names.size(); ii++)
 			FI.detoutfilename_obs = names[ii];
 			}*/
-
+    if (SP.solution_method != "Direct Solution") SP.solution_method = "Partial Inverse Jacobian Evaluation";
 	if (SP.constituent_transport) SP.colloid_transport = true;
 	set_features.environmental_vars = true;
 }
