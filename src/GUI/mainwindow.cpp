@@ -1045,9 +1045,13 @@ void MainWindow::on_projectExplorer_customContextMenuRequested(const QPoint &pos
 				menu->addAction(QString("Plot observation data").arg(name), this, SLOT(plotObservationData()));
 				addSeparator = true;
 			}
+            else
+            {   data = CTimeSeriesSet(1);
+                data[0].name = "obs_1";
+            }
 			if (mainGraphWidget->modelSet != nullptr)
 #ifdef GIFMOD
-				if (mainGraphWidget->modelSet->ANS_obs.nvars)
+            if (mainGraphWidget->modelSet->ANS_obs.nvars)
 			{
 				int index = -1;
 				for (int i = 0; i<mainGraphWidget->modelSet->ANS_obs.nvars;i++)
@@ -1681,7 +1685,8 @@ void MainWindow::plotModeledData(CBTC modeled, CBTC observed, QString _name)
 #ifdef GWA
 		format.xAxisTimeFormat = false;
 #endif
-		plot->addScatterPlot(obs, name + "(Observed)", format);
+        if (obs.n>1)
+            plot->addScatterPlot(obs, name + "(Observed)", format);
 		
 		format2.penStyle = Qt::SolidLine;
 		format2.scatterStyle = QCPScatterStyle::ssNone;

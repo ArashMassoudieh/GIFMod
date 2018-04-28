@@ -1118,7 +1118,7 @@ void CMediumSet::g_get_observed()
 		else if (gw->EntityNames("Constituent").contains(e->val("quan").toQString().split(':')[0]))
 			M.quan = QString("cg[%1]").arg(e->val("quan").toQString()).toStdString();
 		else
-			M.quan = e->val("quan").toStdString();
+            M.quan = XString::reformBack(e->val("quan")).toStdString();
 
 
 		QString std = e->val("std_no");

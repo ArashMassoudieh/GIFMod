@@ -10,7 +10,7 @@ CFunction::CFunction(void)
 
 CFunction::~CFunction(void)
 {
-	
+
 }
 
  CFunction::CFunction(const CFunction &F)
@@ -31,12 +31,12 @@ CFunction CFunction::operator = (const CFunction &F)
 	_max = F._max;
 	_min = F._min;
 	var_id = F.var_id;
-	
+
 	return *this;
 
 }
 
-double CFunction::evaluate(double x)
+double CFunction::evaluate(const double &x)
 {
 	return X.interpol(x);
 }

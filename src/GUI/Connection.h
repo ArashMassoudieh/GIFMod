@@ -70,8 +70,8 @@ private:
     CStringOP area_expression;
     string area_expression_strng;
     bool const_area;
-    double calc(CStringOP &C, int ii=-1); //The function to calculate any expression
-    double calc_star(CStringOP &term, int ii=-1); //The function to calculate any for star values
+    double calc(const CStringOP &C, int ii=-1); //The function to calculate any expression
+    double calc_star(const CStringOP &term, int ii=-1); //The function to calculate any for star values
     double get_val(int i, int ii=0); // get the value of physical properties, variables and parameters
     double get_val_star(int i,int ii=0); //get the value of physical properties, variables and parameters based on star values
     double get_val(const string &S);
