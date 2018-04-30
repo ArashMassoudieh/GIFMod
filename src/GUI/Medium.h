@@ -304,6 +304,7 @@ public:
         VTK_grid VTK_get_snap_shot(string var, double t=0, double z_scale=1, string field_name="");
         void merge_to_snapshot(VTK_grid&, string var, double t=0, string fieldname="");
         void write_grid_to_vtp(VTK_grid&, const string &filename, const vector<string> &names=vector<string>());
+        void write_grid_to_vtp_surf(VTK_grid&, const string &filename, const vector<string> &names=vector<string>());
         void write_grid_to_text(VTK_grid& grid, const string &filename, const vector<string> &names = vector<string>());
         void show_VTK(vtkSmartPointer<vtkPolyDataMapper>, const string &filename);
     #endif

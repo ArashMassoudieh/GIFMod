@@ -58,6 +58,52 @@ CMatrix::CMatrix(int m)
 	}
 }
 
+CMatrix::CMatrix(string filename)
+{
+
+    bool file_not_found;
+
+	ifstream file(filename);
+	vector<string> s;
+	if (file.good() == false)
+	{
+		file_not_found = true;
+		return;
+	}
+	int num_cols = 0;
+	int num_rows = 0;
+	int i=0;
+	while (!file.eof())
+	{
+		s = getline(file,'\t');
+		if (i==0) num_cols = s.size();
+		if (s.size()==num_cols) i++;
+    }
+    num_rows=i;
+    numrows = num_rows;
+	numcols = num_cols;
+	file.close();
+	matr.resize(numrows);
+
+	for (int i = 0;i<numrows; ++i)
+	{
+		matr[i].vec.resize(numcols);
+		matr[i].num = numcols;
+	}
+	file.open(filename);
+
+	for (int i=0; i<num_rows; i++)
+	{
+		s = getline(file,'\t');
+        for (int j=0; j<num_cols; j++)
+            matr[i][j] = atof(s[j].c_str());
+    }
+
+	return;
+
+}
+
+
 CMatrix::CMatrix(const CMatrix &m)
 {
 	numrows = m.numrows;

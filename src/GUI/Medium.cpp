@@ -5913,6 +5913,122 @@ void CMedium::write_grid_to_vtp(VTK_grid& grid, const string &filename, const ve
   return;
 }
 
+
+void CMedium::write_grid_to_vtp_surf(VTK_grid& grid, const string &filename, const vector<string> &names)
+{
+
+  // Create the geometry of a point (the coordinate)
+  vtkSmartPointer<vtkPoints> points =
+    vtkSmartPointer<vtkPoints>::New();
+
+  // Create the topology of the point (a vertex)
+    //vtkSmartPointer<vtkCellArray> vertices =
+    //    vtkSmartPointer<vtkCellArray>::New();
+
+    vector<vtkSmartPointer<vtkDoubleArray>> vals;
+
+    for (unsigned int i=0; i<grid.p[0].vals.size(); i++)
+    {
+        vals.push_back(vtkSmartPointer<vtkDoubleArray>::New());
+        if (names.size())
+            vals[i]->SetName(names[i].c_str());
+        else if (grid.names.size())
+            vals[i]->SetName(grid.names[i].c_str());
+        else
+            vals[i]->SetName(("var_" + numbertostring(i)).c_str());
+    }
+
+
+    for (unsigned int i=0;i<grid.p.size(); i++)
+        {
+
+            const double p[3] = {grid.p[i].x, grid.p[i].y, grid.p[i].z};
+
+            // We need an an array of point id's for InsertNextCell.
+
+            vtkIdType pid[1];
+            pid[0] = points->InsertNextPoint(p);
+            //vertices->InsertNextCell(1,pid);
+            for (unsigned int j=0; j<grid.p[i].vals.size(); j++)
+                vals[j]->InsertNextValue(grid.p[i].vals[j]);
+        }
+    // Create a polydata object
+    vtkSmartPointer<vtkPolyData> point =
+    vtkSmartPointer<vtkPolyData>::New();
+
+  // Set the points and vertices we created as the geometry and topology of the polydata
+  point->SetPoints(points);
+  //point->SetVerts(vertices);
+
+  for (unsigned int j=0; j<grid.p[0].vals.size(); j++)
+    point->GetPointData()->AddArray(vals[j]);
+
+    //vtkSmartPointer<vtkCleanPolyData> cleaner =
+    //vtkSmartPointer<vtkCleanPolyData>::New();
+  //cleaner->SetInputConnection (point);
+
+  // Triangulate the grid points
+	vtkSmartPointer<vtkDelaunay2D> delaunay =
+		vtkSmartPointer<vtkDelaunay2D>::New();
+#if VTK_MAJOR_VERSION <= 5
+	delaunay->SetInput(point);
+#else
+	delaunay->SetInputData(point);
+#endif
+	delaunay->Update();
+	vtkSmartPointer<vtkPolyDataMapper> delaunayMapper =
+    vtkSmartPointer<vtkPolyDataMapper>::New();
+  delaunayMapper->SetInputConnection(delaunay->GetOutputPort());
+
+ vtkSmartPointer<vtkActor> delaunayActor =
+    vtkSmartPointer<vtkActor>::New();
+  delaunayActor->SetMapper(delaunayMapper);
+  delaunayActor->GetProperty()->SetColor(1,0,0);
+
+  /*
+   vtkSmartPointer<vtkRenderer> renderer =
+    vtkSmartPointer<vtkRenderer>::New();
+  vtkSmartPointer<vtkRenderWindow> renderWindow =
+    vtkSmartPointer<vtkRenderWindow>::New();
+  renderWindow->SetWindowName("Point");
+  renderWindow->AddRenderer(renderer);
+  vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor =
+    vtkSmartPointer<vtkRenderWindowInteractor>::New();
+  renderWindowInteractor->SetRenderWindow(renderWindow);
+
+  renderer->AddActor(delaunayActor);
+  renderer->SetBackground(colors->GetColor3d("DarkOliveGreen").GetData());
+
+  renderWindow->Render();
+  renderWindowInteractor->Start();
+  */
+
+  vtkSmartPointer<vtkXMLPolyDataWriter> writer =
+		vtkSmartPointer<vtkXMLPolyDataWriter>::New();
+	writer->SetFileName(filename.c_str());
+	writer->SetInputData(delaunayMapper->GetInput());
+	// This is set so we can see the data in a text editor.
+	writer->SetDataModeToAscii();
+	writer->Write();
+
+/*	vtkPolyData* outputPolyData = delaunay->GetOutput();
+
+
+  // Visualize
+  vtkSmartPointer<vtkPolyDataMapper> mapper =
+    vtkSmartPointer<vtkPolyDataMapper>::New();
+#if VTK_MAJOR_VERSION <= 5
+  mapper->SetInput(outputPolyData);
+#else
+  mapper->SetInputData(outputPolyData);
+#endif
+
+  show_VTK(mapper, filename);
+*/
+  return;
+}
+
+
 void CMedium::show_VTK(vtkSmartPointer<vtkPolyDataMapper> mapper, const string &filename)
 {
   vtkSmartPointer<vtkActor> actor =

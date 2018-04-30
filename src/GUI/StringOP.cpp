@@ -718,6 +718,19 @@ vector<string> getline(ifstream& file)
 	return x;
 }
 
+vector<string> getline(ifstream& file, char del1)
+{
+    string line;
+
+	while (!file.eof())
+	{
+		std::getline(file, line);
+		return split(line,del1);
+	}
+	vector<string> x;
+	return x;
+}
+
 vector<vector<string>> getline_op(ifstream& file,char del1)
 {
 	string line;

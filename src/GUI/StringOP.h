@@ -51,6 +51,7 @@ public:
 int opertr(char a);
 bool isnumber(char S);
 vector<string> getline(ifstream&);
+vector<string> getline(ifstream&, char del1);
 vector<vector<string>> getline_op(ifstream&,char del1);
 vector<vector<string>> getline_op(ifstream&,vector<char> del1);
 vector<string> split(const string &s, char del=',');
