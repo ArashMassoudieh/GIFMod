@@ -10,10 +10,10 @@
     <ROW Property="ARPPRODUCTICON" Value="GIFMod_1.exe" Type="8"/>
     <ROW Property="ARPURLINFOABOUT" Value="www.gifmod.com"/>
     <ROW Property="Manufacturer" Value="GI"/>
-    <ROW Property="ProductCode" Value="1033:{3097AA82-30F0-474D-BBEA-700887FBCF5D} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{6995D4D6-6F74-4D20-8A5A-EC340C898529} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="GIFMod"/>
-    <ROW Property="ProductVersion" Value="0.1.25" Type="32"/>
+    <ROW Property="ProductVersion" Value="0.1.26" Type="32"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{FD3D1F38-573F-42DE-B2E8-D17DF8884298}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="x64_Release:Windows 9x/ME" ValueLocId="-"/>
@@ -69,7 +69,6 @@
     <ROW Component="GIFMod.exe" ComponentId="{DC5DDFCE-C012-4AF0-923A-EAF6E4710D77}" Directory_="APPDIR" Attributes="256" KeyPath="GIFMod.exe"/>
     <ROW Component="GIFMod_Extra_Examples.pdf" ComponentId="{97973992-BA77-4B8D-A333-8AE325409EBE}" Directory_="GIFMod_Dir" Attributes="0" KeyPath="GIFMod_Extra_Examples.pdf" Type="0"/>
     <ROW Component="GIFMod_Users_Manual.pdf" ComponentId="{C9A42E37-A015-42B6-8539-1408391BEB78}" Directory_="APPDIR" Attributes="0" KeyPath="GIFModGUIPropList.csv" Type="0"/>
-    <ROW Component="GIFMod_Users_Manual.pdf_1" ComponentId="{6D3E14D7-E7D1-4101-AFF8-ABBFE8A557D7}" Directory_="ProgramMenuFolder" Attributes="0" KeyPath="GIFMod_Users_Manual.pdf_2" Type="0"/>
     <ROW Component="ProductInformation" ComponentId="{BE909F43-5C68-4E27-9950-6C3F5F7CA958}" Directory_="APPDIR" Attributes="4" KeyPath="Version"/>
     <ROW Component="Qt5Core.dll" ComponentId="{FAC60122-5E52-4C18-855E-BEB8890258E4}" Directory_="APPDIR" Attributes="256" KeyPath="Qt5Core.dll"/>
     <ROW Component="Qt5Gui.dll" ComponentId="{21470421-2EC1-4086-8726-CD5D064CE050}" Directory_="APPDIR" Attributes="256" KeyPath="Qt5Gui.dll"/>
@@ -83,7 +82,7 @@
     <ROW Component="control_output_experiment1.txt_2" ComponentId="{74258076-69FB-4B17-B95F-56D3AB2B4D47}" Directory_="Infiltration_Basin_Dir" Attributes="0" KeyPath="control_output_experiment1.txt_8" Type="0"/>
     <ROW Component="control_output_experiment1.txt_3" ComponentId="{114FA9EA-7544-4B4F-8A64-E5078C3EFA59}" Directory_="raingarden_Dir" Attributes="0" KeyPath="control_output_experiment1.txt_10" Type="0"/>
     <ROW Component="control_output_experiment1ArashMassoudiehsconflictedcopy20161105.txt" ComponentId="{69FE3CA6-81F5-42D5-83EF-E5B3B8DEC18C}" Directory_="DO_control_Dir" Attributes="0" KeyPath="control_output_experiment1ArashMassoudiehsconflictedcopy20161105.txt" Type="0"/>
-    <ROW Component="d_impervious_catchment.wiz" ComponentId="{2423DDF9-3117-439D-A250-FA054D31B639}" Directory_="templates_Dir" Attributes="0" KeyPath="d_impervious_catchment.wiz" Type="0"/>
+    <ROW Component="d_impervious_catchment.wiz" ComponentId="{62771023-CEE6-411E-AD9E-C60C473A35B4}" Directory_="templates_Dir" Attributes="0" KeyPath="d_impervious_catchment.wiz" Type="0"/>
     <ROW Component="dt.txt" ComponentId="{96E50C8D-468A-48E5-9D16-CB7FA8A73F84}" Directory_="PermeablePavement_Dir" Attributes="0" KeyPath="dt.txt" Type="0"/>
     <ROW Component="inflow.csv" ComponentId="{3E09454D-A1E7-4EB9-8991-96B762F0F0FC}" Directory_="ASM_Dir" Attributes="0" KeyPath="inflow.csv" Type="0"/>
     <ROW Component="inflow.txt" ComponentId="{B58F3051-A146-4DE9-9E8E-47C5DC08BBCE}" Directory_="Particles_in_soil_Column_Dir" Attributes="0" KeyPath="inflow.txt_2" Type="0"/>
@@ -93,7 +92,7 @@
     <ROW Component="qwindows.dll" ComponentId="{D44A1D1D-35AF-4AD6-9993-F932C1C90037}" Directory_="platforms_Dir" Attributes="256" KeyPath="qwindows.dll"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
-    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="Aeration.GIFM BOD_Aeration_inverse_modeling.GIFM BTC_obs_DO_both.txt Buildup.GIFM DConfinedtransport.GIFM DDarcy.GIFM DDarcy.zip DRichards.GIFM DUnconfined.GIFM GIFMod.exe GIFMod_Extra_Examples.pdf GIFMod_Users_Manual.pdf GIFMod_Users_Manual.pdf_1 ProductInformation Qt5Core.dll Qt5Gui.dll Qt5PrintSupport.dll Qt5Widgets.dll SHORTCUTDIR Settling.GIFM blas_win64_MT.dll control_output_experiment1.txt control_output_experiment1.txt_1 control_output_experiment1.txt_2 control_output_experiment1.txt_3 control_output_experiment1ArashMassoudiehsconflictedcopy20161105.txt d_impervious_catchment.wiz dt.txt inflow.csv inflow.txt lapack_win64_MT.dll png ponds.GIFM qwindows.dll"/>
+    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="Aeration.GIFM BOD_Aeration_inverse_modeling.GIFM BTC_obs_DO_both.txt Buildup.GIFM DConfinedtransport.GIFM DDarcy.GIFM DDarcy.zip DRichards.GIFM DUnconfined.GIFM GIFMod.exe GIFMod_Extra_Examples.pdf GIFMod_Users_Manual.pdf ProductInformation Qt5Core.dll Qt5Gui.dll Qt5PrintSupport.dll Qt5Widgets.dll SHORTCUTDIR Settling.GIFM blas_win64_MT.dll control_output_experiment1.txt control_output_experiment1.txt_1 control_output_experiment1.txt_2 control_output_experiment1.txt_3 control_output_experiment1ArashMassoudiehsconflictedcopy20161105.txt d_impervious_catchment.wiz dt.txt inflow.csv inflow.txt lapack_win64_MT.dll png ponds.GIFM qwindows.dll"/>
     <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
@@ -117,6 +116,10 @@
     <ROW File="BTC_obs_prcntl_noise_DO_NO2_spike.txt" Component_="BTC_obs_DO_both.txt" FileName="BTC_O~12.TXT|BTC_obs_prcntl_noise_DO_NO2_spike.txt" Attributes="0" SourcePath="C:\Users\Arash-Home\Dropbox\GUI\GIFMOD User&apos;s manual\Examples\Nitrification_inverse_modeling\BTC_obs_prcntl_noise_DO_NO2_spike.txt" SelfReg="false" NextFile="BTC_obs_prcntl_noise_DO_no_spike.txt"/>
     <ROW File="BTC_obs_prcntl_noise_DO_both.txt" Component_="BTC_obs_DO_both.txt" FileName="BTC_O~10.TXT|BTC_obs_prcntl_noise_DO_both.txt" Attributes="0" SourcePath="C:\Users\Arash-Home\Dropbox\GUI\GIFMOD User&apos;s manual\Examples\Nitrification_inverse_modeling\BTC_obs_prcntl_noise_DO_both.txt" SelfReg="false" NextFile="BTC_obs_prcntl_noise_DO_NH3_spike.txt"/>
     <ROW File="BTC_obs_prcntl_noise_DO_no_spike.txt" Component_="BTC_obs_DO_both.txt" FileName="BTC_O~13.TXT|BTC_obs_prcntl_noise_DO_no_spike.txt" Attributes="0" SourcePath="C:\Users\Arash-Home\Dropbox\GUI\GIFMOD User&apos;s manual\Examples\Nitrification_inverse_modeling\BTC_obs_prcntl_noise_DO_no_spike.txt" SelfReg="false" NextFile="control_output_experiment1.txt_9"/>
+    <ROW File="BioswaleWithPipe.png" Component_="d_impervious_catchment.wiz" FileName="BIOSWA~2.PNG|BioswaleWithPipe.png" Attributes="0" SourcePath="..\src\resources\Templates\BioswaleWithPipe.png" SelfReg="false" NextFile="BioswaleWithPipe.wiz"/>
+    <ROW File="BioswaleWithPipe.wiz" Component_="d_impervious_catchment.wiz" FileName="BIOSWA~2.WIZ|BioswaleWithPipe.wiz" Attributes="0" SourcePath="..\src\resources\Templates\BioswaleWithPipe.wiz" SelfReg="false" NextFile="InfiltrationTrench.png"/>
+    <ROW File="BioswaleWithoutPipe.png" Component_="d_impervious_catchment.wiz" FileName="BIOSWA~1.PNG|BioswaleWithoutPipe.png" Attributes="0" SourcePath="..\src\resources\Templates\BioswaleWithoutPipe.png" SelfReg="false" NextFile="BioswaleWithoutPipe.wiz"/>
+    <ROW File="BioswaleWithoutPipe.wiz" Component_="d_impervious_catchment.wiz" FileName="BIOSWA~1.WIZ|BioswaleWithoutPipe.wiz" Attributes="0" SourcePath="..\src\resources\Templates\BioswaleWithoutPipe.wiz" SelfReg="false" NextFile="BioswaleWithPipe.png"/>
     <ROW File="Buildup.GIFM" Component_="Buildup.GIFM" FileName="BUILD-~1.GIF|Build-up.GIFM" Attributes="0" SourcePath="C:\Users\Arash-Home\Dropbox\GUI\GIFMOD User&apos;s manual\Examples\Build-up\Build-up.GIFM" SelfReg="false" NextFile="precipitation.txt_1"/>
     <ROW File="DConfined.GIFM" Component_="DConfinedtransport.GIFM" FileName="2DCONF~2.GIF|2DConfined.GIFM" Attributes="0" SourcePath="C:\Users\Arash-Home\Dropbox\GUI\GIFMOD User&apos;s manual\Examples\2DConfinedAquifer\2DConfined.GIFM" SelfReg="false" NextFile="DConfined.temp"/>
     <ROW File="DConfined.temp" Component_="DConfinedtransport.GIFM" FileName="2DCONF~2.TEM|2DConfined.temp" Attributes="0" SourcePath="C:\Users\Arash-Home\Dropbox\GUI\GIFMOD User&apos;s manual\Examples\2DConfinedAquifer\2DConfined.temp" SelfReg="false" NextFile="control_output_experiment1.txt_1"/>
@@ -167,12 +170,10 @@
     <ROW File="GIFMod_Extra_Examples.pdf" Component_="GIFMod_Extra_Examples.pdf" FileName="GIFMOD~1.PDF|GIFMod_Extra_Examples.pdf" Version="65535.65535.65535.65535" Attributes="0" SourcePath="C:\Users\Arash-Home\Dropbox\GUI\GIFMOD User&apos;s manual\GIFMod_Extra_Examples.pdf" SelfReg="false" NextFile="GIFMod_Users_Manual.pdf_1"/>
     <ROW File="GIFMod_Users_Manual.pdf" Component_="GIFMod_Users_Manual.pdf" FileName="GIFMOD~1.PDF|GIFMod_User&apos;s_Manual.pdf" Attributes="0" SourcePath="C:\Users\Arash-Home\Dropbox\GUI\GIFMOD User&apos;s manual\GIFMod_User&apos;s_Manual.pdf" SelfReg="false" NextFile="blas_win64_MT.dll"/>
     <ROW File="GIFMod_Users_Manual.pdf_1" Component_="GIFMod_Extra_Examples.pdf" FileName="GIFMOD~2.PDF|GIFMod_User&apos;s_Manual.pdf" Version="65535.65535.65535.65535" Attributes="0" SourcePath="C:\Users\Arash-Home\Dropbox\GUI\GIFMOD User&apos;s manual\GIFMod_User&apos;s_Manual.pdf" SelfReg="false" NextFile="GIFMod_Users_Manual.pdf"/>
-    <ROW File="GIFMod_Users_Manual.pdf_2" Component_="GIFMod_Users_Manual.pdf_1" FileName="GIFMOD~1.PDF|GIFMod_User&apos;s_Manual.pdf" Attributes="0" SourcePath="..\src\resources\GIFMod_User&apos;s_Manual.pdf" SelfReg="false"/>
     <ROW File="GIFModonBlack.png" Component_="png" FileName="GIFMOD~1.PNG|GIFModonBlack.png" Attributes="0" SourcePath="..\src\resources\Icons\GIFModonBlack.png" SelfReg="false" NextFile="GIM.png"/>
     <ROW File="GIM.png" Component_="png" FileName="GIM.png" Attributes="0" SourcePath="..\src\resources\Icons\GIM.png" SelfReg="false" NextFile="GWA.png"/>
     <ROW File="GWA.png" Component_="png" FileName="GWA.png" Attributes="0" SourcePath="..\src\resources\Icons\GWA.png" SelfReg="false" NextFile="iconoutlinehandpalmcartoontoolpanfree.png"/>
-    <ROW File="InfiltrationTrench.png" Component_="d_impervious_catchment.wiz" FileName="INFILT~1.PNG|InfiltrationTrench.png" Attributes="0" SourcePath="..\src\resources\Templates\InfiltrationTrench.png" SelfReg="false" NextFile="InfiltrationTrench.vsdx"/>
-    <ROW File="InfiltrationTrench.vsdx" Component_="d_impervious_catchment.wiz" FileName="INFILT~1.VSD|InfiltrationTrench.vsdx" Attributes="0" SourcePath="..\src\resources\Templates\InfiltrationTrench.vsdx" SelfReg="false" NextFile="InfiltrationTrench.wiz"/>
+    <ROW File="InfiltrationTrench.png" Component_="d_impervious_catchment.wiz" FileName="INFILT~1.PNG|InfiltrationTrench.png" Attributes="0" SourcePath="..\src\resources\Templates\InfiltrationTrench.png" SelfReg="false" NextFile="InfiltrationTrench.wiz"/>
     <ROW File="InfiltrationTrench.wiz" Component_="d_impervious_catchment.wiz" FileName="INFILT~1.WIZ|InfiltrationTrench.wiz" Attributes="0" SourcePath="..\src\resources\Templates\InfiltrationTrench.wiz" SelfReg="false" NextFile="Raingarden.png"/>
     <ROW File="Infiltration_Basin.GIFM" Component_="control_output_experiment1.txt_2" FileName="INFILT~1.GIF|Infiltration_Basin.GIFM" Attributes="0" SourcePath="C:\Users\Arash-Home\Dropbox\GUI\GIFMOD User&apos;s manual\Examples\Infiltration_Basin\Infiltration_Basin.GIFM" SelfReg="false" NextFile="Infiltration_Basin.temp"/>
     <ROW File="Infiltration_Basin.temp" Component_="control_output_experiment1.txt_2" FileName="INFILT~1.TEM|Infiltration_Basin.temp" Attributes="0" SourcePath="C:\Users\Arash-Home\Dropbox\GUI\GIFMOD User&apos;s manual\Examples\Infiltration_Basin\Infiltration_Basin.temp" SelfReg="false" NextFile="Inflow_120110_111610_Combined.txt"/>
@@ -249,7 +250,7 @@
     <ROW File="Solution_detailsArashMassoudiehsconflictedcopy20170317.txt" Component_="control_output_experiment1.txt_3" FileName="SOLUTI~1.TXT|Solution_details (Arash Massoudieh&apos;s conflicted copy 2017-03-17).txt" Attributes="0" SourcePath="C:\Users\Arash-Home\Dropbox\GUI\GIFMOD User&apos;s manual\Examples\raingarden\Solution_details (Arash Massoudieh&apos;s conflicted copy 2017-03-17).txt" SelfReg="false" NextFile="Solution_details.txt_6"/>
     <ROW File="Storage.png" Component_="png" FileName="Storage.png" Attributes="0" SourcePath="..\src\resources\Icons\Storage.png" SelfReg="false" NextFile="Stream.png"/>
     <ROW File="Stream.png" Component_="png" FileName="Stream.png" Attributes="0" SourcePath="..\src\resources\Icons\Stream.png" SelfReg="false" NextFile="tracer.png"/>
-    <ROW File="Stream_sediment.wiz" Component_="d_impervious_catchment.wiz" FileName="STREAM~1.WIZ|Stream_sediment.wiz" Attributes="0" SourcePath="..\src\resources\Templates\Stream_sediment.wiz" SelfReg="false" NextFile="GIFMod_Users_Manual.pdf_2"/>
+    <ROW File="Stream_sediment.wiz" Component_="d_impervious_catchment.wiz" FileName="STREAM~1.WIZ|Stream_sediment.wiz" Attributes="0" SourcePath="..\src\resources\Templates\Stream_sediment.wiz" SelfReg="false"/>
     <ROW File="Table_for_Paper_Layers.docx" Component_="dt.txt" FileName="TABLE_~1.DOC|Table_for_Paper_Layers.docx" Attributes="0" SourcePath="C:\Users\Arash-Home\Dropbox\GUI\GIFMOD User&apos;s manual\Examples\Permeable Pavement\Table_for_Paper_Layers.docx" SelfReg="false" NextFile="temp.log_11"/>
     <ROW File="Temprature.txt" Component_="control_output_experiment1.txt_1" FileName="TEMPRA~1.TXT|Temprature.txt" Attributes="0" SourcePath="C:\Users\Arash-Home\Dropbox\GUI\GIFMOD User&apos;s manual\Examples\Evaporation\Temprature.txt" SelfReg="false" NextFile="Wind.txt"/>
     <ROW File="WQV.png" Component_="png" FileName="WQV.png" Attributes="0" SourcePath="..\src\resources\Icons\WQV.png" SelfReg="false" NextFile="zoom_in.png"/>
@@ -298,7 +299,7 @@
     <ROW File="dt.txt" Component_="dt.txt" FileName="dt.txt" Attributes="0" SourcePath="C:\Users\Arash-Home\Dropbox\GUI\GIFMOD User&apos;s manual\Examples\Permeable Pavement\dt.txt" SelfReg="false" NextFile="hydro_output.txt"/>
     <ROW File="dummy.GIFM" Component_="BOD_Aeration_inverse_modeling.GIFM" FileName="DUMMY~1.GIF|dummy.GIFM" Attributes="0" SourcePath="C:\Users\Arash-Home\Dropbox\GUI\GIFMOD User&apos;s manual\Examples\BOD_Aeration_inverse_modeling\dummy.GIFM" SelfReg="false" NextFile="dummy.temp"/>
     <ROW File="dummy.temp" Component_="BOD_Aeration_inverse_modeling.GIFM" FileName="DUMMY~1.TEM|dummy.temp" Attributes="0" SourcePath="C:\Users\Arash-Home\Dropbox\GUI\GIFMOD User&apos;s manual\Examples\BOD_Aeration_inverse_modeling\dummy.temp" SelfReg="false" NextFile="GAout.txt"/>
-    <ROW File="dv_soil.png" Component_="d_impervious_catchment.wiz" FileName="2dv_soil.png" Attributes="0" SourcePath="..\src\resources\Templates\2dv_soil.png" SelfReg="false" NextFile="InfiltrationTrench.png"/>
+    <ROW File="dv_soil.png" Component_="d_impervious_catchment.wiz" FileName="2dv_soil.png" Attributes="0" SourcePath="..\src\resources\Templates\2dv_soil.png" SelfReg="false" NextFile="BioswaleWithoutPipe.png"/>
     <ROW File="editpropertyxxl.png" Component_="png" FileName="EDIT-P~1.PNG|edit-property-xxl.png" Attributes="0" SourcePath="..\src\resources\Icons\edit-property-xxl.png" SelfReg="false" NextFile="experiment1.png"/>
     <ROW File="experiment1.png" Component_="png" FileName="EXPERI~1.PNG|experiment1.png" Attributes="0" SourcePath="..\src\resources\Icons\experiment1.png" SelfReg="false" NextFile="experiment2.png"/>
     <ROW File="experiment2.png" Component_="png" FileName="EXPERI~2.PNG|experiment2.png" Attributes="0" SourcePath="..\src\resources\Icons\experiment2.png" SelfReg="false" NextFile="Experimentcopy.png"/>

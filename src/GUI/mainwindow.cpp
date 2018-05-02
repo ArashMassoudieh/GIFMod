@@ -1,5 +1,5 @@
 #ifndef GIFMOD_VERSION
-#define GIFMOD_VERSION "0.1.25"
+#define GIFMOD_VERSION "0.1.26"
 #endif
 #ifndef GWA_VERSION
 #define GWA_VERSION "0.0.1"
@@ -2017,7 +2017,6 @@ MainWindow::~MainWindow()
 	delete mainGraphWidget->results;
 	delete	mainGraphWidget;
 //	delete projModel;
-	std::exit(0);
 	delete ui;
 	return;
 }
