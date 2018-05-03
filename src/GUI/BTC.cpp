@@ -312,7 +312,8 @@ double diff(CTimeSeries &BTC_p, CTimeSeries &BTC_d)
 {
 	double sum = 0;
 	double a;
-	for (int i=0; i<BTC_d.n; i++)
+    if ((BTC_p.n==0) || (BTC_d.n==0)) return sum;
+    for (int i=0; i<BTC_d.n; i++)
 	{
 		a = BTC_p.interpol(BTC_d.t[i]);
 		sum += pow(BTC_d.C[i] - a,2);
