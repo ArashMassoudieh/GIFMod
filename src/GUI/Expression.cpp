@@ -16,7 +16,11 @@ CExpression::CExpression(QString S)
 	text = S; 
 	funcs << "_min" << "_max" << "_exp" << "_log" << "_abs" << "_sqr";
 	opts << "+" << "-" << "*" << ";" << "/" << "^";
-	QStringList out;
+    if (S.contains("|"))
+    {   unit = extract_between(S,"|","|");
+        S = S.left(S.indexOf("|"));
+    }
+    QStringList out;
 	bool inside_quote = false;
 	int paranthesis_level = 0;
 	int last_operator_location = -1; 
