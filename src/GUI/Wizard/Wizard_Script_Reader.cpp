@@ -851,19 +851,27 @@ QList<CCommand> Wizard_Script_Reader::do_2dv(QString configuration, wiz_entity *
 
 	double z0 = 0;
 	double Depth;
+    QString Depth_unit;
+    QString length_unit;
+    QString Width_unit;
+    QString z0_unit;
 	double length = wiz_ent->get_value(wiz_ent->get_parameter("Length")).toDouble();
+    length_unit = wiz_ent->get_value(wiz_ent->get_parameter("Length")).unit;
 	double Width = wiz_ent->get_value(wiz_ent->get_parameter("Width")).toDouble();
+    Width_unit = wiz_ent->get_value(wiz_ent->get_parameter("Width")).unit;
 	double slope = wiz_ent->get_value(wiz_ent->get_parameter("Slope")).toDouble();
 	bool has_z0 = false;
 	bool has_depth = false;
 	if (wiz_ent->has_parameter("Bottom elevation"))
 	{
 		z0 = wiz_ent->get_value(wiz_ent->get_parameter("Bottom elevation")).toDouble();
-		has_z0 = true;
+        z0_unit = wiz_ent->get_value(wiz_ent->get_parameter("Bottom elevation")).unit;
+        has_z0 = true;
 	}
 	if (wiz_ent->has_parameter("Depth"))
 	{
 		Depth = wiz_ent->get_value(wiz_ent->get_parameter("Depth")).toDouble();
+        Depth_unit = wiz_ent->get_value(wiz_ent->get_parameter("Depth")).unit;
 		has_depth = true;
 	}
 
@@ -905,9 +913,13 @@ QList<CCommand> Wizard_Script_Reader::do_2dv(QString configuration, wiz_entity *
 			{
 				{
 					if (direction == "up")
-						command.parameters["Bottom elevation"] = z0 + j * Depth;
+                    {	command.parameters["Bottom elevation"] = z0 + j * Depth;
+                        command.parameters["Bottom elevation"].unit = Depth_unit;
+                    }
 					else
-						command.parameters["Bottom elevation"] = z0 + (nv - j - 1)*Depth; 
+                    {	command.parameters["Bottom elevation"] = z0 + (nv - j - 1)*Depth;
+                        command.parameters["Bottom elevation"].unit = Depth_unit;
+                    }
 				}
 			}
 
@@ -952,6 +964,7 @@ QList<CCommand> Wizard_Script_Reader::do_2dv(QString configuration, wiz_entity *
 			}
 
 			command.parameters["Length"] = length;
+            command.parameters["Length"] = length_unit;
 			command.parameters["Interface/cross sectional area"] = Width*Depth;
 
 			commands.append(command);
