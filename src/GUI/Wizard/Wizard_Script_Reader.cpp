@@ -698,6 +698,8 @@ QList<CCommand> Wizard_Script_Reader::do_1dvh(QString configuration, wiz_entity 
 	
 	double z0 = 0;
 	double Depth;
+    QString Depth_unit;
+    QString z0_unit;
 	double length = wiz_ent->get_value(wiz_ent->get_parameter("Length")).toDouble();
 	double width = wiz_ent->get_value(wiz_ent->get_parameter("Width")).toDouble();
 	double slope = wiz_ent->get_value(wiz_ent->get_parameter("Slope")).toDouble();
@@ -706,12 +708,14 @@ QList<CCommand> Wizard_Script_Reader::do_1dvh(QString configuration, wiz_entity 
 	if (wiz_ent->has_parameter("Bottom elevation"))
 	{
 		z0 = wiz_ent->get_value(wiz_ent->get_parameter("Bottom elevation")).toDouble();
-		has_z0 = true;
+        z0_unit = wiz_ent->get_value(wiz_ent->get_parameter("Bottom elevation")).unit;
+        has_z0 = true;
 	}
 	if (wiz_ent->has_parameter("Depth"))
 	{
 		Depth = wiz_ent->get_value(wiz_ent->get_parameter("Depth")).toDouble();
-		has_depth = true;
+        Depth_unit = wiz_ent->get_value(wiz_ent->get_parameter("Depth")).unit;
+        has_depth = true;
 	}
 
 	mProp _filter;
@@ -759,13 +763,19 @@ QList<CCommand> Wizard_Script_Reader::do_1dvh(QString configuration, wiz_entity 
 			if (configuration == "1dv")
 			{
 				if (direction == "up")
-					command.parameters["Bottom elevation"] = z0 + i * Depth;
+                {	command.parameters["Bottom elevation"] = z0 + i * Depth;
+                    command.parameters["Bottom elevation"].unit = Depth_unit;
+                }
 				else
-					command.parameters["Bottom elevation"] = z0 + (n - i - 1)*Depth; 
+                {	command.parameters["Bottom elevation"] = z0 + (n - i - 1)*Depth;
+                    command.parameters["Bottom elevation"].unit = Depth_unit;
+                }
 			}
 		}
 		if (configuration == "1dh")
-			command.parameters["Bottom elevation"] = z0 - i*length*slope;
+        {	command.parameters["Bottom elevation"] = z0 - i*length*slope;
+            command.parameters["Bottom elevation"].unit = z0_unit;
+        }
 
 		commands.append(command);
 
@@ -798,7 +808,9 @@ QList<CCommand> Wizard_Script_Reader::do_1dvh(QString configuration, wiz_entity 
 		}
 
 		if (configuration == "1dh")
-			command.parameters["Interface/cross sectional area"] = width*Depth;
+        {	if (has_depth)
+                command.parameters["Interface/cross sectional area"] = width*Depth;
+        }
 
 		commands.append(command);
 
