@@ -36,6 +36,7 @@ area, Stream, Stream, 0.5*f[85] * (_pos(s[1] - _max(s[5]:f[60])) + _pos(e[1] - _
 area, Stream, Pond, f[85]*_pos(s[1]-_max(s[5]:f[60]))
 area, Pond, Pond, 0.5*f[85]*(_pos(s[1]-_max(s[5]:f[60]))+_pos(e[1]-_max(e[5]:f[60])))
 area, Storage, Storage, 0.5*f[85]*((s[4]/(s[2]*s[51]))+(e[4]/(e[2]*e[51])))
+area, Storage, Storage, 0.5*f[85]*((s[4]/(s[2]*s[51]))+(e[1]-e[5]))
 //Constant Area
 const_area, Catchment, Catchment, 0
 const_area, Catchment, Pond, 0
@@ -46,6 +47,7 @@ const_area, Stream, Stream, 0
 const_area, Stream, Pond, 0
 const_area, Pond, Pond, 0
 const_area, Storage, Storage, 0
+const_area, Storage, Pond, 0
 //Flow
 // ******* soil ********
 flow, Soil,Storage,(_frs[(f[50]*(_max(_min(f[9]:1):0)^f[56])*((1-((1-(_max(_min(f[9]:1):0)^(1/f[55])))^f[55]))^2))]*(_pos(s[1]-_max(e[1]:s[5]))-_pos(e[1]-s[1]))/f[6]*f[2])
