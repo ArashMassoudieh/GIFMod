@@ -975,7 +975,7 @@ QList<CCommand> Wizard_Script_Reader::do_2dv(QString configuration, wiz_entity *
 			}
 
 			command.parameters["Length"] = length;
-            command.parameters["Length"] = length_unit;
+            command.parameters["Length"].unit = length_unit;
 			command.parameters["Interface/cross sectional area"] = Width*Depth;
 
 			commands.append(command);
@@ -1041,20 +1041,27 @@ QList<CCommand> Wizard_Script_Reader::do_2dh(QString configuration, wiz_entity *
 	double z0 = 0;
 	double Depth;
 	double length = wiz_ent->get_value(wiz_ent->get_parameter("Length")).toDouble();
-	double Width = wiz_ent->get_value(wiz_ent->get_parameter("Width")).toDouble();
+    QString lenght_unit = wiz_ent->get_value(wiz_ent->get_parameter("Length")).unit;
+    double Width = wiz_ent->get_value(wiz_ent->get_parameter("Width")).toDouble();
+    QString Width_unit = wiz_ent->get_value(wiz_ent->get_parameter("Width")).unit;
 	double slope_x = wiz_ent->get_value(wiz_ent->get_parameter("X_Slope")).toDouble();
 	double slope_y = wiz_ent->get_value(wiz_ent->get_parameter("Y_Slope")).toDouble();
 	bool has_z0 = false;
 	bool has_depth = false;
+    QString Depth_unit;
+    QString z0_unit;
 	if (wiz_ent->has_parameter("Bottom elevation"))
 	{
 		z0 = wiz_ent->get_value(wiz_ent->get_parameter("Bottom elevation")).toDouble();
-		has_z0 = true;
+        z0_unit = wiz_ent->get_value(wiz_ent->get_parameter("Bottom elevation")).unit;
+        has_z0 = true;
+
 	}
 	if (wiz_ent->has_parameter("Depth"))
 	{
 		Depth = wiz_ent->get_value(wiz_ent->get_parameter("Depth")).toDouble();
-		has_depth = true;
+        Depth_unit = wiz_ent->get_value(wiz_ent->get_parameter("Depth")).unit;
+        has_depth = true;
 	}
 
 	mProp _filter;
@@ -1093,7 +1100,8 @@ QList<CCommand> Wizard_Script_Reader::do_2dh(QString configuration, wiz_entity *
 			}
 			
 			command.parameters["Bottom elevation"] = z0 - i*slope_x - j*slope_y;
-			
+            command.parameters["Bottom elevation"].unit = z0_unit;
+
 			commands.append(command);
 		}
 						
@@ -1134,9 +1142,12 @@ QList<CCommand> Wizard_Script_Reader::do_2dh(QString configuration, wiz_entity *
 			}
 
 			command.parameters["Length"] = length;
+            command.parameters["Length"].unit = lenght_unit;
 			command.parameters["Width"] = Width;
+            command.parameters["Width"].unit = Width_unit;
 			command.parameters["Interface/cross sectional area"] = Width*Depth;
-
+            if (lenght_unit == Width_unit)
+                command.parameters["Interface/cross sectional area"].unit = lenght_unit + "~^2";
 			commands.append(command);
 
 		}
@@ -1165,9 +1176,13 @@ QList<CCommand> Wizard_Script_Reader::do_2dh(QString configuration, wiz_entity *
 						command.parameters[item.entity] = wiz_ent->get_value(item);
 				}
 			}
-			command.parameters["Length"] = Width;
-			command.parameters["Width"] = length;
+            command.parameters["Length"] = length;
+            command.parameters["Length"].unit = lenght_unit;
+            command.parameters["Width"] = Width;
+            command.parameters["Width"].unit = Width_unit;
 			command.parameters["Interface/cross sectional area"] = length*Depth;
+            if (lenght_unit == Depth_unit)
+                command.parameters["Interface/cross sectional area"].unit = lenght_unit + "~^2";
 			commands.append(command);
 
 		}
