@@ -5713,6 +5713,7 @@ VTK_grid CMedium::VTK_get_snap_shot(string var, double t, double z_scale, string
         out.names.push_back(var);
     for (unsigned int i=0; i<Blocks.size(); i++)
     {
+        bool not_push = false;
         VTK_point pt;
         pt.x = Blocks[i].location.x;
         pt.y = Blocks[i].location.y;
@@ -5726,18 +5727,26 @@ VTK_grid CMedium::VTK_get_snap_shot(string var, double t, double z_scale, string
             if (Blocks[i].indicator == Block_types::Soil || Blocks[i].indicator == Block_types::Darcy)
                 pt.vals.push_back(Results.ANS.BTC[i].interpol(t)/Blocks[i].V);
             else
+            {
                 pt.vals.push_back(0);
+                not_push = true;
+            }
         }
         else if (var=="depth")
         {
             if (Blocks[i].indicator != Block_types::Soil && Blocks[i].indicator != Block_types::Darcy)
                 pt.vals.push_back(Results.ANS.BTC[i + Blocks.size() + Connectors.size()].interpol(t)-Blocks[i].z0);
             else
+            {
                 pt.vals.push_back(0);
+                //not_push = true;
+            }
         }
         else
             pt.vals.push_back(Blocks[i].get_val(var));
-        out.p.push_back(pt);
+
+        if (!not_push)
+            out.p.push_back(pt);
     }
     return out;
 }

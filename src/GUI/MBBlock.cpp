@@ -1595,6 +1595,13 @@ bool CMBBlock::set_property(string s, string value)
             show_message("Property [" + s + "] was set to " + value); return success;
         }
     }
+    if (tolower(trim(s))=="precipitation")
+    {
+        if (tolower(trim(value))=="yes")
+            precipitation_swch = true;
+        else
+            precipitation_swch = false;
+    }
     bool done = set_val(s,atof(value.c_str()));
     if (!done)
     {
