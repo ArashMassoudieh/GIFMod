@@ -2359,10 +2359,10 @@ void CMedium::finalize_set_param()
             if (Connectors[i].flow_params[j]==0)
 			{
 
-                if (((Blocks[Connectors[i].Block1N].indicator == Soil) || (Blocks[Connectors[i].Block1N].indicator == Darcy)) && ((Blocks[getblocksq(Connectors[i].Block2ID)].indicator == Pond) || (Blocks[getblocksq(Connectors[i].Block2ID)].indicator == Stream)))
+                if (((Blocks[Connectors[i].Block1N].indicator == Soil) || (Blocks[Connectors[i].Block1N].indicator == Darcy) || (Blocks[Connectors[i].Block1N].indicator == Storage)) && ((Blocks[getblocksq(Connectors[i].Block2ID)].indicator == Pond) || (Blocks[getblocksq(Connectors[i].Block2ID)].indicator == Stream)))
                     Connectors[i].flow_params[j] = Blocks[Connectors[i].Block1N].fs_params[j];
 
-                if (((Blocks[getblocksq(Connectors[i].Block2ID)].indicator == Soil) || (Blocks[getblocksq(Connectors[i].Block2ID)].indicator == Darcy)) && ((Blocks[getblocksq(Connectors[i].Block1ID)].indicator == Pond) || (Blocks[getblocksq(Connectors[i].Block1ID)].indicator == Stream)))
+                if (((Blocks[getblocksq(Connectors[i].Block2ID)].indicator == Soil) || (Blocks[getblocksq(Connectors[i].Block2ID)].indicator == Darcy) || (Blocks[getblocksq(Connectors[i].Block2ID)].indicator == Storage)) && ((Blocks[getblocksq(Connectors[i].Block1ID)].indicator == Pond) || (Blocks[getblocksq(Connectors[i].Block1ID)].indicator == Stream)))
                     Connectors[i].flow_params[j] = Blocks[getblocksq(Connectors[i].Block2ID)].fs_params[j];
 
                 if (Blocks[getblocksq(Connectors[i].Block1ID)].vapor_diffusion!=0 && Blocks[getblocksq(Connectors[i].Block2ID)].vapor_diffusion!=0)
