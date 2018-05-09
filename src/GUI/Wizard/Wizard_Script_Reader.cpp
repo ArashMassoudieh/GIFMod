@@ -701,8 +701,10 @@ QList<CCommand> Wizard_Script_Reader::do_1dvh(QString configuration, wiz_entity 
     QString Depth_unit;
     QString z0_unit;
 	double length = wiz_ent->get_value(wiz_ent->get_parameter("Length")).toDouble();
-	double width = wiz_ent->get_value(wiz_ent->get_parameter("Width")).toDouble();
-	double slope = wiz_ent->get_value(wiz_ent->get_parameter("Slope")).toDouble();
+    QString length_unit = wiz_ent->get_value(wiz_ent->get_parameter("Length")).unit;
+    double width = wiz_ent->get_value(wiz_ent->get_parameter("Width")).toDouble();
+    QString width_unit = wiz_ent->get_value(wiz_ent->get_parameter("Width")).unit;
+    double slope = wiz_ent->get_value(wiz_ent->get_parameter("Slope")).toDouble();
 	bool has_z0 = false;
 	bool has_depth = false;
 	if (wiz_ent->has_parameter("Bottom elevation"))
@@ -793,8 +795,14 @@ QList<CCommand> Wizard_Script_Reader::do_1dvh(QString configuration, wiz_entity 
 		mPropList m = mproplist->filter(_filter);
 
 		command.parameters["Name"] = XString(wiz_ent->name() + " (" + QString::number(i + first_index) + ") - " + wiz_ent->name() + " (" + QString::number(i + first_index+1) + ")");
-		if (has_depth && configuration == "1dv") command.parameters["Length"] = Depth;
-		if (has_depth && configuration == "1dh") command.parameters["Length"] = length;
+        if (has_depth && configuration == "1dv")
+        {   command.parameters["Length"] = Depth;
+            command.parameters["Length"].unit = Depth_unit;
+        }
+        if (has_depth && configuration == "1dh")
+        {   command.parameters["Length"] = length;
+            command.parameters["Length"].unit = length_unit;
+        }
 		for (wiz_assigned_value item : wiz_ent->get_parameters())
 		{
 			if (!script_specific_params.contains(item.entity))
@@ -809,7 +817,10 @@ QList<CCommand> Wizard_Script_Reader::do_1dvh(QString configuration, wiz_entity 
 
 		if (configuration == "1dh")
         {	if (has_depth)
-                command.parameters["Interface/cross sectional area"] = width*Depth;
+            {   command.parameters["Interface/cross sectional area"] = width*Depth;
+                if (width_unit.contains("ft") && Depth_unit.contains("ft"))
+                    command.parameters["Interface/cross sectional area"].unit = "ft~^2";
+            }
         }
 
 		commands.append(command);
