@@ -751,9 +751,9 @@ double CMBBlock::calc_star(CStringOP &term, const vector<int> &ii)
 		if (term.number == sq1_)
 			return 0.5/calc_star(term.terms[1],ii)*(calc_star(term.terms[0],ii)*calc_star(term.terms[1],ii)+sqrt(pow(calc_star(term.terms[0],ii)*calc_star(term.terms[1],ii),2)+1));
         if (term.number == frs_)
-			return funcs[0].evaluate(get_val(9,ii));
+			return funcs[0].evaluate(get_val_star(9,ii));
 		if (term.number == fas_)
-			return funcs[0].evaluate(get_val(4,ii));
+			return funcs[0].evaluate(get_val_star(4,ii));
         if (term.number == mon_)
 			return mon(calc_star(term.terms[0],ii),calc_star(term.terms[1],ii));
 		if (term.number == sq2_)
