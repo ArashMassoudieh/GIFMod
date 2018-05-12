@@ -3652,7 +3652,11 @@ CVector_arma CMedium::getres_Q(CVector_arma &X, const double &dtt)
 		// build_up
         for (unsigned int i=0; i<Blocks.size(); i++)
 		{
-			for (int p = -1; p<min(int(Blocks[i].Solid_phase.size()), max_phases); p++)
+            for (unsigned int j = 0; j<Blocks[i].buildup.size(); j++)
+                if (Blocks[i].buildup[j]->phase == "aqueous")
+                    F[get_member_no(i, -2, 0, k)] -= Blocks[i].buildup[j]->buildup((1 - w())*Blocks[i].CG_star[k][get_member_no(-2, 0)] + w()*Blocks[i].CG[k][get_member_no(-2, 0)], &Blocks[i])*Blocks[i].V;
+
+            for (int p = -1; p<min(int(Blocks[i].Solid_phase.size()), max_phases); p++)
 			{
 				int _t;
 				if (p<0) _t = 1; else _t = Blocks[0].Solid_phase[p]->n_phases;
