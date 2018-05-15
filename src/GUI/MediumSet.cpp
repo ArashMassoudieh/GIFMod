@@ -398,7 +398,7 @@ void CMediumSet::solve()
 			calc_MSE(i);
 		}
 	}
-	CVector(MSE_obs).writetofile(FI.outputpathname + "MSE.txt");
+	CVector(MSE_obs).writetofile(FI.outputpathname + "MSE" + ID + ".txt");
 }
 
 void CMediumSet::set_default()
