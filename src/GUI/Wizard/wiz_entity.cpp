@@ -117,6 +117,24 @@ XString wiz_entity::get_value(QString x)
 		return XString(); 
 }
 
+XString wiz_entity::get_nh()
+{
+	if (parameters.count("nh") > 0)
+		return get_value(parameters["nh"]);
+	else if (parameters.count("nr") > 0)
+		return get_value(parameters["nr"]);
+	else	
+		return XString();
+}
+
+XString wiz_entity::get_nv()
+{
+	if (parameters.count("nv") > 0)
+		return get_value(parameters["nv"]);
+	else
+		return XString();
+}
+
 wiz_entity::~wiz_entity()
 {
 }

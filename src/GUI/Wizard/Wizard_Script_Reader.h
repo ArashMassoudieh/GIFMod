@@ -81,6 +81,7 @@ public:
 	QList<CCommand> do_1dvh(QString configuration, wiz_entity * wiz_ent, int & x, int & y); //creates commands for a 1d grid object
 	QList<CCommand> do_2dv(QString configuration, wiz_entity * wiz_ent, int & x, int & y); //creates commands for a 2d-vertical grid object
 	QList<CCommand> do_2dh(QString configuration, wiz_entity * wiz_ent, int & x, int & y); //creates commands for a 2d-horizontal grid object
+	QList<CCommand> do_2dr(QString configuration, wiz_entity * wiz_ent, int & x, int & y); // creates commands for a 2d-radial grid object
 	private:
 	QMap<QString, wiz_entity> major_blocks;
     QMap<QString, wiz_criterion> criteria;
