@@ -3653,7 +3653,7 @@ CVector_arma CMedium::getres_Q(CVector_arma &X, const double &dtt)
         for (unsigned int i=0; i<Blocks.size(); i++)
 		{
             for (unsigned int j = 0; j<Blocks[i].buildup.size(); j++)
-                if (Blocks[i].buildup[j]->phase == "aqueous")
+                if (Blocks[i].buildup[j]->phase == "aqueous" && Blocks[i].buildup[j]->constituent == RXN().cons[k].name)
                     F[get_member_no(i, -2, 0, k)] -= Blocks[i].buildup[j]->buildup((1 - w())*Blocks[i].CG_star[k][get_member_no(-2, 0)] + w()*Blocks[i].CG[k][get_member_no(-2, 0)], &Blocks[i])*Blocks[i].V;
 
             for (int p = -1; p<min(int(Blocks[i].Solid_phase.size()), max_phases); p++)
@@ -3665,13 +3665,13 @@ CVector_arma CMedium::getres_Q(CVector_arma &X, const double &dtt)
 					if (p == -1)
 					{
 						for (unsigned int j = 0; j<Blocks[i].buildup.size(); j++)
-							if (Blocks[i].buildup[j]->phase == "sorbed")
+                            if (Blocks[i].buildup[j]->phase == "sorbed" && Blocks[i].buildup[j]->constituent == RXN().cons[k].name)
 								F[get_member_no(i, p, l, k)] -= Blocks[i].buildup[j]->buildup((1 - w())*Blocks[i].CG_star[k][get_member_no(p, l)] + w()*Blocks[i].CG[k][get_member_no(p, l)], &Blocks[i])*Blocks[i].V;
 					}
 					else
 					{
 						for (unsigned int j = 0; j<Blocks[i].buildup.size(); j++)
-							if ((Blocks[i].buildup[j]->solid == Blocks[i].Solid_phase[p]->name) && (Blocks[i].buildup[j]->phase == Blocks[i].Solid_phase[p]->phase_names[l]))
+                            if ((Blocks[i].buildup[j]->solid == Blocks[i].Solid_phase[p]->name) && (Blocks[i].buildup[j]->phase == Blocks[i].Solid_phase[p]->phase_names[l]) && Blocks[i].buildup[j]->constituent == RXN().cons[k].name)
 								F[get_member_no(i, p, l, k)] -= Blocks[i].buildup[j]->buildup((1 - w())*Blocks[i].CG_star[k][get_member_no(p, l)] + w()*Blocks[i].CG[k][get_member_no(p, l)], &Blocks[i])*Blocks[i].V;
 
 
