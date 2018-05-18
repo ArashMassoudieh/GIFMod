@@ -5733,7 +5733,7 @@ VTK_grid CMedium::VTK_get_snap_shot(string var, double t, double z_scale, string
             else
             {
                 pt.vals.push_back(0);
-                not_push = true;
+                pt.beshown = false;
             }
         }
         else if (var=="depth")
@@ -5743,14 +5743,13 @@ VTK_grid CMedium::VTK_get_snap_shot(string var, double t, double z_scale, string
             else
             {
                 pt.vals.push_back(0);
-                //not_push = true;
+                pt.beshown = false;
             }
         }
         else
             pt.vals.push_back(Blocks[i].get_val(var));
 
-        if (!not_push)
-            out.p.push_back(pt);
+        out.p.push_back(pt);
     }
     return out;
 }
@@ -5840,15 +5839,18 @@ void CMedium::write_grid_to_vtp(VTK_grid& grid, const string &filename, const ve
     for (unsigned int i=0;i<grid.p.size(); i++)
         {
 
-            const double p[3] = {grid.p[i].x, grid.p[i].y, grid.p[i].z};
+            if (grid.p[i].beshown)
+            {
+                const double p[3] = {grid.p[i].x, grid.p[i].y, grid.p[i].z};
 
-            // We need an an array of point id's for InsertNextCell.
+                // We need an an array of point id's for InsertNextCell.
 
-            vtkIdType pid[1];
-            pid[0] = points->InsertNextPoint(p);
-            //vertices->InsertNextCell(1,pid);
-            for (unsigned int j=0; j<grid.p[i].vals.size(); j++)
-                vals[j]->InsertNextValue(grid.p[i].vals[j]);
+                vtkIdType pid[1];
+                pid[0] = points->InsertNextPoint(p);
+                //vertices->InsertNextCell(1,pid);
+                for (unsigned int j=0; j<grid.p[i].vals.size(); j++)
+                    vals[j]->InsertNextValue(grid.p[i].vals[j]);
+            }
         }
     // Create a polydata object
     vtkSmartPointer<vtkPolyData> point =
@@ -5955,15 +5957,18 @@ void CMedium::write_grid_to_vtp_surf(VTK_grid& grid, const string &filename, con
     for (unsigned int i=0;i<grid.p.size(); i++)
         {
 
-            const double p[3] = {grid.p[i].x, grid.p[i].y, grid.p[i].z};
+            if (grid.p[i].beshown)
+            {
+                const double p[3] = {grid.p[i].x, grid.p[i].y, grid.p[i].z};
 
-            // We need an an array of point id's for InsertNextCell.
+                // We need an an array of point id's for InsertNextCell.
 
-            vtkIdType pid[1];
-            pid[0] = points->InsertNextPoint(p);
-            //vertices->InsertNextCell(1,pid);
-            for (unsigned int j=0; j<grid.p[i].vals.size(); j++)
-                vals[j]->InsertNextValue(grid.p[i].vals[j]);
+                vtkIdType pid[1];
+                pid[0] = points->InsertNextPoint(p);
+                //vertices->InsertNextCell(1,pid);
+                for (unsigned int j=0; j<grid.p[i].vals.size(); j++)
+                    vals[j]->InsertNextValue(grid.p[i].vals[j]);
+            }
         }
     // Create a polydata object
     vtkSmartPointer<vtkPolyData> point =

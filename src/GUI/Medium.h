@@ -39,12 +39,14 @@ struct VTK_point
     double x,y,z;
     double length, width, depth;
     std::vector<double> vals;
+    bool beshown = true;
 };
 
 struct VTK_grid
 {
     std::vector<VTK_point> p;
     std::vector<std::string> names;
+
 };
 #endif // USE_VTK
 
