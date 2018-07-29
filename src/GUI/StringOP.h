@@ -15,8 +15,8 @@ enum physical_params
 };
 
 namespace state_vars {
-    enum state_vars {Head=1,Area=2,Volume=3,Storage=4,Bottom_Elev=5,Moisture_Content=6, Flow_rate=8, Effective_Moisture=9, _Effective_Moisture=10
-                      ,Depression_Storage=12, Vapor_Diffusion=13, Bulk_Density=14, Air_Content=15};
+    enum state_vars {Head=1,Area=2,Volume=3,Storage=4,Bottom_Elev=5,Moisture_Content=6, Length=6, Flow_rate=7, Darcy_flux=8, Liquid_flow=8, Effective_Moisture=9, _Effective_Moisture=10
+                      ,Depression_Storage=12, Vapor_flow=13, Vapor_Diffusion=13, Dispersivity=14, Bulk_Density=14, Air_Content=15};
 }
 
 enum functions

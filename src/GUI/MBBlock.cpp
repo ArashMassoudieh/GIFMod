@@ -269,7 +269,7 @@ double CMBBlock::get_val(int i, const vector<int> &ii)
     if (i==state_vars::Bottom_Elev) return z0;
     if (i==state_vars::Moisture_Content) return V/A;    // blocks don't have d
 	if (i==7) return 0;
-    if (i==state_vars::Flow_rate) return q;
+    if (i==state_vars::Darcy_flux) return q;
 
     if (i==state_vars::Effective_Moisture)
     {   if ((indicator != Soil) && (indicator!=Darcy))
@@ -491,7 +491,7 @@ double CMBBlock::get_val_star(int i, const vector<int> &ii)
     if (i==state_vars::Bottom_Elev) return z0;
     if (i==state_vars::Moisture_Content) return V_star/A_star;
 	if (i==7) return 0;
-    if (i==state_vars::Flow_rate) return q;
+    if (i==state_vars::Darcy_flux) return q;
     if (i==state_vars::Effective_Moisture)
 	{
 		if ((indicator != Soil) && (indicator != Darcy))

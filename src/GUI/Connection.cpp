@@ -584,36 +584,36 @@ double CConnection::get_val(int i, int ii)
 	Reaction parameters: 2000-2999
 	*/
 
-	if (i==1)
+    if (i==state_vars::Head)
 	{	if (Q>0)
 			return Block1->H;
 		else
 			return Block2->H;
 	}
-	if (i==2) return A;
-	if (i==3)
+    if (i==state_vars::Area) return A;
+    if (i==state_vars::Volume)
 	{	if (Q>0)
 		return Block1->V;
 	else
 		return Block2->V;
 	}
-	if (i==4)
+    if (i==state_vars::Storage)
 	{	if (Q>0)
 		return Block1->S;
 	else
 		return Block2->S;
 	}
-	if (i==5)
+    if (i==state_vars::Bottom_Elev)
 	{	if (Q>0)
 		return Block1->z0;
 	else
 		return Block2->z0;
 	}
-	if (i==6) return d;
-	if (i==7) return Q;
-	if (i==8) return (Q-Q_v)/A*flow_factor;
+    if (i==state_vars::Length) return d;
+    if (i==state_vars::Flow_rate) return Q;
+    if (i==state_vars::Liquid_flow) return (Q-Q_v)/A*flow_factor;
 
-	if (i==9)
+    if (i==state_vars::Effective_Moisture)
 	{
 		if (Block1->indicator==Soil || Block1->indicator == Plant || Block1->indicator == Darcy || Block1->indicator == Storage)
 		{
@@ -621,13 +621,13 @@ double CConnection::get_val(int i, int ii)
 			{
 				vector<int> jj;
 				jj.push_back(ii);
-				return max(Block1->get_val(9,jj),Block2->get_val(9,jj));
+                return max(Block1->get_val(state_vars::Effective_Moisture,jj),Block2->get_val(state_vars::Effective_Moisture,jj));
 			}
 			else
 			{
 				vector<int> jj;
 				jj.push_back(ii);
-				return Block1->get_val(9,jj);
+                return Block1->get_val(state_vars::Effective_Moisture,jj);
 			}
 		}
 		else
@@ -636,7 +636,7 @@ double CConnection::get_val(int i, int ii)
 			{
 				vector<int> jj;
 				jj.push_back(ii);
-				return Block2->get_val(9,jj);
+                return Block2->get_val(state_vars::Effective_Moisture,jj);
 			}
 			else
 			{
@@ -645,8 +645,8 @@ double CConnection::get_val(int i, int ii)
 		}
 	}
 	//if (i==11) return Q*flow_factor;
-	if (i==13) return Q_v;
-	if (i==14) return dispersivity;
+    if (i==state_vars::Vapor_flow) return Q_v;
+    if (i==state_vars::Dispersivity) return dispersivity;
 
 	if ((i>=50) && (i<100)) return flow_params[i-50];
 
@@ -681,36 +681,36 @@ double CConnection::get_val_star(int i, int ii)
 	Reaction parameters: 2000-2999
 	*/
 
-	if (i==1)
+    if (i==state_vars::Head)
 	{	if (Q>0)
 			return Block1->H_star;
 		else
 			return Block2->H_star;
 	}
-	if (i==2) return A_star;
-	if (i==3)
+    if (i==state_vars::Area) return A_star;
+    if (i==state_vars::Volume)
 	{	if (Q>0)
 		return Block1->V;
 	else
 		return Block2->V;
 	}
-	if (i==4)
+    if (i==state_vars::Storage)
 	{	if (Q>0)
 		return Block1->S_star;
 	else
 		return Block2->S_star;
 	}
-	if (i==5)
+    if (i==state_vars::Bottom_Elev)
 	{	if (Q>0)
 		return Block1->z0;
 	else
 		return Block2->z0;
 	}
-	if (i==6) return d;
-	if (i==7) return Q_star;
-	if (i==8) return (Q_star-Q_v_star)/A_star*flow_factor;
+    if (i==state_vars::Length) return d;
+    if (i==state_vars::Flow_rate) return Q_star;
+    if (i==state_vars::Liquid_flow) return (Q_star-Q_v_star)/A_star*flow_factor;
 
-	if (i==9)
+    if (i==state_vars::Effective_Moisture)
 	{
 		if ((Block1->indicator==Soil) || (Block1->indicator == Plant) || (Block1->indicator == Darcy) || (Block1->indicator == Storage))
 		{
@@ -737,8 +737,8 @@ double CConnection::get_val_star(int i, int ii)
 	}
 
 
-	if (i==13) return Q_v_star;
-	if (i==14) return dispersivity;
+    if (i==state_vars::Vapor_flow) return Q_v_star;
+    if (i==state_vars::Dispersivity) return dispersivity;
 
 	if ((i>=50) && (i<100)) return flow_params[i-50];
 	if (i>=100 && i<2000)
