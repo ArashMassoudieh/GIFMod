@@ -262,24 +262,24 @@ double CMBBlock::get_val(int i, const vector<int> &ii)
 	Reaction parameters: 2000-2999
 	*/
 
-	if (i==1) return H;
-	if (i==2) return A;
-	if (i==3) return V;
-	if (i==4) return S;
-	if (i==5) return z0;
-	if (i==6) return V/A;    // blocks don't have d
+    if (i==state_vars::Head) return H;
+    if (i==state_vars::Area) return A;
+    if (i==state_vars::Volume) return V;
+    if (i==state_vars::Storage) return S;
+    if (i==state_vars::Bottom_Elev) return z0;
+    if (i==state_vars::Moisture_Content) return V/A;    // blocks don't have d
 	if (i==7) return 0;
-	if (i==8) return q;
+    if (i==state_vars::Flow_rate) return q;
 
-	if (i==9)
-	{ if ((indicator != Soil) && (indicator!=Darcy))
+    if (i==state_vars::Effective_Moisture)
+    {   if ((indicator != Soil) && (indicator!=Darcy))
 			return (Heavyside(S/V)*S/V - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);
-		else
+        else
 			return (S/V - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);   //allow s to be above 1
 
 	}
 
-	if (i==10)
+    if (i==state_vars::_Effective_Moisture)
 	{
 		if ((indicator != Soil) && (indicator != Darcy))
 			if (S>0) return S/(S+1e-5*A); else return 0;
@@ -288,10 +288,10 @@ double CMBBlock::get_val(int i, const vector<int> &ii)
 	}
 
 
-	if (i==12) return DS;
-	if (i==13) return vapor_diffusion;
-	if (i==14) return bulk_density;
-	if (i == 15)
+    //if (i==state_vars::Depression_Storage) return DS;
+    if (i==state_vars::Vapor_Diffusion) return vapor_diffusion;
+    if (i==state_vars::Bulk_Density) return bulk_density;
+    if (i == state_vars::Air_Content)
 	{
 		if (air_phase == 0)
 			return 0;
@@ -484,33 +484,33 @@ double CMBBlock::get_val(const string &SS)
 
 double CMBBlock::get_val_star(int i, const vector<int> &ii)
 {
-	if (i==1) return H_star;
-	if (i==2) return A_star;
-	if (i==3) return V_star;
-	if (i==4) return S_star;
-	if (i==5) return z0;
-	if (i==6) return V_star/A_star;
+    if (i==state_vars::Head) return H_star;
+    if (i==state_vars::Area) return A_star;
+    if (i==state_vars::Volume) return V_star;
+    if (i==state_vars::Storage) return S_star;
+    if (i==state_vars::Bottom_Elev) return z0;
+    if (i==state_vars::Moisture_Content) return V_star/A_star;
 	if (i==7) return 0;
-	if (i==8) return q;
-	if (i==9)
+    if (i==state_vars::Flow_rate) return q;
+    if (i==state_vars::Effective_Moisture)
 	{
 		if ((indicator != Soil) && (indicator != Darcy))
 			return (Heavyside(S_star/V_star)*S_star/V_star - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);
 		else
 			return (S_star/V_star - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);   //allow s to be above 1
 		}
-	//if (i==12) return DS;
-	if (i==13) return vapor_diffusion;
+    //if (i==12) return DS;
+    if (i==state_vars::Vapor_Diffusion) return vapor_diffusion;
 
-	if (i==10)
+    if (i==state_vars::_Effective_Moisture)
 	{
 		if ((indicator != Soil) && (indicator != Darcy))
 			if (S_star>0) return S_star/(S_star+1e-5*A); else return 0;
 		else
 			return S_star/V;   //allow s to be above 1
 	}
-	if (i==14) return bulk_density;
-	if (i == 15)
+    if (i==state_vars::Bulk_Density) return bulk_density;
+    if (i == state_vars::Air_Content)
 	{
 		if (air_phase == 0)
 			return 0;

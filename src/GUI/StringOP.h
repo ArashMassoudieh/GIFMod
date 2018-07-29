@@ -14,6 +14,11 @@ enum physical_params
 	plant_growth_rate_coefficient = 27, temperature_base = 28, temperature_spread_factor = 29, plant_biomass_decay_factor = 30, plant_leaf_decay_factor = 31, optimal_temperature = 32, pan_evaporation_rate = 33, maximum_bio_volume = 34
 };
 
+namespace state_vars {
+    enum state_vars {Head=1,Area=2,Volume=3,Storage=4,Bottom_Elev=5,Moisture_Content=6, Flow_rate=8, Effective_Moisture=9, _Effective_Moisture=10
+                      ,Depression_Storage=12, Vapor_Diffusion=13, Bulk_Density=14, Air_Content=15};
+}
+
 enum functions
 {
 	exp_ = 1, hsd_ = 2, min_ = 3, max_ = 4, lne_ = 5, lnt_ = 6, sgm_ = 7, pos_ = 8, sq1_ = 9, sqr_ = 10, frs_ = 11, fas_ = 12, ply_ = 13, mon_ = 14, sq2_ = 15, abs_ = 16, sqs_ = 17, mo1_ = 18, toy_ = 19, sig_=20};
