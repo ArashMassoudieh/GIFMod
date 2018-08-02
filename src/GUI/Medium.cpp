@@ -1936,28 +1936,49 @@ void CMedium::solve_fts_m2(double dt)
 				if (write_details())
 				{
 					if (Solution_State.dtt<1e-20)
-						write_to_detail_file("dt = " + numbertostring(Solution_State.dtt) + " too small, epoch = " + numbertostring(Solution_State.epoch_count) + " average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)));
+                        write_to_detail_file("dt = " + numbertostring(Solution_State.dtt) + " too small, epochs = " + numbertostring(Solution_State.epoch_count) + " average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)));
 
 					if ((Solution_State.t - Timemin) / double(iii) / dt0 < avg_dt_limit())
-						write_to_detail_file("dt = " + numbertostring(Solution_State.dtt) + ", epoch = " + numbertostring(Solution_State.epoch_count) + " average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + " < " + numbertostring(avg_dt_limit()*dt0));
+                        write_to_detail_file("dt = " + numbertostring(Solution_State.dtt) + ", epoch = " + numbertostring(Solution_State.epoch_count) + " average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + " < " + numbertostring(avg_dt_limit()*dt0));
 
 					if (Solution_State.epoch_count > epoch_limit())
-						write_to_detail_file("epoch = " + numbertostring(Solution_State.epoch_count) + " > " + numbertostring(epoch_limit()));
+                        write_to_detail_file("epoch = " + numbertostring(Solution_State.epoch_count) + " > " + numbertostring(epoch_limit()));
 
 					write_state(outputpathname() + "state.txt");
 
 				}
-                Solution_State.fail_reason = "dt = " + numbertostring(Solution_State.dtt) + " too small, epoch = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii);
-                show_message("dt = " + numbertostring(Solution_State.dtt) + " too small, epoch = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii));
+
                 Solution_State.failed = true;
 				write_flows(outputpathname() + "flows.txt");
                 for (unsigned int i=0; i < controllers().size(); i++)
                     Results.ANS_control.BTC[i] = controllers()[i].output;
+
+                if (Solution_State.dtt<1e-20)
+                {
+                    Solution_State.fail_reason = "dt = " + numbertostring(Solution_State.dtt) + " too small, epochs = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii);
+                    show_message("dt = " + numbertostring(Solution_State.dtt) + " too small, epochs = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii));
+                }
+                if (Solution_State.epoch_count > epoch_limit())
+                {
+                    Solution_State.fail_reason = "Average time step size smaller than the limit, dt = " + numbertostring(Solution_State.dtt) + " epochs = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii);
+                    show_message("Average time step size smaller than the limit, dt = " + numbertostring(Solution_State.dtt) + " too small, epochs = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii));
+                }
+                if ((Solution_State.t - Timemin) / double(iii) / dt0 < avg_dt_limit())
+                {
+                    Solution_State.fail_reason = "Number of matrix inversions exceeded the limit , epochs = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii);
+                    show_message("Number of matrix inversion exceeded the limit, epochs = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii));
+                }
+
+
 #ifdef QT_version
 				if (runtimewindow != 0)
 				{
+                    if (Solution_State.dtt<1e-20)
+                        QMessageBox::warning(runtimewindow, "Simulation Failed",  "dt = " + QString::number(Solution_State.dtt) + " too small", QMessageBox::Ok);
+
                     if (Solution_State.epoch_count > epoch_limit())
                         QMessageBox::warning(runtimewindow, "Simulation Failed", "Number of epochs (" + QString::number(Solution_State.epoch_count) + " ) exceeded the limit (" + QString::number(epoch_limit()) + ")", QMessageBox::Ok);
+
                     if ((Solution_State.t - Timemin) / double(iii) / dt0 < avg_dt_limit())
                         QMessageBox::warning(runtimewindow, "Simulation Failed", "Average time-step size (" + QString::number((Solution_State.t - Timemin) / double(iii)) + " ) is too small < " + QString::number(avg_dt_limit()*dt0)  , QMessageBox::Ok);
 				}
