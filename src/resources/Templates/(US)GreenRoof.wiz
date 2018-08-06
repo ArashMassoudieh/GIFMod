@@ -1,0 +1,69 @@
+name: GreenRoof(US)
+icon:GreenRoof.png
+description: This wizard models a green roof garden as a means of controlling storm water.<br> The Model consists of a catchment, a vegetation soil layer, a storage layer, and systems for collection of overflow and under drain flow.
+settings: {type=Project settings, Simulation start time = param[project_start_date], Simulation end time=param[project_end_date]}
+settings: {type=Climate settings, Solar-radiation=param[Solar-climate], Humidity=param[Humidity], Wind=param[Wind], Temperature=param[Temp], Precipitation time series=param[precipitation_filename]}
+entity: {type=Evapotranspiration, name=Evapotranspirations, SubType=value[Penman], Wind coefficient=param[Wind_ceoff], Solar-radiation coefficient=param[Solar_coeff]}
+settings: {type=Solver settings, Maximum number of matrix inversions allowed=1000000}
+
+
+major_block: {name=Catchment, x=500, y=500, type=value[Catchment],configuration=value[1DH],Slope=expression[Slope/100], n=param[n_segment],Length=Expression[Catchment_l/n_segment |ft|], Width=param[Catchment_w], area=expression[Catchment_l*Catchment_w/n_segment |ft~^2|], Bottom elevation=expression[0.01*Slope*(n_segment-0.5)*(Catchment_l/n_segment) |ft|], Manning's roughness coefficient=param[Manning_Coeff], direction=right}
+major_block: {name=value[Soil], x=500, y=650, type=value[soil], configuration=value[1DH], Slope=expression[Slope/100], SubType=param[Soil_Type], Length=expression[Catchment_l/n_segment |ft|], Depth=expression[D_soil/12 |ft|], area=expression[Catchment_l*Catchment_w/n_segment |ft~^2|], n=param[n_segment], Bottom elevation=expression[(0.01*Slope*(n_segment-0.5)*(Catchment_l/n_segment))-(D_soil/12) |ft|],Width=param[Catchment_w], length=expression[Catchment_l/n_segment |ft|], Evapotranspiration=value[Evapotranspirations],direction=right}
+major_block: {name=value[Drainage Layer], x=500, y=800, configuration=value[1DH],n=param[n_segment], Slope=expression[Slope/100], type=value[storage], Length=expression[Catchment_l/n_segment |ft|], Depth=expression[D_agg/12 |ft|], area=expression[Catchment_l*Catchment_w/n_segment |ft~^2|], Bottom elevation= expression[(0.01*Slope*(n_segment-0.5)*(Catchment_l/n_segment))-((D_agg+D_soil)/12) |ft|],Width=param[Catchment_w], length=expression[Catchment_l/n_segment |ft|], Saturated hydraulic conductivity (ks)=value[70], Saturated moisture content (~thetas)=param[thetas],Initial water depth=expression[0.2*D_agg/12 |ft|]}
+major_block: {name=value[Under drain Collection Pond], x=expression[550+(250*n_segment)], y=900, type=value[pond], area=value[10], Bottom elevation=expression[0-(D_soil+D_agg+12)/12 |ft|], Head-storage relationship=expression[0.3048*(0-(D_soil+D_agg)/12) |m|]}
+major_block: {name=value[Overflow Collection Pond], x=expression[550+(250*n_segment)], y=600, type=value[pond], area=value[10], Bottom elevation=expression[-1 |ft|], Head-storage relationship=value[0] }
+
+
+major_connection: {name=value[Catchment-Soil], source=Catchment, target=Soil, Length=expression[D_soil/24 |ft|], Interface/cross sectional area=expression[Catchment_l*Catchment_w/n_segment |ft~^2|],configuration=a2a}
+major_connection: {name=value[Soil-Storage], source=Soil, target=Drainage Layer, Length=expression[0.5*D_soil/12 |ft|], Interface/cross sectional area=expression[Catchment_l*Catchment_w/n_segment |ft~^2|], configuration=a2a}
+major_connection: {name=value[Overflow], source=Catchment, target=Overflow Collection Pond, length=expression[Catchment_l/(2*n_segment) |ft|], Width=param[Catchment_w], Manning's roughness coefficient=param[Manning_Coeff], Dam elevation=param[Dam_height], configuration=e2s}
+major_connection: {name=value[Under Drain Collection], source=value[Drainage Layer], target= Under drain Collection Pond, Length=expression[Catchment_l/(2*n_segment) |ft|], Interface/cross sectional area=expression[D_agg*Catchment_w/12 |ft~^2|], configuration=e2s}
+
+
+parameter: {name= project_start_date, delegate=date_time, question=Projet's start date}
+parameter: {name= project_end_date, delegate=date_time, question=Projet's end date}
+parameter: {name=Solar-climate, delegate=filename, question= Solar radiation time series file, prop_list_item=Solar-radiation}
+parameter: {name=Humidity, delegate=filename, question=Humidity time series file, prop_list_item=Humidity}
+parameter: {name=Temp, delegate=filename, question=Temperature time series file, prop_list_item=Temperature}
+parameter: {name=Wind, delegate=filename, question=Wind time series file, prop_list_item=Wind}
+parameter: {name=precipitation_filename, delegate=filename, question= Precipitation time series file, prop_list_item=Precipitation time series}
+parameter: {name=Wind_ceoff, delegate=float, question= Wind coefficient, prop_list_item=Wind coefficient, default=1}
+parameter: {name=Solar_coeff, delegate=float, question=Solar-radiation coefficient, prop_list_item=Solar-radiation coefficient, default=1}
+parameter: {name=Catchment_l, delegate=float, question=Length of the green roof, prop_list_item=Length, unit=ft}
+parameter: {name=Catchment_w, delegate=float, question=Width of the green roof, prop_list_item=Width, unit=ft}
+parameter: {name=Manning_Coeff, delegate=float, question= Manning roughness of the green roof, prop_list_item=Manning's roughness coefficient, default=0.1, unit=s/~^3~radicm}
+parameter: {name=D_soil, delegate=float, question=Depth of the soil layer, prop_list_item=Depth, unit=in}
+parameter: {name=Soil_Type, delegate=combo_box, question=Type of the soil layer, object_type=Soil, prop_list_item=Sub Type}
+parameter: {name=D_agg, delegate=float, question=Depth of the drainage layer below the soil, prop_list_item=depth, unit=in}
+parameter: {name=thetas, delegate=float, question=Porosity of the drainage layer, prop_list_item=Saturated moisture content (~thetas)}
+parameter: {name=Slope, delegate=float, question=Slope of the green roof (%)}
+parameter: {name=Dam_height, delegate=float, question=Overflow Height, prop_list_item=Dam elevation, default=0, unit=in}
+parameter: {name=n_segment, delegate=integer, question=Number of the segments that the system is discretized to, default=5}
+parameter: {name=Description1, delegate=memo, question=This wizard simulate a green roof system# which consists of a catchment that receives the precipitation# a soil layer that bears the vegetation# a layer of aggregate underneath the soil# and  means for discharging overflow and under drain flow from the system.<br><br> Runoff and under drain flow are discharged at the low end of the roof. Runoff overflows to the drainage system when the ponded water elevation exceeds the overflow height. }
+parameter: {name=Description2, delegate=memo, question=Penman equation is the basis for calculations of evapotranspiration# and the data for temperature# humidity# solar radiation# wind# and precipitation are introduced to the system as time series files. Data of irrigation of the roof garden should be provided in combination with the precipitation in the time series precipitation file.}
+parameter: {name=Description3, delegate=memo, question=The slope of the roof is alongside the length of the system. Elevation zero is set at the low edge of the roof on the surface of the top layer.}
+parameter: {name=title6, delegate=memo, question=<b> <u>Coefficients in Penman Equation Considering Evapotranspiration<u></b>}
+parameter: {name=title7, delegate=memo, question=<b> <u>Climate Input File Series<u></b>}
+parameter: {name=title8, delegate=memo, question=<b> <u>Timing of the Project<u></b>}
+
+parameter_group:{name=g1, description=Introduction, parameter=Description1, parameter=space, parameter=Description2, parameter=space, parameter=Description3}
+parameter_group:{name=g2, description=Geometry of the Green Roof, parameter=Catchment_l, parameter=Catchment_w, parameter=Slope, parameter=n_segment, parameter=D_soil, parameter=D_agg, parameter=Dam_height}
+parameter_group:{name=g3, description= Physical Properties of the Green Roof System, parameter=Manning_Coeff, parameter=Soil_Type, parameter=thetas}
+parameter_group:{name=g4, description=Climate and general settings of the project, parameter=title6, parameter= Wind_ceoff, parameter=Solar_coeff, parameter=space,parameter=space, parameter=title7,parameter=precipitation_filename, parameter=Solar-climate, parameter=Humidity, parameter=Temp, parameter=Wind, parameter=space,parameter=space, parameter=title8,parameter=project_start_date, parameter=project_end_date} }
+
+criteria: {name=cr1, less=0, greater= Wind_ceoff, ErrorMessage= Wind coefficient must be positive}
+criteria: {name=cr2, less=0, greater= Solar_coeff, ErrorMessage=Solar coefficient must be positive}
+criteria: {name=cr3, less=0, greater=Catchment_l, ErrorMessage=Length of the green roof must be positive}
+criteria: {name=cr4, less=0, greater=Catchment_w, ErrorMessage= Width of the green roof must be positive}
+criteria: {name=cr5, less=0, greater=Manning_Coeff, ErrorMessage= Manning coefficient must be positive}
+criteria: {name=cr6, less=0, greater=D_soil, ErrorMessage= Depth of the vegetated soil layer must be positive}
+criteria: {name=cr7, less=0, greater=D_agg, ErrorMessage= Depth of the drainage layer must be positive}
+criteria: {name=cr8, less=0, greater=thetas, ErrorMessage= Porosity of the drainage layer must be positive}
+criteria: {name=cr9, less=0, greater=Slope, ErrorMessage=Slope of the green roof must be positive}
+/criteria: {name=cr10, less=0, greater=Dam_height, ErrorMessage=Overflow height must be positive}
+criteria: {name=cr11, less=0, greater=n_segment, ErrorMessage=Number of segments must be positive}
+ 
+
+
+
+
