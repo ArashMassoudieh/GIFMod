@@ -29,6 +29,7 @@ CConnection::CConnection(void)
 	const_area = true;
 	presc_flow = false;
 	control = false;
+	vapor_transport = false;
 }
 
 CConnection::CConnection(string s)
@@ -55,6 +56,7 @@ CConnection::CConnection(string s)
 	const_area = true;
 	presc_flow = false;
 	control = false;
+    vapor_transport = false;
 #ifndef QT_version
 	showmessages = true;
 #endif // QT_version
@@ -78,6 +80,8 @@ CConnection::CConnection(const CConnection &CC)
 	Block2ID = CC.Block2ID;
 	Block1 = CC.Block1;
 	Block2 = CC.Block2;
+	Block1N = CC.Block1N;
+	Block2N = CC.Block2N;
 	A = CC.A;
 	d = CC.d;
 	v = CC.v;
@@ -115,6 +119,7 @@ CConnection::CConnection(const CConnection &CC)
 	presc_flowrate = CC.presc_flowrate;
 	control = CC.control;
 	controller_id = CC.controller_id;
+	vapor_transport = CC.vapor_transport;
 }
 
 CConnection& CConnection::operator=(const CConnection &CC)
@@ -123,6 +128,8 @@ CConnection& CConnection::operator=(const CConnection &CC)
 	Block2ID = CC.Block2ID;
 	Block1 = CC.Block1;
 	Block2 = CC.Block2;
+	Block1N = CC.Block1N;
+	Block2N = CC.Block2N;
 	A = CC.A;
 	d = CC.d;
 	v = CC.v;
@@ -160,12 +167,38 @@ CConnection& CConnection::operator=(const CConnection &CC)
 	presc_flowrate = CC.presc_flowrate;
 	control = CC.control;
 	controller_id = CC.controller_id;
+	vapor_transport = CC.vapor_transport;
 	return *this;
 
 }
 
-double CConnection::calc(CStringOP &term, int ii) //The function to calculate any expression
+double CConnection::calc(const CStringOP &term, int ii) //The function to calculate any expression
 {
+	if (term.function==true)
+    {
+        if (term.number == min_)
+			return min(calc(term.terms[0],ii), calc(term.terms[1],ii));
+		if (term.number == max_)
+			return max(calc(term.terms[0],ii), calc(term.terms[1],ii));
+		if (term.number == sq1_)
+			return 0.5/calc(term.terms[1],ii)*(calc(term.terms[0],ii)*calc(term.terms[1],ii)+sqrt(pow(calc(term.terms[0],ii)*calc(term.terms[1],ii),2)+1));
+        if (term.number == frs_)
+			return funcs[0].evaluate(get_val_star(9));
+		if (term.number == fas_)
+			return funcs[0].evaluate(get_val_star(4));
+		if (term.number==mon_)
+			return mon(calc(term.terms[0],ii),calc(term.terms[1],ii));
+		if (term.number == sq2_)
+		{	double term1 = calc(term.terms[0],ii);
+			int sign_ = sgn(term1);
+			double term2 = calc(term.terms[1],ii);
+			return double(sign_)*pow(fabs(term1),(0.5*term1+term2)/(term1+term2));
+		}
+		if (term.number == mo1_)
+			return mon(calc(term.terms[0], ii), calc(term.terms[1], ii))*calc(term.terms[0], ii) + mon(-calc(term.terms[0], ii), calc(term.terms[1], ii))*calc(term.terms[0], ii);
+
+
+    }
 	double out = 0;
 	if ((term.nterms == 1) && (term.nopts == 0))
 	{
@@ -246,6 +279,7 @@ double CConnection::calc(CStringOP &term, int ii) //The function to calculate an
 		if (term.operators[1] == 4)
 			out = pow(fabs(sum),calc(term.terms[1],ii))*fabs(sum)/sum;
 
+
 	}
 
 	if ((term.nterms>2) && (term.nopts == term.nterms-1))
@@ -298,15 +332,12 @@ double CConnection::calc(CStringOP &term, int ii) //The function to calculate an
 		}
 
 	}
-		if (term.function==true)
+
+	if (term.function==true)
 	{	if (term.number == exp_)
 			return exp(out);
 		if (term.number == hsd_)
 			return Heavyside(out);
-		if (term.number == min_)
-			return min(calc(term.terms[0],ii), calc(term.terms[1],ii));
-		if (term.number == max_)
-			return max(calc(term.terms[0],ii), calc(term.terms[1],ii));
 		if (term.number == lne_)
 			return log(out);
 		if (term.number == lnt_)
@@ -315,23 +346,10 @@ double CConnection::calc(CStringOP &term, int ii) //The function to calculate an
 			return 1.0/(1.0+exp(-out));
 		if (term.number == pos_)
 			return 0.5*(fabs(out)+out);
-		if (term.number == sq1_)
-			return 0.5/calc(term.terms[1],ii)*(calc(term.terms[0],ii)*calc(term.terms[1],ii)+sqrt(pow(calc(term.terms[0],ii)*calc(term.terms[1],ii),2)+1));
 		if (term.number == sqr_)
 			return sqrt(out);
-		if (term.number == frs_)
-			return funcs[0].evaluate(get_val(9));
-		if (term.number == fas_)
-			return funcs[0].evaluate(get_val(4));
 		if (term.number == ply_)
 			return pipe_poly(out);
-		if (term.number==mon_)
-			return mon(calc(term.terms[0],ii),calc(term.terms[1],ii));
-		if (term.number == sq2_)
-		{	double term1 = calc(term.terms[0],ii);
-			double term2 = calc(term.terms[1],ii);
-			return pow(term1,(0.5*term1+term2)/(term1+term2));
-		}
 		if (term.number==abs_)
 			return fabs(out);
 		if (term.number==sqs_)
@@ -341,16 +359,38 @@ double CConnection::calc(CStringOP &term, int ii) //The function to calculate an
 			else
 				return 0;
 		}
-		if (term.number == mo1_)
-			return mon(calc(term.terms[0], ii), calc(term.terms[1], ii))*calc(term.terms[0], ii) + mon(-calc(term.terms[0], ii), calc(term.terms[1], ii))*calc(term.terms[0], ii);
 
 	}
 
 	return out;
 }
 
-double CConnection::calc_star(CStringOP &term, int ii)
+double CConnection::calc_star(const CStringOP &term, int ii)
 {
+	if (term.function==true)
+    {
+        if (term.number == min_)
+			return min(calc_star(term.terms[0],ii), calc_star(term.terms[1],ii));
+		if (term.number == max_)
+			return max(calc_star(term.terms[0],ii), calc_star(term.terms[1],ii));
+		if (term.number == sq1_)
+			return 0.5/calc_star(term.terms[1],ii)*(calc_star(term.terms[0],ii)*calc_star(term.terms[1],ii)+sqrt(pow(calc_star(term.terms[0],ii)*calc_star(term.terms[1],ii),2)+1));
+        if (term.number == frs_)
+			return funcs[0].evaluate(get_val_star(9));
+		if (term.number == fas_)
+			return funcs[0].evaluate(get_val_star(4));
+		if (term.number==mon_)
+			return mon(calc_star(term.terms[0],ii),calc_star(term.terms[1],ii));
+		if (term.number == sq2_)
+		{	double term1 = calc_star(term.terms[0],ii);
+			int sign_ = sgn(term1);
+			double term2 = calc_star(term.terms[1],ii);
+			return double(sign_)*pow(fabs(term1),(0.5*term1+term2)/(term1+term2));
+		}
+		if (term.number == mo1_)
+			return mon(calc_star(term.terms[0], ii), calc_star(term.terms[1], ii))*calc_star(term.terms[0], ii) + mon(-calc_star(term.terms[0], ii), calc_star(term.terms[1], ii))*calc_star(term.terms[0], ii);
+    }
+
 	double out = 0;
 	if ((term.nterms == 1) && (term.nopts == 0))
 	{
@@ -499,10 +539,6 @@ double CConnection::calc_star(CStringOP &term, int ii)
 			return exp(out);
 		if (term.number == hsd_)
 			return Heavyside(out);
-		if (term.number == min_)
-			return min(calc_star(term.terms[0],ii), calc_star(term.terms[1],ii));
-		if (term.number == max_)
-			return max(calc_star(term.terms[0],ii), calc_star(term.terms[1],ii));
 		if (term.number == lne_)
 			return log(out);
 		if (term.number == lnt_)
@@ -511,24 +547,10 @@ double CConnection::calc_star(CStringOP &term, int ii)
 			return 1.0/(1.0+exp(-out));
 		if (term.number == pos_)
 			return 0.5*(fabs(out)+out);
-		if (term.number == sq1_)
-			return 0.5/calc_star(term.terms[1],ii)*(calc_star(term.terms[0],ii)*calc_star(term.terms[1],ii)+sqrt(pow(calc_star(term.terms[0],ii)*calc_star(term.terms[1],ii),2)+1));
 		if (term.number == sqr_)
 			return sqrt(out);
-		if (term.number == frs_)
-			return funcs[0].evaluate(get_val_star(9));
-		if (term.number == fas_)
-			return funcs[0].evaluate(get_val_star(4));
 		if (term.number == ply_)
 			return pipe_poly(out);
-		if (term.number==mon_)
-			return mon(calc_star(term.terms[0],ii),calc_star(term.terms[1],ii));
-		if (term.number == sq2_)
-		{	double term1 = calc_star(term.terms[0],ii);
-			int sign_ = sgn(term1);
-			double term2 = calc_star(term.terms[1],ii);
-			return double(sign_)*pow(fabs(term1),(0.5*term1+term2)/(term1+term2));
-		}
 		if (term.number==abs_)
 			return fabs(out);
 		if (term.number == sqs_)
@@ -538,8 +560,6 @@ double CConnection::calc_star(CStringOP &term, int ii)
 			else
 				return 0;
 		}
-		if (term.number == mo1_)
-			return mon(calc_star(term.terms[0], ii), calc_star(term.terms[1], ii))*calc_star(term.terms[0], ii) + mon(-calc_star(term.terms[0], ii), calc_star(term.terms[1], ii))*calc_star(term.terms[0], ii);
 
 
 	}
@@ -564,36 +584,36 @@ double CConnection::get_val(int i, int ii)
 	Reaction parameters: 2000-2999
 	*/
 
-	if (i==1)
+    if (i==state_vars::Head)
 	{	if (Q>0)
 			return Block1->H;
 		else
 			return Block2->H;
 	}
-	if (i==2) return A;
-	if (i==3)
+    if (i==state_vars::Area) return A;
+    if (i==state_vars::Volume)
 	{	if (Q>0)
 		return Block1->V;
 	else
 		return Block2->V;
 	}
-	if (i==4)
+    if (i==state_vars::Storage)
 	{	if (Q>0)
 		return Block1->S;
 	else
 		return Block2->S;
 	}
-	if (i==5)
+    if (i==state_vars::Bottom_Elev)
 	{	if (Q>0)
 		return Block1->z0;
 	else
 		return Block2->z0;
 	}
-	if (i==6) return d;
-	if (i==7) return Q;
-	if (i==8) return (Q-Q_v)/A*flow_factor;
+    if (i==state_vars::Length) return d;
+    if (i==state_vars::Flow_rate) return Q;
+    if (i==state_vars::Liquid_flow) return (Q-Q_v)/A*flow_factor;
 
-	if (i==9)
+    if (i==state_vars::Effective_Moisture)
 	{
 		if (Block1->indicator==Soil || Block1->indicator == Plant || Block1->indicator == Darcy || Block1->indicator == Storage)
 		{
@@ -601,13 +621,13 @@ double CConnection::get_val(int i, int ii)
 			{
 				vector<int> jj;
 				jj.push_back(ii);
-				return max(Block1->get_val(9,jj),Block2->get_val(9,jj));
+                return max(Block1->get_val(state_vars::Effective_Moisture,jj),Block2->get_val(state_vars::Effective_Moisture,jj));
 			}
 			else
 			{
 				vector<int> jj;
 				jj.push_back(ii);
-				return Block1->get_val(9,jj);
+                return Block1->get_val(state_vars::Effective_Moisture,jj);
 			}
 		}
 		else
@@ -616,7 +636,7 @@ double CConnection::get_val(int i, int ii)
 			{
 				vector<int> jj;
 				jj.push_back(ii);
-				return Block2->get_val(9,jj);
+                return Block2->get_val(state_vars::Effective_Moisture,jj);
 			}
 			else
 			{
@@ -625,8 +645,8 @@ double CConnection::get_val(int i, int ii)
 		}
 	}
 	//if (i==11) return Q*flow_factor;
-	if (i==13) return Q_v;
-	if (i==14) return dispersivity;
+    if (i==state_vars::Vapor_flow) return Q_v;
+    if (i==state_vars::Dispersivity) return dispersivity;
 
 	if ((i>=50) && (i<100)) return flow_params[i-50];
 
@@ -661,36 +681,36 @@ double CConnection::get_val_star(int i, int ii)
 	Reaction parameters: 2000-2999
 	*/
 
-	if (i==1)
+    if (i==state_vars::Head)
 	{	if (Q>0)
 			return Block1->H_star;
 		else
 			return Block2->H_star;
 	}
-	if (i==2) return A_star;
-	if (i==3)
+    if (i==state_vars::Area) return A_star;
+    if (i==state_vars::Volume)
 	{	if (Q>0)
 		return Block1->V;
 	else
 		return Block2->V;
 	}
-	if (i==4)
+    if (i==state_vars::Storage)
 	{	if (Q>0)
 		return Block1->S_star;
 	else
 		return Block2->S_star;
 	}
-	if (i==5)
+    if (i==state_vars::Bottom_Elev)
 	{	if (Q>0)
 		return Block1->z0;
 	else
 		return Block2->z0;
 	}
-	if (i==6) return d;
-	if (i==7) return Q_star;
-	if (i==8) return (Q_star-Q_v_star)/A_star*flow_factor;
+    if (i==state_vars::Length) return d;
+    if (i==state_vars::Flow_rate) return Q_star;
+    if (i==state_vars::Liquid_flow) return (Q_star-Q_v_star)/A_star*flow_factor;
 
-	if (i==9)
+    if (i==state_vars::Effective_Moisture)
 	{
 		if ((Block1->indicator==Soil) || (Block1->indicator == Plant) || (Block1->indicator == Darcy) || (Block1->indicator == Storage))
 		{
@@ -717,8 +737,8 @@ double CConnection::get_val_star(int i, int ii)
 	}
 
 
-	if (i==13) return Q_v_star;
-	if (i==14) return dispersivity;
+    if (i==state_vars::Vapor_flow) return Q_v_star;
+    if (i==state_vars::Dispersivity) return dispersivity;
 
 	if ((i>=50) && (i<100)) return flow_params[i-50];
 	if (i>=100 && i<2000)
@@ -735,7 +755,7 @@ double CConnection::get_val_star(int i, int ii)
     return 0;
 }
 
-bool CConnection::set_val(string SS, double val)
+bool CConnection::set_val(const string &SS, const double &val)
 {
 	vector<string> s = split(SS,',');
 	if (s.size()==1)
@@ -796,6 +816,29 @@ bool CConnection::set_val(string SS, double val)
 	return false;
 
 }
+
+bool CConnection::set_val(int i, const double &val)
+{
+	if (i==2) {A = val; return true; }
+	if (i==6) {d = val; return true; }
+	if (i==7) {Q = val;return true; }
+	if (i==13) {Q_v = val;return true; }
+
+
+	return false;
+}
+
+bool CConnection::set_val_star(int i, const double &val)
+{
+	if (i==2) {A_star = val; return true; }
+	if (i==6) {d = val; return true; }
+	if (i==7) {Q_star = val;return true; }
+	if (i==13) {Q_v_star = val;return true; }
+
+
+	return false;
+}
+
 
 
 void CConnection::get_funcs(CStringOP &term)  //Works w/o reference(&)
@@ -910,7 +953,7 @@ void CConnection::evaluate_const_dispersion_star()
 		dispersion_star[i] = calc_star(dispersion_expression)+RXN->cons[i].diffusion;
 }
 
-double CConnection::get_val(string S)
+double CConnection::get_val(const string &S)
 {
 	/* variable codes:
 	H: 1

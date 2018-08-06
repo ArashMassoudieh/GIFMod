@@ -62,7 +62,7 @@ public:
     bool set_properties(string s);
     bool set_property(string s, double value);
     bool set_property(string s, string value);
-    bool set_val(const string &SS, double val); //set the value of physical properties, variables and parameters based on star values
+    bool set_val(const string &SS, const double &val); //set the value of physical properties, variables and parameters based on star values
 	vector<CBTCSet> inflow; //inflow time-series
     int n_constts; 	int n_phases; //number of chemical species, number of phases;
     bool settype(string s); //sets the type of the block
@@ -122,17 +122,17 @@ private:
     vector<double> calc_rxn_prod_rate(); //calculate production rate of all constituents
     double get_rate_exchange(int particle_type, int constituent);
     double get_exchange_rate_star(int particule_type, int phase, int constituent);
-    double calc(CStringOP &C, vector<int> ii); //The function to calculate any expression
-    double calc_star(CStringOP &C, vector<int> ii); //The function to calculate any expression based on star values
+    double calc(CStringOP &C, const vector<int> &ii); //The function to calculate any expression
+    double calc_star(CStringOP &C, const vector<int> &ii); //The function to calculate any expression based on star values
     double calc(CStringOP &C); //The function to calculate any expression
     double calc_star(CStringOP &C); //The function to calculate any expression based on star values
-    double get_val(int i, vector<int> ii);// get the value of physical properties, variables and parameters
-    double get_val_star(int i, vector<int>); //get the value of physical properties, variables and parameters based on star values
+    double get_val(int i, const vector<int> &ii);// get the value of physical properties, variables and parameters
+    double get_val_star(int i, const vector<int>&); //get the value of physical properties, variables and parameters based on star values
     double get_val(int i);// get the value of physical properties, variables and parameters
     double get_val_star(int i); //get the value of physical properties, variables and parameters based on star values
-    double get_val(string SS); //get the value of physical properties, variables and parameters
-    void set_val(int i, double val);// set the value of physical properties, variables and parameters
-    void set_val_star(int i, double val); //set the value of physical properties, variables and parameters based on star values
+    double get_val(const string &SS); //get the value of physical properties, variables and parameters
+    void set_val(int i, const double &val);// set the value of physical properties, variables and parameters
+    void set_val_star(int i, const double &val); //set the value of physical properties, variables and parameters based on star values
 
     vector<int> connectors; //the id of connectors attached to the block
     vector<int> connectors_se;// 0: block1 of the connector 1: block 2 of the connector
@@ -198,5 +198,6 @@ private:
     bool perform_rxn = true;
     plant_props plant_prop; //plant properties including LAI and growth parameters.
     void set_up_plant_growth_expressions(); //The plant growth expressions are built.
+    vector<int> dummy_vec;
 };
 

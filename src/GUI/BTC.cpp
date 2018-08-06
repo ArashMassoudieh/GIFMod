@@ -175,9 +175,8 @@ CTimeSeries CTimeSeries::Log(double m)
 }
 
 
-double CTimeSeries::interpol(double x)
+double CTimeSeries::interpol(const double &x)
 {
-	double r=0;
 	if (n>1)
 	{
 
@@ -185,25 +184,24 @@ double CTimeSeries::interpol(double x)
 		{	for (int i=0; i<n-1; i++)
 			{
 				if (t[i] <= x && t[i+1] >= x)
-					r=(C[i+1]-C[i])/(t[i+1]-t[i])*(x-t[i]) + C[i];
+					return (C[i+1]-C[i])/(t[i+1]-t[i])*(x-t[i]) + C[i];
 			}
-			if (x>t[n-1]) r=C[n-1];
-			if (x<t[0]) r=C[0];
+			if (x>t[n-1]) return C[n-1];
+			if (x<t[0]) return C[0];
 		}
 		else
 		{
 			if (x < t[0]) return C[0];
 			if (x > t[n - 1]) return C[n - 1];
-			double dt = t[1]-t[0];
-			int i = int((x-t[0])/dt);
-			if (i>=n-1) r=C[n-1];
-			else if (i<0) r=C[0];
-			else r=(C[i+1]-C[i])/(t[i+1]-t[i])*(x-t[i]) + C[i];
+			int i = int((x-t[0])/(t[1]-t[0]));
+			if (i>=n-1) return C[n-1];
+			else if (i<0) return C[0];
+			else return (C[i+1]-C[i])/(t[i+1]-t[i])*(x-t[i]) + C[i];
 		}
 	}
 	else
-		r = C[0];
-	return r;
+		return C[0];
+
 
 }
 
@@ -314,7 +312,8 @@ double diff(CTimeSeries &BTC_p, CTimeSeries &BTC_d)
 {
 	double sum = 0;
 	double a;
-	for (int i=0; i<BTC_d.n; i++)
+    if ((BTC_p.n==0) || (BTC_d.n==0)) return sum;
+    for (int i=0; i<BTC_d.n; i++)
 	{
 		a = BTC_p.interpol(BTC_d.t[i]);
 		sum += pow(BTC_d.C[i] - a,2);
@@ -870,7 +869,7 @@ double CTimeSeries::integrate(double tt)
 
 double CTimeSeries::integrate(double t1, double t2)
 {
-	double sum;
+	double sum=0;
 	if (structured)
 	{
 		int i1 = int(t1 - t[0]) / (t[1] - t[0]);

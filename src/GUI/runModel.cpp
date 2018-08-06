@@ -1118,7 +1118,7 @@ void CMediumSet::g_get_observed()
 		else if (gw->EntityNames("Constituent").contains(e->val("quan").toQString().split(':')[0]))
 			M.quan = QString("cg[%1]").arg(e->val("quan").toQString()).toStdString();
 		else
-			M.quan = e->val("quan").toStdString();
+            M.quan = XString::reformBack(e->val("quan")).toStdString();
 
 
 		QString std = e->val("std_no");
@@ -1158,7 +1158,7 @@ void CMediumSet::g_get_observed()
 		{
 			stds.push_back(measured_quan[i].std_no);
 			measured_quan[i].std_to_param = int(parameters.size());
-			range P;
+			param_range P;
 
 			P.fixed = false;
 			P.log = true;
@@ -1328,7 +1328,7 @@ void CMediumSet::g_get_environmental_params()
 			for (int ii = 0; ii<names.size(); ii++)
 			FI.detoutfilename_obs = names[ii];
 			}*/
-
+    if (SP.solution_method != "Direct Solution") SP.solution_method = "Partial Inverse Jacobian Evaluation";
 	if (SP.constituent_transport) SP.colloid_transport = true;
 	set_features.environmental_vars = true;
 }
@@ -1384,7 +1384,7 @@ void CMediumSet::g_get_params()
 {
     foreach (Entity *e , gw->entitiesByType("Parameter"))
 	{
-		range P;
+		param_range P;
 		P.low = 0;
 		P.high = 0;
 		P.fixed = false;
@@ -2216,6 +2216,8 @@ void CMedium::g_set_default_connector_expressions()
         for (int j = 0; j< Solid_phase().size(); j++)Connectors[i].Solid_phase_id.push_back(j);
         Connectors[i].Block1 = &Blocks[getblocksq(Connectors[i].Block1ID)];
         Connectors[i].Block2 = &Blocks[getblocksq(Connectors[i].Block2ID)];
+		Connectors[i].Block1N = getblocksq(Connectors[i].Block1ID);
+		Connectors[i].Block2N = getblocksq(Connectors[i].Block2ID);
         Blocks[getblocksq(Connectors[i].Block1ID)].connectors.push_back(i);
         Blocks[getblocksq(Connectors[i].Block1ID)].connectors_se.push_back(0);
         Blocks[getblocksq(Connectors[i].Block2ID)].connectors.push_back(i);

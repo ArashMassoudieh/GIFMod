@@ -10,6 +10,9 @@ TEMPLATE = app
 win32:QMAKE_CXXFLAGS += /MP
 QMAKE_CXXFLAGS += -fopenmp
 QMAKE_LFLAGS +=  -fopenmp
+# QMAKE_CFLAGS+=-pg
+# QMAKE_CXXFLAGS+=-pg
+# QMAKE_LFLAGS+=-pg
 LIBS += -lgomp -lpthread
 
 #defines

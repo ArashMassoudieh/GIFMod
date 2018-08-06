@@ -398,7 +398,7 @@ void CMediumSet::solve()
 			calc_MSE(i);
 		}
 	}
-	CVector(MSE_obs).writetofile(FI.outputpathname + "MSE.txt");
+	CVector(MSE_obs).writetofile(FI.outputpathname + "MSE" + ID + ".txt");
 }
 
 void CMediumSet::set_default()
@@ -477,7 +477,7 @@ void CMediumSet::f_get_params(CLIDconfig &lid_config)
 	{
 		if (tolower(lid_config.keyword[i]) == "parameter")
 		{
-			range P;
+			param_range P;
 			P.low = 0;
 			P.high = 0;
 			P.fixed = false;
@@ -542,7 +542,7 @@ void CMediumSet::f_get_observed(CLIDconfig &lid_config)
 		{
 			stds.push_back(measured_quan[i].std_no);
 			measured_quan[i].std_to_param = int(parameters.size());
-			range P;
+			param_range P;
 
 			P.fixed = false;
 			P.log = true;

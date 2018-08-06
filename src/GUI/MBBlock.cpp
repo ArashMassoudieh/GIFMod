@@ -243,7 +243,7 @@ CMBBlock& CMBBlock::operator=(const CMBBlock &BB)
 	return *this;
 }
 
-double CMBBlock::get_val(int i, vector<int> ii)
+double CMBBlock::get_val(int i, const vector<int> &ii)
 {
 	/* variable codes:
 	H: 1 : Hydraulic Head
@@ -262,24 +262,24 @@ double CMBBlock::get_val(int i, vector<int> ii)
 	Reaction parameters: 2000-2999
 	*/
 
-	if (i==1) return H;
-	if (i==2) return A;
-	if (i==3) return V;
-	if (i==4) return S;
-	if (i==5) return z0;
-	if (i==6) return V/A;    // blocks don't have d
+    if (i==state_vars::Head) return H;
+    if (i==state_vars::Area) return A;
+    if (i==state_vars::Volume) return V;
+    if (i==state_vars::Storage) return S;
+    if (i==state_vars::Bottom_Elev) return z0;
+    if (i==state_vars::Moisture_Content) return V/A;    // blocks don't have d
 	if (i==7) return 0;
-	if (i==8) return q;
+    if (i==state_vars::Darcy_flux) return q;
 
-	if (i==9)
-	{ if ((indicator != Soil) && (indicator!=Darcy))
+    if (i==state_vars::Effective_Moisture)
+    {   if ((indicator != Soil) && (indicator!=Darcy))
 			return (Heavyside(S/V)*S/V - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);
-		else
+        else
 			return (S/V - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);   //allow s to be above 1
 
 	}
 
-	if (i==10)
+    if (i==state_vars::_Effective_Moisture)
 	{
 		if ((indicator != Soil) && (indicator != Darcy))
 			if (S>0) return S/(S+1e-5*A); else return 0;
@@ -288,10 +288,10 @@ double CMBBlock::get_val(int i, vector<int> ii)
 	}
 
 
-	if (i==12) return DS;
-	if (i==13) return vapor_diffusion;
-	if (i==14) return bulk_density;
-	if (i == 15)
+    //if (i==state_vars::Depression_Storage) return DS;
+    if (i==state_vars::Vapor_Diffusion) return vapor_diffusion;
+    if (i==state_vars::Bulk_Density) return bulk_density;
+    if (i == state_vars::Air_Content)
 	{
 		if (air_phase == 0)
 			return 0;
@@ -341,7 +341,7 @@ double CMBBlock::get_val(int i, vector<int> ii)
     return 0;
 }
 
-double CMBBlock::get_val(string SS)
+double CMBBlock::get_val(const string &SS)
 {
 	/* variable codes:
 	H: 1 : Hydraulic Head
@@ -380,7 +380,7 @@ double CMBBlock::get_val(string SS)
 		else
 			return (S/V - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);   //allow s to be above 1
 		}
-		if (tolower(trim(s[0]))=="theta")
+        if (tolower(trim(s[0]))=="theta" || tolower(trim(s[0]))=="~theta")
 		{	if (indicator!=0)
 			if (S>0) return S/(S+1e-5*A); else return 0;
 		else
@@ -482,35 +482,35 @@ double CMBBlock::get_val(string SS)
     return 0;
 }
 
-double CMBBlock::get_val_star(int i, vector<int> ii)
+double CMBBlock::get_val_star(int i, const vector<int> &ii)
 {
-	if (i==1) return H_star;
-	if (i==2) return A_star;
-	if (i==3) return V_star;
-	if (i==4) return S_star;
-	if (i==5) return z0;
-	if (i==6) return V_star/A_star;
+    if (i==state_vars::Head) return H_star;
+    if (i==state_vars::Area) return A_star;
+    if (i==state_vars::Volume) return V_star;
+    if (i==state_vars::Storage) return S_star;
+    if (i==state_vars::Bottom_Elev) return z0;
+    if (i==state_vars::Moisture_Content) return V_star/A_star;
 	if (i==7) return 0;
-	if (i==8) return q;
-	if (i==9)
+    if (i==state_vars::Darcy_flux) return q;
+    if (i==state_vars::Effective_Moisture)
 	{
 		if ((indicator != Soil) && (indicator != Darcy))
 			return (Heavyside(S_star/V_star)*S_star/V_star - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);
 		else
 			return (S_star/V_star - fs_params[theta_r])/(fs_params[theta_s]-fs_params[theta_r]);   //allow s to be above 1
 		}
-	//if (i==12) return DS;
-	if (i==13) return vapor_diffusion;
+    //if (i==12) return DS;
+    if (i==state_vars::Vapor_Diffusion) return vapor_diffusion;
 
-	if (i==10)
+    if (i==state_vars::_Effective_Moisture)
 	{
 		if ((indicator != Soil) && (indicator != Darcy))
 			if (S_star>0) return S_star/(S_star+1e-5*A); else return 0;
 		else
 			return S_star/V;   //allow s to be above 1
 	}
-	if (i==14) return bulk_density;
-	if (i == 15)
+    if (i==state_vars::Bulk_Density) return bulk_density;
+    if (i == state_vars::Air_Content)
 	{
 		if (air_phase == 0)
 			return 0;
@@ -566,8 +566,30 @@ double CMBBlock::get_val_star(int i, vector<int> ii)
 	return 0;
 }
 
-double CMBBlock::calc(CStringOP &term, vector<int> ii)  //Works w/o reference(&)
+double CMBBlock::calc(CStringOP &term, const vector<int> &ii)  //Works w/o reference(&)
 {
+	if (term.function==true)
+    {
+        if (term.number == min_)
+			return min(calc(term.terms[0],ii), calc(term.terms[1],ii));
+		if (term.number == max_)
+			return max(calc(term.terms[0],ii), calc(term.terms[1],ii));
+		if (term.number == sq1_)
+			return 0.5/calc(term.terms[1],ii)*(calc(term.terms[0],ii)*calc(term.terms[1],ii)+sqrt(pow(calc(term.terms[0],ii)*calc(term.terms[1],ii),2)+1));
+        if (term.number == frs_)
+			return funcs[0].evaluate(get_val(9,ii));
+		if (term.number == fas_)
+			return funcs[0].evaluate(get_val(4,ii));
+        if (term.number == mon_)
+			return mon(calc(term.terms[0],ii),calc(term.terms[1],ii));
+		if (term.number == sq2_)
+		{	double term1 = calc(term.terms[0],ii);
+			double term2 = calc(term.terms[1],ii);
+			return pow(term1,(0.5*term1+term2)/(term1+term2));
+		}
+
+    }
+
 	double out = 0;
 	if ((term.nterms == 1) && (term.nopts == 0))
 	{
@@ -687,10 +709,6 @@ double CMBBlock::calc(CStringOP &term, vector<int> ii)  //Works w/o reference(&)
 			return exp(out);
 		if (term.number == hsd_)
 			return Heavyside(out);
-		if (term.number == min_)
-			return min(calc(term.terms[0],ii), calc(term.terms[1],ii));
-		if (term.number == max_)
-			return max(calc(term.terms[0],ii), calc(term.terms[1],ii));
 		if (term.number == lne_)
 			return log(out);
 		if (term.number == lnt_)
@@ -699,23 +717,10 @@ double CMBBlock::calc(CStringOP &term, vector<int> ii)  //Works w/o reference(&)
 			return 1.0/(1.0+exp(-out));
 		if (term.number == pos_)
 			return 0.5*(fabs(out)+out);
-		if (term.number == sq1_)
-			return 0.5/calc(term.terms[1],ii)*(calc(term.terms[0],ii)*calc(term.terms[1],ii)+sqrt(pow(calc(term.terms[0],ii)*calc(term.terms[1],ii),2)+1));
 		if (term.number == sqr_)
 			return sqrt(out);
-		if (term.number == frs_)
-			return funcs[0].evaluate(get_val("se"));
-		if (term.number == fas_)
-			return funcs[0].evaluate(get_val("s"));
 		if (term.number == ply_)
 			return pipe_poly(out);
-		if (term.number == mon_)
-			return mon(calc(term.terms[0],ii),calc(term.terms[1],ii));
-		if (term.number == sq2_)
-		{	double term1 = calc(term.terms[0],ii);
-			double term2 = calc(term.terms[1],ii);
-			return pow(term1,(0.5*term1+term2)/(term1+term2));
-		}
 		if (term.number==abs_)
 			return fabs(out);
 		if (term.number==sqs_)
@@ -735,8 +740,30 @@ double CMBBlock::calc(CStringOP &term, vector<int> ii)  //Works w/o reference(&)
 
 }
 
-double CMBBlock::calc_star(CStringOP &term, vector<int> ii)
+double CMBBlock::calc_star(CStringOP &term, const vector<int> &ii)
 {
+	if (term.function==true)
+    {
+        if (term.number == min_)
+			return min(calc_star(term.terms[0],ii), calc_star(term.terms[1],ii));
+		if (term.number == max_)
+			return max(calc_star(term.terms[0],ii), calc_star(term.terms[1],ii));
+		if (term.number == sq1_)
+			return 0.5/calc_star(term.terms[1],ii)*(calc_star(term.terms[0],ii)*calc_star(term.terms[1],ii)+sqrt(pow(calc_star(term.terms[0],ii)*calc_star(term.terms[1],ii),2)+1));
+        if (term.number == frs_)
+			return funcs[0].evaluate(get_val_star(9,ii));
+		if (term.number == fas_)
+			return funcs[0].evaluate(get_val_star(4,ii));
+        if (term.number == mon_)
+			return mon(calc_star(term.terms[0],ii),calc_star(term.terms[1],ii));
+		if (term.number == sq2_)
+		{	double term1 = calc_star(term.terms[0],ii);
+			double term2 = calc_star(term.terms[1],ii);
+			return pow(term1,(0.5*term1+term2)/(term1+term2));
+		}
+
+    }
+
 	double out = 0;
 	if ((term.nterms == 1) && (term.nopts == 0))
 	{
@@ -857,10 +884,6 @@ double CMBBlock::calc_star(CStringOP &term, vector<int> ii)
 			return exp(out);
 		if (term.number == hsd_)
 			return Heavyside(out);
-		if (term.number == min_)
-			return min(calc_star(term.terms[0],ii), calc_star(term.terms[1],ii));
-		if (term.number == max_)
-			return max(calc_star(term.terms[0],ii), calc_star(term.terms[1],ii));
 		if (term.number == lne_)
 			return log(out);
 		if (term.number == lnt_)
@@ -869,23 +892,10 @@ double CMBBlock::calc_star(CStringOP &term, vector<int> ii)
 			return 1.0/(1.0+exp(-out));
 		if (term.number == pos_)
 			return 0.5*(fabs(out)+out);
-		if (term.number == sq1_)
-			return 0.5/calc_star(term.terms[1],ii)*(calc_star(term.terms[0],ii)*calc_star(term.terms[1],ii)+sqrt(pow(calc_star(term.terms[0],ii)*calc_star(term.terms[1],ii),2)+1));
 		if (term.number == sqr_)
 			return sqrt(out);
-		if (term.number == frs_)
-			return funcs[0].evaluate(get_val("se*"));
-		if (term.number == fas_)
-			return funcs[0].evaluate(get_val("s*"));
 		if (term.number == ply_)
 			return pipe_poly(out);
-		if (term.number == mon_)
-			return mon(calc_star(term.terms[0],ii),calc_star(term.terms[1],ii));
-		if (term.number == sq2_)
-		{	double term1 = calc_star(term.terms[0],ii);
-			double term2 = calc_star(term.terms[1],ii);
-			return pow(term1,(0.5*term1+term2)/(term1+term2));
-		}
 		if (term.number==abs_)
 			return fabs(out);
 		if (term.number==sqs_)
@@ -904,7 +914,7 @@ double CMBBlock::calc_star(CStringOP &term, vector<int> ii)
 	return out;
 }
 
-void CMBBlock::set_val(int i, double val)
+void CMBBlock::set_val(int i, const double &val)
 {
 	if (i==1) H = val;
 	if (i==2) A = val;
@@ -923,27 +933,27 @@ void CMBBlock::set_val(int i, double val)
 
 }
 
-void CMBBlock::set_val_star(int i, double val)
+void CMBBlock::set_val_star(int i, const double &val)
 {
-	if (i==1) H_star = val;
-	if (i==2) A_star = val;
-	if (i==3) V = val;
-	if (i==4) S_star = val;
-	if (i==5) z0 = val;
-	if (i==9) S_star = V*(val*(fs_params[theta_s]-fs_params[theta_r]) + fs_params[theta_r]);
-	if (i==10) S_star = V*val;
-	if (i==13) vapor_diffusion=val;
-	if (i==14) bulk_density = val;
+	if (i==1) {H_star = val; return;}
+	if (i==2) {A_star = val; return;}
+	if (i==3) {V = val; return;}
+	if (i==4) {S_star = val; return;}
+	if (i==5) {z0 = val; return; }
+	if (i==9) {S_star = V*(val*(fs_params[theta_s]-fs_params[theta_r]) + fs_params[theta_r]); return; }
+	if (i==10) {S_star = V*val; return; }
+	if (i==13) {vapor_diffusion=val; return; }
+	if (i==14) {bulk_density = val; return; }
 
-	if (i>=50 && i<100) fs_params[i-50] = val;
-	if (i>=100 && i<200) G[(i-100)/100][(i-100)%100] = val; // colloidal phases
-	if (i>=1000 && i<2000) CG[int((i-1000)/n_phases)][(i-1000)%n_phases] = val;
-	if (i>=2000 && i<3000) rxn_params[i-2000] = val;
+	if (i>=50 && i<100) {fs_params[i-50] = val; return;}
+	if (i>=100 && i<200) {G[(i-100)/100][(i-100)%100] = val; return;}// colloidal phases
+	if (i>=1000 && i<2000) {CG[int((i-1000)/n_phases)][(i-1000)%n_phases] = val; return;}
+	if (i>=2000 && i<3000) {rxn_params[i-2000] = val; return;}
 	// 3000-3999: solid_phase
 
 }
 
-bool CMBBlock::set_val(const string &SS, double val)
+bool CMBBlock::set_val(const string &SS, const double &val)
 {
 	bool success = false;
 	vector<char> del;
@@ -1125,8 +1135,8 @@ void CMBBlock::evaluate_functions(int i) //i=0->small s; i=1->large S
 		funcs[i].X.append(x,calc_star(funcs[i].Expression));
 	}
 
-	funcs[i].X.structured = true;
 	funcs[i].X = funcs[i].X.MA_smooth(2);
+	funcs[i].X.structured = true;
 }
 
 void CMBBlock::evaluate_functions()
@@ -1151,7 +1161,7 @@ double CMBBlock::get_evaporation(double t)
 
 double CMBBlock::get_evaporation(int j, double t)
 {
-	double sum;
+	double sum=0;
 	if (evaporation_m[j]->model != "time_series")
 		sum = evaporation_m[j]->calculate_star(this);
 	if ((evaporation_m[j]->evaporation_TS.n>0) && (evaporation_m[j]->model == "time_series"))
@@ -1512,27 +1522,23 @@ void CMBBlock::set_up_plant_growth_expressions()
 
 double CMBBlock::calc(CStringOP &C)
 {
-	vector<int> ii;
-	return calc(C, ii);
+	return calc(C, dummy_vec);
 
 }
 
 double CMBBlock::calc_star(CStringOP &C)
 {
-	vector<int> ii;
-	return calc_star(C, ii);
+	return calc_star(C, dummy_vec);
 }
 
 double CMBBlock::get_val_star(int i)
 {
-	vector<int> ii;
-	return get_val_star(i, ii);
+	return get_val_star(i, dummy_vec);
 }
 
 double CMBBlock::get_val(int i)
 {
-	vector<int> ii;
-	return get_val(i, ii);
+	return get_val(i, dummy_vec);
 }
 
 bool CMBBlock::set_properties(string s)
@@ -1588,6 +1594,13 @@ bool CMBBlock::set_property(string s, string value)
         {
             show_message("Property [" + s + "] was set to " + value); return success;
         }
+    }
+    if (tolower(trim(s))=="precipitation")
+    {
+        if (tolower(trim(value))=="yes")
+            precipitation_swch = true;
+        else
+            precipitation_swch = false;
     }
     bool done = set_val(s,atof(value.c_str()));
     if (!done)

@@ -108,7 +108,7 @@ wiz_assigned_value::~wiz_assigned_value()
 QString extract_between(QString str, QString del1, QString del2)
 {
 	unsigned first = str.indexOf(del1);
-	unsigned last = str.indexOf(del2);
+    unsigned last = str.indexOf(del2,first+1);
 	QString out = str.mid(first+1, last - first-1);
 	return out;
 }
@@ -116,7 +116,7 @@ QString extract_between(QString str, QString del1, QString del2)
 QString extract_between(QString str, char del1, char del2)
 {
 	unsigned first = str.indexOf(QString(del1));
-	unsigned last = str.indexOf(QString(del2));
+    unsigned last = str.indexOf(QString(del2),first+1);
 	QString out = str.mid(first+1, last - first-1);
 	return out;
 }

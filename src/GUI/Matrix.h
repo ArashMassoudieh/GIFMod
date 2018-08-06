@@ -34,6 +34,7 @@ public:
 	CMatrix(int, int);
 	CMatrix(int);
 	CMatrix();
+	CMatrix(string filename);
 	CMatrix(const CMatrix&);
 	CMatrix(CMatrix_arma&);
 	CMatrix(const CVector&);

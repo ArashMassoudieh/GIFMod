@@ -99,7 +99,7 @@ CStringOP::CStringOP(string S)
 		{
 			int prntcnt = 0;
 			string a = S.substr(i+1,4);
-			int nn;
+			int nn = 0;
 			if (S.substr(i+1,3) == "exp")
 				nn = exp_;
 			if (S.substr(i+1,3) == "hsd")
@@ -718,6 +718,19 @@ vector<string> getline(ifstream& file)
 	return x;
 }
 
+vector<string> getline(ifstream& file, char del1)
+{
+    string line;
+
+	while (!file.eof())
+	{
+		std::getline(file, line);
+		return split(line,del1);
+	}
+	vector<string> x;
+	return x;
+}
+
 vector<vector<string>> getline_op(ifstream& file,char del1)
 {
 	string line;
@@ -846,7 +859,7 @@ vector<double> ATOF(vector<string> ii)
 	return res;
 }
 
-string trim(string s)
+string trim(const string &s)
 {
 	if (s.find_first_not_of(' ') == string::npos) return "";
 
@@ -905,7 +918,7 @@ void make_a_folder_if_can(string path)
 
 }
 
-string tolower(string S)
+string tolower(const string &S)
 {
 	string SS = S;
 	for (unsigned int i=0; i<S.size(); i++)
@@ -915,7 +928,7 @@ string tolower(string S)
 	return SS;
 }
 
-vector<string> tolower(vector<string> S)
+vector<string> tolower(const vector<string> &S)
 {
 	vector<string> SS = S;
 	for (unsigned int i = 0; i<S.size(); i++)

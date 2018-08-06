@@ -16,6 +16,8 @@ public:
 	QString get_direction();
     XString get_value(wiz_assigned_value x);
     XString get_value(QString x);
+	XString get_nh();
+	XString get_nv();
 	~wiz_entity();
 	Wizard_Script_Reader *parent; 
     QString toQString();

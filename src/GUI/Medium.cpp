@@ -99,6 +99,8 @@ CMedium::CMedium(const CMedium &M)
 	{
         Connectors[i].Block1 = &Blocks[getblocksq(Connectors[i].Block1ID)];
         Connectors[i].Block2 = &Blocks[getblocksq(Connectors[i].Block2ID)];
+        Connectors[i].Block1N = getblocksq(Connectors[i].Block1ID);
+        Connectors[i].Block2N = getblocksq(Connectors[i].Block2ID);
         Connectors[i].RXN = &RXN();
 	}
 
@@ -554,6 +556,8 @@ void CMedium::f_set_default_connector_expressions()
         for (unsigned int j = 0;  j< Solid_phase().size(); j++)Connectors[i].Solid_phase_id.push_back(j);
         Connectors[i].Block1 = &Blocks[getblocksq(Connectors[i].Block1ID)];
         Connectors[i].Block2 = &Blocks[getblocksq(Connectors[i].Block2ID)];
+        Connectors[i].Block1N = getblocksq(Connectors[i].Block1ID);
+        Connectors[i].Block2N = getblocksq(Connectors[i].Block2ID);
         Blocks[getblocksq(Connectors[i].Block1ID)].connectors.push_back(i);
         Blocks[getblocksq(Connectors[i].Block1ID)].connectors_se.push_back(0);
         Blocks[getblocksq(Connectors[i].Block2ID)].connectors.push_back(i);
@@ -790,14 +794,14 @@ void CMedium::set_num_constituents(int n)
 
 
 
-CVector CMedium::getres_S(const CVector &X, double dt)
+CVector CMedium::getres_S(const CVector &X, const double &dt)
 {
 	CVector F(X.num);  //Create Vector F with size num
 	setS_star(X);     //Blocks[i].set_val("S*", X[i]);
 	CVector X1 = X;
 
     for (unsigned int i=0; i<Blocks.size(); i++)
-	{	if (Blocks[i].setzero==1) {dt=X.vec[i]; Blocks[i].S_star=0;}
+	{	//if (Blocks[i].setzero==1) {dt=X.vec[i]; Blocks[i].S_star=0;}
         if (Blocks[i].setzero==2) {Blocks[i].outflow_corr_factor=X1[i];	Blocks[i].S_star=0;}
         if (Blocks[i].setzero!=0) X1[i]=0; else Blocks[i].outflow_corr_factor = 1;
 	}
@@ -821,14 +825,14 @@ CVector CMedium::getres_S(const CVector &X, double dt)
 
     for (unsigned int i=0; i<Connectors.size(); i++)
 	{
-        if  (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star>0) Connectors[i].flow_factor=Blocks[getblocksq(Connectors[i].Block1ID)].outflow_corr_factor;
-        if  (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star<0) Connectors[i].flow_factor=Blocks[getblocksq(Connectors[i].Block2ID)].outflow_corr_factor;
+        if  (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star>0) Connectors[i].flow_factor=Blocks[Connectors[i].Block1N].outflow_corr_factor;
+        if  (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star<0) Connectors[i].flow_factor=Blocks[Connectors[i].Block2N].outflow_corr_factor;
 	}
 
     for (unsigned int i=0; i<Connectors.size(); i++)
 	{
-        F[getblocksq(Connectors[i].Block1ID)] += (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star)*Connectors[i].flow_factor;
-        F[getblocksq(Connectors[i].Block2ID)] -= (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star)*Connectors[i].flow_factor;
+        F[Connectors[i].Block1N] += (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star)*Connectors[i].flow_factor;
+        F[Connectors[i].Block2N] -= (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star)*Connectors[i].flow_factor;
 	}
 
 
@@ -851,7 +855,7 @@ CVector CMedium::getres_S(const CVector &X, double dt)
 }
 
 
-CVector_arma CMedium::getres_S(CVector_arma &X, double dt)
+CVector_arma CMedium::getres_S(CVector_arma &X, const double &dt)
 {
 	CVector_arma F(X.num);  //Create Vector F with size num
 	setS_star(X);     //Blocks[i].set_val("S*", X[i]);
@@ -859,7 +863,7 @@ CVector_arma CMedium::getres_S(CVector_arma &X, double dt)
 
     for (unsigned int i=0; i<Blocks.size(); i++)
 	{
-		if (Blocks[i].setzero == 1) { dt = X[i]; Blocks[i].S_star = 0; }
+		//if (Blocks[i].setzero == 1) { dt = X[i]; Blocks[i].S_star = 0; }
 		if (Blocks[i].setzero == 2) { Blocks[i].outflow_corr_factor = X1[i];	Blocks[i].S_star = 0; }
 		if (Blocks[i].setzero != 0) X1[i] = 0; else Blocks[i].outflow_corr_factor = 1;
 	}
@@ -880,14 +884,14 @@ CVector_arma CMedium::getres_S(CVector_arma &X, double dt)
 
     for (unsigned int i=0; i<Connectors.size(); i++)
 	{
-        if (w()*Connectors[i].Q + (1 - w())*Connectors[i].Q_star>0) Connectors[i].flow_factor = Blocks[getblocksq(Connectors[i].Block1ID)].outflow_corr_factor;
-        if (w()*Connectors[i].Q + (1 - w())*Connectors[i].Q_star<0) Connectors[i].flow_factor = Blocks[getblocksq(Connectors[i].Block2ID)].outflow_corr_factor;
+        if (w()*Connectors[i].Q + (1 - w())*Connectors[i].Q_star>0) Connectors[i].flow_factor = Connectors[i].Block1->outflow_corr_factor;
+        if (w()*Connectors[i].Q + (1 - w())*Connectors[i].Q_star<0) Connectors[i].flow_factor = Connectors[i].Block2->outflow_corr_factor;
 	}
 
     for (unsigned int i=0; i<Connectors.size(); i++)
 	{
-        F[getblocksq(Connectors[i].Block1ID)] += (w()*Connectors[i].Q + (1 - w())*Connectors[i].Q_star)*Connectors[i].flow_factor;
-        F[getblocksq(Connectors[i].Block2ID)] -= (w()*Connectors[i].Q + (1 - w())*Connectors[i].Q_star)*Connectors[i].flow_factor;
+        F[Connectors[i].Block1N] += (w()*Connectors[i].Q + (1 - w())*Connectors[i].Q_star)*Connectors[i].flow_factor;
+        F[Connectors[i].Block2N] -= (w()*Connectors[i].Q + (1 - w())*Connectors[i].Q_star)*Connectors[i].flow_factor;
 	}
 
     for (unsigned int i=0; i<Blocks.size(); i++)
@@ -910,14 +914,14 @@ CVector_arma CMedium::getres_S(CVector_arma &X, double dt)
 void CMedium::setS_star(const CVector &X)
 {
     for (unsigned int i=0; i<Blocks.size(); i++)
-		Blocks[i].set_val("s*", X.vec[i]);
+		Blocks[i].set_val_star(4, X.vec[i]);
 
 }
 
 void CMedium::setS_star(CVector_arma &X)
 {
     for (unsigned int i=0; i<Blocks.size(); i++)
-		Blocks[i].set_val("s*", X[i]);
+		Blocks[i].set_val_star(4, X[i]);
 
 }
 
@@ -933,14 +937,14 @@ void CMedium::setH_star()
 {
 	if (!steady_state_hydro())
         for (unsigned int i=0; i<Blocks.size(); i++)
-			Blocks[i].set_val("h*", Blocks[i].calc_star(Blocks[i].H_S_expression));
+			Blocks[i].set_val_star(1, Blocks[i].calc_star(Blocks[i].H_S_expression));
 }
 
 void CMedium::setH()
 {
 	if (!steady_state_hydro())
         for (unsigned int i=0; i<Blocks.size(); i++)
-			Blocks[i].set_val("h", Blocks[i].calc(Blocks[i].H_S_expression));
+			Blocks[i].set_val(1, Blocks[i].calc(Blocks[i].H_S_expression));
 }
 
 
@@ -984,17 +988,18 @@ void CMedium::setQ_star()
         if (Connectors[i].control)
 		{
             if (Connectors[i].Controller->output.n>0)
-                Connectors[i].set_val("q*", Connectors[i].Controller->output.interpol(Solution_State.t));
+                Connectors[i].set_val_star(7, Connectors[i].Controller->output.interpol(Solution_State.t));
 			else
-                Connectors[i].set_val("q*", Connectors[i].Controller->value);
+                Connectors[i].set_val_star(7, Connectors[i].Controller->value);
 		}
         else if (!Connectors[i].presc_flow)
-            Connectors[i].set_val("q*", Connectors[i].calc_star(Connectors[i].flow_expression));
+            Connectors[i].set_val_star(7, Connectors[i].calc_star(Connectors[i].flow_expression));
 		else
-            Connectors[i].set_val("q*", Connectors[i].presc_flowrate.interpol(Solution_State.t));
+            Connectors[i].set_val_star(7, Connectors[i].presc_flowrate.interpol(Solution_State.t));
 
 
-        Connectors[i].set_val("q_v*", Connectors[i].calc_star(Connectors[i].flow_expression_v));
+        if (Connectors[i].vapor_transport)
+            Connectors[i].set_val_star(13, Connectors[i].calc_star(Connectors[i].flow_expression_v));
         Connectors[i].flow_factor = 1;
 
 	}
@@ -1479,8 +1484,8 @@ void CMedium::Blocksmassbalance()
 	}
     for (unsigned int i=0; i<Connectors.size(); i++)
 	{
-        Blocks[getblocksq(Connectors[i].Block1ID)].MBBlocks += (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star)*Solution_State.dtt*Connectors[i].flow_factor;
-        Blocks[getblocksq(Connectors[i].Block2ID)].MBBlocks -= (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star)*Solution_State.dtt*Connectors[i].flow_factor;
+        Blocks[Connectors[i].Block1N].MBBlocks += (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star)*Solution_State.dtt*Connectors[i].flow_factor;
+        Blocks[Connectors[i].Block2N].MBBlocks -= (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star)*Solution_State.dtt*Connectors[i].flow_factor;
 	}
 
 
@@ -1931,28 +1936,49 @@ void CMedium::solve_fts_m2(double dt)
 				if (write_details())
 				{
 					if (Solution_State.dtt<1e-20)
-						write_to_detail_file("dt = " + numbertostring(Solution_State.dtt) + " too small, epoch = " + numbertostring(Solution_State.epoch_count) + " average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)));
+                        write_to_detail_file("dt = " + numbertostring(Solution_State.dtt) + " too small, epochs = " + numbertostring(Solution_State.epoch_count) + " average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)));
 
 					if ((Solution_State.t - Timemin) / double(iii) / dt0 < avg_dt_limit())
-						write_to_detail_file("dt = " + numbertostring(Solution_State.dtt) + ", epoch = " + numbertostring(Solution_State.epoch_count) + " average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + " < " + numbertostring(avg_dt_limit()*dt0));
+                        write_to_detail_file("dt = " + numbertostring(Solution_State.dtt) + ", epoch = " + numbertostring(Solution_State.epoch_count) + " average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + " < " + numbertostring(avg_dt_limit()*dt0));
 
 					if (Solution_State.epoch_count > epoch_limit())
-						write_to_detail_file("epoch = " + numbertostring(Solution_State.epoch_count) + " > " + numbertostring(epoch_limit()));
+                        write_to_detail_file("epoch = " + numbertostring(Solution_State.epoch_count) + " > " + numbertostring(epoch_limit()));
 
 					write_state(outputpathname() + "state.txt");
 
 				}
-                Solution_State.fail_reason = "dt = " + numbertostring(Solution_State.dtt) + " too small, epoch = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii);
-                show_message("dt = " + numbertostring(Solution_State.dtt) + " too small, epoch = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii));
+
                 Solution_State.failed = true;
 				write_flows(outputpathname() + "flows.txt");
                 for (unsigned int i=0; i < controllers().size(); i++)
                     Results.ANS_control.BTC[i] = controllers()[i].output;
+
+                if (Solution_State.dtt<1e-20)
+                {
+                    Solution_State.fail_reason = "dt = " + numbertostring(Solution_State.dtt) + " too small, epochs = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii);
+                    show_message("dt = " + numbertostring(Solution_State.dtt) + " too small, epochs = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii));
+                }
+                if (Solution_State.epoch_count > epoch_limit())
+                {
+                    Solution_State.fail_reason = "Average time step size smaller than the limit, dt = " + numbertostring(Solution_State.dtt) + " epochs = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii);
+                    show_message("Average time step size smaller than the limit, dt = " + numbertostring(Solution_State.dtt) + " too small, epochs = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii));
+                }
+                if ((Solution_State.t - Timemin) / double(iii) / dt0 < avg_dt_limit())
+                {
+                    Solution_State.fail_reason = "Number of matrix inversions exceeded the limit , epochs = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii);
+                    show_message("Number of matrix inversion exceeded the limit, epochs = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii));
+                }
+
+
 #ifdef QT_version
 				if (runtimewindow != 0)
 				{
+                    if (Solution_State.dtt<1e-20)
+                        QMessageBox::warning(runtimewindow, "Simulation Failed",  "dt = " + QString::number(Solution_State.dtt) + " too small", QMessageBox::Ok);
+
                     if (Solution_State.epoch_count > epoch_limit())
                         QMessageBox::warning(runtimewindow, "Simulation Failed", "Number of epochs (" + QString::number(Solution_State.epoch_count) + " ) exceeded the limit (" + QString::number(epoch_limit()) + ")", QMessageBox::Ok);
+
                     if ((Solution_State.t - Timemin) / double(iii) / dt0 < avg_dt_limit())
                         QMessageBox::warning(runtimewindow, "Simulation Failed", "Average time-step size (" + QString::number((Solution_State.t - Timemin) / double(iii)) + " ) is too small < " + QString::number(avg_dt_limit()*dt0)  , QMessageBox::Ok);
 				}
@@ -2354,13 +2380,14 @@ void CMedium::finalize_set_param()
             if (Connectors[i].flow_params[j]==0)
 			{
 
-                if (((Blocks[getblocksq(Connectors[i].Block1ID)].indicator == Soil) || (Blocks[getblocksq(Connectors[i].Block1ID)].indicator == Darcy)) && ((Blocks[getblocksq(Connectors[i].Block2ID)].indicator == Pond) || (Blocks[getblocksq(Connectors[i].Block2ID)].indicator == Stream)))
-                    Connectors[i].flow_params[j] = Blocks[getblocksq(Connectors[i].Block1ID)].fs_params[j];
+                if (((Blocks[Connectors[i].Block1N].indicator == Soil) || (Blocks[Connectors[i].Block1N].indicator == Darcy) || (Blocks[Connectors[i].Block1N].indicator == Storage)) && ((Blocks[getblocksq(Connectors[i].Block2ID)].indicator == Pond) || (Blocks[getblocksq(Connectors[i].Block2ID)].indicator == Stream)))
+                    Connectors[i].flow_params[j] = Blocks[Connectors[i].Block1N].fs_params[j];
 
-                if (((Blocks[getblocksq(Connectors[i].Block2ID)].indicator == Soil) || (Blocks[getblocksq(Connectors[i].Block2ID)].indicator == Darcy)) && ((Blocks[getblocksq(Connectors[i].Block1ID)].indicator == Pond) || (Blocks[getblocksq(Connectors[i].Block1ID)].indicator == Stream)))
+                if (((Blocks[getblocksq(Connectors[i].Block2ID)].indicator == Soil) || (Blocks[getblocksq(Connectors[i].Block2ID)].indicator == Darcy) || (Blocks[getblocksq(Connectors[i].Block2ID)].indicator == Storage)) && ((Blocks[getblocksq(Connectors[i].Block1ID)].indicator == Pond) || (Blocks[getblocksq(Connectors[i].Block1ID)].indicator == Stream)))
                     Connectors[i].flow_params[j] = Blocks[getblocksq(Connectors[i].Block2ID)].fs_params[j];
 
-
+                if (Blocks[getblocksq(Connectors[i].Block1ID)].vapor_diffusion!=0 && Blocks[getblocksq(Connectors[i].Block2ID)].vapor_diffusion!=0)
+                    Connectors[i].vapor_transport = true;
                 if (Blocks[getblocksq(Connectors[i].Block1ID)].indicator == Blocks[getblocksq(Connectors[i].Block2ID)].indicator)
                     Connectors[i].flow_params[j]=0.5*(Blocks[getblocksq(Connectors[i].Block1ID)].fs_params[j] + Blocks[getblocksq(Connectors[i].Block2ID)].fs_params[j]);
                 else if (Blocks[getblocksq(Connectors[i].Block1ID)].indicator==0)
@@ -2381,7 +2408,9 @@ void CMedium::finalize_set_param()
                     else if (Blocks[getblocksq(Connectors[i].Block2ID)].indicator == Soil)
                         Connectors[i].A = Connectors[i].A_star = Blocks[getblocksq(Connectors[i].Block2ID)].A;
 				}
+
 			}
+            Connectors[i].A_star = Connectors[i].A;
 
             if (Connectors[i].d==0)
 
@@ -2473,6 +2502,7 @@ void CMedium::set_default()
 
 void CMedium::evaluate_functions()
 {
+    evaluate_area(true);
     for (unsigned int i=0; i<Connectors.size(); i++)
         Connectors[i].evaluate_functions();
 
@@ -2491,7 +2521,7 @@ void CMedium::get_funcs()
 
 }
 
-int CMedium::getblocksq(string id)
+int CMedium::getblocksq(const string &id)
 {
 #ifdef QT_version
 	if (!Blocks.size())
@@ -2504,7 +2534,7 @@ int CMedium::getblocksq(string id)
 	return -1;
 }
 
-int CMedium::getconnectorsq(string id)
+int CMedium::getconnectorsq(const string &id)
 {
 #ifdef QT_version
     if (!Connectors.size())
@@ -2914,7 +2944,7 @@ void CMedium::onestepsolve_const(double dtt)
 
 
 
-CVector CMedium::getres_C(const CVector &X, double dtt)
+CVector CMedium::getres_C(const CVector &X, const double &dtt)
 {
 
 	CVector F(Blocks[0].n_phases*Blocks.size());
@@ -2945,21 +2975,21 @@ CVector CMedium::getres_C(const CVector &X, double dtt)
                 double Q_adv = (Connectors[i].Q - Connectors[i].Q_v)*Connectors[i].flow_factor + Connectors[i].settling*Solid_phase()[p].vs*sgn(Connectors[i].Block1->z0 - Connectors[i].Block2->z0)*Connectors[i].A*0.5*(Connectors[i].Block1->calc(Solid_phase()[p].vs_coefficient,ii) + Connectors[i].Block2->calc(Solid_phase()[p].vs_coefficient,ii));
 
 				if (((1-w())*Q_adv_star+w()*Q_adv)>0)
-                {	F[get_member_no(getblocksq(Connectors[i].Block1ID),p,l)] += (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block1ID)].G[p][l] + (1-w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block1ID)].G_star[p][l])*Blocks[getblocksq(Connectors[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
-                    F[get_member_no(getblocksq(Connectors[i].Block2ID),p,l)] -= (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block1ID)].G[p][l] + (1-w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block1ID)].G_star[p][l])*Blocks[getblocksq(Connectors[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
+                {	F[get_member_no(Connectors[i].Block1N,p,l)] += (w()*Q_adv*Blocks[Connectors[i].Block1N].G[p][l] + (1-w())*Q_adv_star*Blocks[Connectors[i].Block1N].G_star[p][l])*Blocks[Connectors[i].Block1N].Solid_phase[p]->mobility_factor[l];
+                    F[get_member_no(Connectors[i].Block2N,p,l)] -= (w()*Q_adv*Blocks[Connectors[i].Block1N].G[p][l] + (1-w())*Q_adv_star*Blocks[Connectors[i].Block1N].G_star[p][l])*Blocks[Connectors[i].Block1N].Solid_phase[p]->mobility_factor[l];
 				}
 				if (((1 - w())*Q_adv_star + w()*Q_adv)<0)
-                {	F[get_member_no(getblocksq(Connectors[i].Block1ID),p,l)] += (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block2ID)].G[p][l] + (1-w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block2ID)].G_star[p][l])*Blocks[getblocksq(Connectors[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
-                    F[get_member_no(getblocksq(Connectors[i].Block2ID),p,l)] -= (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block2ID)].G[p][l] + (1-w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block2ID)].G_star[p][l])*Blocks[getblocksq(Connectors[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
+                {	F[get_member_no(Connectors[i].Block1N,p,l)] += (w()*Q_adv*Blocks[Connectors[i].Block2N].G[p][l] + (1-w())*Q_adv_star*Blocks[Connectors[i].Block2N].G_star[p][l])*Blocks[Connectors[i].Block2N].Solid_phase[p]->mobility_factor[l];
+                    F[get_member_no(Connectors[i].Block2N,p,l)] -= (w()*Q_adv*Blocks[Connectors[i].Block2N].G[p][l] + (1-w())*Q_adv_star*Blocks[Connectors[i].Block2N].G_star[p][l])*Blocks[Connectors[i].Block2N].Solid_phase[p]->mobility_factor[l];
 				}
 
 			}
 				//diffusion
             for (unsigned int i=0; i<Connectors.size(); i++)
 			{
-                double exchange = Connectors[i].A*(w()*Connectors[i].c_dispersion[p]+(1-w())*Connectors[i].c_dispersion_star[p])/Connectors[i].d*((w()*Blocks[getblocksq(Connectors[i].Block2ID)].G[p][l]+(1-w())*Blocks[getblocksq(Connectors[i].Block2ID)].G_star[p][l])-(w()*Blocks[getblocksq(Connectors[i].Block1ID)].G[p][l]+(1-w())*Blocks[getblocksq(Connectors[i].Block1ID)].G_star[p][l]))*Blocks[getblocksq(Connectors[i].Block1ID)].Solid_phase[p]->mobility_factor[l]*Blocks[getblocksq(Connectors[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
-                F[get_member_no(getblocksq(Connectors[i].Block1ID),p,l)] -= exchange;
-                F[get_member_no(getblocksq(Connectors[i].Block2ID),p,l)] += exchange;
+                double exchange = Connectors[i].A*(w()*Connectors[i].c_dispersion[p]+(1-w())*Connectors[i].c_dispersion_star[p])/Connectors[i].d*((w()*Blocks[Connectors[i].Block2N].G[p][l]+(1-w())*Blocks[Connectors[i].Block2N].G_star[p][l])-(w()*Blocks[Connectors[i].Block1N].G[p][l]+(1-w())*Blocks[Connectors[i].Block1N].G_star[p][l]))*Blocks[Connectors[i].Block1N].Solid_phase[p]->mobility_factor[l]*Blocks[Connectors[i].Block2N].Solid_phase[p]->mobility_factor[l];
+                F[get_member_no(Connectors[i].Block1N,p,l)] -= exchange;
+                F[get_member_no(Connectors[i].Block2N,p,l)] += exchange;
 			}
 
 		}
@@ -2995,7 +3025,7 @@ CVector CMedium::getres_C(const CVector &X, double dtt)
 }
 
 
-CVector_arma CMedium::getres_C(CVector_arma &X, double dtt)
+CVector_arma CMedium::getres_C(CVector_arma &X, const double &dtt)
 {
 
 	CVector_arma F(Blocks[0].n_phases*Blocks.size());
@@ -3028,22 +3058,22 @@ CVector_arma CMedium::getres_C(CVector_arma &X, double dtt)
 
 				if (((1 - w())*Q_adv_star + w()*Q_adv)>0)
 				{
-                    F[get_member_no(getblocksq(Connectors[i].Block1ID), p, l)] += (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block1ID)].G[p][l] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block1ID)].G_star[p][l])*Blocks[getblocksq(Connectors[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
-                    F[get_member_no(getblocksq(Connectors[i].Block2ID), p, l)] -= (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block1ID)].G[p][l] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block1ID)].G_star[p][l])*Blocks[getblocksq(Connectors[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
+                    F[get_member_no(Connectors[i].Block1N, p, l)] += (w()*Q_adv*Blocks[Connectors[i].Block1N].G[p][l] + (1 - w())*Q_adv_star*Blocks[Connectors[i].Block1N].G_star[p][l])*Blocks[Connectors[i].Block1N].Solid_phase[p]->mobility_factor[l];
+                    F[get_member_no(Connectors[i].Block2N, p, l)] -= (w()*Q_adv*Blocks[Connectors[i].Block1N].G[p][l] + (1 - w())*Q_adv_star*Blocks[Connectors[i].Block1N].G_star[p][l])*Blocks[Connectors[i].Block1N].Solid_phase[p]->mobility_factor[l];
 				}
 				if (((1 - w())*Q_adv_star + w()*Q_adv)<0)
 				{
-                    F[get_member_no(getblocksq(Connectors[i].Block1ID), p, l)] += (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block2ID)].G[p][l] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block2ID)].G_star[p][l])*Blocks[getblocksq(Connectors[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
-                    F[get_member_no(getblocksq(Connectors[i].Block2ID), p, l)] -= (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block2ID)].G[p][l] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block2ID)].G_star[p][l])*Blocks[getblocksq(Connectors[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
+                    F[get_member_no(Connectors[i].Block1N, p, l)] += (w()*Q_adv*Blocks[Connectors[i].Block2N].G[p][l] + (1 - w())*Q_adv_star*Blocks[Connectors[i].Block2N].G_star[p][l])*Blocks[Connectors[i].Block2N].Solid_phase[p]->mobility_factor[l];
+                    F[get_member_no(Connectors[i].Block2N, p, l)] -= (w()*Q_adv*Blocks[Connectors[i].Block2N].G[p][l] + (1 - w())*Q_adv_star*Blocks[Connectors[i].Block2N].G_star[p][l])*Blocks[Connectors[i].Block2N].Solid_phase[p]->mobility_factor[l];
 				}
 
 			}
 			//diffusion
             for (unsigned int i=0; i<Connectors.size(); i++)
 			{
-                double exchange = Connectors[i].A*(w()*Connectors[i].c_dispersion[p] + (1 - w())*Connectors[i].c_dispersion_star[p]) / Connectors[i].d*((w()*Blocks[getblocksq(Connectors[i].Block2ID)].G[p][l] + (1 - w())*Blocks[getblocksq(Connectors[i].Block2ID)].G_star[p][l]) - (w()*Blocks[getblocksq(Connectors[i].Block1ID)].G[p][l] + (1 - w())*Blocks[getblocksq(Connectors[i].Block1ID)].G_star[p][l]))*Blocks[getblocksq(Connectors[i].Block1ID)].Solid_phase[p]->mobility_factor[l] * Blocks[getblocksq(Connectors[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
-                F[get_member_no(getblocksq(Connectors[i].Block1ID), p, l)] -= exchange;
-                F[get_member_no(getblocksq(Connectors[i].Block2ID), p, l)] += exchange;
+                double exchange = Connectors[i].A*(w()*Connectors[i].c_dispersion[p] + (1 - w())*Connectors[i].c_dispersion_star[p]) / Connectors[i].d*((w()*Blocks[Connectors[i].Block2N].G[p][l] + (1 - w())*Blocks[Connectors[i].Block2N].G_star[p][l]) - (w()*Blocks[Connectors[i].Block1N].G[p][l] + (1 - w())*Blocks[Connectors[i].Block1N].G_star[p][l]))*Blocks[Connectors[i].Block1N].Solid_phase[p]->mobility_factor[l] * Blocks[Connectors[i].Block2N].Solid_phase[p]->mobility_factor[l];
+                F[get_member_no(Connectors[i].Block1N, p, l)] -= exchange;
+                F[get_member_no(Connectors[i].Block2N, p, l)] += exchange;
 			}
 
 		}
@@ -3095,8 +3125,8 @@ void CMedium::correct_S(double dtt)
 
     for (unsigned int i=0; i<Connectors.size(); i++)
 	{
-        S[getblocksq(Connectors[i].Block1ID)] -= (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star)*Connectors[i].flow_factor*dtt;
-        S[getblocksq(Connectors[i].Block2ID)] += (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star)*Connectors[i].flow_factor*dtt;
+        S[Connectors[i].Block1N] -= (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star)*Connectors[i].flow_factor*dtt;
+        S[Connectors[i].Block2N] += (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star)*Connectors[i].flow_factor*dtt;
 	}
 
     for (unsigned int i=0; i<Blocks.size(); i++) Blocks[i].S_star = max(S[i],0.0);
@@ -3214,7 +3244,7 @@ vector<int> CMedium::get_phase_solid_id(int i)
 }
 
 
-CVector CMedium::getres_Q(const CVector &X, double dtt)
+CVector CMedium::getres_Q(const CVector &X, const double &dtt)
 {
 	int max_phases = 10000;
 	if (!sorption())
@@ -3263,13 +3293,13 @@ CVector CMedium::getres_Q(const CVector &X, double dtt)
                         double Q_adv = (Connectors[i].Q - Connectors[i].Q_v)*Connectors[i].flow_factor + Connectors[i].settling*RXN().cons[k].vs*sgn(Connectors[i].Block1->z0 - Connectors[i].Block2->z0)*Connectors[i].A*0.5*(Connectors[i].Block1->calc(RXN().cons[k].vs_coefficient,ii) + Connectors[i].Block2->calc(RXN().cons[k].vs_coefficient,ii));
 
 						if (w()*Q_adv+(1-w())*Q_adv_star>0)
-                        {	F[get_member_no(getblocksq(Connectors[i].Block1ID),p,l,k)] += (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block1ID)].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block1ID)].CG_star[k][get_member_no(p,l)]);
-                            F[get_member_no(getblocksq(Connectors[i].Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block1ID)].CG_star[k][get_member_no(p, l)]);
+                        {	F[get_member_no(Connectors[i].Block1N,p,l,k)] += (w()*Q_adv*Blocks[Connectors[i].Block1N].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[Connectors[i].Block1N].CG_star[k][get_member_no(p,l)]);
+                            F[get_member_no(Connectors[i].Block2N, p, l, k)] -= (w()*Q_adv*Blocks[Connectors[i].Block1N].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[Connectors[i].Block1N].CG_star[k][get_member_no(p, l)]);
 
 						}
 						if (Q_adv<0)
-                        {	F[get_member_no(getblocksq(Connectors[i].Block1ID),p,l,k)] += (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block2ID)].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block2ID)].CG_star[k][get_member_no(p,l)]);
-                            F[get_member_no(getblocksq(Connectors[i].Block2ID),p,l,k)] -= (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block2ID)].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block2ID)].CG_star[k][get_member_no(p,l)]);
+                        {	F[get_member_no(Connectors[i].Block1N,p,l,k)] += (w()*Q_adv*Blocks[Connectors[i].Block2N].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[Connectors[i].Block2N].CG_star[k][get_member_no(p,l)]);
+                            F[get_member_no(Connectors[i].Block2N,p,l,k)] -= (w()*Q_adv*Blocks[Connectors[i].Block2N].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[Connectors[i].Block2N].CG_star[k][get_member_no(p,l)]);
 						}
 
 					}
@@ -3285,12 +3315,12 @@ CVector CMedium::getres_Q(const CVector &X, double dtt)
                         double Q_adv_star = (Connectors[i].Q_star - Connectors[i].Q_v_star)*Connectors[i].flow_factor + Connectors[i].settling*Solid_phase()[p].vs*sgn(Connectors[i].Block1->z0 - Connectors[i].Block2->z0)*0.5*(Connectors[i].Block1->calc_star(Solid_phase()[p].vs_coefficient,ii)+ Connectors[i].Block2->calc_star(Solid_phase()[p].vs_coefficient,ii));
                         double Q_adv = (Connectors[i].Q - Connectors[i].Q_v)*Connectors[i].flow_factor + Connectors[i].settling*Solid_phase()[p].vs*sgn(Connectors[i].Block1->z0 - Connectors[i].Block2->z0)*0.5*(Connectors[i].Block1->calc(Solid_phase()[p].vs_coefficient,ii) + Connectors[i].Block2->calc(Solid_phase()[p].vs_coefficient,ii));
 						if (Q_adv>0)
-                        {	F[get_member_no(getblocksq(Connectors[i].Block1ID),p,l,k)] += (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block1ID)].G[p][l]*Blocks[getblocksq(Connectors[i].Block1ID)].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block1ID)].G_star[p][l]*Blocks[getblocksq(Connectors[i].Block1ID)].CG_star[k][get_member_no(p,l)])*Blocks[getblocksq(Connectors[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
-                            F[get_member_no(getblocksq(Connectors[i].Block2ID),p,l,k)] -= (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block1ID)].G[p][l]*Blocks[getblocksq(Connectors[i].Block1ID)].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block1ID)].G_star[p][l]*Blocks[getblocksq(Connectors[i].Block1ID)].CG_star[k][get_member_no(p,l)])*Blocks[getblocksq(Connectors[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
+                        {	F[get_member_no(Connectors[i].Block1N,p,l,k)] += (w()*Q_adv*Blocks[Connectors[i].Block1N].G[p][l]*Blocks[Connectors[i].Block1N].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[Connectors[i].Block1N].G_star[p][l]*Blocks[Connectors[i].Block1N].CG_star[k][get_member_no(p,l)])*Blocks[Connectors[i].Block1N].Solid_phase[p]->mobility_factor[l];
+                            F[get_member_no(Connectors[i].Block2N,p,l,k)] -= (w()*Q_adv*Blocks[Connectors[i].Block1N].G[p][l]*Blocks[Connectors[i].Block1N].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[Connectors[i].Block1N].G_star[p][l]*Blocks[Connectors[i].Block1N].CG_star[k][get_member_no(p,l)])*Blocks[Connectors[i].Block1N].Solid_phase[p]->mobility_factor[l];
 						}
 						if (Q_adv<0)
-                        {	F[get_member_no(getblocksq(Connectors[i].Block1ID),p,l,k)] += (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block2ID)].G[p][l]*Blocks[getblocksq(Connectors[i].Block2ID)].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block2ID)].G_star[p][l]*Blocks[getblocksq(Connectors[i].Block2ID)].CG_star[k][get_member_no(p,l)])*Blocks[getblocksq(Connectors[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
-                            F[get_member_no(getblocksq(Connectors[i].Block2ID),p,l,k)] -= (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block2ID)].G[p][l]*Blocks[getblocksq(Connectors[i].Block2ID)].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block2ID)].G_star[p][l]*Blocks[getblocksq(Connectors[i].Block2ID)].CG_star[k][get_member_no(p,l)])*Blocks[getblocksq(Connectors[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
+                        {	F[get_member_no(Connectors[i].Block1N,p,l,k)] += (w()*Q_adv*Blocks[Connectors[i].Block2N].G[p][l]*Blocks[Connectors[i].Block2N].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[Connectors[i].Block2N].G_star[p][l]*Blocks[Connectors[i].Block2N].CG_star[k][get_member_no(p,l)])*Blocks[Connectors[i].Block2N].Solid_phase[p]->mobility_factor[l];
+                            F[get_member_no(Connectors[i].Block2N,p,l,k)] -= (w()*Q_adv*Blocks[Connectors[i].Block2N].G[p][l]*Blocks[Connectors[i].Block2N].CG[k][get_member_no(p,l)] + (1-w())*Q_adv_star*Blocks[Connectors[i].Block2N].G_star[p][l]*Blocks[Connectors[i].Block2N].CG_star[k][get_member_no(p,l)])*Blocks[Connectors[i].Block2N].Solid_phase[p]->mobility_factor[l];
 						}
 					}
 
@@ -3301,12 +3331,12 @@ CVector CMedium::getres_Q(const CVector &X, double dtt)
 				{
 					if (p==-2)
 					{
-                        double exchange = Connectors[i].A*(w()*Connectors[i].dispersion[k] + (1 - w())*Connectors[i].dispersion_star[k]) / Connectors[i].d*min(Heavyside(get_capacity_star(getblocksq(Connectors[i].Block2ID), l, p) - 1e-13), Heavyside(get_capacity_star(getblocksq(Connectors[i].Block1ID), l, p) - 1e-13));
-                        double term1 = w()*Blocks[getblocksq(Connectors[i].Block2ID)].CG[k][get_member_no(p,l)]+(1-w())*Blocks[getblocksq(Connectors[i].Block2ID)].CG_star[k][get_member_no(p,l)];
-                        double term2 = w()*Blocks[getblocksq(Connectors[i].Block1ID)].CG[k][get_member_no(p,l)]+(1-w())*Blocks[getblocksq(Connectors[i].Block1ID)].CG_star[k][get_member_no(p,l)];
+                        double exchange = Connectors[i].A*(w()*Connectors[i].dispersion[k] + (1 - w())*Connectors[i].dispersion_star[k]) / Connectors[i].d*min(Heavyside(get_capacity_star(Connectors[i].Block2N, l, p) - 1e-13), Heavyside(get_capacity_star(Connectors[i].Block1N, l, p) - 1e-13));
+                        double term1 = w()*Blocks[Connectors[i].Block2N].CG[k][get_member_no(p,l)]+(1-w())*Blocks[Connectors[i].Block2N].CG_star[k][get_member_no(p,l)];
+                        double term2 = w()*Blocks[Connectors[i].Block1N].CG[k][get_member_no(p,l)]+(1-w())*Blocks[Connectors[i].Block1N].CG_star[k][get_member_no(p,l)];
 						exchange*=(term1-term2);
-                        F[get_member_no(getblocksq(Connectors[i].Block1ID),p,l,k)] -= exchange;
-                        F[get_member_no(getblocksq(Connectors[i].Block2ID),p,l,k)] += exchange;
+                        F[get_member_no(Connectors[i].Block1N,p,l,k)] -= exchange;
+                        F[get_member_no(Connectors[i].Block2N,p,l,k)] += exchange;
 					}
 					else if (p==-1)
 					{
@@ -3314,12 +3344,12 @@ CVector CMedium::getres_Q(const CVector &X, double dtt)
 					}
 					else
 					{
-                        double exchange = Connectors[i].A*(w()*Connectors[i].c_dispersion[p] + (1 - w())*Connectors[i].c_dispersion_star[p]) / Connectors[i].d*min(Heavyside(get_capacity_star(getblocksq(Connectors[i].Block1ID), l, p) - 1e-13), Heavyside(get_capacity_star(getblocksq(Connectors[i].Block2ID), l, p) - 1e-13));;
-                        double term1 = w()*Blocks[getblocksq(Connectors[i].Block2ID)].G[p][l]*Blocks[getblocksq(Connectors[i].Block2ID)].CG[k][get_member_no(p,l)]+(1-w())*Blocks[getblocksq(Connectors[i].Block2ID)].G_star[p][l]*Blocks[getblocksq(Connectors[i].Block2ID)].CG_star[k][get_member_no(p,l)];
-                        double term2 = w()*Blocks[getblocksq(Connectors[i].Block1ID)].G[p][l]*Blocks[getblocksq(Connectors[i].Block1ID)].CG[k][get_member_no(p,l)]+(1-w())*Blocks[getblocksq(Connectors[i].Block1ID)].G_star[p][l]*Blocks[getblocksq(Connectors[i].Block1ID)].CG_star[k][get_member_no(p,l)];
-                        exchange*=(Blocks[getblocksq(Connectors[i].Block1ID)].Solid_phase[p]->mobility_factor[l]*Blocks[getblocksq(Connectors[i].Block2ID)].Solid_phase[p]->mobility_factor[l])*(term1-term2);
-                        F[get_member_no(getblocksq(Connectors[i].Block1ID),p,l,k)] -= exchange;
-                        F[get_member_no(getblocksq(Connectors[i].Block2ID),p,l,k)] += exchange;
+                        double exchange = Connectors[i].A*(w()*Connectors[i].c_dispersion[p] + (1 - w())*Connectors[i].c_dispersion_star[p]) / Connectors[i].d*min(Heavyside(get_capacity_star(Connectors[i].Block1N, l, p) - 1e-13), Heavyside(get_capacity_star(Connectors[i].Block2N, l, p) - 1e-13));;
+                        double term1 = w()*Blocks[Connectors[i].Block2N].G[p][l]*Blocks[Connectors[i].Block2N].CG[k][get_member_no(p,l)]+(1-w())*Blocks[Connectors[i].Block2N].G_star[p][l]*Blocks[Connectors[i].Block2N].CG_star[k][get_member_no(p,l)];
+                        double term2 = w()*Blocks[Connectors[i].Block1N].G[p][l]*Blocks[Connectors[i].Block1N].CG[k][get_member_no(p,l)]+(1-w())*Blocks[Connectors[i].Block1N].G_star[p][l]*Blocks[Connectors[i].Block1N].CG_star[k][get_member_no(p,l)];
+                        exchange*=(Blocks[Connectors[i].Block1N].Solid_phase[p]->mobility_factor[l]*Blocks[Connectors[i].Block2N].Solid_phase[p]->mobility_factor[l])*(term1-term2);
+                        F[get_member_no(Connectors[i].Block1N,p,l,k)] -= exchange;
+                        F[get_member_no(Connectors[i].Block2N,p,l,k)] += exchange;
 					}
 				}
 
@@ -3477,7 +3507,7 @@ CVector CMedium::getres_Q(const CVector &X, double dtt)
 }
 
 
-CVector_arma CMedium::getres_Q(CVector_arma &X, double dtt)
+CVector_arma CMedium::getres_Q(CVector_arma &X, const double &dtt)
 {
 	int max_phases = 10000;
 	if (!sorption())
@@ -3529,14 +3559,14 @@ CVector_arma CMedium::getres_Q(CVector_arma &X, double dtt)
 
 						if (w()*Q_adv + (1 - w())*Q_adv_star>0)
 						{
-                            F[get_member_no(getblocksq(Connectors[i].Block1ID), p, l, k)] += (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block1ID)].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
-                            F[get_member_no(getblocksq(Connectors[i].Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block1ID)].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
+                            F[get_member_no(Connectors[i].Block1N, p, l, k)] += (w()*Q_adv*Blocks[Connectors[i].Block1N].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[Connectors[i].Block1N].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
+                            F[get_member_no(Connectors[i].Block2N, p, l, k)] -= (w()*Q_adv*Blocks[Connectors[i].Block1N].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[Connectors[i].Block1N].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
 
 						}
 						else
 						{
-                            F[get_member_no(getblocksq(Connectors[i].Block1ID), p, l, k)] += (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block2ID)].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
-                            F[get_member_no(getblocksq(Connectors[i].Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block2ID)].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
+                            F[get_member_no(Connectors[i].Block1N, p, l, k)] += (w()*Q_adv*Blocks[Connectors[i].Block2N].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[Connectors[i].Block2N].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
+                            F[get_member_no(Connectors[i].Block2N, p, l, k)] -= (w()*Q_adv*Blocks[Connectors[i].Block2N].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[Connectors[i].Block2N].CG_star[k][get_member_no(p, l)])*RXN().cons[k].mobile;
 						}
 
 					}
@@ -3553,13 +3583,13 @@ CVector_arma CMedium::getres_Q(CVector_arma &X, double dtt)
                         double Q_adv = (Connectors[i].Q - Connectors[i].Q_v)*Connectors[i].flow_factor + Connectors[i].settling*Solid_phase()[p].vs*sgn(Connectors[i].Block1->z0 - Connectors[i].Block2->z0)*0.5*(Connectors[i].Block1->calc(Solid_phase()[p].vs_coefficient, ii) + Connectors[i].Block2->calc(Solid_phase()[p].vs_coefficient, ii));
 						if (Q_adv>0)
 						{
-                            F[get_member_no(getblocksq(Connectors[i].Block1ID), p, l, k)] += (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block1ID)].G[p][l] * Blocks[getblocksq(Connectors[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block1ID)].G_star[p][l] * Blocks[getblocksq(Connectors[i].Block1ID)].CG_star[k][get_member_no(p, l)])*Blocks[getblocksq(Connectors[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
-                            F[get_member_no(getblocksq(Connectors[i].Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block1ID)].G[p][l] * Blocks[getblocksq(Connectors[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block1ID)].G_star[p][l] * Blocks[getblocksq(Connectors[i].Block1ID)].CG_star[k][get_member_no(p, l)])*Blocks[getblocksq(Connectors[i].Block1ID)].Solid_phase[p]->mobility_factor[l];
+                            F[get_member_no(Connectors[i].Block1N, p, l, k)] += (w()*Q_adv*Blocks[Connectors[i].Block1N].G[p][l] * Blocks[Connectors[i].Block1N].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[Connectors[i].Block1N].G_star[p][l] * Blocks[Connectors[i].Block1N].CG_star[k][get_member_no(p, l)])*Blocks[Connectors[i].Block1N].Solid_phase[p]->mobility_factor[l];
+                            F[get_member_no(Connectors[i].Block2N, p, l, k)] -= (w()*Q_adv*Blocks[Connectors[i].Block1N].G[p][l] * Blocks[Connectors[i].Block1N].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[Connectors[i].Block1N].G_star[p][l] * Blocks[Connectors[i].Block1N].CG_star[k][get_member_no(p, l)])*Blocks[Connectors[i].Block1N].Solid_phase[p]->mobility_factor[l];
 						}
 						if (Q_adv<0)
 						{
-                            F[get_member_no(getblocksq(Connectors[i].Block1ID), p, l, k)] += (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block2ID)].G[p][l] * Blocks[getblocksq(Connectors[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block2ID)].G_star[p][l] * Blocks[getblocksq(Connectors[i].Block2ID)].CG_star[k][get_member_no(p, l)])*Blocks[getblocksq(Connectors[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
-                            F[get_member_no(getblocksq(Connectors[i].Block2ID), p, l, k)] -= (w()*Q_adv*Blocks[getblocksq(Connectors[i].Block2ID)].G[p][l] * Blocks[getblocksq(Connectors[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[getblocksq(Connectors[i].Block2ID)].G_star[p][l] * Blocks[getblocksq(Connectors[i].Block2ID)].CG_star[k][get_member_no(p, l)])*Blocks[getblocksq(Connectors[i].Block2ID)].Solid_phase[p]->mobility_factor[l];
+                            F[get_member_no(Connectors[i].Block1N, p, l, k)] += (w()*Q_adv*Blocks[Connectors[i].Block2N].G[p][l] * Blocks[Connectors[i].Block2N].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[Connectors[i].Block2N].G_star[p][l] * Blocks[Connectors[i].Block2N].CG_star[k][get_member_no(p, l)])*Blocks[Connectors[i].Block2N].Solid_phase[p]->mobility_factor[l];
+                            F[get_member_no(Connectors[i].Block2N, p, l, k)] -= (w()*Q_adv*Blocks[Connectors[i].Block2N].G[p][l] * Blocks[Connectors[i].Block2N].CG[k][get_member_no(p, l)] + (1 - w())*Q_adv_star*Blocks[Connectors[i].Block2N].G_star[p][l] * Blocks[Connectors[i].Block2N].CG_star[k][get_member_no(p, l)])*Blocks[Connectors[i].Block2N].Solid_phase[p]->mobility_factor[l];
 						}
 					}
 
@@ -3570,12 +3600,12 @@ CVector_arma CMedium::getres_Q(CVector_arma &X, double dtt)
 				{
 					if (p == -2)
 					{
-                        double exchange = Connectors[i].A*(w()*Connectors[i].dispersion[k] + (1 - w())*Connectors[i].dispersion_star[k]) / Connectors[i].d*min(Heavyside(get_capacity_star(getblocksq(Connectors[i].Block2ID), l, p) - 1e-13), Heavyside(get_capacity_star(getblocksq(Connectors[i].Block1ID), l, p) - 1e-13))*RXN().cons[k].mobile;
-                        double term1 = w()*Blocks[getblocksq(Connectors[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[getblocksq(Connectors[i].Block2ID)].CG_star[k][get_member_no(p, l)];
-                        double term2 = w()*Blocks[getblocksq(Connectors[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[getblocksq(Connectors[i].Block1ID)].CG_star[k][get_member_no(p, l)];
+                        double exchange = Connectors[i].A*(w()*Connectors[i].dispersion[k] + (1 - w())*Connectors[i].dispersion_star[k]) / Connectors[i].d*min(Heavyside(get_capacity_star(Connectors[i].Block2N, l, p) - 1e-13), Heavyside(get_capacity_star(Connectors[i].Block1N, l, p) - 1e-13))*RXN().cons[k].mobile;
+                        double term1 = w()*Blocks[Connectors[i].Block2N].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[Connectors[i].Block2N].CG_star[k][get_member_no(p, l)];
+                        double term2 = w()*Blocks[Connectors[i].Block1N].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[Connectors[i].Block1N].CG_star[k][get_member_no(p, l)];
 						exchange *= (term1 - term2);
-                        F[get_member_no(getblocksq(Connectors[i].Block1ID), p, l, k)] -= exchange;
-                        F[get_member_no(getblocksq(Connectors[i].Block2ID), p, l, k)] += exchange;
+                        F[get_member_no(Connectors[i].Block1N, p, l, k)] -= exchange;
+                        F[get_member_no(Connectors[i].Block2N, p, l, k)] += exchange;
 					}
 					else if (p == -1)
 					{
@@ -3583,12 +3613,12 @@ CVector_arma CMedium::getres_Q(CVector_arma &X, double dtt)
 					}
 					else
 					{
-                        double exchange = Connectors[i].A*(w()*Connectors[i].c_dispersion[p] + (1 - w())*Connectors[i].c_dispersion_star[p]) / Connectors[i].d*min(Heavyside(get_capacity_star(getblocksq(Connectors[i].Block1ID), l, p) - 1e-13), Heavyside(get_capacity_star(getblocksq(Connectors[i].Block2ID), l, p) - 1e-13));;
-                        double term1 = w()*Blocks[getblocksq(Connectors[i].Block2ID)].G[p][l] * Blocks[getblocksq(Connectors[i].Block2ID)].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[getblocksq(Connectors[i].Block2ID)].G_star[p][l] * Blocks[getblocksq(Connectors[i].Block2ID)].CG_star[k][get_member_no(p, l)];
-                        double term2 = w()*Blocks[getblocksq(Connectors[i].Block1ID)].G[p][l] * Blocks[getblocksq(Connectors[i].Block1ID)].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[getblocksq(Connectors[i].Block1ID)].G_star[p][l] * Blocks[getblocksq(Connectors[i].Block1ID)].CG_star[k][get_member_no(p, l)];
-                        exchange *= (Blocks[getblocksq(Connectors[i].Block1ID)].Solid_phase[p]->mobility_factor[l] * Blocks[getblocksq(Connectors[i].Block2ID)].Solid_phase[p]->mobility_factor[l])*(term1 - term2);
-                        F[get_member_no(getblocksq(Connectors[i].Block1ID), p, l, k)] -= exchange;
-                        F[get_member_no(getblocksq(Connectors[i].Block2ID), p, l, k)] += exchange;
+                        double exchange = Connectors[i].A*(w()*Connectors[i].c_dispersion[p] + (1 - w())*Connectors[i].c_dispersion_star[p]) / Connectors[i].d*min(Heavyside(get_capacity_star(Connectors[i].Block1N, l, p) - 1e-13), Heavyside(get_capacity_star(Connectors[i].Block2N, l, p) - 1e-13));;
+                        double term1 = w()*Blocks[Connectors[i].Block2N].G[p][l] * Blocks[Connectors[i].Block2N].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[Connectors[i].Block2N].G_star[p][l] * Blocks[Connectors[i].Block2N].CG_star[k][get_member_no(p, l)];
+                        double term2 = w()*Blocks[Connectors[i].Block1N].G[p][l] * Blocks[Connectors[i].Block1N].CG[k][get_member_no(p, l)] + (1 - w())*Blocks[Connectors[i].Block1N].G_star[p][l] * Blocks[Connectors[i].Block1N].CG_star[k][get_member_no(p, l)];
+                        exchange *= (Blocks[Connectors[i].Block1N].Solid_phase[p]->mobility_factor[l] * Blocks[Connectors[i].Block2N].Solid_phase[p]->mobility_factor[l])*(term1 - term2);
+                        F[get_member_no(Connectors[i].Block1N, p, l, k)] -= exchange;
+                        F[get_member_no(Connectors[i].Block2N, p, l, k)] += exchange;
 					}
 				}
 
@@ -3643,7 +3673,11 @@ CVector_arma CMedium::getres_Q(CVector_arma &X, double dtt)
 		// build_up
         for (unsigned int i=0; i<Blocks.size(); i++)
 		{
-			for (int p = -1; p<min(int(Blocks[i].Solid_phase.size()), max_phases); p++)
+            for (unsigned int j = 0; j<Blocks[i].buildup.size(); j++)
+                if (Blocks[i].buildup[j]->phase == "aqueous" && Blocks[i].buildup[j]->constituent == RXN().cons[k].name)
+                    F[get_member_no(i, -2, 0, k)] -= Blocks[i].buildup[j]->buildup((1 - w())*Blocks[i].CG_star[k][get_member_no(-2, 0)] + w()*Blocks[i].CG[k][get_member_no(-2, 0)], &Blocks[i])*Blocks[i].V;
+
+            for (int p = -1; p<min(int(Blocks[i].Solid_phase.size()), max_phases); p++)
 			{
 				int _t;
 				if (p<0) _t = 1; else _t = Blocks[0].Solid_phase[p]->n_phases;
@@ -3652,13 +3686,13 @@ CVector_arma CMedium::getres_Q(CVector_arma &X, double dtt)
 					if (p == -1)
 					{
 						for (unsigned int j = 0; j<Blocks[i].buildup.size(); j++)
-							if (Blocks[i].buildup[j]->phase == "sorbed")
+                            if (Blocks[i].buildup[j]->phase == "sorbed" && Blocks[i].buildup[j]->constituent == RXN().cons[k].name)
 								F[get_member_no(i, p, l, k)] -= Blocks[i].buildup[j]->buildup((1 - w())*Blocks[i].CG_star[k][get_member_no(p, l)] + w()*Blocks[i].CG[k][get_member_no(p, l)], &Blocks[i])*Blocks[i].V;
 					}
 					else
 					{
 						for (unsigned int j = 0; j<Blocks[i].buildup.size(); j++)
-							if ((Blocks[i].buildup[j]->solid == Blocks[i].Solid_phase[p]->name) && (Blocks[i].buildup[j]->phase == Blocks[i].Solid_phase[p]->phase_names[l]))
+                            if ((Blocks[i].buildup[j]->solid == Blocks[i].Solid_phase[p]->name) && (Blocks[i].buildup[j]->phase == Blocks[i].Solid_phase[p]->phase_names[l]) && Blocks[i].buildup[j]->constituent == RXN().cons[k].name)
 								F[get_member_no(i, p, l, k)] -= Blocks[i].buildup[j]->buildup((1 - w())*Blocks[i].CG_star[k][get_member_no(p, l)] + w()*Blocks[i].CG[k][get_member_no(p, l)], &Blocks[i])*Blocks[i].V;
 
 
@@ -3954,7 +3988,7 @@ void CMedium::evaluate_area(bool all)
 }
 
 
-int CMedium::lookup_external_flux(string S)
+int CMedium::lookup_external_flux(const string &S)
 {
 	int out = -1;
     for (unsigned int i=0; i < externalflux().size(); i++)
@@ -3966,7 +4000,7 @@ int CMedium::lookup_external_flux(string S)
 
 }
 
-int CMedium::lookup_evaporation(string S)
+int CMedium::lookup_evaporation(const string &S)
 {
 	int out = -1;
     for (unsigned int i=0; i < evaporation_model().size(); i++)
@@ -3977,7 +4011,7 @@ int CMedium::lookup_evaporation(string S)
 
 }
 
-int CMedium::lookup_parameters(string S)
+int CMedium::lookup_parameters(const string &S)
 {
 	int out = -1;
     for (unsigned int i=0; i < parameters().size(); i++)
@@ -3989,7 +4023,7 @@ int CMedium::lookup_parameters(string S)
 }
 
 
-int CMedium::lookup_sensors(string S)
+int CMedium::lookup_sensors(const string &S)
 {
 	int out = -1;
     for (unsigned int i=0; i < sensors().size(); i++)
@@ -4012,7 +4046,7 @@ int CMedium::lookup_observation(string S)
 }
 
 */
-int CMedium::lookup_particle_type(string S)
+int CMedium::lookup_particle_type(const string &S)
 {
 	int out = -1;
     for (unsigned int i=0; i < Solid_phase().size(); i++)
@@ -4023,7 +4057,7 @@ int CMedium::lookup_particle_type(string S)
 	return out;
 }
 
-int CMedium::lookup_buildup(string S)
+int CMedium::lookup_buildup(const string &S)
 {
 	int out = -1;
     for (unsigned int i=0; i < buildup().size(); i++)
@@ -4034,7 +4068,7 @@ int CMedium::lookup_buildup(string S)
 	return out;
 }
 
-void CMedium::writetolog(string S)
+void CMedium::writetolog(const string &S)
 {
 	fstream file(outputpathname() + log_file_name());
 	file << S << std::endl;
@@ -4409,7 +4443,7 @@ double& CMedium::dt()
 	return parent->SP.dt;
 }
 
-vector<range>& CMedium::parameters()
+vector<param_range>& CMedium::parameters()
 {
 	return parent->parameters;
 }
@@ -4671,7 +4705,7 @@ vector<CEvaporation>& CMedium::evaporation_model()
 	return parent->evaporation_model;
 }
 
-int CMedium::lookup_experiment(string S)
+int CMedium::lookup_experiment(const string &S)
 {
     for (unsigned int i=0; i < parent->Medium.size(); i++)
 		if (S == parent->Medium[i].name) return i;
@@ -4683,7 +4717,7 @@ double CMedium::calc_obj_function(double time_interval)
 	return 0.0;
 }
 
-int CMedium::lookup_controllers(string S)
+int CMedium::lookup_controllers(const string &S)
 {
 	int out = -1;
     for (unsigned int i=0; i < controllers().size(); i++)
@@ -4693,7 +4727,7 @@ int CMedium::lookup_controllers(string S)
 	return out;
 }
 
-int CMedium::lookup_objective_functions(string S)
+int CMedium::lookup_objective_functions(const string &S)
 {
 	int out = -1;
     for (unsigned int i=0; i < objective_functions().size(); i++)
@@ -5205,12 +5239,12 @@ void CMedium::onestepsolve_const_ar(double dtt)
 		else if (M_Q_arma.getnumcols() > 0 || (dx == dx) != true || solution_method()=="Direct Solution")
 		{
 
-			CVector FF = F;
-			CMatrix M_Q = M_Q_arma;
-			FF.writetofile("F.txt");
-			M_Q.writetofile("m.txt");
-			CMatrix Precond_Q = Preconditioner_Q_arma;
-			Precond_Q.writetofile("Precond.txt");
+			//CVector FF = F;
+			//CMatrix M_Q = M_Q_arma;
+			//FF.writetofile("F.txt");
+			//M_Q.writetofile("m.txt");
+			//CMatrix Precond_Q = Preconditioner_Q_arma;
+			//Precond_Q.writetofile("Precond.txt");
 
 			dx = dtt / Solution_State.dtt_J_q*solve_ar(M_Q_arma, F);
 			if ((dx.num == 0) || (dx == dx) != true)
@@ -5221,6 +5255,8 @@ void CMedium::onestepsolve_const_ar(double dtt)
 				return;
 			}
 		}
+		else
+            dx = dtt / Solution_State.dtt_J_q*(InvJ_Q_arma*normalize_diag(F, M_Q_arma));
 
 
 
@@ -5326,7 +5362,7 @@ void CMedium::onestepsolve_const_ar(double dtt)
 
 
 
-CMatrix_arma CMedium::Jacobian_S(CVector_arma &X, double dt, bool base = true)
+CMatrix_arma CMedium::Jacobian_S(CVector_arma &X, const double &dt, bool base = true)
 {
 	CMatrix_arma M(X.num);
 
@@ -5356,7 +5392,7 @@ CMatrix_arma CMedium::Jacobian_S(CVector_arma &X, double dt, bool base = true)
 	return Transpose(M);
 }
 
-CVector_arma CMedium::Jacobian_S(CVector_arma &V, int &i, double &dt)  //Works also w/o reference (&)
+CVector_arma CMedium::Jacobian_S(CVector_arma &V, int &i, const double &dt)  //Works also w/o reference (&)
 {
 	double epsilon;
 	if (V[i]<1e-5) epsilon = -1e-6; else epsilon = 1e-6;
@@ -5369,7 +5405,7 @@ CVector_arma CMedium::Jacobian_S(CVector_arma &V, int &i, double &dt)  //Works a
 	return (F1 - F0) / epsilon;
 }
 
-CVector_arma CMedium::Jacobian_S(CVector_arma &V, CVector_arma &F0, int i, double dt)  //Works also w/o reference (&)
+CVector_arma CMedium::Jacobian_S(CVector_arma &V, CVector_arma &F0, int i, const double &dt)  //Works also w/o reference (&)
 {
 	double epsilon;
 	epsilon = -1e-6;
@@ -5392,7 +5428,7 @@ CVector_arma CMedium::Jacobian_S(CVector_arma &V, CVector_arma &F0, int i, doubl
 
 
 
-CMatrix_arma CMedium::Jacobian_C(CVector_arma &X, double dt, bool base)
+CMatrix_arma CMedium::Jacobian_C(CVector_arma &X, const double &dt, bool base)
 {
 	CMatrix_arma M(X.num);
 
@@ -5419,7 +5455,7 @@ CMatrix_arma CMedium::Jacobian_C(CVector_arma &X, double dt, bool base)
 	return Transpose(M);
 }
 
-CVector_arma CMedium::Jacobian_C(CVector_arma &V, int i, double dt)  //Works also w/o reference (&)
+CVector_arma CMedium::Jacobian_C(CVector_arma &V, int i, const double &dt)  //Works also w/o reference (&)
 {
 	double epsilon;
 	if (V[i]<1e-5) epsilon = -1e-6; else epsilon = 1e-6;
@@ -5441,7 +5477,7 @@ CVector_arma CMedium::Jacobian_C(CVector_arma &V, int i, double dt)  //Works als
 	return grad;
 }
 
-CVector_arma CMedium::Jacobian_C(CVector_arma &V, const CVector_arma &F0, int i, double dt)
+CVector_arma CMedium::Jacobian_C(CVector_arma &V, const CVector_arma &F0, int i, const double &dt)
 {
 	double epsilon;
 	if ((V[i]<1) && (V[i]>-1))
@@ -5475,7 +5511,7 @@ CMatrix_arma CMedium::Jacobian_Q(CVector_arma &X, double dt, bool base)
 	return Transpose(M);
 }
 
-CVector_arma CMedium::Jacobian_Q(CVector_arma &V, int i, double dt)
+CVector_arma CMedium::Jacobian_Q(CVector_arma &V, int i, const double &dt)
 {
 	double epsilon;
 	if (V[i]<1e-5) epsilon = -1e-6; else epsilon = 1e-6;
@@ -5497,7 +5533,7 @@ CVector_arma CMedium::Jacobian_Q(CVector_arma &V, int i, double dt)
 	return grad;
 }
 
-CVector_arma CMedium::Jacobian_Q(CVector_arma &V, const CVector_arma &F0, int i, double dt)
+CVector_arma CMedium::Jacobian_Q(CVector_arma &V, const CVector_arma &F0, int i, const double &dt)
 {
 	double epsilon;
 	if ((V[i]<1) && (V[i]>-1))
@@ -5671,7 +5707,7 @@ bool CMedium::show_messages()
         return false;
 }
 
-void CMedium::show_message(string s)
+void CMedium::show_message(const string &s)
 {
 #ifndef QT_version
     if (show_messages())
@@ -5681,7 +5717,7 @@ void CMedium::show_message(string s)
 #endif
 }
 
-void CMedium::show_status(string s)
+void CMedium::show_status(const string &s)
 {
 #ifndef QT_version
     if (show_messages())
@@ -5693,12 +5729,16 @@ void CMedium::show_status(string s)
 
 
 #ifdef USE_VTK
-VTK_grid CMedium::VTK_get_snap_shot(string var, double t, double z_scale)
+VTK_grid CMedium::VTK_get_snap_shot(string var, double t, double z_scale, string fieldname)
 {
     VTK_grid out;
-    out.names.push_back(var);
+    if (fieldname!="")
+        out.names.push_back(fieldname);
+    else
+        out.names.push_back(var);
     for (unsigned int i=0; i<Blocks.size(); i++)
     {
+        bool not_push = false;
         VTK_point pt;
         pt.x = Blocks[i].location.x;
         pt.y = Blocks[i].location.y;
@@ -5712,26 +5752,34 @@ VTK_grid CMedium::VTK_get_snap_shot(string var, double t, double z_scale)
             if (Blocks[i].indicator == Block_types::Soil || Blocks[i].indicator == Block_types::Darcy)
                 pt.vals.push_back(Results.ANS.BTC[i].interpol(t)/Blocks[i].V);
             else
+            {
                 pt.vals.push_back(0);
+                pt.beshown = false;
+            }
         }
         else if (var=="depth")
         {
             if (Blocks[i].indicator != Block_types::Soil && Blocks[i].indicator != Block_types::Darcy)
                 pt.vals.push_back(Results.ANS.BTC[i + Blocks.size() + Connectors.size()].interpol(t)-Blocks[i].z0);
             else
+            {
                 pt.vals.push_back(0);
+                pt.beshown = false;
+            }
         }
         else
             pt.vals.push_back(Blocks[i].get_val(var));
+
         out.p.push_back(pt);
     }
     return out;
 }
 
 
-void CMedium::merge_to_snapshot(VTK_grid& grid, string var, double t)
+void CMedium::merge_to_snapshot(VTK_grid& grid, string var, double t, string fieldname)
 {
-    if (t!=0)
+    if (fieldname!="") grid.names.push_back(fieldname);
+    else if (t!=0)
         grid.names.push_back(var + "_" + numbertostring(t));
     else
         grid.names.push_back(var);
@@ -5812,15 +5860,18 @@ void CMedium::write_grid_to_vtp(VTK_grid& grid, const string &filename, const ve
     for (unsigned int i=0;i<grid.p.size(); i++)
         {
 
-            const double p[3] = {grid.p[i].x, grid.p[i].y, grid.p[i].z};
+            if (grid.p[i].beshown)
+            {
+                const double p[3] = {grid.p[i].x, grid.p[i].y, grid.p[i].z};
 
-            // We need an an array of point id's for InsertNextCell.
+                // We need an an array of point id's for InsertNextCell.
 
-            vtkIdType pid[1];
-            pid[0] = points->InsertNextPoint(p);
-            //vertices->InsertNextCell(1,pid);
-            for (unsigned int j=0; j<grid.p[i].vals.size(); j++)
-                vals[j]->InsertNextValue(grid.p[i].vals[j]);
+                vtkIdType pid[1];
+                pid[0] = points->InsertNextPoint(p);
+                //vertices->InsertNextCell(1,pid);
+                for (unsigned int j=0; j<grid.p[i].vals.size(); j++)
+                    vals[j]->InsertNextValue(grid.p[i].vals[j]);
+            }
         }
     // Create a polydata object
     vtkSmartPointer<vtkPolyData> point =
@@ -5855,6 +5906,7 @@ void CMedium::write_grid_to_vtp(VTK_grid& grid, const string &filename, const ve
   delaunayActor->SetMapper(delaunayMapper);
   delaunayActor->GetProperty()->SetColor(1,0,0);
 
+  /*
    vtkSmartPointer<vtkRenderer> renderer =
     vtkSmartPointer<vtkRenderer>::New();
   vtkSmartPointer<vtkRenderWindow> renderWindow =
@@ -5866,10 +5918,11 @@ void CMedium::write_grid_to_vtp(VTK_grid& grid, const string &filename, const ve
   renderWindowInteractor->SetRenderWindow(renderWindow);
 
   renderer->AddActor(delaunayActor);
-  //renderer->SetBackground(colors->GetColor3d("DarkOliveGreen").GetData());
+  renderer->SetBackground(colors->GetColor3d("DarkOliveGreen").GetData());
 
   renderWindow->Render();
   renderWindowInteractor->Start();
+  */
 
   vtkSmartPointer<vtkXMLUnstructuredGridWriter> writer =
 		vtkSmartPointer<vtkXMLUnstructuredGridWriter>::New();
@@ -5895,6 +5948,125 @@ void CMedium::write_grid_to_vtp(VTK_grid& grid, const string &filename, const ve
 */
   return;
 }
+
+
+void CMedium::write_grid_to_vtp_surf(VTK_grid& grid, const string &filename, const vector<string> &names)
+{
+
+  // Create the geometry of a point (the coordinate)
+  vtkSmartPointer<vtkPoints> points =
+    vtkSmartPointer<vtkPoints>::New();
+
+  // Create the topology of the point (a vertex)
+    //vtkSmartPointer<vtkCellArray> vertices =
+    //    vtkSmartPointer<vtkCellArray>::New();
+
+    vector<vtkSmartPointer<vtkDoubleArray>> vals;
+
+    for (unsigned int i=0; i<grid.p[0].vals.size(); i++)
+    {
+        vals.push_back(vtkSmartPointer<vtkDoubleArray>::New());
+        if (names.size())
+            vals[i]->SetName(names[i].c_str());
+        else if (grid.names.size())
+            vals[i]->SetName(grid.names[i].c_str());
+        else
+            vals[i]->SetName(("var_" + numbertostring(i)).c_str());
+    }
+
+
+    for (unsigned int i=0;i<grid.p.size(); i++)
+        {
+
+            if (grid.p[i].beshown)
+            {
+                const double p[3] = {grid.p[i].x, grid.p[i].y, grid.p[i].z};
+
+                // We need an an array of point id's for InsertNextCell.
+
+                vtkIdType pid[1];
+                pid[0] = points->InsertNextPoint(p);
+                //vertices->InsertNextCell(1,pid);
+                for (unsigned int j=0; j<grid.p[i].vals.size(); j++)
+                    vals[j]->InsertNextValue(grid.p[i].vals[j]);
+            }
+        }
+    // Create a polydata object
+    vtkSmartPointer<vtkPolyData> point =
+    vtkSmartPointer<vtkPolyData>::New();
+
+  // Set the points and vertices we created as the geometry and topology of the polydata
+  point->SetPoints(points);
+  //point->SetVerts(vertices);
+
+  for (unsigned int j=0; j<grid.p[0].vals.size(); j++)
+    point->GetPointData()->AddArray(vals[j]);
+
+    //vtkSmartPointer<vtkCleanPolyData> cleaner =
+    //vtkSmartPointer<vtkCleanPolyData>::New();
+  //cleaner->SetInputConnection (point);
+
+  // Triangulate the grid points
+	vtkSmartPointer<vtkDelaunay2D> delaunay =
+		vtkSmartPointer<vtkDelaunay2D>::New();
+#if VTK_MAJOR_VERSION <= 5
+	delaunay->SetInput(point);
+#else
+	delaunay->SetInputData(point);
+#endif
+	delaunay->Update();
+	vtkSmartPointer<vtkPolyDataMapper> delaunayMapper =
+    vtkSmartPointer<vtkPolyDataMapper>::New();
+  delaunayMapper->SetInputConnection(delaunay->GetOutputPort());
+
+ vtkSmartPointer<vtkActor> delaunayActor =
+    vtkSmartPointer<vtkActor>::New();
+  delaunayActor->SetMapper(delaunayMapper);
+  delaunayActor->GetProperty()->SetColor(1,0,0);
+
+  /*
+   vtkSmartPointer<vtkRenderer> renderer =
+    vtkSmartPointer<vtkRenderer>::New();
+  vtkSmartPointer<vtkRenderWindow> renderWindow =
+    vtkSmartPointer<vtkRenderWindow>::New();
+  renderWindow->SetWindowName("Point");
+  renderWindow->AddRenderer(renderer);
+  vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor =
+    vtkSmartPointer<vtkRenderWindowInteractor>::New();
+  renderWindowInteractor->SetRenderWindow(renderWindow);
+
+  renderer->AddActor(delaunayActor);
+  renderer->SetBackground(colors->GetColor3d("DarkOliveGreen").GetData());
+
+  renderWindow->Render();
+  renderWindowInteractor->Start();
+  */
+
+  vtkSmartPointer<vtkXMLPolyDataWriter> writer =
+		vtkSmartPointer<vtkXMLPolyDataWriter>::New();
+	writer->SetFileName(filename.c_str());
+	writer->SetInputData(delaunayMapper->GetInput());
+	// This is set so we can see the data in a text editor.
+	writer->SetDataModeToAscii();
+	writer->Write();
+
+/*	vtkPolyData* outputPolyData = delaunay->GetOutput();
+
+
+  // Visualize
+  vtkSmartPointer<vtkPolyDataMapper> mapper =
+    vtkSmartPointer<vtkPolyDataMapper>::New();
+#if VTK_MAJOR_VERSION <= 5
+  mapper->SetInput(outputPolyData);
+#else
+  mapper->SetInputData(outputPolyData);
+#endif
+
+  show_VTK(mapper, filename);
+*/
+  return;
+}
+
 
 void CMedium::show_VTK(vtkSmartPointer<vtkPolyDataMapper> mapper, const string &filename)
 {

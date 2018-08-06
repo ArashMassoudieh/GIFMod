@@ -14,6 +14,11 @@ enum physical_params
 	plant_growth_rate_coefficient = 27, temperature_base = 28, temperature_spread_factor = 29, plant_biomass_decay_factor = 30, plant_leaf_decay_factor = 31, optimal_temperature = 32, pan_evaporation_rate = 33, maximum_bio_volume = 34
 };
 
+namespace state_vars {
+    enum state_vars {Head=1,Area=2,Volume=3,Storage=4,Bottom_Elev=5,Moisture_Content=6, Length=6, Flow_rate=7, Darcy_flux=8, Liquid_flow=8, Effective_Moisture=9, _Effective_Moisture=10
+                      ,Depression_Storage=12, Vapor_flow=13, Vapor_Diffusion=13, Dispersivity=14, Bulk_Density=14, Air_Content=15};
+}
+
 enum functions
 {
 	exp_ = 1, hsd_ = 2, min_ = 3, max_ = 4, lne_ = 5, lnt_ = 6, sgm_ = 7, pos_ = 8, sq1_ = 9, sqr_ = 10, frs_ = 11, fas_ = 12, ply_ = 13, mon_ = 14, sq2_ = 15, abs_ = 16, sqs_ = 17, mo1_ = 18, toy_ = 19, sig_=20};
@@ -51,18 +56,19 @@ public:
 int opertr(char a);
 bool isnumber(char S);
 vector<string> getline(ifstream&);
+vector<string> getline(ifstream&, char del1);
 vector<vector<string>> getline_op(ifstream&,char del1);
 vector<vector<string>> getline_op(ifstream&,vector<char> del1);
 vector<string> split(const string &s, char del=',');
 vector<string> split(const string &s, const vector<char> &del);
 vector<string> split_curly_semicolon(string s);
 vector<vector<string>> getline_op_eqplus(ifstream&);
-string trim(string s);
+string trim(const string &s);
 vector<int> ATOI(vector<string> ii);
 vector<double> ATOF(vector<string> ii);
 int getoperator(string S);
-string tolower(string S);
-vector<string> tolower(vector<string> S);
+string tolower(const string &S);
+vector<string> tolower(const vector<string> &S);
 void writeline(ofstream&, vector<string>, string del);
 void writeline(ofstream&, vector<vector<string>>, string del1, string del2);
 void writestring(ofstream&, string s);

@@ -29,6 +29,7 @@ public:
 	~CConnection(void);
 	string Block1ID, Block2ID;
 	CMBBlock *Block1, *Block2; //The blocks connected via this connection AM
+    int Block1N, Block2N;
     string ID;
     bool set_properties(string s);
     bool set_property(string s, double value);
@@ -54,7 +55,7 @@ private:
     double v, v_star;
     double dispersivity;
     int settling;
-
+    bool vapor_transport;
     vector<double> c_dispersion; //4000
     vector<double> c_dispersion_star; //4000
     vector <double> dispersion; //5000-5099
@@ -69,14 +70,14 @@ private:
     CStringOP area_expression;
     string area_expression_strng;
     bool const_area;
-    double calc(CStringOP &C, int ii=-1); //The function to calculate any expression
-    double calc_star(CStringOP &term, int ii=-1); //The function to calculate any for star values
+    double calc(const CStringOP &C, int ii=-1); //The function to calculate any expression
+    double calc_star(const CStringOP &term, int ii=-1); //The function to calculate any for star values
     double get_val(int i, int ii=0); // get the value of physical properties, variables and parameters
     double get_val_star(int i,int ii=0); //get the value of physical properties, variables and parameters based on star values
-    double get_val(string S);
-    double set_val(int i, double val);// set the value of physical properties, variables and parameters
-    double set_val_star(int i, double val); //set the value of physical properties, variables and parameters based on star values
-    bool set_val(string SS, double val); //set the values of physical parameters
+    double get_val(const string &S);
+    bool set_val(int i, const double &val);// set the value of physical properties, variables and parameters
+    bool set_val_star(int i, const double &val); //set the value of physical properties, variables and parameters based on star values
+    bool set_val(const string &SS, const double &val); //set the values of physical parameters
 
     vector<CFunction> funcs;
     void get_funcs(CStringOP &term);

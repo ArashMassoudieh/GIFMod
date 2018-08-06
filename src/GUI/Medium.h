@@ -39,12 +39,14 @@ struct VTK_point
     double x,y,z;
     double length, width, depth;
     std::vector<double> vals;
+    bool beshown = true;
 };
 
 struct VTK_grid
 {
     std::vector<VTK_point> p;
     std::vector<std::string> names;
+
 };
 #endif // USE_VTK
 
@@ -154,7 +156,7 @@ public:
 	double Timemin,Timemax;
 	CLIDconfig lid_config;
 	double& dt();
-	vector<range>& parameters(); // properties of unknown parameters
+	vector<param_range>& parameters(); // properties of unknown parameters
 	vector<CSensor>& sensors(); // properties of sensors
 	vector<CController>& controllers(); //propoerties of controllers;
 	vector<CObjectiveFunction>& objective_functions(); //objective functions for control;
@@ -202,17 +204,17 @@ public:
 
     void writedetails();
 
-    int lookup_external_flux(string S);
-    int lookup_particle_type(string S);
-    int lookup_buildup(string S);
-    int lookup_evaporation(string S);
-    int lookup_parameters(string S);
-    int lookup_sensors(string S);
-    int lookup_controllers(string S);
-    int lookup_objective_functions(string S);
+    int lookup_external_flux(const string &S);
+    int lookup_particle_type(const string &S);
+    int lookup_buildup(const string &S);
+    int lookup_evaporation(const string &S);
+    int lookup_parameters(const string &S);
+    int lookup_sensors(const string &S);
+    int lookup_controllers(const string &S);
+    int lookup_objective_functions(const string &S);
 //	int lookup_observation(string S);
 
-    void writetolog(string S);
+    void writetolog(const string &S);
 
 	bool& pos_def_limit();
 	double& maximum_run_time();
@@ -273,14 +275,14 @@ public:
 	CVector get_steady_hydro_RHS();
     vector<int> get_member_no_inv(int i);
     vector<int> get_relevant_measured_quans();
-    int lookup_experiment(string S);
+    int lookup_experiment(const string &S);
 
 
 	// Control
     double calc_obj_function(double time_interval);
 
-    int getblocksq(string id);
-    int getconnectorsq(string id);
+    int getblocksq(const string &id);
+    int getconnectorsq(const string &id);
     int get_member_no(int solid_id, int phase_no);
     int get_member_no(int block_no, int solid_id, int phase_no);
     int get_member_no(int block_no, int solid_id, int phase_no, int const_no);
@@ -293,17 +295,18 @@ public:
     void set_control_params(int);
     void set_default();
     bool show_messages();
-    void show_message(string s);
-    void show_status(string s);
+    void show_message(const string &s);
+    void show_status(const string &s);
     bool showmessages;
     bool set_property(const string &S, const string &v);
     bool set_properties(const string &S);
     bool& write_details();
 
     #ifdef USE_VTK
-        VTK_grid VTK_get_snap_shot(string var, double t=0, double z_scale=1);
-        void merge_to_snapshot(VTK_grid&, string var, double t=0);
+        VTK_grid VTK_get_snap_shot(string var, double t=0, double z_scale=1, string field_name="");
+        void merge_to_snapshot(VTK_grid&, string var, double t=0, string fieldname="");
         void write_grid_to_vtp(VTK_grid&, const string &filename, const vector<string> &names=vector<string>());
+        void write_grid_to_vtp_surf(VTK_grid&, const string &filename, const vector<string> &names=vector<string>());
         void write_grid_to_text(VTK_grid& grid, const string &filename, const vector<string> &names = vector<string>());
         void show_VTK(vtkSmartPointer<vtkPolyDataMapper>, const string &filename);
     #endif
@@ -322,9 +325,9 @@ private:
     CVector Jacobian_Q(const CVector &V, const CVector &F0, int i, double dt);
 
     CVector getS();
-    CVector getres_S(const CVector &X, double dt);
-    CVector getres_C(const CVector &X, double dt);
-    CVector getres_Q(const CVector &X, double dtt);
+    CVector getres_S(const CVector &X, const double &dt);
+    CVector getres_C(const CVector &X, const double &dt);
+    CVector getres_Q(const CVector &X, const double &dtt);
 
 
     CVector getLAI();
@@ -332,18 +335,18 @@ private:
     CVector getV();
 
     //use arma
-    CVector_arma getres_S(CVector_arma &X, double dt);
-    CVector_arma getres_C(CVector_arma &X, double dt);
-    CVector_arma getres_Q(CVector_arma &X, double dtt);
-    CMatrix_arma Jacobian_S(CVector_arma &X, double dt, bool);
-    CVector_arma Jacobian_S(CVector_arma &V, int &i, double &dt);
-    CVector_arma Jacobian_S(CVector_arma &V, CVector_arma &F0, int i, double dt);
-    CMatrix_arma Jacobian_C(CVector_arma &X, double dt, bool base = true);
-    CVector_arma Jacobian_C(CVector_arma &V, const int i, double dt);
-    CVector_arma Jacobian_C(CVector_arma &V, const CVector_arma &F0, int i, double dt);
+    CVector_arma getres_S(CVector_arma &X, const double &dt);
+    CVector_arma getres_C(CVector_arma &X, const double &dt);
+    CVector_arma getres_Q(CVector_arma &X, const double &dtt);
+    CMatrix_arma Jacobian_S(CVector_arma &X, const double &dt, bool);
+    CVector_arma Jacobian_S(CVector_arma &V, int &i, const double &dt);
+    CVector_arma Jacobian_S(CVector_arma &V, CVector_arma &F0, int i, const double &dt);
+    CMatrix_arma Jacobian_C(CVector_arma &X, const double &dt, bool base = true);
+    CVector_arma Jacobian_C(CVector_arma &V, const int i, const double &dt);
+    CVector_arma Jacobian_C(CVector_arma &V, const CVector_arma &F0, int i, const double &dt);
     CMatrix_arma Jacobian_Q(CVector_arma &X, double dt, bool base = true);
-    CVector_arma Jacobian_Q(CVector_arma &V, int i, double dt);
-    CVector_arma Jacobian_Q(CVector_arma &V, const CVector_arma &F0, int i, double dt);
+    CVector_arma Jacobian_Q(CVector_arma &V, int i, const double &dt);
+    CVector_arma Jacobian_Q(CVector_arma &V, const CVector_arma &F0, int i, const double &dt);
 
     void set_CG_star(CVector_arma &X);
     void set_CG(CVector_arma &X);
