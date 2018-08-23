@@ -194,14 +194,17 @@ res.push_back(G1.Medium[0].ANS_obs);
 }
 
 
-double CMCMC::posterior(vector<double> par)
+double CMCMC::posterior(vector<double> par, int ID)
 {	
 	double sum = 0;	
 	for (int ts=0; ts<1; ts++)	
 	{
 #ifdef GIFMOD
 		CMediumSet G1 = G;
-		G1.ID = "final";
+		if (ID == -1)
+			G1.ID = "final";
+		else
+			G1.ID = numbertostring(ID);
 		//G1.FI.write_details = false;
 #endif
 #ifdef GWA
@@ -392,7 +395,7 @@ bool CMCMC::step(int k)
 	
 	vector<double> X = purturb(k-n_chains);
 	
-	double logp_0 = posterior(X);
+	double logp_0 = posterior(X, k%n_chains);
 	double logp_1 = logp_0;
 	bool res;
 	

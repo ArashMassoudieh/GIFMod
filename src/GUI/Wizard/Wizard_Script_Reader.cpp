@@ -416,31 +416,31 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
 
 	if (source->get_configuration() != "2dv" && source->get_configuration() != "2dh" && source->get_configuration() != "2dr" && target->get_configuration() != "2dv" && target->get_configuration() != "2dh" && target->get_configuration() != "2dr")
 	{	if (configuration == "")
-			{
-				CCommand command;
-				command.command = "connect";
-				command.values.append(source->name());
-				command.values.append(target->name());
-				if (wiz_ent->type() != "*") command.parameters["Type"] = wiz_ent->type();
-				if (wiz_ent->name() != "*") command.parameters["Name"] = wiz_ent->name();
-				mProp _filter;
-				_filter.setstar();
-				_filter.GuiObject = "Connector";
-				_filter.ObjectType = wiz_ent->type();
-				mPropList m = mproplist->filter(_filter);
+		{
+			CCommand command;
+			command.command = "connect";
+			command.values.append(source->name());
+			command.values.append(target->name());
+			if (wiz_ent->type() != "*") command.parameters["Type"] = wiz_ent->type();
+			if (wiz_ent->name() != "*") command.parameters["Name"] = wiz_ent->name();
+			mProp _filter;
+			_filter.setstar();
+			_filter.GuiObject = "Connector";
+			_filter.ObjectType = wiz_ent->type();
+			mPropList m = mproplist->filter(_filter);
 
-				for (wiz_assigned_value item : wiz_ent->get_parameters())
+			for (wiz_assigned_value item : wiz_ent->get_parameters())
+			{
+				if (!script_specific_params.contains(item.entity))
 				{
-					if (!script_specific_params.contains(item.entity))
-					{
-						if (m.VariableNames_w_abv().contains(item.entity))
-							command.parameters[item.entity] = wiz_ent->get_value(item);
-						if (item.entity.toLower() == "area")
-							command.parameters["Interface/cross sectional area"] = wiz_ent->get_value(item);
-					}
+					if (m.VariableNames_w_abv().contains(item.entity))
+						command.parameters[item.entity] = wiz_ent->get_value(item);
+					if (item.entity.toLower() == "area")
+						command.parameters["Interface/cross sectional area"] = wiz_ent->get_value(item);
 				}
-				commands.append(command);
 			}
+			commands.append(command);
+		}
 		if (configuration == "e2s" || configuration == "s2e" || configuration == "s2s" || configuration == "e2e")
 		{
 			CCommand command;
@@ -538,6 +538,115 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
 			}
 
 		}
+		if (configuration == "s2a" || configuration == "e2a")
+		{
+			int n_source = source->get_value(QString("n")).toInt();
+			if (n_source == 0) n_source = 1; 
+			int n_target = target->get_value(QString("n")).toInt();
+						
+			for (int i = 0; i < n_target; i++)
+			{
+				CCommand command;
+				command.command = "connect";
+				if (source->get_configuration()=="")
+					command.values.append(source->name());
+				else if (configuration == "s2a")
+					command.values.append(source->name() + " (" + QString::number(source->first_index().toInt()) + ")");
+				else if (configuration == "e2a")
+					command.values.append(source->name() + " (" + QString::number(n_source - 1 + source->first_index().toInt()) + ")");
+
+				command.values.append(target->name() + " (" + QString::number(i + target->first_index().toInt()) + ")");
+				if (wiz_ent->type() != "*") command.parameters["Type"] = wiz_ent->type();
+				
+				int j = target->first_index().toInt() - 1;
+				if (wiz_ent->name() != "*") command.parameters["Name"] = wiz_ent->name() + " (" + QString::number(i + j) + ")";
+				mProp _filter;
+				_filter.setstar();
+				_filter.GuiObject = "Connector";
+				_filter.ObjectType = wiz_ent->type();
+				mPropList m = mproplist->filter(_filter);
+
+				for (wiz_assigned_value item : wiz_ent->get_parameters())
+				{
+					if (!script_specific_params.contains(item.entity))
+					{
+						if (target->get_configuration() == "1dr")
+						{
+							double inradius = target->get_value(target->get_parameter("inradius")).toDouble();
+							QString radius_unit = target->get_value(target->get_parameter("inradius")).unit;
+							double outradius = target->get_value(target->get_parameter("outradius")).toDouble();
+							double length = (outradius - inradius) / n_target;
+							command.parameters["Interface/cross sectional area"] = PI * (pow((i + 1)*length + inradius, 2) - pow(i*length + inradius, 2));
+							command.parameters["Interface/cross sectional area"].unit = radius_unit + "~^2";
+
+						}
+						if (m.VariableNames_w_abv().contains(item.entity))
+							command.parameters[item.entity] = wiz_ent->get_value(item);
+						if (item.entity.toLower() == "area")
+							command.parameters["Interface/cross sectional area"] = wiz_ent->get_value(item);
+					}
+				}
+				commands.append(command);
+
+			}
+			
+		}
+
+		if (configuration == "a2s" || configuration == "a2e")
+		{
+			int n_source = source->get_value(QString("n")).toInt();
+			int n_target = target->get_value(QString("n")).toInt();
+			if (n_target == 0) n_target = 1;
+
+			for (int i = 0; i < n_source; i++)
+			{
+				CCommand command;
+				command.command = "connect";
+				command.values.append(source->name() + " (" + QString::number(i + source->first_index().toInt()) + ")");
+				if (target->get_configuration() == "")
+					command.values.append(target->name());
+				else if (configuration == "a2s")
+					command.values.append(target->name() + " (" + QString::number(target->first_index().toInt()) + ")");
+				else if (configuration == "a2e")
+					command.values.append(target->name() + " (" + QString::number(n_target - 1 + target->first_index().toInt()) + ")");
+
+				
+				if (wiz_ent->type() != "*") command.parameters["Type"] = wiz_ent->type();
+
+				int j = source->first_index().toInt() - 1;
+				if (wiz_ent->name() != "*") command.parameters["Name"] = wiz_ent->name() + " (" + QString::number(i + j) + ")";
+				mProp _filter;
+				_filter.setstar();
+				_filter.GuiObject = "Connector";
+				_filter.ObjectType = wiz_ent->type();
+				mPropList m = mproplist->filter(_filter);
+
+				for (wiz_assigned_value item : wiz_ent->get_parameters())
+				{
+					if (!script_specific_params.contains(item.entity))
+					{
+						if (source->get_configuration() == "1dr")
+						{
+							double inradius = source->get_value(source->get_parameter("inradius")).toDouble();
+							QString radius_unit = source->get_value(source->get_parameter("inradius")).unit;
+							double outradius = source->get_value(source->get_parameter("outradius")).toDouble();
+							double length = (outradius - inradius) / n_source;
+							command.parameters["Interface/cross sectional area"] = PI * (pow((i + 1)*length + inradius, 2) - pow(i*length + inradius, 2));
+							command.parameters["Interface/cross sectional area"].unit = radius_unit + "~^2";
+
+						}
+						if (m.VariableNames_w_abv().contains(item.entity))
+							command.parameters[item.entity] = wiz_ent->get_value(item);
+						if (item.entity.toLower() == "area")
+							command.parameters["Interface/cross sectional area"] = wiz_ent->get_value(item);
+					}
+				}
+				commands.append(command);
+
+			}
+
+		}
+
 	}
 	else if ((source->get_configuration() == "2dv" || source->get_configuration() == "2dr") && target->get_configuration() != "2dv" && target->get_configuration() != "2dh" && target->get_configuration() != "2dr")
 	{
@@ -592,6 +701,26 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
 					_filter.ObjectType = wiz_ent->type();
 					mPropList m = mproplist->filter(_filter);
 
+					if ((configuration == "s2t" || configuration == "s2b" || configuration == "e2t" || configuration == "e2b") && target->get_configuration() == "2dr")
+					{
+						double inradius = target->get_value(target->get_parameter("inradius")).toDouble();
+						QString radius_unit = target->get_value(target->get_parameter("inradius")).unit;
+						double outradius = target->get_value(target->get_parameter("outradius")).toDouble();
+						double length = (outradius - inradius) / n_target;
+						command.parameters["Interface/cross sectional area"] = PI * (pow((i + 1)*length + inradius, 2) - pow(i*length + inradius, 2));
+						command.parameters["Interface/cross sectional area"].unit = radius_unit + "~^2";
+					}
+
+					if ((configuration == "t2s" || configuration == "b2s" || configuration == "b2e" || configuration == "t2e") && source->get_configuration() == "2dr")
+					{
+						double inradius = source->get_value(source->get_parameter("inradius")).toDouble();
+						QString radius_unit = source->get_value(source->get_parameter("inradius")).unit;
+						double outradius = source->get_value(source->get_parameter("outradius")).toDouble();
+						double length = (outradius - inradius) / n_source;
+						command.parameters["Interface/cross sectional area"] = PI * (pow((i + 1)*length + inradius, 2) - pow(i*length + inradius, 2));
+						command.parameters["Interface/cross sectional area"].unit = radius_unit + "~^2";
+					}
+					
 					for (wiz_assigned_value item : wiz_ent->get_parameters())
 					{
 						if (!script_specific_params.contains(item.entity))

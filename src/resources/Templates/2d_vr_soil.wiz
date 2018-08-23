@@ -1,0 +1,33 @@
+name: Two-dimentional vertical-radial soil
+icon: 2dv_soil.png
+settings: {type=Project settings, Simulation start time = param[project_start_date], Simulation end time=param[project_end_date]}
+settings: {type=Climate settings, Precipitation time series=param[precipitation_filename]}
+//major_block: {name=Catchment, type=value[Catchment], Length=param[Catchment_Length], Width=param[Catchment_Width], elevation=param[Catchment_elevation], Manning's roughness coefficient=param[Manning_Coeff], Area=expression[Catchment_Width*Catchment_Length]}
+major_block: {name=value[Soil], type=value[Soil], configuration=value[2DR], SubType=param[Soil_Type],Depth=expression[Total_Depth/n_Layers], nv=param[n_Layers], nr=param[nx], inradius=param[in_radius], outradius=param[out_radius], Bottom elevation=param[B_elev], direction=down}
+major_block: {name=value[TopSoil], type=value[Soil], configuration=value[1DR], SubType=param[Soil_Type],Depth=expression[Total_Depth/n_Layers], n=param[nx], inradius=param[in_radius], outradius=param[out_radius], Bottom elevation=value[0]}
+major_block: {name=value[Pond], type=value[Pond], area=expression[3.1415*((out_radius^2)-(in_radius^2))]}
+major_connection: {source=TopSoil, target=Soil, name=value[TopSoil-Soil], Length=expression[Total_Depth/n_Layers], configuration=a2t}
+//Alternative 1 //Alternative 1 (single block to 1dr)
+//major_connection: {source=Pond, target=TopSoil, name=value[Pond-TopSoil], Length=expression[(Total_Depth/n_Layers)/2], configuration=s2a}
+//Alternative 2 (1dr to single block)
+//major_connection: {source=TopSoil, target=Pond, name=value[TopSoil-Pond], Length=expression[(Total_Depth/n_Layers)/2], configuration=a2s}
+//Alternative 3 (2dr to single block)
+major_connection: {source=Soil, target=Pond, name=value[TopSoil-Pond], Length=expression[(Total_Depth/n_Layers)/2], configuration=t2s}
+//Alternative 4 (single block to 2dr)
+major_connection: {source=Pond, target=Soil, name=value[Pond-TopSoil], Length=expression[(Total_Depth/n_Layers)/2], configuration=s2t}
+//major_connection: {source=Catchment, target=Pond, name=Catchment-Pond, Width=param[Catchment_Width], Manning's roughness coefficient=param[Manning_Coeff], configuration=s2s}
+parameter: {name=precipitation_filename, delegate=filename, question=Precipitation file}
+parameter: {name=in_radius, delegate=float, question=Inner Radious of the soil block, object_type=soil, prop_list_item=Length}
+parameter: {name=out_radius, delegate=float, question=Outer Radious of the soil block, object_type=soil, prop_list_item=Length}
+parameter: {name=nx, delegate=integer, question=Number of cells in horizontal direction, default=10}
+parameter: {name=Soil_Type, delegate=combo_box, question=Select Soil Type, object_type=Soil, prop_list_item=Sub Type}
+parameter: {name=Total_Depth, delegate=float, question=Enter the depth of the soil layer, object_type=soil, prop_list_item=depth}
+parameter: {name=B_elev, delegate=float, question=Enter the bottom elevation of the soil column, prop_list_item=elevation}
+parameter: {name=n_Layers, delegate=integer, question=Enter number of layers, default=10}
+parameter: {name=project_start_date, delegate=date_time, question=Enter Project Start Date, prop_list_item=Simulation start date}
+parameter: {name=project_end_date, delegate=date_time, question=Enter Project End Dateprop_list_item=Simulation elevation}
+parameter_group: {name=g0, description=Geometrical properties, parameter=in_radius, parameter=out_radius, parameter=Total_Depth, parameter=precipitation_filename, parameter=n_Layers, parameter=nx}
+parameter_group: {name=g1, description=Soil Properties, parameter=Soil_Type, parameter=B_elev}
+parameter_group: {name=g3, description=Project Settings, parameter=project_start_date, parameter=project_end_date}
+
+

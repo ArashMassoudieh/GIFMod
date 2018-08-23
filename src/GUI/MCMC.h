@@ -68,7 +68,7 @@ public:
 	vector<double> logp;
 	vector<double> logp1;
 	vector<double> u;
-	double posterior(vector<double> par);
+	double posterior(vector<double> par, int ID = -1);
 	void initialize();
     void initialize(vector<double> par);
     bool step(int k);
