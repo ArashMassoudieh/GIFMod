@@ -764,7 +764,7 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
                         command.values.append(source->name() + " (" + QString::number(source->first_index().toInt()) + ")");
                     else if (n_source>1 && configuration.left(1) == QString("e"))
                         command.values.append(source->name() + " (" + QString::number(source->get_value(QString("n")).toInt() + source->first_index().toInt()-1) + ")");
-                    else if (n_target==1)
+                    else if (n_source==1)
                         command.values.append(source->name());
 
 
@@ -791,7 +791,17 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
                     _filter.ObjectType = wiz_ent->type();
                     mPropList m = mproplist->filter(_filter);
 
-                    for (wiz_assigned_value item : wiz_ent->get_parameters())
+					if ((configuration == "s2t" || configuration == "s2b" || configuration == "e2b" || configuration == "e2t") && target->get_configuration() == "2dr")
+					{
+						double inradius = target->get_value(target->get_parameter("inradius")).toDouble();
+						QString radius_unit = target->get_value(target->get_parameter("inradius")).unit;
+						double outradius = target->get_value(target->get_parameter("outradius")).toDouble();
+						double length = (outradius - inradius) / n_target;
+						command.parameters["Interface/cross sectional area"] = PI * (pow((i + 1)*length + inradius, 2) - pow(i*length + inradius, 2));
+						command.parameters["Interface/cross sectional area"].unit = radius_unit + "~^2";
+					}
+
+					for (wiz_assigned_value item : wiz_ent->get_parameters())
                     {
                         if (!script_specific_params.contains(item.entity))
                         {
@@ -807,6 +817,76 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
             }
         }
     }
+	else if ((target->get_configuration() == "2dv" || target->get_configuration() == "2dr") && (source->get_configuration() == "2dv" || source->get_configuration() == "2dh" || source->get_configuration() == "2dr"))
+	{
+		if (configuration == "r2l" || configuration == "l2r" || configuration == "b2t" || configuration == "t2b")
+		{
+			int n_target;
+			if (configuration == "r2l" || configuration == "l2r")
+				n_target = target->get_value(QString("nv")).toInt();
+			if (configuration == "b2t" || configuration == "t2b")
+				n_target = target->get_nh().toInt();
+
+			int n_source = n_target;
+			
+			if (n_source != n_target)
+				error_list.append("Number of cells in source and target are different");
+			else
+			{
+				for (int i = 0; i < n_target; i++)
+				{
+					CCommand command;
+					command.command = "connect";
+
+					if (configuration.left(1) == QString("l"))
+						command.values.append(source->name() + " (" + QString::number(source->first_index_x().toInt()) + "," + QString::number(source->first_index_y().toInt() + i) + ")");
+					else if (configuration.left(1) == QString("r"))
+						command.values.append(source->name() + " (" + QString::number(source->first_index_x().toInt() + source->get_nh().toInt() - 1) + "," + QString::number(source->first_index_y().toInt() + i) + ")");
+					else if (configuration.left(1) == QString("t"))
+						command.values.append(source->name() + " (" + QString::number(source->first_index_x().toInt() + i) + "," + QString::number(source->first_index_y().toInt()) + ")");
+					else if (configuration.left(1) == QString("b"))
+						command.values.append(source->name() + " (" + QString::number(source->first_index_x().toInt() + i) + "," + QString::number(source->first_index_y().toInt() + source->get_value(QString("nv")).toInt() - 1) + ")");
+						
+					if (configuration.right(1) == QString("l"))
+						command.values.append(target->name() + " (" + QString::number(target->first_index_x().toInt()) + "," + QString::number(target->first_index_y().toInt() + i) + ")");
+					else if (configuration.right(1) == QString("r"))
+						command.values.append(target->name() + " (" + QString::number(target->first_index_x().toInt() + target->get_nh().toInt() - 1) + "," + QString::number(target->first_index_y().toInt() + i) + ")");
+					else if (configuration.right(1) == QString("t"))
+						command.values.append(target->name() + " (" + QString::number(target->first_index_x().toInt() + i) + "," + QString::number(target->first_index_y().toInt()) + ")");
+					else if (configuration.right(1) == QString("b"))
+						command.values.append(target->name() + " (" + QString::number(target->first_index_x().toInt() + i) + "," + QString::number(target->first_index_y().toInt() + target->get_value(QString("nv")).toInt() - 1) + ")");
+
+
+					if (wiz_ent->type() != "*") command.parameters["Type"] = wiz_ent->type();
+					int j = 0;
+					if (target->first_index_x() == source->first_index() && (configuration.right(1) == "b" || configuration.right(1) == "t"))
+						j = target->first_index_x().toInt() - 1;
+					if (target->first_index_y() == source->first_index() && (configuration.right(1) == "l" || configuration.right(1) == "r"))
+						j = target->first_index_y().toInt() - 1;
+
+					if (wiz_ent->name() != "*") command.parameters["Name"] = wiz_ent->name() + " (" + QString::number(i + 1 + j) + ")";
+					mProp _filter;
+					_filter.setstar();
+					_filter.GuiObject = "Connector";
+					_filter.ObjectType = wiz_ent->type();
+					mPropList m = mproplist->filter(_filter);
+
+					for (wiz_assigned_value item : wiz_ent->get_parameters())
+					{
+						if (!script_specific_params.contains(item.entity))
+						{
+							if (m.VariableNames_w_abv().contains(item.entity))
+								command.parameters[item.entity] = wiz_ent->get_value(item);
+							if (item.entity.toLower() == "area")
+								command.parameters["Interface/cross sectional area"] = wiz_ent->get_value(item);
+						}
+					}
+					commands.append(command);
+
+				}
+			}
+		}
+	}
 	return commands; 
 }
 
