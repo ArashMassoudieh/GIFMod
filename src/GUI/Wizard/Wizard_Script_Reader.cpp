@@ -105,6 +105,23 @@ QStringList Wizard_Script_Reader::validate()
     return out;
 }
 
+
+wiz_entity *Wizard_Script_Reader::operator[](const QString &name)
+{
+	if (major_blocks.count(name) == 1)
+		return &major_blocks[name];
+	else
+		return nullptr;
+}
+
+wiz_entity *Wizard_Script_Reader::Get(const QString &name)
+{
+	if (major_blocks.count(name) == 1)
+		return &major_blocks[name];
+	else
+		return nullptr;
+}
+
 bool Wizard_Script_Reader::add_command(QString line)
 {
 	if (line.split(":").size() == 1) return false;
@@ -254,45 +271,131 @@ CCommand Wizard_Script_Reader::get_script_commands_project_settings(wiz_entity *
 	return command;
 }
 
-CCommand Wizard_Script_Reader::get_script_change_properties(wiz_entity *wiz_ent)
+QList<CCommand> Wizard_Script_Reader::get_script_change_properties(wiz_entity *wiz_ent)
 {
-	CCommand command;
-	command.command = "setprop";
-	if (wiz_ent->has_parameter("index_h"))
-		command.values.append(wiz_ent->name() + " (" + wiz_ent->get_value("index_h") + "," + wiz_ent->get_value("index_v") + ")");
-	else if (wiz_ent->has_parameter("index")) 
-		command.values.append(wiz_ent->name() + " (" + wiz_ent->get_value("index")+ ")");
-	else
-		command.values.append(wiz_ent->name());
-
-	mProp _filter;
-	_filter.setstar();
-	_filter.GuiObject = "Block";
-	_filter.ObjectType = wiz_ent->type();
-	_filter.SubType = wiz_ent->subtype();
-	mPropList m = mproplist->filter(_filter);
-
-	for (wiz_assigned_value item : wiz_ent->get_parameters())
-	{
-		if (!script_specific_params.contains(item.entity))
+	QList<CCommand> commands; 
+	if (wiz_ent->has_parameter("index_h") && !wiz_ent->has_parameter("index_v"))
+	{ 
+		wiz_entity* source = Get(wiz_ent->name());
+		for (unsigned int i = 0; i < source->get_nv().toInt(); i++)
 		{
-			_filter.VariableName = item.entity;
-			mPropList m1 = m.filter(_filter);
-			if (m.VariableNames_w_abv().contains(item.entity))
+			CCommand command;
+			command.command = "setprop";
+			command.values.append(wiz_ent->name() + " (" + wiz_ent->get_value("index_h") + "," + QString::number(i+source->first_index_y().toInt()) + ")");
+			
+			mProp _filter;
+			_filter.setstar();
+			_filter.GuiObject = "Block";
+			_filter.ObjectType = wiz_ent->type();
+			_filter.SubType = wiz_ent->subtype();
+			mPropList m = mproplist->filter(_filter);
+
+			for (wiz_assigned_value item : wiz_ent->get_parameters())
 			{
-				if (m1[0].Delegate != "DateTime")
-					command.parameters[item.entity] = wiz_ent->get_value(item);
-				else
+				if (!script_specific_params.contains(item.entity))
 				{
-					QDateTime QDT = QDateTime::fromString(wiz_ent->get_value(item), "M/d/yyyy hh:mm AP");
-					//qDebug() << QDT << QDT.toString() << QDT.isValid();
-					command.parameters[item.entity] = QString::number(QDate2Xldate(QDT));
+					_filter.VariableName = item.entity;
+					mPropList m1 = m.filter(_filter);
+					if (m.VariableNames_w_abv().contains(item.entity))
+					{
+						if (m1[0].Delegate != "DateTime")
+							command.parameters[item.entity] = wiz_ent->get_value(item);
+						else
+						{
+							QDateTime QDT = QDateTime::fromString(wiz_ent->get_value(item), "M/d/yyyy hh:mm AP");
+							//qDebug() << QDT << QDT.toString() << QDT.isValid();
+							command.parameters[item.entity] = QString::number(QDate2Xldate(QDT));
+						}
+					}
+				}
+			}
+
+			commands.append(command);
+
+		}
+	}
+	else if (!wiz_ent->has_parameter("index_h") && wiz_ent->has_parameter("index_v"))
+	{
+		wiz_entity* source = Get(wiz_ent->name());
+		for (unsigned int i = 0; i < source->get_nh().toInt(); i++)
+		{
+			CCommand command;
+			command.command = "setprop";
+			command.values.append(wiz_ent->name() + " (" + QString::number(i+source->first_index_x().toInt()) + "," + wiz_ent->get_value("index_v") + ")");
+
+			mProp _filter;
+			_filter.setstar();
+			_filter.GuiObject = "Block";
+			_filter.ObjectType = wiz_ent->type();
+			_filter.SubType = wiz_ent->subtype();
+			mPropList m = mproplist->filter(_filter);
+
+			for (wiz_assigned_value item : wiz_ent->get_parameters())
+			{
+				if (!script_specific_params.contains(item.entity))
+				{
+					_filter.VariableName = item.entity;
+					mPropList m1 = m.filter(_filter);
+					if (m.VariableNames_w_abv().contains(item.entity))
+					{
+						if (m1[0].Delegate != "DateTime")
+							command.parameters[item.entity] = wiz_ent->get_value(item);
+						else
+						{
+							QDateTime QDT = QDateTime::fromString(wiz_ent->get_value(item), "M/d/yyyy hh:mm AP");
+							//qDebug() << QDT << QDT.toString() << QDT.isValid();
+							command.parameters[item.entity] = QString::number(QDate2Xldate(QDT));
+						}
+					}
+				}
+			}
+
+			commands.append(command);
+		}
+	
+	}
+	else
+	{
+		CCommand command;
+		command.command = "setprop";
+		if (wiz_ent->has_parameter("index_h"))
+			command.values.append(wiz_ent->name() + " (" + wiz_ent->get_value("index_h") + "," + wiz_ent->get_value("index_v") + ")");
+		else if (wiz_ent->has_parameter("index"))
+			command.values.append(wiz_ent->name() + " (" + wiz_ent->get_value("index") + ")");
+		else
+			command.values.append(wiz_ent->name());
+
+		mProp _filter;
+		_filter.setstar();
+		_filter.GuiObject = "Block";
+		_filter.ObjectType = wiz_ent->type();
+		_filter.SubType = wiz_ent->subtype();
+		mPropList m = mproplist->filter(_filter);
+
+		for (wiz_assigned_value item : wiz_ent->get_parameters())
+		{
+			if (!script_specific_params.contains(item.entity))
+			{
+				_filter.VariableName = item.entity;
+				mPropList m1 = m.filter(_filter);
+				if (m.VariableNames_w_abv().contains(item.entity))
+				{
+					if (m1[0].Delegate != "DateTime")
+						command.parameters[item.entity] = wiz_ent->get_value(item);
+					else
+					{
+						QDateTime QDT = QDateTime::fromString(wiz_ent->get_value(item), "M/d/yyyy hh:mm AP");
+						//qDebug() << QDT << QDT.toString() << QDT.isValid();
+						command.parameters[item.entity] = QString::number(QDate2Xldate(QDT));
+					}
 				}
 			}
 		}
+	
+		commands.append(command);
+		
 	}
-
-	return command;
+	return commands;
 }
 
 

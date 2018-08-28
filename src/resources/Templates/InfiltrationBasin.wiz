@@ -1,23 +1,25 @@
-name: Infiltration basin
+name: Infiltration Basin
 icon: InfiltrationTrench.png
-description: ..........
+description: This wizard constructs a model of a radially symmetrical infiltration basin.
 
 settings: {type=Project settings, Simulation start time = param[project_start_date], Simulation end time=param[project_end_date]}
-settings: {type=Climate settings,Precipitation time series=param[precipitation_file]}
+settings: {type=Climate settings,Precipitation time series=param[precipitation_filename]}
 settings: {type=Solver settings,Maximum number of matrix inversions allowed=150000}
 
-major_block: {name=value[Impervious Catchment], x=-100, y=500, appwidth=500, type=value[Catchment], Width=param[Catchment_W], Length=param[Street_L], area=expression[Street_L*Catchment_W], Bottom elevation=param[Catchment_Elev], Manning's roughness coefficient=param[Veg_Manning]}
-major_block: {name=value[Pond], type=value[pond], x=500, y=700, appwidth=expression[(250*n_Basin)-50], area=expression[3.14159*(R_Basin*R_Basin)], Bottom elevation=value[0]}
-major_block: {name=value[Infiltration Basin Soil], configuration=value[2DR], x=500, y=850, type=value[Soil], SubType=param[Soil_Type], Depth=expression[Watertable_D/n_Vertical], nv=param[n_Vertical], nr=param[n_Basin], inradius=0, outradius=param[R_Basin], Bottom elevation=expression[0-Watertable_D], direction=down}
-major_block: {name=value[Adjacent Soil], configuration=value[2DR], x=expression[500+250*n_Basin], y=850, type=value[Soil], SubType=param[Soil_Type], Depth=expression[Watertable_D/n_Vertical], nv=param[n_Vertical], nr=param[n_Adjacent], inradius=param[R_Basin], outradius=param[R_Adjacent], Bottom elevation=expression[0-Watertable_D], direction=down}
-major_block: {name=value[Ground Water], x=500, y=expression[850+(n_Vertical*150)], appwidth=expression[250*(n_Basin+n_Adjacent)-50], appheight=150, type=value[Darcy], depth=1, Head-storage relationship=expression[0-Watertable_D], area=expression[3.1415*R_Adjacent*R_Adjacent], Bottom elevation=expression[0-(Watertable_D+1)], Initial moisture content (~theta)=value[0.35], Saturated moisture content (~thetas)=value[0.35]}
+major_block: {name=value[Impervious Catchment], x=-100, y=500, appwidth=500, type=value[Catchment], Width=param[Catchment_W], Length=param[Catchment_L], area=expression[Catchment_L*Catchment_W], Bottom elevation=param[Catchment_Elev], Manning's roughness coefficient=param[Veg_Manning]}
+major_block: {name=value[Pond], type=value[pond], x=500, y=700, appwidth=expression[(250*n_Basin)-50], area=expression[3.14159*(R_Basin*R_Basin)], Bottom elevation=param[Pond_Elev]}
+major_block: {name=value[Infiltration Basin Soil], configuration=value[2DR], x=500, y=850, type=value[Soil], SubType=param[Soil_Type], Depth=expression[Watertable_D/n_Vertical], nv=param[n_Vertical], nr=param[n_Basin], inradius=0, outradius=param[R_Basin], Bottom elevation=expression[Pond_Elev-Watertable_D], direction=down}
+major_block: {name=value[Adjacent Soil], configuration=value[2DR], x=expression[500+250*n_Basin], y=850, type=value[Soil], SubType=param[Soil_Type], Depth=expression[Watertable_D/n_Vertical], nv=param[n_Vertical], nr=param[n_Adjacent], inradius=param[R_Basin], outradius=param[R_Adjacent], Bottom elevation=expression[Pond_Elev-Watertable_D], direction=down}
+major_block: {name=value[Ground Water], x=500, y=expression[850+(n_Vertical*150)], appwidth=expression[250*(n_Basin+n_Adjacent)-50], appheight=150, type=value[Darcy], depth=1, Head-storage relationship=expression[Pond_Elev-Watertable_D], area=expression[3.1415*R_Adjacent*R_Adjacent], Bottom elevation=expression[Pond_Elev-(Watertable_D+1)], Initial moisture content (~theta)=value[0.35], Saturated moisture content (~thetas)=value[0.35]}
 
-major_connection: {source=Impervious Catchment, target=Pond, name=value[Catchment-Pond], Length=expression[Catchment_l/2], Width=param[Catchment_w], Manning's roughness coefficient=param[Veg_Manning], configuration=s2s}
+major_connection: {source=Impervious Catchment, target=Pond, name=value[Catchment-Pond], Length=expression[Catchment_L/2], Width=param[Catchment_W], Manning's roughness coefficient=param[Veg_Manning], configuration=s2s}
 major_connection: {source=Pond, target=Infiltration Basin Soil, name=value[Pond-Basin], Length=expression[Watertable_D/(2*n_Vertical)], configuration=s2t}
 major_connection: {source=Infiltration Basin Soil, target=Adjacent Soil, name=value[Basin-Adjacent soil], Length=expression[0.5*((R_Basin/n_Basin)+(( R_Adjacent-R_Basin)/n_Adjacent))], Interface/cross sectional area=expression[3.1415*2*R_Basin*Watertable_D/n_Vertical], configuration=r2l}
 major_connection: {source=Infiltration Basin Soil, target=Ground Water, name=value[Basin soil- GW], Length=expression[0.5*Watertable_D/n_Vertical], configuration=b2s}
 major_connection: {source=Adjacent Soil, target=Ground Water, name=value[Adjacent soil- GW], Length=expression[0.5*Watertable_D/n_Vertical], configuration=b2s}
 
+change_property: {name=value[Infiltration Basin Soil], index_v=1, Evapotranspiration=value[Evapotranspirations]}
+change_property: {name=value[Adjacent Soil], index_v=1, Evapotranspiration=value[Evapotranspirations]}
 
 parameter: {name=project_start_date, delegate=date_time, question=Project's start date}
 parameter: {name=project_end_date, delegate=date_time, question=Project's end date}
@@ -26,20 +28,36 @@ parameter: {name=Catchment_L, delegate=float, question=Length of the catchment, 
 parameter: {name=Catchment_W, delegate=float, question=Width of the catchment, prop_list_item=Width, unit=m}
 parameter: {name=Veg_Manning, delegate=float, question=Manning roughness coefficient of the catchment,  unit=s/~^3~radicm}
 parameter: {name=Catchment_Elev, delegate=float, question=Elevation of the catchment, prop_list_item=Bottom elevation, unit=m}
+parameter: {name=Pond_Elev, delegate=float, question=Ground elevation of the infiltration basin}
 parameter: {name=R_Basin, delegate=float, question=Radius of the infiltration basin, prop_list_item=Width, unit=m}
 parameter: {name=R_Adjacent, delegate=float, question=Radius to the boundaries of the adjacent soil from the center of the infiltration basin , prop_list_item=Width, unit=m}
 parameter: {name=Watertable_D, delegate=float, question=Depth to the water table, prop_list_item=Height, unit=m}
 parameter: {name=n_Basin, delegate=integer, question= Numbers of the soil horizontal grid cells that the basin is divided to, default=4}
-parameter: {name=n_Adjacent, delegate=integer, question= Number of soil horizontal grid cells from the edge of the basin to the outside model boundary}
+parameter: {name=n_Adjacent, delegate=integer, question= Numbers of soil horizontal grid cells from the edge of the basin to the outside model boundary}
 parameter: {name=n_Vertical, delegate=integer, question= Numbers of the vertical grid cells from the surface of the basin to the ground water}
 parameter: {name=Soil_Type, delegate=combo_box, question=Type of the underneath native soil, object_type=Soil, prop_list_item=Sub Type}
 
+parameter: {name=Introduction1, delegate=memo, question=This wizard constructs a model of an infiltration basin that collects and drains precipitation from an impervious catchment into the ground. <br><br> }
 parameter: {name=title1, delegate=memo, question= <b> <u>Geometry of the Impervious Catchment<u></b>}
 parameter: {name=title2, delegate=memo, question= <b> <u>Geometry of the Infiltration Basin<u></b>}
 parameter: {name=title3, delegate=memo, question=<b> <u>Discretization and Boundaries of the Model<u></b>}
 parameter: {name=title5, delegate=memo, question=<b> <u>Time Frame and Climate Settings<u> </b>
 
-parameter_group: {name=g1, description=Introduction}
-parameter_group: {name=g2, description=Geometry of the System,parameter=title1, parameter=Catchment_L, parameter=Catchment_W, parameter=Catchment_Elev, parameter=space, parameter=title2, parameter=R_Basin, parameter=R_Adjacent}
+
+parameter_group: {name=g1, description=Introduction, parameter=Introduction1}
+parameter_group: {name=g2, description=Geometry of the System,parameter=title1, parameter=Catchment_L, parameter=Catchment_W, parameter=Catchment_Elev, parameter=space, parameter=title2, parameter=R_Basin, parameter=R_Adjacent, parameter=Pond_Elev}
 parameter_group: {name=g3, description=Physical Properties of the System, parameter=Soil_Type, parameter=Veg_Manning, parameter=Watertable_D}
 parameter_group: {name=g4, description=Boundaries and General Settings of the System, parameter=title3, parameter=n_Basin, parameter=n_Adjacent, parameter=n_Vertical, parameter=space, parameter=title4, parameter=project_start_date, parameter=project_end_date, parameter=precipitation_filename}
+
+criteria: {name=cr1, less=0, greater=Catchment_L, ErrorMessage=Length of the catchment must be positive}
+criteria: {name=cr2, less=0, greater=Catchment_W, ErrorMessage=Width of the catchment must be positive}
+criteria: {name=cr3, less=0, greater=Veg_Manning, ErrorMessage=Manning roughness coefficient must be positive}
+criteria: {name=cr4, less=Pond_Elev, greater=Catchment_Elev, ErrorMessage=Elevation of the catchment must be greater than the ground elevation of the basin}
+criteria: {name=cr5, less=0, greater=R_Basin, ErrorMessage=Radius of the infiltration basin must be positive}
+criteria: {name=cr6, less=R_Basin, greater=R_Adjacent, ErrorMessage=Radius of the adjacent soil must be grater than the radius of the infiltration basin}
+criteria: {name=cr7, less=0, greater=n_Basin, ErrorMessage=Numbers of the soil horizontal grid cells that the basin is divided to must be positive}
+criteria: {name=cr8, less=0, greater=n_Adjacent, ErrorMessage=Numbers of soil horizontal grid cells from the edge of the basin to the outside model boundary must be positive}
+criteria: {name=cr9, less=0, greater=n_Vertical, ErrorMessage=Numbers of the vertical grid cells from the surface of the basin to the ground water must be positive}
+
+
+
