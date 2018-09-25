@@ -152,13 +152,13 @@ public:
 
 	QStringList EntityNames(const QString &type) const;
 	QTreeView *projectExplorer;
-	void setProjExp(QTreeView *p){ projectExplorer = p; };
+    void setProjExp(QTreeView *p){ projectExplorer = p; }
 	//void setProjExpModel(QAbstractItemModel *p){ projectExplorer = p; };
 
 	mPropList *mList;
 	QTableView *tableProp;
 //	PropModel *propModel;
-	QAbstractItemModel *propModel() const { return tableProp->model(); };
+    QAbstractItemModel *propModel() const { return tableProp->model(); }
 	//PropModel *propModel() const { return static_cast<PropModel*>(tableProp->model()); };
 	//	QList<modelConfig> undo_list;
 	QList<QList<QMap<QString, QVariant>>> undolist;
@@ -195,8 +195,8 @@ public:
 */
 	void copyProps(QString sourceExperiment, QString destExperiment);
 #ifdef GIFMOD
-	CMediumSet* modelSet = 0;
-	CMedium *model = 0;
+    CMediumSet* modelSet = nullptr;
+    CMedium *model = nullptr;
 	vector<Results *> resultsSet;
 	bool wizard(QList<command>&commands);
     QVariant runCommand(CCommand command); //runs the commands submitted into script window
@@ -210,8 +210,8 @@ public:
 	vector<Results *> resultsSet;
 
 #endif
-	Results *results = 0;
-	helpWindow* help = 0;
+    Results *results = nullptr;
+    helpWindow* help = nullptr;
 
 	void deleteSolutionResults(){
 	/*	if (model)
@@ -222,9 +222,9 @@ public:
 			delete results;
 		if (resultsSet.size())
 			resultsSet.clear();
-	*/	model = 0;		results = 0;
+    */	model = nullptr;		results = nullptr;
 
-	modelSet = 0;
+    modelSet = nullptr;
 	hasResults = false;
 	}
 	QMap<QCPGraph *, plotformat> graphsClipboard; // scatterPlotsList;

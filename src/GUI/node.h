@@ -49,7 +49,7 @@ public:
 	Node operator=(const Node &);
 	void addEdge(Edge *edge);
 
-	QList<Edge *> edges() const { return edgeList; };
+    QList<Edge *> edges() const { return edgeList; }
 
 	mPropList getmList(const mProp &_filter) const;
 	mPropList getmList(const QList<mProp>_filter) const;
@@ -67,22 +67,22 @@ public:
 
 	bool setObjectType(const QString &);
 	bool setObjectSubType(const QString &);
-	mProp ObjectType() const{ return objectType; };
-	int Width() const { return width; };
-	int Height() const { return height; };
+    mProp ObjectType() const{ return objectType; }
+    int Width() const { return width; }
+    int Height() const { return height; }
 	void setWidth(const int &Width) 
 	{ 
 		width = Width; update(); 
-	};
+    }
 	void setHeight(const int &Height) { 
 		height = Height; update(); 
-	};
-	mProp Filter() const { return ObjectType(); };
+    }
+    mProp Filter() const { return ObjectType(); }
 	QList<mProp> Filter(const QList<Node*> nodes) const { 
 		QList<mProp> objectTypes;
         foreach (Node* n , nodes)
 			objectTypes.append(n->ObjectType());
-		return objectTypes; };
+        return objectTypes; }
 
 
 	QVariant getProp(const QString &propName, const int role = Qt::DisplayRole) const;
@@ -93,7 +93,7 @@ public:
 	mPropList *mList() const;
 	corners corner(const int x, const int y);
 	edgesides edge(const int x, const int y);
-	QModelIndex index(QModelIndex &parent) const { return model->index(0, 0, parent); };
+    QModelIndex index(QModelIndex &parent) const { return model->index(0, 0, parent); }
 	void update(bool fast = false);
 	QString g(QString experimentName = "") const;
 	QString cg(QString experimentName = "") const;

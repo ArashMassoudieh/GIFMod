@@ -320,7 +320,7 @@ void GraphWidget::deselectAll(QString items) const
 	if (items.toLower().contains("node") ||
 		items.toLower().contains("edge") ||
 		items.toLower().contains("entity"))
-		tableProp->setModel(0);
+        tableProp->setModel(nullptr);
 //	if ((propModel->type() == "Node") || (propModel->type() == "Edge")) propModel->setParentEntity(Entities[0]);
 }
 
@@ -454,7 +454,7 @@ void GraphWidget::update(bool fast)
 }
 void GraphWidget::mousePressEvent(QMouseEvent *event)
 {
-	tableProp->setModel(0);
+    tableProp->setModel(nullptr);
 	Node *node = qgraphicsitem_cast<Node*> (itemAt(event->pos())); //Get the item at the position
 	if (node)
 	{	//qDebug() << "Name: "<< node->Name()<<" Flag:" << node->flags() << "enabled:" << node->isEnabled() << "active:" << node->isActive();
@@ -632,7 +632,7 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 				}
 
 				if (node->corner(xx, yy) == none)
-					if (node->edge(xx, yy) != noside)
+                {	if (node->edge(xx, yy) != noside)
 					{
 						setCursor(Qt::CrossCursor);
 						cursorModeNormal = false;
@@ -642,7 +642,7 @@ void GraphWidget::mouseMoveEvent(QMouseEvent *event)
 						setCursor(Qt::ArrowCursor);
 						cursorModeNormal = false;
 					}
-
+                }
 			}
 	}
 	if ((Operation_Mode == Operation_Modes::resizeNode) && (event->buttons() == Qt::LeftButton))
@@ -815,7 +815,7 @@ void GraphWidget::updateNodesColorCodes(QString propertyName, bool logged, QStri
 {
 	if (!hasResults)
 	{
-		QMessageBox::information(0, "GIFMod", "There is no results available, please run the model first.");
+        QMessageBox::information(nullptr, "GIFMod", "There is no results available, please run the model first.");
 		return;
 	}
 	//	colorlegend colors;
@@ -892,7 +892,7 @@ void GraphWidget::updateNodesColorCodes_WaterQuality(QStringList property, bool 
 {
 	if (!hasResults)
 	{
-		QMessageBox::information(0, "GIFMod", "There is no results available, please run the model first.");
+        QMessageBox::information(nullptr, "GIFMod", "There is no results available, please run the model first.");
 		return;
 	}
 	//	colorlegend colors;
@@ -2248,7 +2248,7 @@ void GraphWidget::deleteNode(Node *node)
 
 void GraphWidget::deleteEdge(Edge *edge)
 {
-	if (static_cast<PropModel<Edge>*>(tableProp->model()) == edge->model) tableProp->setModel(0);
+    if (static_cast<PropModel<Edge>*>(tableProp->model()) == edge->model) tableProp->setModel(nullptr);
 	edge->sourceNode()->edgeList.removeOne(edge);
 	edge->destNode()->edgeList.removeOne(edge);
 	//treeModel->deleteEdge(edge);
@@ -2257,7 +2257,7 @@ void GraphWidget::deleteEdge(Edge *edge)
 
 void GraphWidget::deleteEntity(Entity *entity)
 {
-	if (static_cast<PropModel<Entity>*>(tableProp->model()) == entity->model) tableProp->setModel(0);
+    if (static_cast<PropModel<Entity>*>(tableProp->model()) == entity->model) tableProp->setModel(nullptr);
 	Entities.removeOne(entity);
 	//treeModel->deleteEntity(entity);
 	delete entity;
@@ -2320,20 +2320,20 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 			menu->addAction("Plot Atmospheric Concentration Record");
 		}
 	}
-	if (modelSet != NULL)
-		model = (experimentID() == 0 || modelSet->Medium.size() == 0) ? 0 : &(modelSet->Medium[experimentID() - 1]);
+    if (modelSet != nullptr)
+        model = (experimentID() == 0 || modelSet->Medium.size() == 0) ? nullptr : &(modelSet->Medium[experimentID() - 1]);
 	else
-		model = 0; 
+        model = nullptr;
 
 
-	if (model == 0)
+    if (model == nullptr)
 		if (modelSet)
 			if (hasResults)
 			{
 				menu->addSeparator();
 				menu->addAction("No expeiments selected to show the results.")->setEnabled(false);
 			}
-	if (model != 0)
+    if (model != nullptr)
 	{
 #ifdef GIFMOD
 //		if (model->ANS.BTC[model->getblocksq(n->Name().toStdString())].n > 0)
@@ -3784,7 +3784,7 @@ void GraphWidget::experimentSelect(const QString & experimentName)
 		results = resultsSet[experimentID() - 1];
 
 	QAbstractItemModel * tablePropModel = tableProp->model();
-	tableProp->setModel(0);
+    tableProp->setModel(nullptr);
 	tableProp->setModel(tablePropModel);
 
 
@@ -3960,7 +3960,7 @@ QVariant GraphWidget::runCommand(CCommand command)
 				QString propName = key;
 				XString value = command.parameters.value(key);
 				int found = 0;
-				Node *n = 0; Edge* ed = 0; Entity *en = 0;
+                Node *n = nullptr; Edge* ed = nullptr; Entity *en = nullptr;
 				if (type == "*" || type == "node" || type == "block")
 					if (nodeNames().contains(values[val_counter]))
 					{

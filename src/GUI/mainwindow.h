@@ -51,7 +51,7 @@ public:
 	QTableView *tableProp;
 	QTreeView *projectExplorer;
 	//	QTableWidget *tableProp;
-	//	QStandardItemModel *propModel;
+    //	QStandardItemModel *propModel;
 
 	//	PropModel *propModel;
 	//	ProjModel *projModel;
