@@ -5,7 +5,7 @@
 1,Connector,*,*,Connector Name,Name,id,!,!,string,!,TextBox,Geometry,Input,Yes,100004,name,,,
 1,Connector,*,*,Connector Type,Type,connector_type,!,!,string,populate at runtime; Type,ComboBox,Geometry,Select,Yes,100005,type,,,
 1,Block,Soil,*,!,Bottom area,a,m~^2;cm~^2;ft~^2,m~^2,float+Estimate,0,UnitBox,Geometry,Input,Yes,100006,bottom area;area,>0,E,Area must be greater than zero
-1,Block,Catchment,Catchment,!,Area,a,m~^2;ft~^2,m~^2,float+Estimate,0,UnitBox,Geometry,Input,Yes,100006,area,>0,E,Area must be greater than zero
+1,Block,Catchment,Catchment,!,Area,a,m~^2;ft~^2,m~^2,float+Estimate,0,UnitBox,Geometry,Input,Yes,100006,area;Bottom area;bottom area,>0,E,Area must be greater than zero
 1,Block,Pond,Pond,!,Bottom area,a,m~^2;cm~^2;ft~^2,m~^2,float+Estimate,0,UnitBox,Geometry,Input,Yes,100006,bottom area;area,>0,E,Area must be greater than zero
 1,Block,Darcy,Darcy,!,Bottom area,a,m~^2;cm~^2;ft~^2,m~^2,float+Estimate,0,UnitBox,Geometry,Input,Yes,100006,bottom area;area,>0,E,Area must be greater than zero
 1,Block,Stream,Stream,!,Bottom area,a,m~^2;cm~^2;ft~^2,m~^2,float+Estimate,1,UnitBox,Geometry,Input,Yes,100006,bottom area;area,>0,E,Area must be greater than zero

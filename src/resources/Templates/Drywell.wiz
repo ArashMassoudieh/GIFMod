@@ -1,0 +1,79 @@
+name: Dry Well
+icon: InfiltrationBasin.png
+description: This wizard constructs a model of a radially symmetrical dry well.<br> The model consists of an impervious catchment that is connected to a sump (pond), as well as the adjacent native soil around the well and its catchment, all above the ground water table.
+
+settings: {type=Project settings, Simulation start time = param[project_start_date], Simulation end time=param[project_end_date]}
+settings: {type=Climate settings,Precipitation time series=param[Precipitation_filename], Solar-radiation=param[Solar-climate], Humidity=param[Humidity_filename], Wind=param[Wind_filename], Temperature=param[Temp_filename]}
+settings: {type=Solver settings,Maximum number of matrix inversions allowed=1500000}
+
+
+major_block: {name=value[Impervious Catchment], x=-250, y=450, appwidth=500, appheight=150, type=value[Catchment], Width=param[Catchment_W], Length=param[Catchment_L], area=expression[Catchment_L*Catchment_W], Bottom elevation=param[Catchment_Elev], Manning's roughness coefficient=param[Veg_Manning]}
+major_block: {name=Runoff Collecting Sump, x=250, y=760, appwidth=150, type=Pond, area=param[Sump_Area], Bottom elevation=param[Sump_Elev], Precipitation=value[No]}
+major_block: {name=value[Dry Well], type=value[Storage], configuration=value[1DV], direction=down, x=500, y=850, n=param[ntop_Vertical], appwidth=100, area=expression[3.14159*(R_Well*R_Well)], depth=expression[D_Storage/ntop_Vertical], Bottom elevation=expression[Ground_Elev-D_Storage], Saturated moisture content (~thetas)=value[1], Initial water depth=expression[0.2*(D_Storage/ntop_Vertical)]}
+major_block: {name=value[Bottom Well Soil], configuration=value[1DV], x=500, y=expression[850+(150*ntop_Vertical)], appwidth=100, type=value[Soil], SubType=param[Soil_Type], area=expression[3.14159*(R_Well*R_Well)], Depth=expression[(Watertable_D-D_Storage)/nbottom_Vertical], n=param[nbottom_Vertical], Bottom elevation=expression[Ground_Elev-Watertable_D], direction=down}
+major_block: {name=value[Top Adjacent Soil], configuration=value[2DR], x=650, y=850, type=value[Soil], SubType=param[Soil_Type], Depth=expression[D_Storage/ntop_Vertical], nv=param[ntop_Vertical], nr=param[n_Adjacent], inradius=param[R_Well], outradius=param[R_Adjacent], Bottom elevation=expression[Ground_Elev-D_Storage], direction=down}
+major_block: {name=value[Bottom Adjacent Soil], configuration=value[2DR], x=650, y=expression[850+(ntop_Vertical*150)], type=value[Soil], SubType=param[Soil_Type], Depth=expression[(Watertable_D-D_Storage)/nbottom_Vertical], nv=param[nbottom_Vertical], nr=param[n_Adjacent], inradius=param[R_Well], outradius=param[R_Adjacent], Bottom elevation=expression[Ground_Elev-Watertable_D], direction=down}
+major_block: {name=value[Ground Water], x=500, y=expression[850+((ntop_Vertical+nbottom_Vertical)*150)], appwidth=expression[250*(1+n_Adjacent)-150], appheight=150, type=value[Darcy], depth=1, Head-storage relationship=expression[Ground_Elev-Watertable_D], area=expression[3.1415*R_Adjacent*R_Adjacent], Bottom elevation=expression[Ground_Elev-(Watertable_D+1)], Initial moisture content (~theta)=value[0.35], Saturated moisture content (~thetas)=value[0.35]}
+major_block: {name=value[Adjacent Catchment], x=650, y=700, type=value[Catchment], configuration=value[1DR], n=param[n_Adjacent], inradius=param[R_Well], outradius=param[R_Adjacent], Bottom elevation=param[Ground_Elev], Manning's roughness coefficient=value[0.027]}
+
+major_connection: {source=Impervious Catchment, target=Runoff Collecting Sump, name=value[Impervious Catchment-Sump], Length=expression[Catchment_L/2], Width=param[Catchment_W], Manning's roughness coefficient=param[Veg_Manning], configuration=s2s}
+major_connection: {source=Runoff Collecting Sump, target=Dry Well, name=value[Sump - Well], Type=value[Pipe], Diameter=param[Pipe_D], Length=param[Pipe_L], Hazen-Williams roughness factor c=param[Hazen_c], Start elevation=param[Pipe_Stelev], End elevation=expression[Ground_Elev-(D_Storage/(2*ntop_Vertical))], configuration=s2s}
+major_connection: {source=Adjacent Catchment, target=Top Adjacent Soil, name=value[Adjacent catchment - Soil Catchment], Length=expression[D_Storage/(2*ntop_Vertical)], Manning's roughness coefficient=param[Veg_Manning], configuration=a2t}
+major_connection: {source=Adjacent Catchment, target=Runoff Collecting Sump, name=value[Adjacent Catchment - Sump], Length=expression[(R_Adjacent-R_Well)/(2*n_Adjacent)], Width=expression[4*(Sump_Area^0.5)], Manning's roughness coefficient=param[Veg_Manning], configuration=s2s}
+major_connection: {source=Dry Well, target=Top Adjacent Soil, name=value[Well - Top Adjacent soil], Length=expression[(R_Adjacent-R_Well)/(2*n_Adjacent)], Interface/cross sectional area=expression[3.14159*2*R_Well*D_Storage/ntop_Vertical], configuration=a2l}
+major_connection: {source=Dry Well, target=Bottom Well Soil, name=value[Well-Bottom Soil], Length=expression[(Watertable_D-D_Storage)/(2*nbottom_Vertical)], Interface/cross sectional area=expression[3.14159*(R_Well*R_Well)], configuration=e2s}
+major_connection: {source=Bottom Well Soil, target= Bottom Adjacent Soil, name=value[ Bottom Well Soil- Adjacent Soil], Length=expression[0.5*(R_Well+((R_Adjacent-R_Well)/n_Adjacent)), Interface/cross sectional area=expression[((3.14159*2)*(R_Well*(Watertable_D-D_Storage)))/nbottom_Vertical, configuration=a2l}
+major_connection: {source=Top Adjacent Soil, target= Bottom Adjacent Soil, name=value[ Top - Bottom Adjacent Soil], Length=expression[ 0.5*(((Watertable_D-D_Storage)/nbottom_Vertical)+(D_Storage/ntop_Vertical))], configuration=b2t}
+major_connection: {source=Bottom Adjacent Soil, target=Ground Water, name=value[Bottom Adjacent Soil - GW], Length=expression[(Watertable_D-D_Storage)/(2*nbottom_Vertical)], configuration=b2s}
+major_connection: {source=Bottom Well Soil, target=Ground Water, name=value[Bottom Well Soil - GW], Length=expression[(Watertable_D-D_Storage)/(2*nbottom_Vertical)], Interface/cross sectional area=expression[3.14159*(R_Well*R_Well)], configuration=e2s}
+
+
+parameter: {name=project_start_date, delegate=date_time, question=Project's start date}
+parameter: {name=project_end_date, delegate=date_time, question=Project's end date}
+parameter: {name=Precipitation_filename, delegate=filename, question= Precipitation time series file, prop_list_item=Precipitation time series}
+parameter: {name=Catchment_L, delegate=float, question=Length of the catchment, prop_list_item=Length, unit=m}
+parameter: {name=Catchment_W, delegate=float, question=Width of the catchment, prop_list_item=Width, unit=m}
+parameter: {name=Veg_Manning, delegate=float, question=Manning roughness coefficient of the catchment,  unit=s/~^3~radicm}
+parameter: {name=Catchment_Elev, delegate=float, question=Elevation of the catchment, prop_list_item=Bottom elevation, unit=m}
+parameter: {name=Ground_Elev, delegate=float, question=Ground elevation of the dry well, unit=m}
+parameter: {name=R_Well, delegate=float, question=Radius of the dry well (Rb), prop_list_item=Width, unit=m}
+parameter: {name=R_Adjacent, delegate=float, question=Radius of circle defining the adjacent soil to the boundaries of the model (Ra) , prop_list_item=Width, unit=m}
+parameter: {name=Watertable_D, delegate=float, question=Depth to ground water table, prop_list_item=Height, unit=m}
+parameter: {name=D_Storage, delegate=float, question=Depth of the dry well, prop_list_item=Height, unit=m}
+parameter: {name=n_Adjacent, delegate=integer, question= Numbers of soil horizontal grid cells from the edge of the dry well to the outside model boundary (Na)}
+parameter: {name=ntop_Vertical, delegate=integer, question= Numbers of adjacent soil's vertical grid cells from the ground surface to the bottom of the dry well  (Nt)}
+parameter: {name=nbottom_Vertical, delegate=integer, question= Numbers of the adjacent soil's vertical grid cells from the bottom of the dry well to the ground water (Nb)}
+parameter: {name=Soil_Type, delegate=combo_box, question=Type of the underneath native soil, object_type=Soil, prop_list_item=Sub Type}
+parameter: {name=Sump_Area, delegate=float, question=Area of the water collecting sump, prop_list_item=area, unit=m~^2}
+parameter: {name=Sump_Elev, delegate=float, question=Bottom elevation of the water collecting sump, prop_list_item=elevation, unit=m}
+parameter: {name=Pipe_D, delegate=float, question=Diameter of the pipe, prop_list_item= Diameter, unit=cm}
+parameter: {name=Pipe_L, delegate=float, question=Length of the pipe, prop_list_item=Length, unit=m}
+parameter: {name=Hazen_c, delegate=float, question=Pipe's Hazen-Williams's C factor, prop_list_item=Hazen-Williams roughness factor c, default=100, unit=SI}
+parameter: {name=Pipe_Stelev, delegate=float, question=Invert elevation of the pipe in the water collecting sump, prop_list_item=Start elevation, unit=m}
+
+parameter: {name=Introduction1, delegate=memo, question=This wizard constructs a model of a radially symmetrical dry well above the ground table# that collects precipitation from its adjacent soil and an impervious catchment and infiltrates it into the soil.<br><br> As depicted in the picture# precipitation from an impervious catchment and the runoff from the adjacent soil are collected and stored in a sump. In fact# the adjacent native soil also receives direct precipitation from the catchment on top of it# and while the majority of the received water is absorbed by the underneath soil# only the runoff is collected into the sump before discharging into the well.<br>}
+parameter: {name=Introduction2, delegate=memo, question= A pipe discharges the collected water from the sump into the top layer of the well. The water then passes through the well# infiltrates into the underlying soil# horizontally exfiltrates into the adjacent soil# and eventually percolates into the groundwater.<br>}
+
+parameter: {name=title1, delegate=memo, question=<b> <u>Geometry of the Contributing Catchment<u></b>}
+parameter: {name=title2, delegate=memo, question=<b> <u>Geometry of the Dry Well<u></b>}
+parameter: {name=title3, delegate=memo, question=<b><u> Geometry of the Water Collecting Sump<u></b>
+parameter: {name=title4, delegate=memo, question=<b> <u>Discretization and Boundaries of the Model<u></b>}
+parameter: {name=title5, delegate=memo, question=<b> <u>Precipitation Input Time Series File<u></b>}
+parameter: {name=title6, delegate=memo, question=<b> <u>Simulation Period<u></b>}
+
+parameter_group: {name=g1, description=Introduction, parameter=Introduction1, parameter=Introduction2}
+parameter_group: {name=g2, description=Geometry of the System,parameter=title1, parameter=Catchment_L, parameter=Catchment_W, parameter=Catchment_Elev, parameter=space, parameter=title2, parameter=R_Well, parameter=R_Adjacent, parameter= D_Storage, parameter=Ground_Elev, parameter=space, parameter=title3, parameter= Sump_Area, parameter= Sump_Elev}
+parameter_group: {name=g3, description=Physical Properties of the System, parameter=Soil_Type, parameter=Veg_Manning, parameter=Watertable_D}
+parameter_group: {name=g4, description=Properties of the Water Discharging Pipe, parameter=Pipe_D, parameter=Pipe_L, parameter=Pipe_Stelev}
+parameter_group: {name=g5, description=Discretization and General Setting of the System, parameter=title4, parameter=ntop_Vertical, parameter=nbottom_Vertical, parameter=n_Adjacent, parameter=space,  parameter=title5, parameter=Precipitation_filename, parameter=space, parameter=title6,  parameter=project_start_date, parameter=project_end_date}
+
+//criteria: {name=cr1, less=0, greater=Catchment_L, ErrorMessage=Length of the catchment must be positive}
+//criteria: {name=cr2, less=0, greater=Catchment_W, ErrorMessage=Width of the catchment must be positive}
+//criteria: {name=cr3, less=0, greater=Veg_Manning, ErrorMessage=Manning roughness coefficient must be positive}
+//criteria: {name=cr4, less=Pond_Elev, greater=Catchment_Elev, ErrorMessage=Elevation of the catchment must be greater than the ground elevation of the basin}
+//criteria: {name=cr5, less=0, greater=R_Basin, ErrorMessage=Radius of the infiltration basin must be positive}
+//criteria: {name=cr6, less=0, greater=Watertable_D, ErrorMessage= Depth to water table must be positive}
+//criteria: {name=cr7, less=R_Basin, greater=R_Adjacent, ErrorMessage=Radius of the adjacent soil must be grater than the radius of the infiltration basin}
+//criteria: {name=cr8, less=0, greater=n_Basin, ErrorMessage=Numbers of the soil horizontal grid cells that the basin is divided to must be positive}
+//criteria: {name=cr9, less=0, greater=n_Adjacent, ErrorMessage=Numbers of soil horizontal grid cells from the edge of the basin to the outside model boundary must be positive}
+//criteria: {name=cr10, less=0, greater=n_Vertical, ErrorMessage=Numbers of the vertical grid cells from the surface of the basin to the ground water must be positive}
