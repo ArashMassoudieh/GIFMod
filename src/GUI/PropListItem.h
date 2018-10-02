@@ -8,16 +8,16 @@ template<class T>
 class PropListItem
 {
 public:
-	PropListItem() {};
+    PropListItem() {}
 	//PropListItem(T *parent) { 
 		//this->parent = parent; 
 	//};
 	PropListItem(const PropListItem &P){
 		//parent = P.parent; 
-		list = P.list; };
+        list = P.list; }
 //	PropList operator =(const PropList &P){ 
 	//	parent = P.parent; list = P.list; return this; };
-	~PropListItem(){};
+    ~PropListItem(){}
 
 	//T *parent;
 

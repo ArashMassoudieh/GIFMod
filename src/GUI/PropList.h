@@ -12,13 +12,13 @@ template<class T>
 class PropList
 {
 public:
-	PropList() {};
-	PropList(T *parent) {this->parent = parent; };
+    PropList() {}
+    PropList(T *parent) {this->parent = parent; }
 	PropList(const PropList &P){ 
-		parent = P.parent; list = P.list; };
+        parent = P.parent; list = P.list; }
 //	PropList operator =(const PropList &P){ 
 	//	parent = P.parent; list = P.list; return this; };
-	~PropList(){};
+    ~PropList(){}
 
 	T *parent;
 	QMap<QString, PropListItem<T>> list;
