@@ -1041,6 +1041,13 @@ QList<CCommand> Wizard_Script_Reader::do_1dvh(QString configuration, wiz_entity 
         Depth_unit = wiz_ent->get_value(wiz_ent->get_parameter("Depth")).unit;
         has_depth = true;
 	}
+	if (wiz_ent->has_parameter("depth"))
+	{
+		Depth = wiz_ent->get_value(wiz_ent->get_parameter("depth")).toDouble();
+		Depth_unit = wiz_ent->get_value(wiz_ent->get_parameter("depth")).unit;
+		has_depth = true;
+	}
+
 
 	mProp _filter;
 	_filter.setstar();
@@ -1123,7 +1130,7 @@ QList<CCommand> Wizard_Script_Reader::do_1dvh(QString configuration, wiz_entity 
         {   command.parameters["Length"] = Depth;
             command.parameters["Length"].unit = Depth_unit;
         }
-        if (has_depth && configuration == "1dh")
+        if (configuration == "1dh" || configuration == "1dr")
         {   command.parameters["Length"] = length;
             command.parameters["Length"].unit = length_unit;
         }
@@ -1133,7 +1140,7 @@ QList<CCommand> Wizard_Script_Reader::do_1dvh(QString configuration, wiz_entity 
 			{
 				if (m.VariableNames_w_abv().contains(item.entity))
 					command.parameters[item.entity] = wiz_ent->get_value(item);
-				if (item.entity.toLower() == "bottom area" && configuration == "1dv")
+				if ((item.entity.toLower() == "bottom area" || item.entity.toLower() == "area") && configuration == "1dv")
 					command.parameters["Interface/cross sectional area"] = wiz_ent->get_value(item);
 
 			}
@@ -1153,6 +1160,11 @@ QList<CCommand> Wizard_Script_Reader::do_1dvh(QString configuration, wiz_entity 
 			{
 				command.parameters["Interface/cross sectional area"] = ((i+1)*length+inradius) * Depth *2*PI;
 				command.parameters["Interface/cross sectional area"].unit = radius_unit + "~^2";
+			}
+			else
+			{
+				command.parameters["width"] = ((i + 1)*length + inradius) * 2 * PI;
+				command.parameters["width"].unit = radius_unit + "~^2";
 			}
 		}
 
