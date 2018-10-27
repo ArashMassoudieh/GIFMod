@@ -79,7 +79,7 @@ public:
 	logWindow *log;
     void centerWidget();
 	Ui::MainWindow *ui;
-	runtimeWindow * rtw = 0;
+    runtimeWindow * rtw = nullptr;
 	QList<QMap<QString, QVariant>>* dataMap;
 	QList<QMap<QString, QVariant>>* dataHash;
 	void afterInit() {
@@ -274,7 +274,7 @@ private:
 	int newBlockY(){
 		if (newBlockCounter > 6) newBlockCounter = 0;
 		return 750 + 70 * ++newBlockCounter;
-	};
+    }
 	int newBlockCounter = 0;
 
 signals:

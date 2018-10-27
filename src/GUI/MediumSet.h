@@ -158,7 +158,7 @@ public:
 	int get_block_type(string s);
 	string ID;
 //GUI
-	GraphWidget *gw = 0;
+    GraphWidget *gw = nullptr;
 	void g_get_controllers();
 	void load(GraphWidget * gw, runtimeWindow * rtw);
 	CMediumSet(GraphWidget* gw, runtimeWindow* rtw);

@@ -1,4 +1,4 @@
-// ARASH: LOOK HERE
+
 #include <iostream>
 #ifdef _WIN32
 #include <windows.h>

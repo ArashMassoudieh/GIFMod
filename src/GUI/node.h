@@ -38,13 +38,15 @@ public:
 	Node(GraphWidget *gwidget, QString _type = "Not Defined", QString _name = "No Name", int _ID = -1, int _xx = 0, int _yy = 0, int _width = 200, int _height = 100);	
 	Node(modelItem &item, GraphWidget *gwidget);
 	Node(const Node &);
-	~Node() {
+    ~Node() override {
 		delete model;
-		delete particleInitialConditions;
+#ifdef GIFMOD
+        delete particleInitialConditions;
 		delete constituentInitialConditions;
 		delete NutrientHalfSaturationConstants;
+#endif
 
-	}
+    }
 	objectColor color;
 	Node operator=(const Node &);
 	void addEdge(Edge *edge);
@@ -145,21 +147,17 @@ public:
 
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value) Q_DECL_OVERRIDE;
-	void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) Q_DECL_OVERRIDE;
 
 signals:
-	void hoverMoveEvent(QGraphicsSceneHoverEvent * event);
+    void hoverMoveEvent(QGraphicsSceneHoverEvent * event) Q_DECL_OVERRIDE;
 
-//public slots:
-//	void contextMenuClicked(QAction*);
 
 private:
 	int width, height;
 	QString name;
 
 	QPointF newPos;
-//	GraphWidget *graph;
-//	QMap<QString, QString> warnings, errors;
 	bool bold = false;
 
 
