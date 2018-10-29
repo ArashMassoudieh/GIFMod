@@ -1460,7 +1460,8 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 					B.envexchange_id.push_back(flux.trimmed().toStdString());
 			if (code == "precipitation")
 				B.precipitation_swch = n->val(code).toBool();
-			if (code == "h_s_expression" && !n->val(code).isEmpty()) B.H_S_expression = convertstringtoStringOP(n->val(code),gw);
+            if (code == "h_s_expression" && !n->val(code).isEmpty())
+                B.H_S_expression = convertstringtoStringOP(n->val(code),gw);
 			if (code == "evapotranspiration")
 				B.evaporation_id.push_back(n->val(code).toStdString());
 			if (code == "light")

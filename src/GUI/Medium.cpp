@@ -1689,7 +1689,7 @@ void CMedium::solve_fts_m2(double dt)
 	double dt_last = Solution_State.dtt;
 	avg_redo_dtt = Solution_State.dtt;
 
-    time_t time_start = time(NULL);
+    time_t time_start = time(nullptr);
 
     while (Solution_State.t - Solution_State.dtt < Timemax)
 	{
@@ -1876,7 +1876,7 @@ void CMedium::solve_fts_m2(double dt)
 #ifdef QT_version
 				updateProgress();
 
-				if (runtimewindow != 0)
+                if (runtimewindow != nullptr)
 				{
 					QMessageBox::warning(runtimewindow, "Simulation Failed", "Simulation Failed! + Number of unsuccessful time-step reductions > 30", QMessageBox::Ok);
 				}
@@ -1897,7 +1897,7 @@ void CMedium::solve_fts_m2(double dt)
 					write_to_detail_file("Simulation ended by the user");
 
 #ifdef QT_version
-					if (runtimewindow != 0)
+                    if (runtimewindow != nullptr)
 					{
 						QMessageBox::StandardButton reply;
 						QMessageBox::question(runtimewindow, "Simulation Stopped by the user", "Simulation Ended", QMessageBox::Ok);
@@ -1909,7 +1909,7 @@ void CMedium::solve_fts_m2(double dt)
 				return;
 			}
             //double runtime = ((float)(clock() - time_start)) / CLOCKS_PER_SEC;
-            long int runtime = (time(NULL) - time_start);
+            long int runtime = (time(nullptr) - time_start);
 			if (runtime > maximum_run_time())
 			{
                 Solution_State.failed = true;
@@ -1921,7 +1921,7 @@ void CMedium::solve_fts_m2(double dt)
 
 
 #ifdef QT_version
-				if (runtimewindow != 0)
+                if (runtimewindow != nullptr)
 				{
 					QMessageBox::warning(runtimewindow, "Simulation Failed", "Runtime greater than the runtime limit set by the user", QMessageBox::Ok);
 				}
@@ -1971,7 +1971,7 @@ void CMedium::solve_fts_m2(double dt)
 
 
 #ifdef QT_version
-				if (runtimewindow != 0)
+                if (runtimewindow != nullptr)
 				{
                     if (Solution_State.dtt<1e-20)
                         QMessageBox::warning(runtimewindow, "Simulation Failed",  "dt = " + QString::number(Solution_State.dtt) + " too small", QMessageBox::Ok);
@@ -3129,7 +3129,10 @@ void CMedium::correct_S(double dtt)
         S[Connectors[i].Block2N] += (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star)*Connectors[i].flow_factor*dtt;
 	}
 
-    for (unsigned int i=0; i<Blocks.size(); i++) Blocks[i].S_star = max(S[i],0.0);
+    for (unsigned int i=0; i<Blocks.size(); i++)
+    {   //if (Blocks[i].setzero==0)
+            Blocks[i].S_star = max(S[i],0.0);
+    }
 
 }
 
