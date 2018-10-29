@@ -1733,6 +1733,7 @@ void CMedium::solve_fts_m2(double dt)
 				Redo_parameters.redo = false;
 				set_block_fluxes();
 				correct_S(Solution_State.dtt);
+                setH_star();
 				if (colloid_transport()) Solution_State.failed_colloid = false;
 				if (constituent_transport()) Solution_State.failed_const = false;
 				if (colloid_transport())
