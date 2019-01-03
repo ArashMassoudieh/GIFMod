@@ -1315,7 +1315,7 @@ void MainWindow::tablePropShowContextMenu(const QPoint&pos)
 			bool convertXtoTime = true;
 			if (i1.data(TypeRole).toString().toLower().contains("age"))
 				convertXtoTime = false;
-			plotTimeSeries(0, CBTC(), "", true, true);
+            plotTimeSeries(nullptr, CBTC(), "", true, true);
             foreach (QString subTitle , graphNames)
 			{
 				QAction* action = menu->addAction(subTitle);
@@ -2740,9 +2740,9 @@ void MainWindow::menuWaterQuality_hovered()
 {
 #ifdef GIFMOD
 	static double t = 0;
-	if (time(0) - t >= 4)
+    if (time(nullptr) - t >= 4)
 	{
-		t = time(0);
+        t = time(nullptr);
 		//aqueous
 		QMenu *waterQualitySubMenu = ui->menuWaterQuality;
 		QAction *a;
