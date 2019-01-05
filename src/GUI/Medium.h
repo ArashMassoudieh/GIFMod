@@ -243,7 +243,7 @@ public:
 	void clear(); //clear the model
 
     void g_get_environmental_params();
-    void g_get_model_configuration(runtimeWindow* = 0);
+    void g_get_model_configuration(runtimeWindow* = nullptr);
     void g_set_default_connector_expressions();
     void g_set_default_block_expressions();
     void g_load_inflows();
@@ -258,7 +258,7 @@ public:
     bool solve();
     bool solved() { return !this->Solution_State.failed; }
     void updateProgress(bool finished = false);
-	runtimeWindow * runtimewindow = 0;
+    runtimeWindow * runtimewindow = nullptr;
 	bool stop_triggered = false;
     vector<string> get_everything_from_id(int x);
     vector<CRestoreInfo> clean_up_restore_points(vector<CRestoreInfo> &Res, double t);

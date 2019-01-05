@@ -2443,7 +2443,7 @@ void CMedium::warning(QString text)
 void CMedium::updateProgress(bool finished)
 {
 	// t, dtt (graph), epoch_count
-	if (runtimewindow != 0)
+    if (runtimewindow != nullptr)
 	{
 		QMap<QString, QVariant> vars;
 		vars["mode"] = "forward";

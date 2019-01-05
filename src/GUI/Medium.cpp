@@ -33,7 +33,7 @@ CMedium::CMedium(bool create_parent)
     if (create_parent)
         parent = new CMediumSet();
     else
-        parent = 0;
+        parent = nullptr;
 #ifdef QT_version
     showmessages = false;
 #else
