@@ -24,7 +24,7 @@ class CTimeSeries
 public:
 	bool structured;
 	CTimeSeries();
-	CTimeSeries(int n);
+    CTimeSeries(unsigned long int n);
 	virtual ~CTimeSeries();
 	int n;
 	vector<double> t;

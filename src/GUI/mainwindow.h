@@ -142,7 +142,7 @@ private slots:
 //	void addParameter(QString variableName = "");
 
 	void openRXNWindow();
-	void addProjectExplorerTreeItem(TreeModel *model = 0, const QString name = "", const QModelIndex = QModelIndex());
+    void addProjectExplorerTreeItem(TreeModel *model = nullptr, const QString name = "", const QModelIndex = QModelIndex());
 	void removeProjectExplorerNodeItem(QString name = "", const QModelIndex = QModelIndex()); // TreeModel *model = 0, const QString name = "", const QModelIndex = QModelIndex());
 	void removeProjectExplorerEdgeItem(QString name = "", const QModelIndex = QModelIndex()); // TreeModel *model = 0, const QString name = "", const QModelIndex = QModelIndex());
 	void removeProjectExplorerEntityItem(QString name = "", const QModelIndex = QModelIndex()); // TreeModel *model = 0, const QString name = "", const QModelIndex = QModelIndex());

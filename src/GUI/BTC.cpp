@@ -25,7 +25,7 @@ CTimeSeries::CTimeSeries()
 	max_fabs = 0;
 }
 
-CTimeSeries::CTimeSeries(int n1)
+CTimeSeries::CTimeSeries(unsigned long int n1)
 {
 	n=n1;
 	t.resize(n);

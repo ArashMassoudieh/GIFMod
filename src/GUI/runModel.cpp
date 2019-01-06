@@ -2508,14 +2508,14 @@ map<string, double> regression(vector<double> x, vector<double> y)
 	double sumx2 = 0;
 	double sumy2 = 0;
 
-	int n = x.size();
+    unsigned long int n = x.size();
 	if (x.size() != y.size() || x.size() == 0 || y.size() == 0)
 	{
 		reg["error"] = 1;
 		return reg;
 	}
 
-	for (int i = 0; i < n; i++)
+    for (unsigned long int i = 0; i < n; i++)
 	{
 		sumx += x[i];
 		sumy += y[i];
@@ -2526,7 +2526,7 @@ map<string, double> regression(vector<double> x, vector<double> y)
 	xbar += sumx / n;
 	ybar += sumy / n;
 
-	for (int i = 0; i < n; i++)
+    for (unsigned long int i = 0; i < n; i++)
 	{
 		sumxerryerr += (x[i] - xbar)*(y[i] - ybar);
 		sumxerr += x[i] - xbar;

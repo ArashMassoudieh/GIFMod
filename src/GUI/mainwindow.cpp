@@ -1443,7 +1443,7 @@ void MainWindow::addProjectExplorerTreeItem(TreeModel *model, const QString type
 	static TreeModel *_model;
 	static QString _type;
 	static QModelIndex _index;
-	if (model != 0)
+    if (model != nullptr)
 	{
 		_model = model;
 		_type = type;
@@ -1571,7 +1571,7 @@ void MainWindow::plotAllPercentileData(vector<percentileData> data, QString name
 	else
 	{
 		plotWindow *plot = new plotWindow(mainGraphWidget);
-		for (int i = 0; i < _data.size(); i++)
+        for (unsigned int i = 0; i < _data.size(); i++)
 		{
 			QMap<QString, double> mapData;
 			mapData["p25"] = _data[i].p25;
