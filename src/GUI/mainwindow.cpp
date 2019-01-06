@@ -286,6 +286,7 @@ MainWindow::MainWindow(QWidget *parent, QString applicationName, QString shortNa
 	connect(ui->menuWaterQuality->menuAction(), SIGNAL(hovered()), this, SLOT(menuWaterQuality_hovered()));
 	connect(ui->menuWaterQuality, SIGNAL(triggered()), this, SLOT(menuWaterQuality_triggered()));	
 	connect(ui->actionNew_from_template, SIGNAL(triggered()), this, SLOT(newfromtemplate()));
+
 #endif
 
 
@@ -346,7 +347,7 @@ void MainWindow::addToRecentFiles(QString fileName, bool addToFile)
 	{
 		recentFiles.append(fileName.toLower());
 		//		QAction * a = ui->menuRecent->addAction(fileName);// , this, SLOT(recentItem()));
-		QAction * fileNameAction = new QAction(fileName, 0);
+        QAction * fileNameAction = new QAction(fileName, nullptr);
 		if (ui->menuRecent->actions().size())
 			ui->menuRecent->insertAction(ui->menuRecent->actions()[0], fileNameAction);
 		else
@@ -681,11 +682,11 @@ void MainWindow::on_actionSave_As_triggered()
 		tr("Save ").append(applicationName), mainGraphWidget->modelPathname(),
 		tr("Model (*.").append(fileExtension).append(");;All Files (*)"));
 	Entity *e = mainGraphWidget->entityByName("Project settings (1)");
-	//	delete e;
+
 	mainGraphWidget->Entities.removeOne(e);
-	//qDebug() << "**************************start saving model";
+
 	saveModel(fileName);
-	//qDebug() << "**************************model saved";
+
 	if (saveModel(fileName))
 	{
 		setModelFileName(fileName);
@@ -718,13 +719,13 @@ void MainWindow::on_actionZoom_All_triggered()
 //	mainGraphWidget->setSceneRect(mainGraphWidget->MainGraphicsScene->itemsBoundingRect());
 //	mainGraphWidget->ensureVisible(mainGraphWidget->MainGraphicsScene->itemsBoundingRect());
 	QRectF newRect = mainGraphWidget->MainGraphicsScene->itemsBoundingRect();
-	float width = newRect.width();
-	float height = newRect.height();
-	float scale = 1.1;
-	newRect.setLeft(newRect.left() - (scale - 1) / 2 * width);
+    float width = float(newRect.width());
+    float height = float(newRect.height());
+    float scale = float(1.1);
+    newRect.setLeft(newRect.left() - float(scale - 1) / 2 * float(width));
 	newRect.setTop(newRect.top() - (scale - 1) / 2 * height);
-	newRect.setWidth(width * scale);
-	newRect.setHeight(height * scale);
+    newRect.setWidth(qreal(width * scale));
+    newRect.setHeight(qreal(height * scale));
 
 	mainGraphWidget->fitInView(newRect,Qt::KeepAspectRatio);
 }
@@ -741,16 +742,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 		if (QMessageBox::question(this, tr("Exit Program"),
 			"Your model has not been saved.\nAll changes in the model will be lost.\nAre you sure?", QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::No)
 			event->ignore();
-/*	if (mainGraphWidget->model)
-		delete mainGraphWidget->model;
-/*	if (mainGraphWidget->results)
-		delete mainGraphWidget->results;
-	if (mainGraphWidget->logW)
-		delete mainGraphWidget->logW;
-
-	if (mainGraphWidget)
-		delete mainGraphWidget;
-*/}
+}
 
 void MainWindow::on_action_Undo_triggered()
 {
@@ -1323,7 +1315,7 @@ void MainWindow::tablePropShowContextMenu(const QPoint&pos)
 			bool convertXtoTime = true;
 			if (i1.data(TypeRole).toString().toLower().contains("age"))
 				convertXtoTime = false;
-			plotTimeSeries(0, CBTC(), "", true, true);
+            plotTimeSeries(nullptr, CBTC(), "", true, true);
             foreach (QString subTitle , graphNames)
 			{
 				QAction* action = menu->addAction(subTitle);
@@ -2368,7 +2360,7 @@ void MainWindow::openRXNWindow()
 
 void MainWindow::on_actionRun_Model_triggered()
 {
-	mainGraphWidget->tableProp->setModel(0);
+    mainGraphWidget->tableProp->setModel(nullptr);
 	if (!mainGraphWidget->allowRun)
 	{
 		statusBar()->showMessage("Unable to run Model.");
@@ -2748,9 +2740,9 @@ void MainWindow::menuWaterQuality_hovered()
 {
 #ifdef GIFMOD
 	static double t = 0;
-	if (time(0) - t >= 4)
+    if (time(nullptr) - t >= 4)
 	{
-		t = time(0);
+        t = time(nullptr);
 		//aqueous
 		QMenu *waterQualitySubMenu = ui->menuWaterQuality;
 		QAction *a;

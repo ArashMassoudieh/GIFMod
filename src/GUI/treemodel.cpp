@@ -186,7 +186,7 @@ TreeModel::~TreeModel()
 
 void TreeModel::addChildFromMenu(const QString name, QModelIndex *parentIndex)
 {
-	TreeItem *parent = 0;
+    TreeItem *parent = nullptr;
 #ifdef GIFMOD
 	if (name == "Controller")
 		parent = this->controller;
@@ -215,7 +215,7 @@ void TreeModel::addChildFromMenu(const QString name, QModelIndex *parentIndex)
 		parent = this->wells;
 	if (name == "Tracers")
 		parent = this->tracers;
-	if (parent == 0) return;
+    if (parent == nullptr) return;
 	Entity* newEntity = new Entity(name, "No Name", parent->gWidget);
 //	parent->addChild(new TreeItem(newEntity));
 	beginInsertRows(*parentIndex, 0,1);
@@ -263,7 +263,7 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
 Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
 {
 	if (!index.isValid())
-		return 0;
+        return nullptr;
 	return Qt::ItemIsSelectable | Qt::ItemIsEnabled; 
 }
 
@@ -314,7 +314,7 @@ TreeItem* TreeModel::itemFromIndex(const QModelIndex &index) const
 	if (index.isValid())
 		return static_cast<TreeItem *>(index.internalPointer());
 	else
-		return 0;// rootItem;
+        return nullptr;// rootItem;
 }
 
 bool TreeModel::hasChildren(const QModelIndex & parent) const
@@ -499,7 +499,7 @@ void TreeModel::add(Edge *edge)
 }
 TreeItem * TreeModel::entityParentItemfromType(QString type) const
 {
-	TreeItem *parent = 0;
+    TreeItem *parent = nullptr;
 #ifdef GIFMOD
 	if (type == "Sensor")
 		parent = this->sensor;

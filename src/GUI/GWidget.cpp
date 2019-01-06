@@ -3247,16 +3247,16 @@ void GraphWidget::edgeContextMenuRequested(Edge* e, QPointF pos, QMenu *menu)
 	}
 	QAction *markAction = menu->addAction("Select");
 #ifdef GIFMOD
-	model = (experimentID() == 0) ? 0 : &(modelSet->Medium[experimentID() - 1]);
+    model = (experimentID() == 0) ? nullptr : &(modelSet->Medium[experimentID() - 1]);
 
-	if (model == 0)
+    if (model == nullptr)
 		if (modelSet)
 			if (hasResults)
 			{
 				menu->addSeparator();
 				menu->addAction("No expeiments selected to show the results.")->setEnabled(false);
 			}
-	if (model != 0)
+    if (model != nullptr)
 	{
 		menu->addSeparator();
 		menu->addAction("Plot Flow");
@@ -3377,8 +3377,8 @@ QString GraphWidget::modelPathname() const
 QStringList GraphWidget::variableValuesHasError()
 {
 	int numberofErrors = 0, numberofWarnings = 0;
-	Node *n0 = 0;
-	Edge *e0 = 0;
+    Node *n0 = nullptr;
+    Edge *e0 = nullptr;
 	deselectAll();
 	QString savedExperiment = experimentName();
 
