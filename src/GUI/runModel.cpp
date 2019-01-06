@@ -2468,7 +2468,7 @@ void CMedium::updateProgress(bool finished)
 			
 			if (runtimewindow->sln_dtl_active)
 				if (!reason.toLower().contains("none"))
-                    runtimewindow->slndetails_append(QString::number(Solution_State.epoch_count) + ":" + reason + ", time step size: " + QString::number(Solution_State.dtt));
+                    runtimewindow->slndetails_append("t = " + QString::number(Solution_State.t) + ", Epoch = " + QString::number(Solution_State.epoch_count) + ":" + reason + ", time step size: " + QString::number(Solution_State.dtt));
 		}
 		runtimewindow->update(vars);
 		if (finished)
