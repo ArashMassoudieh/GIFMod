@@ -109,7 +109,7 @@ flow2, Darcy,Soil,(_frs[(f[50]*(_max(_min(f[9]:1):0)^e[56])*((1-((1-(_max(_min(f
 flow, Catchment,Storage,f[50]*(s[1]-e[1])/f[6]*f[2]
 flow, Catchment,Darcy,f[50]*(s[1]-e[1])/f[6]*f[2]
 flow, Catchment,Catchment,f[85]/f[56]*((_sq2(_pos((s[1]-e[1])/f[6]):0.001)*_mon((s[1]-s[5]):0.01))-(_sq2(_pos((e[1]-s[1])/f[6]):0.001)*_mon((e[1]-e[5]):0.01)))*(((_hsd(s[1]-e[1])*_pos(s[1]-s[5]-s[62]))+(_hsd(e[1]-s[1])*_pos(e[1]-e[5]-s[62])))^(1+f[58]))
-flow, Catchment,Pond,f[85]/f[56]*_sqs((s[1]-e[1])/f[6])*_mon((_abs(s[1]-e[1])/f[6]):0.0001)*((_pos(s[1]-s[5]-s[62])^(1+f[58]))
+flow, Catchment,Pond,f[85]/f[56]*_sqs((s[1]-e[1])/f[6])*_mon((_abs(s[1]-e[1])/f[6]):0.001)*(_hsd(s[1]-e[1])*(_pos(s[1]-s[5]-s[62])^(1+f[58])))
 flow, Catchment,Stream,f[85]/f[56]*_sqs((s[1]-e[1])/f[6])*_mon((_abs(s[1]-e[1])/f[6]):0.0001)*((_pos(s[1]-s[5]-s[62])^(1+f[58]))
 flow, Catchment,Soil,(f[50]*(s[1]-e[1])/f[6]*f[2])
 flow2, Catchment,Storage,f[50]*(s[1]-e[1])/f[6]*f[2]
