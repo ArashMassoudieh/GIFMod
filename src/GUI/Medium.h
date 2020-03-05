@@ -42,10 +42,25 @@ struct VTK_point
     bool beshown = true;
 };
 
+struct VTK_segment
+{
+	VTK_point s_point, e_point;
+	std::vector<double> vals;
+	bool beshown = true;
+};
+
+
 struct VTK_grid
 {
     std::vector<VTK_point> p;
     std::vector<std::string> names;
+
+};
+
+struct VTK_edge_grid
+{
+	std::vector<VTK_segment> p;
+	std::vector<std::string> names;
 
 };
 #endif // USE_VTK
@@ -304,8 +319,11 @@ public:
 
     #ifdef USE_VTK
         VTK_grid VTK_get_snap_shot(string var, double t=0, double z_scale=1, string field_name="");
+		VTK_edge_grid VTK_get_snap_shot_edges(string var, double t, double z_scale, string fieldname);
         void merge_to_snapshot(VTK_grid&, string var, double t=0, string fieldname="");
         void write_grid_to_vtp(VTK_grid&, const string &filename, const vector<string> &names=vector<string>());
+		vtkSmartPointer<vtkPolyData> Segment_to_pline(VTK_segment& s);
+		void write_grid_to_vtp_surf(VTK_edge_grid& grid, const string& filename, const string& names);
         void write_grid_to_vtp_surf(VTK_grid&, const string &filename, const vector<string> &names=vector<string>());
         void write_grid_to_text(VTK_grid& grid, const string &filename, const vector<string> &names = vector<string>());
         void show_VTK(vtkSmartPointer<vtkPolyDataMapper>, const string &filename);

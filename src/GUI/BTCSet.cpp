@@ -741,6 +741,8 @@ CTimeSeriesSet CTimeSeriesSet::make_uniform(double increment, bool assgn_d)
 				}
 			}
 		}
+		for (int k = 0; k < nvars; k++)
+			out.BTC[k].D.push_back(increment);
 	}
 	else
 	{

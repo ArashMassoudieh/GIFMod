@@ -388,7 +388,13 @@ void CMedium::f_load_inflows()
 	for (unsigned int j = 0; j < Precipitation_filename.size(); j++)
 	{
 		CPrecipitation P = CPrecipitation(pathname() + Precipitation_filename[j]);
-		if (P.n>0) Precipitation.push_back(P);
+		if (P.n > 0)
+		{
+			Precipitation.push_back(P);
+			show_message("Precipitation file [" + pathname() + Precipitation_filename[j] + "] was loaded successfully!");
+		}
+		else
+			show_message("Precipitation file [" + pathname() + Precipitation_filename[j] + "] was not found! ");
 	}
 	for (unsigned int j = 0; j < evaporation_model().size(); j++)
 	{
@@ -444,8 +450,11 @@ void CMedium::f_load_inflows()
 		if ((Blocks[i].indicator == Pond) || (Blocks[i].indicator == Catchment) || (Blocks[i].indicator == Stream))
 		{
 			if (Blocks[i].precipitation_swch == true)
-				for (unsigned int j = 0; j<Precipitation_filename.size(); j++)
+			{
+				show_message("Assigning Precipitation to block [" + Blocks[i].ID + "]"); 
+				for (unsigned int j = 0; j < Precipitation_filename.size(); j++)
 					Blocks[i].inflow.push_back(Precipitation[j].getflow(Blocks[i].A, 1.0 / 24.0 / 4));
+			}
 		}
 	}
 
@@ -5779,6 +5788,33 @@ VTK_grid CMedium::VTK_get_snap_shot(string var, double t, double z_scale, string
     return out;
 }
 
+VTK_edge_grid CMedium::VTK_get_snap_shot_edges(string var, double t, double z_scale, string fieldname)
+{
+	VTK_edge_grid out;
+	if (fieldname != "")
+		out.names.push_back(fieldname);
+	else
+		out.names.push_back(var);
+	for (unsigned int i = 0; i < Connectors.size(); i++)
+	{
+		bool not_push = false;
+		VTK_segment segment;
+		segment.s_point.x = Connectors[i].Block1->location.x;
+		segment.s_point.y = Connectors[i].Block1->location.y;
+		segment.s_point.z = Connectors[i].Block1->location.z*z_scale;
+		segment.e_point.x = Connectors[i].Block2->location.x;
+		segment.e_point.y = Connectors[i].Block2->location.y;
+		segment.e_point.z = Connectors[i].Block2->location.z * z_scale;
+		
+		if (var == "Q")
+			segment.vals.push_back(Results.ANS.BTC[i + Blocks.size()].interpol(t));
+		else
+			segment.vals.push_back(Blocks[i].get_val(var));
+
+		out.p.push_back(segment);
+	}
+	return out;
+}
 
 void CMedium::merge_to_snapshot(VTK_grid& grid, string var, double t, string fieldname)
 {
@@ -5951,6 +5987,93 @@ void CMedium::write_grid_to_vtp(VTK_grid& grid, const string &filename, const ve
   show_VTK(mapper, filename);
 */
   return;
+}
+
+vtkSmartPointer<vtkPolyData> CMedium::Segment_to_pline(VTK_segment& s)
+{
+	
+	vtkSmartPointer<vtkPoints> points =
+	vtkSmartPointer<vtkPoints>::New();
+
+	vtkSmartPointer<vtkFloatArray> values =
+	vtkSmartPointer<vtkFloatArray>::New();
+	values->SetNumberOfComponents(1);
+	values->SetName("Q");
+
+	double val[1] = { s.vals[0] };
+	double p1[3] = { s.s_point.x , s.s_point.y, s.s_point.z };
+	points->InsertNextPoint(p1);
+	values->InsertNextTuple(val);
+	double p2[3] = { s.e_point.x , s.e_point.y, s.e_point.z };
+	points->InsertNextPoint(p2);
+	values->InsertNextTuple(val);
+	vtkSmartPointer<vtkPolyLine> polyLine =
+		vtkSmartPointer<vtkPolyLine>::New();
+
+	polyLine->GetPointIds()->SetNumberOfIds(2);
+	for (unsigned int i = 0; i < 2; i++)
+	{
+		polyLine->GetPointIds()->SetId(i, i);
+	}
+
+		// Create a cell array to store the lines in and add the lines to it
+	vtkSmartPointer<vtkCellArray> cells =
+		vtkSmartPointer<vtkCellArray>::New();
+	cells->InsertNextCell(polyLine);
+
+	// Create a polydata to store everything in
+	vtkSmartPointer<vtkPolyData> polyData =
+		vtkSmartPointer<vtkPolyData>::New();
+
+	// Add the points to the dataset
+	polyData->SetPoints(points);
+
+	// Add the lines to the dataset
+	polyData->SetLines(cells);
+
+	polyData->GetPointData()->SetScalars(values);
+
+	return polyData;
+
+}
+
+
+void CMedium::write_grid_to_vtp_surf(VTK_edge_grid& grid, const string& filename, const string &name)
+{
+	
+	vector<vtkSmartPointer<vtkPolyData>> outarray;
+	for (int i = 0; i<int(grid.p.size()); i++)
+	{
+	// Create a vtkPoints object and store the points in it
+		outarray.push_back(Segment_to_pline(grid.p[i]));
+	}
+
+	vtkSmartPointer<vtkAppendPolyData> appendFilter =
+		vtkSmartPointer<vtkAppendPolyData>::New();
+#if VTK_MAJOR_VERSION <= 5
+	appendFilter->AddInputConnection(input1->GetProducerPort());
+	appendFilter->AddInputConnection(input2->GetProducerPort());
+#else
+	for (int i = 0; i < outarray.size(); i++)
+		appendFilter->AddInputData(outarray[i]);
+#endif
+	appendFilter->Update();
+
+	vtkSmartPointer<vtkPolyDataMapper> mapper =
+		vtkSmartPointer<vtkPolyDataMapper>::New();
+#if VTK_MAJOR_VERSION <= 5
+	mapper->SetInputConnection(polydata->GetProducerPort());
+#else
+	mapper->SetInputConnection(appendFilter->GetOutputPort());
+#endif
+
+	vtkSmartPointer<vtkXMLPolyDataWriter> writer =
+		vtkSmartPointer<vtkXMLPolyDataWriter>::New();
+	writer->SetFileName(filename.c_str());
+	writer->SetInputData(mapper->GetInput());
+	// This is set so we can see the data in a text editor.
+	writer->SetDataModeToAscii();
+	writer->Write();
 }
 
 
