@@ -23,6 +23,8 @@
 #endif
 
 
+
+
 using namespace std;
 
 CMedium::CMedium(bool create_parent)
@@ -4788,7 +4790,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 		}
 
 		CVector_arma F = getres_S(X, dt);
-
+		//F.writetofile("F.txt"); 
 		double err = F.norm2();
 		double err_p = err;
 
@@ -4922,7 +4924,10 @@ void CMedium::onestepsolve_flow_ar(double dt)
 				if (solution_method() == "Partial Inverse Jacobian Evaluation")
 					dx = (InvJ2_arma*normalize_diag(F, M_arma));
 				else if (solution_method() == "Direct Solution")
+				{
 					dx = F / M_arma;
+					//M_arma.writetofile("matrix.txt");
+				}
 				else
 					dx = (InvJ2_arma*normalize_diag(F, M_arma));
 
@@ -4941,7 +4946,11 @@ void CMedium::onestepsolve_flow_ar(double dt)
 				if (solution_method() == "Partial Inverse Jacobian Evaluation")
 					dx = (InvJ1_arma*normalize_diag(F, M_arma));
 				else if (solution_method() == "Direct Solution")
-					dx = F/ M_arma;
+				{
+					dx = F / M_arma;
+					//cout << "Now writing Matrix ..." << endl; 
+					//M_arma.writetofile("matrix.txt");
+				}
 				else
 					dx = (InvJ1_arma*normalize_diag(F, M_arma));
 

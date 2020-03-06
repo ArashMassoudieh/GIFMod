@@ -17,9 +17,16 @@
 #include "Sensor.h"
 #include "utility_funcs.h"
 #include "ObjectiveFunction.h"
+
+#ifdef MATRIX_no_ARMA
+#define CVector_arma CVector
+#define CMatrix_arma CMatrix
+#include "Matrix.h"
+#include "Vector.h"
+#else // !MATRIX_ARMA
 #include "Vector_arma.h"
 #include "Matrix_arma.h"
-
+#endif
 #ifdef USE_VTK
 #include "VTK.h"
 #endif

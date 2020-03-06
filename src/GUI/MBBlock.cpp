@@ -969,11 +969,14 @@ bool CMBBlock::set_val(const string &SS, const double &val)
 		if (tolower(trim(s[0]))=="s") {S = val;success = true;}
 		if (tolower(trim(s[0]))=="z0") {z0 = val;success = true;}
 		if (tolower(trim(s[0]))=="se") {S = V*(val*(fs_params[theta_s]-fs_params[theta_r]) + fs_params[theta_r]);success = true;}
-		if (tolower(trim(s[0]))=="theta") {S = V*val;success = true;}
+		if (tolower(trim(s[0]))=="theta") 
+		{
+			S = V*val;success = true;
+		}
 		if (tolower(trim(s[0]))=="vapor_diffusion") {vapor_diffusion=val;success = true;}
 		if ((tolower(trim(s[0]))=="bulk_density") || (tolower(trim(s[0]))=="bd")) {bulk_density = val;success = true;}
 
-		if (tolower(trim(s[0]))=="depth") {V = A*val;success = true;}
+		if (tolower(trim(s[0])) == "depth") { V = A * val; V_star = A * val; success = true; }
 		if (tolower(trim(s[0]))=="h0") {S = A*val*fs_params[theta_s];success = true;}   //fs_params[1] must be read earlier than h0
 		if (tolower(trim(s[0]))=="porosity") {fs_params[theta_s] = val;success = true;}
 		if (tolower(trim(s[0]))=="depression") {fs_params[depression_storage]=val;success = true;}
@@ -1570,6 +1573,7 @@ bool CMBBlock::set_property(string s, double value)
 {
     bool success = true;
     bool done = set_val(s,value);
+	
     if (!done)
     {
         errors.push_back("Property " + s + " was not found");
