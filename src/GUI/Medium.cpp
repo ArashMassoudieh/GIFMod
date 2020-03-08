@@ -5921,7 +5921,7 @@ void CMedium::write_grid_to_text(VTK_grid& grid, const string &filename, const v
 {
     if (grid.p.size()==0) return;
     ofstream file(filename,std::ofstream::out);
-    file << "Block_name, x, y, z";
+    file << "x, y, z";
     for (unsigned int i=0; i<grid.p[0].vals.size(); i++)
     {
         if (names.size())
@@ -5932,9 +5932,9 @@ void CMedium::write_grid_to_text(VTK_grid& grid, const string &filename, const v
             file << ", var_" + numbertostring(i);
     }
     file << endl;
-    for (unsigned int j=0; j<Blocks.size(); j++)
+    for (unsigned int j=0; j<grid.p.size(); j++)
     {
-        file << Blocks[j].ID << "," << Blocks[j].location.x << "," << Blocks[j].location.y << "," << Blocks[j].location.z;
+        file << grid.p[j].x << "," << grid.p[j].y << "," << grid.p[j].z;
         for (unsigned int i=0; i<grid.p[0].vals.size(); i++)
             file << "," << grid.p[j].vals[i];
         file << endl;
