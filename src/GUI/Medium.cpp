@@ -22,7 +22,9 @@
 #define string2QString string2QString_qt
 #endif
 
-
+#ifdef USE_VTK
+#include "ModelCreator.h"
+#endif
 
 
 using namespace std;
@@ -453,7 +455,7 @@ void CMedium::f_load_inflows()
 		{
 			if (Blocks[i].precipitation_swch == true)
 			{
-				show_message("Assigning Precipitation to block [" + Blocks[i].ID + "]"); 
+				show_message("Assigning Precipitation to block [" + Blocks[i].ID + "]");
 				for (unsigned int j = 0; j < Precipitation_filename.size(); j++)
 					Blocks[i].inflow.push_back(Precipitation[j].getflow(Blocks[i].A, 1.0 / 24.0 / 4));
 			}
@@ -4790,7 +4792,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 		}
 
 		CVector_arma F = getres_S(X, dt);
-		//F.writetofile("F.txt"); 
+		//F.writetofile("F.txt");
 		double err = F.norm2();
 		double err_p = err;
 
@@ -4948,7 +4950,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 				else if (solution_method() == "Direct Solution")
 				{
 					dx = F / M_arma;
-					//cout << "Now writing Matrix ..." << endl; 
+					//cout << "Now writing Matrix ..." << endl;
 					//M_arma.writetofile("matrix.txt");
 				}
 				else
@@ -5797,6 +5799,64 @@ VTK_grid CMedium::VTK_get_snap_shot(string var, double t, double z_scale, string
     return out;
 }
 
+VTK_grid CMedium::VTK_get_snap_shot(const string &bodyname, ModelCreator *mcreate, string var, double t, double z_scale, string fieldname)
+{
+
+    VTK_grid out;
+
+    vector<string> bodies = mcreate->BBody(bodyname);
+    if (bodies.size() == 0)
+    {
+        cout<<"No body names [" + bodyname + "] was found!"<<endl;
+        return out;
+    }
+    if (fieldname!="")
+        out.names.push_back(fieldname);
+    else
+        out.names.push_back(var);
+    for (unsigned int i=0; i<mcreate->BBody(bodyname).size(); i++)
+    {
+        if (mcreate->BBody(bodyname)[i] != "")
+        {
+            bool not_push = false;
+            VTK_point pt;
+            pt.x = Block(mcreate->BBody(bodyname)[i])->location.x;
+            pt.y = Block(mcreate->BBody(bodyname)[i])->location.y;
+            pt.z = Block(mcreate->BBody(bodyname)[i])->location.z*z_scale;
+            if (var=="s")
+                pt.vals.push_back(Results.ANS.BTC[getblocksq(mcreate->BBody(bodyname)[i])].interpol(t));
+            else if (var=="h")
+                pt.vals.push_back(Results.ANS.BTC[getblocksq(mcreate->BBody(bodyname)[i]) + Blocks.size() + Connectors.size()].interpol(t));
+            else if (var=="theta")
+            {
+                if (Block(mcreate->BBody(bodyname)[i])->indicator == Block_types::Soil || Block(mcreate->BBody(bodyname)[i])->indicator == Block_types::Darcy)
+                    pt.vals.push_back(Results.ANS.BTC[getblocksq(mcreate->BBody(bodyname)[i])].interpol(t)/Block(mcreate->BBody(bodyname)[i])->V);
+                else
+                {
+                    pt.vals.push_back(0);
+                    pt.beshown = false;
+                }
+            }
+            else if (var=="depth")
+            {
+                if (Block(mcreate->BBody(bodyname)[i])->indicator != Block_types::Soil && Block(mcreate->BBody(bodyname)[i])->indicator != Block_types::Darcy)
+                    pt.vals.push_back(Results.ANS.BTC[getblocksq(mcreate->BBody(bodyname)[i]) + Blocks.size() + Connectors.size()].interpol(t)-Block(mcreate->BBody(bodyname)[i])->z0);
+                else
+                {
+                    pt.vals.push_back(0);
+                    pt.beshown = false;
+                }
+            }
+            else
+                pt.vals.push_back(Block(mcreate->BBody(bodyname)[i])->get_val(var));
+
+            out.p.push_back(pt);
+        }
+
+    }
+    return out;
+}
+
 VTK_edge_grid CMedium::VTK_get_snap_shot_edges(string var, double t, double z_scale, string fieldname)
 {
 	VTK_edge_grid out;
@@ -5814,7 +5874,7 @@ VTK_edge_grid CMedium::VTK_get_snap_shot_edges(string var, double t, double z_sc
 		segment.e_point.x = Connectors[i].Block2->location.x;
 		segment.e_point.y = Connectors[i].Block2->location.y;
 		segment.e_point.z = Connectors[i].Block2->location.z * z_scale;
-		
+
 		if (var == "Q")
 			segment.vals.push_back(Results.ANS.BTC[i + Blocks.size()].interpol(t));
 		else
@@ -5859,6 +5919,7 @@ void CMedium::merge_to_snapshot(VTK_grid& grid, string var, double t, string fie
 
 void CMedium::write_grid_to_text(VTK_grid& grid, const string &filename, const vector<string> &names)
 {
+    if (grid.p.size()==0) return;
     ofstream file(filename,std::ofstream::out);
     file << "Block_name, x, y, z";
     for (unsigned int i=0; i<grid.p[0].vals.size(); i++)
@@ -5883,7 +5944,7 @@ void CMedium::write_grid_to_text(VTK_grid& grid, const string &filename, const v
 
 void CMedium::write_grid_to_vtp(VTK_grid& grid, const string &filename, const vector<string> &names)
 {
-
+    if (grid.p.size()==0) return;
   // Create the geometry of a point (the coordinate)
   vtkSmartPointer<vtkPoints> points =
     vtkSmartPointer<vtkPoints>::New();
@@ -6000,8 +6061,7 @@ void CMedium::write_grid_to_vtp(VTK_grid& grid, const string &filename, const ve
 
 vtkSmartPointer<vtkPolyData> CMedium::Segment_to_pline(VTK_segment& s)
 {
-	
-	vtkSmartPointer<vtkPoints> points =
+    vtkSmartPointer<vtkPoints> points =
 	vtkSmartPointer<vtkPoints>::New();
 
 	vtkSmartPointer<vtkFloatArray> values =
@@ -6049,7 +6109,8 @@ vtkSmartPointer<vtkPolyData> CMedium::Segment_to_pline(VTK_segment& s)
 
 void CMedium::write_grid_to_vtp_surf(VTK_edge_grid& grid, const string& filename, const string &name)
 {
-	
+
+    if (grid.p.size()==0) return;
 	vector<vtkSmartPointer<vtkPolyData>> outarray;
 	for (int i = 0; i<int(grid.p.size()); i++)
 	{
@@ -6088,9 +6149,9 @@ void CMedium::write_grid_to_vtp_surf(VTK_edge_grid& grid, const string& filename
 
 void CMedium::write_grid_to_vtp_surf(VTK_grid& grid, const string &filename, const vector<string> &names)
 {
-
-  // Create the geometry of a point (the coordinate)
-  vtkSmartPointer<vtkPoints> points =
+    if (grid.p.size()==0) return;
+    // Create the geometry of a point (the coordinate)
+    vtkSmartPointer<vtkPoints> points =
     vtkSmartPointer<vtkPoints>::New();
 
   // Create the topology of the point (a vertex)

@@ -41,6 +41,7 @@ class runtimeWindow;
 using namespace std;
 
 #ifdef USE_VTK
+class ModelCreator;
 struct VTK_point
 {
     double x,y,z;
@@ -326,7 +327,9 @@ public:
 
     #ifdef USE_VTK
         VTK_grid VTK_get_snap_shot(string var, double t=0, double z_scale=1, string field_name="");
+        VTK_grid VTK_get_snap_shot(const string &bodyname, ModelCreator *mcreate, string var, double t, double z_scale=0, string fieldname="");
 		VTK_edge_grid VTK_get_snap_shot_edges(string var, double t, double z_scale, string fieldname);
+		VTK_edge_grid VTK_get_snap_shot_edges(const string &bodyname, ModelCreator *mcreate, string var, double t, double z_scale, string fieldname="");
         void merge_to_snapshot(VTK_grid&, string var, double t=0, string fieldname="");
         void write_grid_to_vtp(VTK_grid&, const string &filename, const vector<string> &names=vector<string>());
 		vtkSmartPointer<vtkPolyData> Segment_to_pline(VTK_segment& s);
