@@ -1590,6 +1590,7 @@ bool CMBBlock::set_property(string s, string value)
     bool success = true;
     if (tolower(trim(s))=="name") {ID = value; show_message("Property [" + s + "] was set to " + value); return success;}
     if (tolower(trim(s))=="inflow") {inflow_filename.clear(); inflow_filename.push_back(value); show_message("Property [" + s + "] was set to " + value); return success;}
+	if (tolower(trim(s)) == "hs_relationship") { H_S_expression = CStringOP(value); }
     if (tolower(trim(s))=="type")
     {
         bool done = settype(value);
