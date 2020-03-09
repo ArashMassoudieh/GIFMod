@@ -5804,7 +5804,7 @@ VTK_grid CMedium::VTK_get_snap_shot(const string &bodyname, ModelCreator *mcreat
 
     VTK_grid out;
 
-    vector<string> bodies = mcreate->BBody(bodyname);
+    vector<_location> bodies = mcreate->BBody(bodyname);
     if (bodies.size() == 0)
     {
         cout<<"No body names [" + bodyname + "] was found!"<<endl;
@@ -5816,21 +5816,21 @@ VTK_grid CMedium::VTK_get_snap_shot(const string &bodyname, ModelCreator *mcreat
         out.names.push_back(var);
     for (unsigned int i=0; i<mcreate->BBody(bodyname).size(); i++)
     {
-        if (mcreate->BBody(bodyname)[i] != "")
+        if (mcreate->BBody(bodyname)[i].name != "")
         {
             bool not_push = false;
             VTK_point pt;
-            pt.x = Block(mcreate->BBody(bodyname)[i])->location.x;
-            pt.y = Block(mcreate->BBody(bodyname)[i])->location.y;
-            pt.z = Block(mcreate->BBody(bodyname)[i])->location.z*z_scale;
+            pt.x = Block(mcreate->BBody(bodyname)[i].name)->location.x;
+            pt.y = Block(mcreate->BBody(bodyname)[i].name)->location.y;
+            pt.z = Block(mcreate->BBody(bodyname)[i].name)->location.z*z_scale;
             if (var=="s")
-                pt.vals.push_back(Results.ANS.BTC[getblocksq(mcreate->BBody(bodyname)[i])].interpol(t));
+                pt.vals.push_back(Results.ANS.BTC[getblocksq(mcreate->BBody(bodyname)[i].name)].interpol(t));
             else if (var=="h")
-                pt.vals.push_back(Results.ANS.BTC[getblocksq(mcreate->BBody(bodyname)[i]) + Blocks.size() + Connectors.size()].interpol(t));
+                pt.vals.push_back(Results.ANS.BTC[getblocksq(mcreate->BBody(bodyname)[i].name) + Blocks.size() + Connectors.size()].interpol(t));
             else if (var=="theta")
             {
-                if (Block(mcreate->BBody(bodyname)[i])->indicator == Block_types::Soil || Block(mcreate->BBody(bodyname)[i])->indicator == Block_types::Darcy)
-                    pt.vals.push_back(Results.ANS.BTC[getblocksq(mcreate->BBody(bodyname)[i])].interpol(t)/Block(mcreate->BBody(bodyname)[i])->V);
+                if (Block(mcreate->BBody(bodyname)[i].name)->indicator == Block_types::Soil || Block(mcreate->BBody(bodyname)[i].name)->indicator == Block_types::Darcy)
+                    pt.vals.push_back(Results.ANS.BTC[getblocksq(mcreate->BBody(bodyname)[i].name)].interpol(t)/Block(mcreate->BBody(bodyname)[i].name)->V);
                 else
                 {
                     pt.vals.push_back(0);
@@ -5839,8 +5839,8 @@ VTK_grid CMedium::VTK_get_snap_shot(const string &bodyname, ModelCreator *mcreat
             }
             else if (var=="depth")
             {
-                if (Block(mcreate->BBody(bodyname)[i])->indicator != Block_types::Soil && Block(mcreate->BBody(bodyname)[i])->indicator != Block_types::Darcy)
-                    pt.vals.push_back(Results.ANS.BTC[getblocksq(mcreate->BBody(bodyname)[i]) + Blocks.size() + Connectors.size()].interpol(t)-Block(mcreate->BBody(bodyname)[i])->z0);
+                if (Block(mcreate->BBody(bodyname)[i].name)->indicator != Block_types::Soil && Block(mcreate->BBody(bodyname)[i].name)->indicator != Block_types::Darcy)
+                    pt.vals.push_back(Results.ANS.BTC[getblocksq(mcreate->BBody(bodyname)[i].name) + Blocks.size() + Connectors.size()].interpol(t)-Block(mcreate->BBody(bodyname)[i].name)->z0);
                 else
                 {
                     pt.vals.push_back(0);
@@ -5848,7 +5848,7 @@ VTK_grid CMedium::VTK_get_snap_shot(const string &bodyname, ModelCreator *mcreat
                 }
             }
             else
-                pt.vals.push_back(Block(mcreate->BBody(bodyname)[i])->get_val(var));
+                pt.vals.push_back(Block(mcreate->BBody(bodyname)[i].name)->get_val(var));
 
             out.p.push_back(pt);
         }
@@ -5884,6 +5884,36 @@ VTK_edge_grid CMedium::VTK_get_snap_shot_edges(string var, double t, double z_sc
 	}
 	return out;
 }
+
+VTK_edge_grid CMedium::VTK_get_snap_shot_edges(const string &bodyname, ModelCreator *mcreate, string var, double t, double z_scale, string fieldname)
+{
+	VTK_edge_grid out;
+	if (fieldname != "")
+		out.names.push_back(fieldname);
+	else
+		out.names.push_back(var);
+	for (unsigned int ii = 0; ii < mcreate->CBody(bodyname).size(); ii++)
+	{
+		int i=getconnectorsq(Connector(mcreate->CBody(bodyname)[ii])->ID);
+		bool not_push = false;
+		VTK_segment segment;
+		segment.s_point.x = Connectors[i].Block1->location.x;
+		segment.s_point.y = Connectors[i].Block1->location.y;
+		segment.s_point.z = Connectors[i].Block1->location.z*z_scale;
+		segment.e_point.x = Connectors[i].Block2->location.x;
+		segment.e_point.y = Connectors[i].Block2->location.y;
+		segment.e_point.z = Connectors[i].Block2->location.z * z_scale;
+
+		if (var == "Q")
+			segment.vals.push_back(Results.ANS.BTC[i + Blocks.size()].interpol(t));
+		else
+			segment.vals.push_back(Blocks[i].get_val(var));
+
+		out.p.push_back(segment);
+	}
+	return out;
+}
+
 
 void CMedium::merge_to_snapshot(VTK_grid& grid, string var, double t, string fieldname)
 {

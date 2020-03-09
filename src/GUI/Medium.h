@@ -69,6 +69,21 @@ struct VTK_edge_grid
 {
 	std::vector<VTK_segment> p;
 	std::vector<std::string> names;
+	VTK_grid toVTKGtid()
+	{
+        VTK_grid out;
+        out.names = names;
+        for (int i=0; i<p.size(); i++)
+        {
+            VTK_point pp;
+            pp.x = 0.5*(p[i].s_point.x + p[i].e_point.x);
+            pp.y = 0.5*(p[i].s_point.y + p[i].e_point.y);
+            pp.z = 0.5*(p[i].s_point.z + p[i].e_point.z);
+            pp.vals = p[i].vals;
+            out.p.push_back(pp);
+        }
+        return out;
+	}
 
 };
 #endif // USE_VTK

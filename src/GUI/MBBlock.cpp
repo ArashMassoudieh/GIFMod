@@ -368,7 +368,8 @@ double CMBBlock::get_val(const string &SS)
 
 	if (s.size()==1)
 	{
-		if (tolower(trim(s[0]))=="a") return A;
+		if (tolower(trim(s[0]))=="depth") return max(V/A,0.0);
+		if (tolower(trim(s[0]))=="a" || tolower(trim(s[0]))=="area") return A;
 		if (tolower(trim(s[0]))=="h") return H;
 		if (tolower(trim(s[0]))=="v") return V;
 		if (tolower(trim(s[0]))=="s") return S;
@@ -969,7 +970,7 @@ bool CMBBlock::set_val(const string &SS, const double &val)
 		if (tolower(trim(s[0]))=="s") {S = val;success = true;}
 		if (tolower(trim(s[0]))=="z0") {z0 = val;success = true;}
 		if (tolower(trim(s[0]))=="se") {S = V*(val*(fs_params[theta_s]-fs_params[theta_r]) + fs_params[theta_r]);success = true;}
-		if (tolower(trim(s[0]))=="theta") 
+		if (tolower(trim(s[0]))=="theta")
 		{
 			S = V*val;success = true;
 		}
@@ -1573,7 +1574,7 @@ bool CMBBlock::set_property(string s, double value)
 {
     bool success = true;
     bool done = set_val(s,value);
-	
+
     if (!done)
     {
         errors.push_back("Property " + s + " was not found");
