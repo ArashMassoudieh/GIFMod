@@ -1460,7 +1460,8 @@ void CMedium::g_get_model_configuration(runtimeWindow* rtw)
 					B.envexchange_id.push_back(flux.trimmed().toStdString());
 			if (code == "precipitation")
 				B.precipitation_swch = n->val(code).toBool();
-			if (code == "h_s_expression" && !n->val(code).isEmpty()) B.H_S_expression = convertstringtoStringOP(n->val(code),gw);
+            if (code == "h_s_expression" && !n->val(code).isEmpty())
+                B.H_S_expression = convertstringtoStringOP(n->val(code),gw);
 			if (code == "evapotranspiration")
 				B.evaporation_id.push_back(n->val(code).toStdString());
 			if (code == "light")
@@ -2442,7 +2443,7 @@ void CMedium::warning(QString text)
 void CMedium::updateProgress(bool finished)
 {
 	// t, dtt (graph), epoch_count
-	if (runtimewindow != 0)
+    if (runtimewindow != nullptr)
 	{
 		QMap<QString, QVariant> vars;
 		vars["mode"] = "forward";
@@ -2467,7 +2468,7 @@ void CMedium::updateProgress(bool finished)
 			
 			if (runtimewindow->sln_dtl_active)
 				if (!reason.toLower().contains("none"))
-                    runtimewindow->slndetails_append(QString::number(Solution_State.epoch_count) + ":" + reason + ", time step size: " + QString::number(Solution_State.dtt));
+                    runtimewindow->slndetails_append("t = " + QString::number(Solution_State.t) + ", Epoch = " + QString::number(Solution_State.epoch_count) + ":" + reason + ", time step size: " + QString::number(Solution_State.dtt));
 		}
 		runtimewindow->update(vars);
 		if (finished)
@@ -2507,14 +2508,14 @@ map<string, double> regression(vector<double> x, vector<double> y)
 	double sumx2 = 0;
 	double sumy2 = 0;
 
-	int n = x.size();
+    unsigned long int n = x.size();
 	if (x.size() != y.size() || x.size() == 0 || y.size() == 0)
 	{
 		reg["error"] = 1;
 		return reg;
 	}
 
-	for (int i = 0; i < n; i++)
+    for (unsigned long int i = 0; i < n; i++)
 	{
 		sumx += x[i];
 		sumy += y[i];
@@ -2525,7 +2526,7 @@ map<string, double> regression(vector<double> x, vector<double> y)
 	xbar += sumx / n;
 	ybar += sumy / n;
 
-	for (int i = 0; i < n; i++)
+    for (unsigned long int i = 0; i < n; i++)
 	{
 		sumxerryerr += (x[i] - xbar)*(y[i] - ybar);
 		sumxerr += x[i] - xbar;

@@ -1,7 +1,8 @@
 //H-S relationships
 h-s, soil, _frs[(f[5]-(((1/f[53])*(((_max(_min(f[9]:1):0.001)^(f[54]/(1-f[54])))-1)^(1/f[54])))*((1-_min(f[9]:1))/(0.01+1-_min(f[9]:1))))+(_mon((f[9]-1):0.05)*(_pos(f[9]-1)*f[51]/f[57])))]
 h-s, darcy, f[6]+f[5]+((f[10]-f[51])/f[57])
-h-s, storage, f[5]+(_pos(f[4])/(f[2]*f[51]))+_frs[((_mon((f[9]-1):0.01)*(f[9]-1)*f[51]/f[57])-(f[65]/((f[9]+0.00001)^f[66])))]
+//h-s, storage, f[5]+(_pos(f[4])/(f[2]*f[51]))+_frs[((_mon((f[9]-1):0.01)*(f[9]-1)*f[51]/f[57])-(f[65]/((f[9]+0.00001)^f[66])))]
+h-s, storage, f[5]+(_pos(f[4])/(f[2]*f[51]))+((_mon((f[9]-1):0.01)*(f[9]-1)*f[51]/f[57])-(f[65]/((f[9]+0.00001)^f[66])))
 h-s, pond, f[5]+(f[4]/f[2])
 h-s, catchment, f[5]+(f[4]/f[2])
 h-s, stream , f[5]+(f[4]/f[2])
@@ -109,7 +110,7 @@ flow2, Darcy,Soil,(_frs[(f[50]*(_max(_min(f[9]:1):0)^e[56])*((1-((1-(_max(_min(f
 flow, Catchment,Storage,f[50]*(s[1]-e[1])/f[6]*f[2]
 flow, Catchment,Darcy,f[50]*(s[1]-e[1])/f[6]*f[2]
 flow, Catchment,Catchment,f[85]/f[56]*((_sq2(_pos((s[1]-e[1])/f[6]):0.001)*_mon((s[1]-s[5]):0.01))-(_sq2(_pos((e[1]-s[1])/f[6]):0.001)*_mon((e[1]-e[5]):0.01)))*(((_hsd(s[1]-e[1])*_pos(s[1]-s[5]-s[62]))+(_hsd(e[1]-s[1])*_pos(e[1]-e[5]-s[62])))^(1+f[58]))
-flow, Catchment,Pond,f[85]/f[56]*_sqs((s[1]-e[1])/f[6])*_mon((_abs(s[1]-e[1])/f[6]):0.0001)*((_pos(s[1]-s[5]-s[62])^(1+f[58]))
+flow, Catchment,Pond,f[85]/f[56]*_sqs((s[1]-e[1])/f[6])*_mon((_abs(s[1]-e[1])/f[6]):0.001)*(_hsd(s[1]-e[1])*(_pos(s[1]-s[5]-s[62])^(1+f[58])))
 flow, Catchment,Stream,f[85]/f[56]*_sqs((s[1]-e[1])/f[6])*_mon((_abs(s[1]-e[1])/f[6]):0.0001)*((_pos(s[1]-s[5]-s[62])^(1+f[58]))
 flow, Catchment,Soil,(f[50]*(s[1]-e[1])/f[6]*f[2])
 flow2, Catchment,Storage,f[50]*(s[1]-e[1])/f[6]*f[2]
@@ -134,5 +135,6 @@ connector, Normal,f[85]/f[56]*((_sq2(_pos((s[5]-e[5])/f[6]):0.001)*_mon((s[1]-s[
 connector, QDarcy,f[50]*(s[1]-e[1])/f[6]*f[2]
 connector, Vapor,(((e[13]+s[13])/2*(s[10]-e[10])/f[6]*f[2]*(_pos(s[51]-s[10])+_pos(e[51]-e[10]))/2))
 connector, Pipe1,(f[52]^2.63)*23760*f[67]*((_pos(s[1]-f[61])/f[6])^0.54)*_hsd(s[1]-f[60])
-connector, Pipe2,(f[52]^2.63)*23760*f[67]*_ply(_max(((e[1]-f[61])/f[52]*_hsd(e[1]-f[60])):((s[1]-f[60])/f[52]*_hsd(s[1]-f[61]))))*_mo1(((((_pos(s[1]-_max(e[1]:f[61]))/f[6])^0.54))-(((_pos(e[1]-_max(s[1]:f[60]))/f[6])^0.54))):0.001)
+//connector, Pipe2,(f[52]^2.63)*23760*f[67]*_ply(_max(((e[1]-f[61])/f[52]*_hsd(e[1]-f[60])):((s[1]-f[60])/f[52]*_hsd(s[1]-f[61]))))*_mo1(((((_pos(s[1]-_max(e[1]:f[61]))/f[6])^0.54))-(((_pos(e[1]-_max(s[1]:f[60]))/f[6])^0.54))):0.001)
+connector, Pipe2,(f[52]^2.63)*23760*f[67]*_ply(_max(((e[1]-f[61])/f[52]*_hsd(e[1]-f[60])):((s[1]-f[60])/f[52]*_hsd(s[1]-f[61]))))*((_mo1(_pos(s[1]-_max(e[1]:f[61]))/f[6]:0.001)^0.54)-(_mo1(_pos(e[1]-_max(s[1]:f[60]))/f[6]:0.001)^0.54))
 connector, Rating_curve,(_hsd(s[1]-e[1])*f[62]*(_pos(s[1]-f[64])^f[63]))-(_hsd(e[1]-s[1])*f[62]*(_pos(e[1]-f[64])^f[63]))

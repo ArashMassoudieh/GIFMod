@@ -105,6 +105,23 @@ QStringList Wizard_Script_Reader::validate()
     return out;
 }
 
+
+wiz_entity *Wizard_Script_Reader::operator[](const QString &name)
+{
+	if (major_blocks.count(name) == 1)
+		return &major_blocks[name];
+	else
+		return nullptr;
+}
+
+wiz_entity *Wizard_Script_Reader::Get(const QString &name)
+{
+	if (major_blocks.count(name) == 1)
+		return &major_blocks[name];
+	else
+		return nullptr;
+}
+
 bool Wizard_Script_Reader::add_command(QString line)
 {
 	if (line.split(":").size() == 1) return false;
@@ -254,45 +271,131 @@ CCommand Wizard_Script_Reader::get_script_commands_project_settings(wiz_entity *
 	return command;
 }
 
-CCommand Wizard_Script_Reader::get_script_change_properties(wiz_entity *wiz_ent)
+QList<CCommand> Wizard_Script_Reader::get_script_change_properties(wiz_entity *wiz_ent)
 {
-	CCommand command;
-	command.command = "setprop";
-	if (wiz_ent->has_parameter("index_h"))
-		command.values.append(wiz_ent->name() + " (" + wiz_ent->get_value("index_h") + "," + wiz_ent->get_value("index_v") + ")");
-	else if (wiz_ent->has_parameter("index")) 
-		command.values.append(wiz_ent->name() + " (" + wiz_ent->get_value("index")+ ")");
-	else
-		command.values.append(wiz_ent->name());
-
-	mProp _filter;
-	_filter.setstar();
-	_filter.GuiObject = "Block";
-	_filter.ObjectType = wiz_ent->type();
-	_filter.SubType = wiz_ent->subtype();
-	mPropList m = mproplist->filter(_filter);
-
-	for (wiz_assigned_value item : wiz_ent->get_parameters())
-	{
-		if (!script_specific_params.contains(item.entity))
+	QList<CCommand> commands; 
+	if (wiz_ent->has_parameter("index_h") && !wiz_ent->has_parameter("index_v"))
+	{ 
+		wiz_entity* source = Get(wiz_ent->name());
+		for (unsigned int i = 0; i < source->get_nv().toInt(); i++)
 		{
-			_filter.VariableName = item.entity;
-			mPropList m1 = m.filter(_filter);
-			if (m.VariableNames_w_abv().contains(item.entity))
+			CCommand command;
+			command.command = "setprop";
+			command.values.append(wiz_ent->name() + " (" + wiz_ent->get_value("index_h") + "," + QString::number(i+source->first_index_y().toInt()) + ")");
+			
+			mProp _filter;
+			_filter.setstar();
+			_filter.GuiObject = "Block";
+			_filter.ObjectType = wiz_ent->type();
+			_filter.SubType = wiz_ent->subtype();
+			mPropList m = mproplist->filter(_filter);
+
+			for (wiz_assigned_value item : wiz_ent->get_parameters())
 			{
-				if (m1[0].Delegate != "DateTime")
-					command.parameters[item.entity] = wiz_ent->get_value(item);
-				else
+				if (!script_specific_params.contains(item.entity))
 				{
-					QDateTime QDT = QDateTime::fromString(wiz_ent->get_value(item), "M/d/yyyy hh:mm AP");
-					//qDebug() << QDT << QDT.toString() << QDT.isValid();
-					command.parameters[item.entity] = QString::number(QDate2Xldate(QDT));
+					_filter.VariableName = item.entity;
+					mPropList m1 = m.filter(_filter);
+					if (m.VariableNames_w_abv().contains(item.entity))
+					{
+						if (m1[0].Delegate != "DateTime")
+							command.parameters[item.entity] = wiz_ent->get_value(item);
+						else
+						{
+							QDateTime QDT = QDateTime::fromString(wiz_ent->get_value(item), "M/d/yyyy hh:mm AP");
+							//qDebug() << QDT << QDT.toString() << QDT.isValid();
+							command.parameters[item.entity] = QString::number(QDate2Xldate(QDT));
+						}
+					}
+				}
+			}
+
+			commands.append(command);
+
+		}
+	}
+	else if (!wiz_ent->has_parameter("index_h") && wiz_ent->has_parameter("index_v"))
+	{
+		wiz_entity* source = Get(wiz_ent->name());
+		for (unsigned int i = 0; i < source->get_nh().toInt(); i++)
+		{
+			CCommand command;
+			command.command = "setprop";
+			command.values.append(wiz_ent->name() + " (" + QString::number(i+source->first_index_x().toInt()) + "," + wiz_ent->get_value("index_v") + ")");
+
+			mProp _filter;
+			_filter.setstar();
+			_filter.GuiObject = "Block";
+			_filter.ObjectType = wiz_ent->type();
+			_filter.SubType = wiz_ent->subtype();
+			mPropList m = mproplist->filter(_filter);
+
+			for (wiz_assigned_value item : wiz_ent->get_parameters())
+			{
+				if (!script_specific_params.contains(item.entity))
+				{
+					_filter.VariableName = item.entity;
+					mPropList m1 = m.filter(_filter);
+					if (m.VariableNames_w_abv().contains(item.entity))
+					{
+						if (m1[0].Delegate != "DateTime")
+							command.parameters[item.entity] = wiz_ent->get_value(item);
+						else
+						{
+							QDateTime QDT = QDateTime::fromString(wiz_ent->get_value(item), "M/d/yyyy hh:mm AP");
+							//qDebug() << QDT << QDT.toString() << QDT.isValid();
+							command.parameters[item.entity] = QString::number(QDate2Xldate(QDT));
+						}
+					}
+				}
+			}
+
+			commands.append(command);
+		}
+	
+	}
+	else
+	{
+		CCommand command;
+		command.command = "setprop";
+		if (wiz_ent->has_parameter("index_h"))
+			command.values.append(wiz_ent->name() + " (" + wiz_ent->get_value("index_h") + "," + wiz_ent->get_value("index_v") + ")");
+		else if (wiz_ent->has_parameter("index"))
+			command.values.append(wiz_ent->name() + " (" + wiz_ent->get_value("index") + ")");
+		else
+			command.values.append(wiz_ent->name());
+
+		mProp _filter;
+		_filter.setstar();
+		_filter.GuiObject = "Block";
+		_filter.ObjectType = wiz_ent->type();
+		_filter.SubType = wiz_ent->subtype();
+		mPropList m = mproplist->filter(_filter);
+
+		for (wiz_assigned_value item : wiz_ent->get_parameters())
+		{
+			if (!script_specific_params.contains(item.entity))
+			{
+				_filter.VariableName = item.entity;
+				mPropList m1 = m.filter(_filter);
+				if (m.VariableNames_w_abv().contains(item.entity))
+				{
+					if (m1[0].Delegate != "DateTime")
+						command.parameters[item.entity] = wiz_ent->get_value(item);
+					else
+					{
+						QDateTime QDT = QDateTime::fromString(wiz_ent->get_value(item), "M/d/yyyy hh:mm AP");
+						//qDebug() << QDT << QDT.toString() << QDT.isValid();
+						command.parameters[item.entity] = QString::number(QDate2Xldate(QDT));
+					}
 				}
 			}
 		}
+	
+		commands.append(command);
+		
 	}
-
-	return command;
+	return commands;
 }
 
 
@@ -764,7 +867,7 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
                         command.values.append(source->name() + " (" + QString::number(source->first_index().toInt()) + ")");
                     else if (n_source>1 && configuration.left(1) == QString("e"))
                         command.values.append(source->name() + " (" + QString::number(source->get_value(QString("n")).toInt() + source->first_index().toInt()-1) + ")");
-                    else if (n_target==1)
+                    else if (n_source==1)
                         command.values.append(source->name());
 
 
@@ -791,7 +894,17 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
                     _filter.ObjectType = wiz_ent->type();
                     mPropList m = mproplist->filter(_filter);
 
-                    for (wiz_assigned_value item : wiz_ent->get_parameters())
+					if ((configuration == "s2t" || configuration == "s2b" || configuration == "e2b" || configuration == "e2t") && target->get_configuration() == "2dr")
+					{
+						double inradius = target->get_value(target->get_parameter("inradius")).toDouble();
+						QString radius_unit = target->get_value(target->get_parameter("inradius")).unit;
+						double outradius = target->get_value(target->get_parameter("outradius")).toDouble();
+						double length = (outradius - inradius) / n_target;
+						command.parameters["Interface/cross sectional area"] = PI * (pow((i + 1)*length + inradius, 2) - pow(i*length + inradius, 2));
+						command.parameters["Interface/cross sectional area"].unit = radius_unit + "~^2";
+					}
+
+					for (wiz_assigned_value item : wiz_ent->get_parameters())
                     {
                         if (!script_specific_params.contains(item.entity))
                         {
@@ -807,6 +920,76 @@ QList<CCommand> Wizard_Script_Reader::get_script_commands_major_connections(wiz_
             }
         }
     }
+	else if ((target->get_configuration() == "2dv" || target->get_configuration() == "2dr") && (source->get_configuration() == "2dv" || source->get_configuration() == "2dh" || source->get_configuration() == "2dr"))
+	{
+		if (configuration == "r2l" || configuration == "l2r" || configuration == "b2t" || configuration == "t2b")
+		{
+			int n_target;
+			if (configuration == "r2l" || configuration == "l2r")
+				n_target = target->get_value(QString("nv")).toInt();
+			if (configuration == "b2t" || configuration == "t2b")
+				n_target = target->get_nh().toInt();
+
+			int n_source = n_target;
+			
+			if (n_source != n_target)
+				error_list.append("Number of cells in source and target are different");
+			else
+			{
+				for (int i = 0; i < n_target; i++)
+				{
+					CCommand command;
+					command.command = "connect";
+
+					if (configuration.left(1) == QString("l"))
+						command.values.append(source->name() + " (" + QString::number(source->first_index_x().toInt()) + "," + QString::number(source->first_index_y().toInt() + i) + ")");
+					else if (configuration.left(1) == QString("r"))
+						command.values.append(source->name() + " (" + QString::number(source->first_index_x().toInt() + source->get_nh().toInt() - 1) + "," + QString::number(source->first_index_y().toInt() + i) + ")");
+					else if (configuration.left(1) == QString("t"))
+						command.values.append(source->name() + " (" + QString::number(source->first_index_x().toInt() + i) + "," + QString::number(source->first_index_y().toInt()) + ")");
+					else if (configuration.left(1) == QString("b"))
+						command.values.append(source->name() + " (" + QString::number(source->first_index_x().toInt() + i) + "," + QString::number(source->first_index_y().toInt() + source->get_value(QString("nv")).toInt() - 1) + ")");
+						
+					if (configuration.right(1) == QString("l"))
+						command.values.append(target->name() + " (" + QString::number(target->first_index_x().toInt()) + "," + QString::number(target->first_index_y().toInt() + i) + ")");
+					else if (configuration.right(1) == QString("r"))
+						command.values.append(target->name() + " (" + QString::number(target->first_index_x().toInt() + target->get_nh().toInt() - 1) + "," + QString::number(target->first_index_y().toInt() + i) + ")");
+					else if (configuration.right(1) == QString("t"))
+						command.values.append(target->name() + " (" + QString::number(target->first_index_x().toInt() + i) + "," + QString::number(target->first_index_y().toInt()) + ")");
+					else if (configuration.right(1) == QString("b"))
+						command.values.append(target->name() + " (" + QString::number(target->first_index_x().toInt() + i) + "," + QString::number(target->first_index_y().toInt() + target->get_value(QString("nv")).toInt() - 1) + ")");
+
+
+					if (wiz_ent->type() != "*") command.parameters["Type"] = wiz_ent->type();
+					int j = 0;
+					if (target->first_index_x() == source->first_index() && (configuration.right(1) == "b" || configuration.right(1) == "t"))
+						j = target->first_index_x().toInt() - 1;
+					if (target->first_index_y() == source->first_index() && (configuration.right(1) == "l" || configuration.right(1) == "r"))
+						j = target->first_index_y().toInt() - 1;
+
+					if (wiz_ent->name() != "*") command.parameters["Name"] = wiz_ent->name() + " (" + QString::number(i + 1 + j) + ")";
+					mProp _filter;
+					_filter.setstar();
+					_filter.GuiObject = "Connector";
+					_filter.ObjectType = wiz_ent->type();
+					mPropList m = mproplist->filter(_filter);
+
+					for (wiz_assigned_value item : wiz_ent->get_parameters())
+					{
+						if (!script_specific_params.contains(item.entity))
+						{
+							if (m.VariableNames_w_abv().contains(item.entity))
+								command.parameters[item.entity] = wiz_ent->get_value(item);
+							if (item.entity.toLower() == "area")
+								command.parameters["Interface/cross sectional area"] = wiz_ent->get_value(item);
+						}
+					}
+					commands.append(command);
+
+				}
+			}
+		}
+	}
 	return commands; 
 }
 
@@ -858,6 +1041,13 @@ QList<CCommand> Wizard_Script_Reader::do_1dvh(QString configuration, wiz_entity 
         Depth_unit = wiz_ent->get_value(wiz_ent->get_parameter("Depth")).unit;
         has_depth = true;
 	}
+	if (wiz_ent->has_parameter("depth"))
+	{
+		Depth = wiz_ent->get_value(wiz_ent->get_parameter("depth")).toDouble();
+		Depth_unit = wiz_ent->get_value(wiz_ent->get_parameter("depth")).unit;
+		has_depth = true;
+	}
+
 
 	mProp _filter;
 	_filter.setstar();
@@ -940,7 +1130,7 @@ QList<CCommand> Wizard_Script_Reader::do_1dvh(QString configuration, wiz_entity 
         {   command.parameters["Length"] = Depth;
             command.parameters["Length"].unit = Depth_unit;
         }
-        if (has_depth && configuration == "1dh")
+        if (configuration == "1dh" || configuration == "1dr")
         {   command.parameters["Length"] = length;
             command.parameters["Length"].unit = length_unit;
         }
@@ -950,7 +1140,7 @@ QList<CCommand> Wizard_Script_Reader::do_1dvh(QString configuration, wiz_entity 
 			{
 				if (m.VariableNames_w_abv().contains(item.entity))
 					command.parameters[item.entity] = wiz_ent->get_value(item);
-				if (item.entity.toLower() == "bottom area" && configuration == "1dv")
+				if ((item.entity.toLower() == "bottom area" || item.entity.toLower() == "area") && configuration == "1dv")
 					command.parameters["Interface/cross sectional area"] = wiz_ent->get_value(item);
 
 			}
@@ -970,6 +1160,11 @@ QList<CCommand> Wizard_Script_Reader::do_1dvh(QString configuration, wiz_entity 
 			{
 				command.parameters["Interface/cross sectional area"] = ((i+1)*length+inradius) * Depth *2*PI;
 				command.parameters["Interface/cross sectional area"].unit = radius_unit + "~^2";
+			}
+			else
+			{
+				command.parameters["width"] = ((i + 1)*length + inradius) * 2 * PI;
+				command.parameters["width"].unit = radius_unit + "~^2";
 			}
 		}
 

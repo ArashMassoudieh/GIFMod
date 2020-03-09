@@ -22,6 +22,10 @@
 #define string2QString string2QString_qt
 #endif
 
+#ifdef USE_VTK
+#include "ModelCreator.h"
+#endif
+
 
 using namespace std;
 
@@ -33,7 +37,7 @@ CMedium::CMedium(bool create_parent)
     if (create_parent)
         parent = new CMediumSet();
     else
-        parent = 0;
+        parent = nullptr;
 #ifdef QT_version
     showmessages = false;
 #else
@@ -388,7 +392,13 @@ void CMedium::f_load_inflows()
 	for (unsigned int j = 0; j < Precipitation_filename.size(); j++)
 	{
 		CPrecipitation P = CPrecipitation(pathname() + Precipitation_filename[j]);
-		if (P.n>0) Precipitation.push_back(P);
+		if (P.n > 0)
+		{
+			Precipitation.push_back(P);
+			show_message("Precipitation file [" + pathname() + Precipitation_filename[j] + "] was loaded successfully!");
+		}
+		else
+			show_message("Precipitation file [" + pathname() + Precipitation_filename[j] + "] was not found! ");
 	}
 	for (unsigned int j = 0; j < evaporation_model().size(); j++)
 	{
@@ -444,8 +454,11 @@ void CMedium::f_load_inflows()
 		if ((Blocks[i].indicator == Pond) || (Blocks[i].indicator == Catchment) || (Blocks[i].indicator == Stream))
 		{
 			if (Blocks[i].precipitation_swch == true)
-				for (unsigned int j = 0; j<Precipitation_filename.size(); j++)
+			{
+				show_message("Assigning Precipitation to block [" + Blocks[i].ID + "]");
+				for (unsigned int j = 0; j < Precipitation_filename.size(); j++)
 					Blocks[i].inflow.push_back(Precipitation[j].getflow(Blocks[i].A, 1.0 / 24.0 / 4));
+			}
 		}
 	}
 
@@ -1689,7 +1702,7 @@ void CMedium::solve_fts_m2(double dt)
 	double dt_last = Solution_State.dtt;
 	avg_redo_dtt = Solution_State.dtt;
 
-    time_t time_start = time(NULL);
+    time_t time_start = time(nullptr);
 
     while (Solution_State.t - Solution_State.dtt < Timemax)
 	{
@@ -1733,6 +1746,7 @@ void CMedium::solve_fts_m2(double dt)
 				Redo_parameters.redo = false;
 				set_block_fluxes();
 				correct_S(Solution_State.dtt);
+                setH_star();
 				if (colloid_transport()) Solution_State.failed_colloid = false;
 				if (constituent_transport()) Solution_State.failed_const = false;
 				if (colloid_transport())
@@ -1876,7 +1890,7 @@ void CMedium::solve_fts_m2(double dt)
 #ifdef QT_version
 				updateProgress();
 
-				if (runtimewindow != 0)
+                if (runtimewindow != nullptr)
 				{
 					QMessageBox::warning(runtimewindow, "Simulation Failed", "Simulation Failed! + Number of unsuccessful time-step reductions > 30", QMessageBox::Ok);
 				}
@@ -1897,7 +1911,7 @@ void CMedium::solve_fts_m2(double dt)
 					write_to_detail_file("Simulation ended by the user");
 
 #ifdef QT_version
-					if (runtimewindow != 0)
+                    if (runtimewindow != nullptr)
 					{
 						QMessageBox::StandardButton reply;
 						QMessageBox::question(runtimewindow, "Simulation Stopped by the user", "Simulation Ended", QMessageBox::Ok);
@@ -1909,7 +1923,7 @@ void CMedium::solve_fts_m2(double dt)
 				return;
 			}
             //double runtime = ((float)(clock() - time_start)) / CLOCKS_PER_SEC;
-            long int runtime = (time(NULL) - time_start);
+            long int runtime = (time(nullptr) - time_start);
 			if (runtime > maximum_run_time())
 			{
                 Solution_State.failed = true;
@@ -1921,7 +1935,7 @@ void CMedium::solve_fts_m2(double dt)
 
 
 #ifdef QT_version
-				if (runtimewindow != 0)
+                if (runtimewindow != nullptr)
 				{
 					QMessageBox::warning(runtimewindow, "Simulation Failed", "Runtime greater than the runtime limit set by the user", QMessageBox::Ok);
 				}
@@ -1971,7 +1985,7 @@ void CMedium::solve_fts_m2(double dt)
 
 
 #ifdef QT_version
-				if (runtimewindow != 0)
+                if (runtimewindow != nullptr)
 				{
                     if (Solution_State.dtt<1e-20)
                         QMessageBox::warning(runtimewindow, "Simulation Failed",  "dt = " + QString::number(Solution_State.dtt) + " too small", QMessageBox::Ok);
@@ -3129,7 +3143,10 @@ void CMedium::correct_S(double dtt)
         S[Connectors[i].Block2N] += (w()*Connectors[i].Q + (1-w())*Connectors[i].Q_star)*Connectors[i].flow_factor*dtt;
 	}
 
-    for (unsigned int i=0; i<Blocks.size(); i++) Blocks[i].S_star = max(S[i],0.0);
+    for (unsigned int i=0; i<Blocks.size(); i++)
+    {   //if (Blocks[i].setzero==0)
+            Blocks[i].S_star = max(S[i],0.0);
+    }
 
 }
 
@@ -4775,7 +4792,7 @@ void CMedium::onestepsolve_flow_ar(double dt)
 		}
 
 		CVector_arma F = getres_S(X, dt);
-
+		//F.writetofile("F.txt");
 		double err = F.norm2();
 		double err_p = err;
 
@@ -4909,7 +4926,10 @@ void CMedium::onestepsolve_flow_ar(double dt)
 				if (solution_method() == "Partial Inverse Jacobian Evaluation")
 					dx = (InvJ2_arma*normalize_diag(F, M_arma));
 				else if (solution_method() == "Direct Solution")
+				{
 					dx = F / M_arma;
+					//M_arma.writetofile("matrix.txt");
+				}
 				else
 					dx = (InvJ2_arma*normalize_diag(F, M_arma));
 
@@ -4928,7 +4948,11 @@ void CMedium::onestepsolve_flow_ar(double dt)
 				if (solution_method() == "Partial Inverse Jacobian Evaluation")
 					dx = (InvJ1_arma*normalize_diag(F, M_arma));
 				else if (solution_method() == "Direct Solution")
-					dx = F/ M_arma;
+				{
+					dx = F / M_arma;
+					//cout << "Now writing Matrix ..." << endl;
+					//M_arma.writetofile("matrix.txt");
+				}
 				else
 					dx = (InvJ1_arma*normalize_diag(F, M_arma));
 
@@ -5775,6 +5799,121 @@ VTK_grid CMedium::VTK_get_snap_shot(string var, double t, double z_scale, string
     return out;
 }
 
+VTK_grid CMedium::VTK_get_snap_shot(const string &bodyname, ModelCreator *mcreate, string var, double t, double z_scale, string fieldname)
+{
+
+    VTK_grid out;
+
+    vector<_location> bodies = mcreate->BBody(bodyname);
+    if (bodies.size() == 0)
+    {
+        cout<<"No body names [" + bodyname + "] was found!"<<endl;
+        return out;
+    }
+    if (fieldname!="")
+        out.names.push_back(fieldname);
+    else
+        out.names.push_back(var);
+    for (unsigned int i=0; i<mcreate->BBody(bodyname).size(); i++)
+    {
+        if (mcreate->BBody(bodyname)[i].name != "")
+        {
+            bool not_push = false;
+            VTK_point pt;
+            pt.x = Block(mcreate->BBody(bodyname)[i].name)->location.x;
+            pt.y = Block(mcreate->BBody(bodyname)[i].name)->location.y;
+            pt.z = Block(mcreate->BBody(bodyname)[i].name)->location.z*z_scale;
+            if (var=="s")
+                pt.vals.push_back(Results.ANS.BTC[getblocksq(mcreate->BBody(bodyname)[i].name)].interpol(t));
+            else if (var=="h")
+                pt.vals.push_back(Results.ANS.BTC[getblocksq(mcreate->BBody(bodyname)[i].name) + Blocks.size() + Connectors.size()].interpol(t));
+            else if (var=="theta")
+            {
+                if (Block(mcreate->BBody(bodyname)[i].name)->indicator == Block_types::Soil || Block(mcreate->BBody(bodyname)[i].name)->indicator == Block_types::Darcy)
+                    pt.vals.push_back(Results.ANS.BTC[getblocksq(mcreate->BBody(bodyname)[i].name)].interpol(t)/Block(mcreate->BBody(bodyname)[i].name)->V);
+                else
+                {
+                    pt.vals.push_back(0);
+                    pt.beshown = false;
+                }
+            }
+            else if (var=="depth")
+            {
+                if (Block(mcreate->BBody(bodyname)[i].name)->indicator != Block_types::Soil && Block(mcreate->BBody(bodyname)[i].name)->indicator != Block_types::Darcy)
+                    pt.vals.push_back(Results.ANS.BTC[getblocksq(mcreate->BBody(bodyname)[i].name) + Blocks.size() + Connectors.size()].interpol(t)-Block(mcreate->BBody(bodyname)[i].name)->z0);
+                else
+                {
+                    pt.vals.push_back(0);
+                    pt.beshown = false;
+                }
+            }
+            else
+                pt.vals.push_back(Block(mcreate->BBody(bodyname)[i].name)->get_val(var));
+
+            out.p.push_back(pt);
+        }
+
+    }
+    return out;
+}
+
+VTK_edge_grid CMedium::VTK_get_snap_shot_edges(string var, double t, double z_scale, string fieldname)
+{
+	VTK_edge_grid out;
+	if (fieldname != "")
+		out.names.push_back(fieldname);
+	else
+		out.names.push_back(var);
+	for (unsigned int i = 0; i < Connectors.size(); i++)
+	{
+		bool not_push = false;
+		VTK_segment segment;
+		segment.s_point.x = Connectors[i].Block1->location.x;
+		segment.s_point.y = Connectors[i].Block1->location.y;
+		segment.s_point.z = Connectors[i].Block1->location.z*z_scale;
+		segment.e_point.x = Connectors[i].Block2->location.x;
+		segment.e_point.y = Connectors[i].Block2->location.y;
+		segment.e_point.z = Connectors[i].Block2->location.z * z_scale;
+
+		if (var == "Q")
+			segment.vals.push_back(Results.ANS.BTC[i + Blocks.size()].interpol(t));
+		else
+			segment.vals.push_back(Blocks[i].get_val(var));
+
+		out.p.push_back(segment);
+	}
+	return out;
+}
+
+VTK_edge_grid CMedium::VTK_get_snap_shot_edges(const string &bodyname, ModelCreator *mcreate, string var, double t, double z_scale, string fieldname)
+{
+	VTK_edge_grid out;
+	if (fieldname != "")
+		out.names.push_back(fieldname);
+	else
+		out.names.push_back(var);
+	for (unsigned int ii = 0; ii < mcreate->CBody(bodyname).size(); ii++)
+	{
+		int i=getconnectorsq(Connector(mcreate->CBody(bodyname)[ii])->ID);
+		bool not_push = false;
+		VTK_segment segment;
+		segment.s_point.x = Connectors[i].Block1->location.x;
+		segment.s_point.y = Connectors[i].Block1->location.y;
+		segment.s_point.z = Connectors[i].Block1->location.z*z_scale;
+		segment.e_point.x = Connectors[i].Block2->location.x;
+		segment.e_point.y = Connectors[i].Block2->location.y;
+		segment.e_point.z = Connectors[i].Block2->location.z * z_scale;
+
+		if (var == "Q")
+			segment.vals.push_back(Results.ANS.BTC[i + Blocks.size()].interpol(t));
+		else
+			segment.vals.push_back(Blocks[i].get_val(var));
+
+		out.p.push_back(segment);
+	}
+	return out;
+}
+
 
 void CMedium::merge_to_snapshot(VTK_grid& grid, string var, double t, string fieldname)
 {
@@ -5810,8 +5949,9 @@ void CMedium::merge_to_snapshot(VTK_grid& grid, string var, double t, string fie
 
 void CMedium::write_grid_to_text(VTK_grid& grid, const string &filename, const vector<string> &names)
 {
+    if (grid.p.size()==0) return;
     ofstream file(filename,std::ofstream::out);
-    file << "Block_name, x, y, z";
+    file << "x, y, z";
     for (unsigned int i=0; i<grid.p[0].vals.size(); i++)
     {
         if (names.size())
@@ -5822,9 +5962,9 @@ void CMedium::write_grid_to_text(VTK_grid& grid, const string &filename, const v
             file << ", var_" + numbertostring(i);
     }
     file << endl;
-    for (unsigned int j=0; j<Blocks.size(); j++)
+    for (unsigned int j=0; j<grid.p.size(); j++)
     {
-        file << Blocks[j].ID << "," << Blocks[j].location.x << "," << Blocks[j].location.y << "," << Blocks[j].location.z;
+        file << grid.p[j].x << "," << grid.p[j].y << "," << grid.p[j].z;
         for (unsigned int i=0; i<grid.p[0].vals.size(); i++)
             file << "," << grid.p[j].vals[i];
         file << endl;
@@ -5834,7 +5974,7 @@ void CMedium::write_grid_to_text(VTK_grid& grid, const string &filename, const v
 
 void CMedium::write_grid_to_vtp(VTK_grid& grid, const string &filename, const vector<string> &names)
 {
-
+    if (grid.p.size()==0) return;
   // Create the geometry of a point (the coordinate)
   vtkSmartPointer<vtkPoints> points =
     vtkSmartPointer<vtkPoints>::New();
@@ -5949,12 +6089,99 @@ void CMedium::write_grid_to_vtp(VTK_grid& grid, const string &filename, const ve
   return;
 }
 
+vtkSmartPointer<vtkPolyData> CMedium::Segment_to_pline(VTK_segment& s)
+{
+    vtkSmartPointer<vtkPoints> points =
+	vtkSmartPointer<vtkPoints>::New();
+
+	vtkSmartPointer<vtkFloatArray> values =
+	vtkSmartPointer<vtkFloatArray>::New();
+	values->SetNumberOfComponents(1);
+	values->SetName("Q");
+
+	double val[1] = { s.vals[0] };
+	double p1[3] = { s.s_point.x , s.s_point.y, s.s_point.z };
+	points->InsertNextPoint(p1);
+	values->InsertNextTuple(val);
+	double p2[3] = { s.e_point.x , s.e_point.y, s.e_point.z };
+	points->InsertNextPoint(p2);
+	values->InsertNextTuple(val);
+	vtkSmartPointer<vtkPolyLine> polyLine =
+		vtkSmartPointer<vtkPolyLine>::New();
+
+	polyLine->GetPointIds()->SetNumberOfIds(2);
+	for (unsigned int i = 0; i < 2; i++)
+	{
+		polyLine->GetPointIds()->SetId(i, i);
+	}
+
+		// Create a cell array to store the lines in and add the lines to it
+	vtkSmartPointer<vtkCellArray> cells =
+		vtkSmartPointer<vtkCellArray>::New();
+	cells->InsertNextCell(polyLine);
+
+	// Create a polydata to store everything in
+	vtkSmartPointer<vtkPolyData> polyData =
+		vtkSmartPointer<vtkPolyData>::New();
+
+	// Add the points to the dataset
+	polyData->SetPoints(points);
+
+	// Add the lines to the dataset
+	polyData->SetLines(cells);
+
+	polyData->GetPointData()->SetScalars(values);
+
+	return polyData;
+
+}
+
+
+void CMedium::write_grid_to_vtp_surf(VTK_edge_grid& grid, const string& filename, const string &name)
+{
+
+    if (grid.p.size()==0) return;
+	vector<vtkSmartPointer<vtkPolyData>> outarray;
+	for (int i = 0; i<int(grid.p.size()); i++)
+	{
+	// Create a vtkPoints object and store the points in it
+		outarray.push_back(Segment_to_pline(grid.p[i]));
+	}
+
+	vtkSmartPointer<vtkAppendPolyData> appendFilter =
+		vtkSmartPointer<vtkAppendPolyData>::New();
+#if VTK_MAJOR_VERSION <= 5
+	appendFilter->AddInputConnection(input1->GetProducerPort());
+	appendFilter->AddInputConnection(input2->GetProducerPort());
+#else
+	for (int i = 0; i < outarray.size(); i++)
+		appendFilter->AddInputData(outarray[i]);
+#endif
+	appendFilter->Update();
+
+	vtkSmartPointer<vtkPolyDataMapper> mapper =
+		vtkSmartPointer<vtkPolyDataMapper>::New();
+#if VTK_MAJOR_VERSION <= 5
+	mapper->SetInputConnection(polydata->GetProducerPort());
+#else
+	mapper->SetInputConnection(appendFilter->GetOutputPort());
+#endif
+
+	vtkSmartPointer<vtkXMLPolyDataWriter> writer =
+		vtkSmartPointer<vtkXMLPolyDataWriter>::New();
+	writer->SetFileName(filename.c_str());
+	writer->SetInputData(mapper->GetInput());
+	// This is set so we can see the data in a text editor.
+	writer->SetDataModeToAscii();
+	writer->Write();
+}
+
 
 void CMedium::write_grid_to_vtp_surf(VTK_grid& grid, const string &filename, const vector<string> &names)
 {
-
-  // Create the geometry of a point (the coordinate)
-  vtkSmartPointer<vtkPoints> points =
+    if (grid.p.size()==0) return;
+    // Create the geometry of a point (the coordinate)
+    vtkSmartPointer<vtkPoints> points =
     vtkSmartPointer<vtkPoints>::New();
 
   // Create the topology of the point (a vertex)

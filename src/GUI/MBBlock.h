@@ -60,6 +60,7 @@ public:
 	string ID; //Identification of the Mass Balance Block
 
     bool set_properties(string s);
+    double get_property(string s) {return get_val(s);}
     bool set_property(string s, double value);
     bool set_property(string s, string value);
     bool set_val(const string &SS, const double &val); //set the value of physical properties, variables and parameters based on star values
@@ -97,7 +98,9 @@ private:
     vector<string> initial_cg_counter_p; vector<string> initial_cg_counter_l; vector<string> initial_cg_counter_c;  vector<double> initial_cg;
     vector<CSolid_Phase*> Solid_phase;
 
-    double H, A, V, S;  //Head, Area, Volume, Storage
+    double H, A;  //Head, Area
+    double V=0; // Volume
+    double S=0; // Storage
     double q; // Darcy flux
     double DS;  //Depression Storage (thickness)
     double H_star, A_star, V_star, S_star; //Head, Area, Volume, Storage

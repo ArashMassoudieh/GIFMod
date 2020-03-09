@@ -13,16 +13,16 @@ class mPropList
 {
 public:
 	mPropList();
-	mPropList(const QList<mProp> &mPL){ List = mPL; };
+    mPropList(const QList<mProp> &mPL){ List = mPL; }
 	mPropList(QString filename);
 	mPropList(const mPropList &CC);
 	mPropList& operator= (const mPropList &CC); 
 	mProp operator[](int i) const { 
 		if (i >= List.size())
 			return mProp(); //has error
-		return List[i]; };
-	~mPropList(){};
-	int size() const { return List.size(); };
+        return List[i]; }
+    ~mPropList(){}
+    int size() const { return List.size(); }
     mListReadStatus getconfigfromfile(QString filename);
 //	mListReadStatus mPropList::getconfigfromfile(QString filename, GraphWidget *GW);
 	QList<mProp> List;

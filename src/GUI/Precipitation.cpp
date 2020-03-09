@@ -88,7 +88,7 @@ CPrecipitation::CPrecipitation(string filename)
 				n++;
 			}
 	}
-	dt = e[1] - s[1];
+	dt = e[0] - s[0];
 
 }
 

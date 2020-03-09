@@ -15,10 +15,10 @@ class PropModel :
 {
 public:
 
-	PropModel(){};
-	PropModel(Node* parent){ this->parent = parent; };
-	PropModel(Edge* parent){ this->parent = parent; };
-	PropModel(Entity* parent){	this->parent = parent; };
+    PropModel(){}
+    PropModel(Node* parent){ this->parent = parent; }
+    PropModel(Edge* parent){ this->parent = parent; }
+    PropModel(Entity* parent){	this->parent = parent; }
 	PropModel(QList<T*> items) { this->items = items; parent = items[0]; }
 	QList<T*> itemsList() {
 		return items;
@@ -28,12 +28,12 @@ public:
 	int rows(const QModelIndex & index = QModelIndex()) const{
 	//	//qDebug() << "rows" <<  parent->getmList(parent->Filter()).size();
 		return parent->getmList(parent->Filter()).size();
-	};
+    }
 	int rowCount(const QModelIndex & index = QModelIndex()) const{
 		return parent->getmList(parent->Filter()).size()+8;
-	};
+    }
 	int columnCount(const QModelIndex & parent = QModelIndex()) const {
-		return 2; };
+        return 2; }
 	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const{
 		if (role == Qt::DisplayRole)
 		{
@@ -48,9 +48,9 @@ public:
 			}
 		}
 		return QVariant();
-	};
+    }
 	Qt::ItemFlags flags(const QModelIndex & index) const{
-		if (index.row() >= rows()) return 0;
+        if (index.row() >= rows()) return nullptr;
 		int col = index.column();
 		//	if (index.row() >= list.size()) return 0;
 		if (col == 0) return Qt::ItemIsEnabled;
@@ -58,13 +58,13 @@ public:
 		if (col == 1)
 		{
 			if (data(index, TypeRole) == "ComboBox" && data(index, DefaultValuesListRole).toStringList().count() == 0)
-				return 0;
+                return nullptr;
 			return Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled;
 		}
 		return Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled;
-	};
+    }
 
-	~PropModel(){};
+    ~PropModel(){}
 	T *parent;
 	QList<T*> items;
 	GraphWidget *mainGraphWidget() const {
@@ -83,7 +83,7 @@ public slots:
 		if (_fileName.contains("..."))
 			file =
 			QFileDialog::getOpenFileName(
-			0, //qApp->activeWindow(),
+                        nullptr, //qApp->activeWindow(),
 			tr("Select the File"),
 			QDir::currentPath(),
 			tr("Time Series Input Files (*.txt *.csv)"));

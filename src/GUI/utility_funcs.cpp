@@ -7,6 +7,7 @@
 #include <qstringlist.h>
 #include <qdebug.h>
 #endif // QT_version
+#include "math.h"
 
 #include <utility_funcs.h>
 

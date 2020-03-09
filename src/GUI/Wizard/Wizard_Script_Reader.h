@@ -32,11 +32,13 @@ public:
 	Wizard_Script_Reader(const Wizard_Script_Reader &WSR);
 	QStringList toQStingList();
 	Wizard_Script_Reader(QString filename);
+	wiz_entity * operator[](const QString & name);
+	wiz_entity * Get(const QString & name);
 	bool add_command(QString line);
 	~Wizard_Script_Reader();
 	CCommand get_script_commands_entities(wiz_entity * wiz_ent);
     CCommand get_script_commands_project_settings(wiz_entity * wiz_ent);
-	CCommand get_script_change_properties(wiz_entity * wiz_ent);
+	QList<CCommand> get_script_change_properties(wiz_entity * wiz_ent);
     QStringList validate();
 	QList<CCommand> get_script_commands_major_blocks(wiz_entity * wiz_ent, int & x, int & y);
 		

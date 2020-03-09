@@ -25,7 +25,7 @@ CTimeSeries::CTimeSeries()
 	max_fabs = 0;
 }
 
-CTimeSeries::CTimeSeries(int n1)
+CTimeSeries::CTimeSeries(unsigned long int n1)
 {
 	n=n1;
 	t.resize(n);
@@ -1158,7 +1158,7 @@ void CTimeSeries::assign_D()
 	for (int i = 0; i<n; i++)
 	{
 		double counter = 0;
-		for (int j = i + 1; j<n; j++)
+		for (int j = i + 1; j< min(n,i+n/50); j++)
 		{
 			if (C[j] == C[i]) counter += (t[j] - t[j - 1]);
 			if (C[j] != C[i]) break;

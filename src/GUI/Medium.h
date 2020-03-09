@@ -17,9 +17,16 @@
 #include "Sensor.h"
 #include "utility_funcs.h"
 #include "ObjectiveFunction.h"
+
+#ifdef MATRIX_no_ARMA
+#define CVector_arma CVector
+#define CMatrix_arma CMatrix
+#include "Matrix.h"
+#include "Vector.h"
+#else // !MATRIX_ARMA
 #include "Vector_arma.h"
 #include "Matrix_arma.h"
-
+#endif
 #ifdef USE_VTK
 #include "VTK.h"
 #endif
@@ -34,6 +41,7 @@ class runtimeWindow;
 using namespace std;
 
 #ifdef USE_VTK
+class ModelCreator;
 struct VTK_point
 {
     double x,y,z;
@@ -42,10 +50,40 @@ struct VTK_point
     bool beshown = true;
 };
 
+struct VTK_segment
+{
+	VTK_point s_point, e_point;
+	std::vector<double> vals;
+	bool beshown = true;
+};
+
+
 struct VTK_grid
 {
     std::vector<VTK_point> p;
     std::vector<std::string> names;
+
+};
+
+struct VTK_edge_grid
+{
+	std::vector<VTK_segment> p;
+	std::vector<std::string> names;
+	VTK_grid toVTKGtid()
+	{
+        VTK_grid out;
+        out.names = names;
+        for (int i=0; i<p.size(); i++)
+        {
+            VTK_point pp;
+            pp.x = 0.5*(p[i].s_point.x + p[i].e_point.x);
+            pp.y = 0.5*(p[i].s_point.y + p[i].e_point.y);
+            pp.z = 0.5*(p[i].s_point.z + p[i].e_point.z);
+            pp.vals = p[i].vals;
+            out.p.push_back(pp);
+        }
+        return out;
+	}
 
 };
 #endif // USE_VTK
@@ -243,7 +281,7 @@ public:
 	void clear(); //clear the model
 
     void g_get_environmental_params();
-    void g_get_model_configuration(runtimeWindow* = 0);
+    void g_get_model_configuration(runtimeWindow* = nullptr);
     void g_set_default_connector_expressions();
     void g_set_default_block_expressions();
     void g_load_inflows();
@@ -258,7 +296,7 @@ public:
     bool solve();
     bool solved() { return !this->Solution_State.failed; }
     void updateProgress(bool finished = false);
-	runtimeWindow * runtimewindow = 0;
+    runtimeWindow * runtimewindow = nullptr;
 	bool stop_triggered = false;
     vector<string> get_everything_from_id(int x);
     vector<CRestoreInfo> clean_up_restore_points(vector<CRestoreInfo> &Res, double t);
@@ -304,8 +342,13 @@ public:
 
     #ifdef USE_VTK
         VTK_grid VTK_get_snap_shot(string var, double t=0, double z_scale=1, string field_name="");
+        VTK_grid VTK_get_snap_shot(const string &bodyname, ModelCreator *mcreate, string var, double t, double z_scale=0, string fieldname="");
+		VTK_edge_grid VTK_get_snap_shot_edges(string var, double t, double z_scale, string fieldname);
+		VTK_edge_grid VTK_get_snap_shot_edges(const string &bodyname, ModelCreator *mcreate, string var, double t, double z_scale, string fieldname="");
         void merge_to_snapshot(VTK_grid&, string var, double t=0, string fieldname="");
         void write_grid_to_vtp(VTK_grid&, const string &filename, const vector<string> &names=vector<string>());
+		vtkSmartPointer<vtkPolyData> Segment_to_pline(VTK_segment& s);
+		void write_grid_to_vtp_surf(VTK_edge_grid& grid, const string& filename, const string& names);
         void write_grid_to_vtp_surf(VTK_grid&, const string &filename, const vector<string> &names=vector<string>());
         void write_grid_to_text(VTK_grid& grid, const string &filename, const vector<string> &names = vector<string>());
         void show_VTK(vtkSmartPointer<vtkPolyDataMapper>, const string &filename);

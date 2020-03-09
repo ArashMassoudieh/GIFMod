@@ -51,7 +51,7 @@ public:
 	QTableView *tableProp;
 	QTreeView *projectExplorer;
 	//	QTableWidget *tableProp;
-	//	QStandardItemModel *propModel;
+    //	QStandardItemModel *propModel;
 
 	//	PropModel *propModel;
 	//	ProjModel *projModel;
@@ -79,7 +79,7 @@ public:
 	logWindow *log;
     void centerWidget();
 	Ui::MainWindow *ui;
-	runtimeWindow * rtw = 0;
+    runtimeWindow * rtw = nullptr;
 	QList<QMap<QString, QVariant>>* dataMap;
 	QList<QMap<QString, QVariant>>* dataHash;
 	void afterInit() {
@@ -102,80 +102,47 @@ public slots:
 private slots:
 
 	QString on_actionAdd_Pond_triggered();
-
 	QString on_actionAdd_Soil_triggered();
-
 	QString on_actionAdd_Catchment_Area_triggered();
-
 	QString on_actionAdd_Darcy_Block_triggered();
-
 	QString on_actionAdd_Stora_ge_triggered();
-
 	QString on_actionAdd_St_ream_triggered();
-
 	QString on_actionAdd_plant_triggered();
-	
 	void newfromtemplate(); 
-
 	void on_actionAdd_Connector_triggered(bool checked);
-
 	void on_action_Select_triggered(bool checked);
-
 	void on_action_Pan_triggered(bool checked);
-
 	void on_actionProperty_Box_triggered(bool checked);
-
-
     void updateToolbarToggles(Operation_Modes OMode = Operation_Modes::NormalMode);
 	void on_action_New_triggered();
-
 	void on_action_Open_triggered();
-
 	void on_action_Save_triggered();
 	void on_actionSave_As_triggered();
 	bool saveModel(QString &);
 	void on_actionZoom_In_triggered();
-
 	void on_actionZoom_Out_triggered();
-
 	void on_actionZoom_All_triggered();
-
 	void on_actionE_xit_triggered();
-
 	void on_action_Undo_triggered();
-
 	void on_action_Redo_triggered();
-
 	void on_actionClear_Reaction_Network_triggered();
-
 	void on_actionLoad_Reaction_Network_triggered();
-
 	void on_actionSave_Reaction_Network_triggered();
-
 	void on_actionReactions_triggered();
-
 	//	void Mouse_Pos();
-
 	void on_projectExplorer_clicked(const QModelIndex &index);
-
 	void on_projectExplorer_customContextMenuRequested(const QPoint &pos);
-	
 	void on_actionmenuRecent_triggered();// QString fileName);
 
 //	void on_tableProp_customContextMenuRequested(const QPoint &pos);
 
 	void tablePropShowContextMenu(const QPoint&);
-	
 	void addParameter(QAction*);
-
 	QModelIndex addParameterIndex(const QModelIndex &index = QModelIndex());
 //	void addParameter(QString variableName = "");
 
 	void openRXNWindow();
-
-
-	void addProjectExplorerTreeItem(TreeModel *model = 0, const QString name = "", const QModelIndex = QModelIndex());
-
+    void addProjectExplorerTreeItem(TreeModel *model = nullptr, const QString name = "", const QModelIndex = QModelIndex());
 	void removeProjectExplorerNodeItem(QString name = "", const QModelIndex = QModelIndex()); // TreeModel *model = 0, const QString name = "", const QModelIndex = QModelIndex());
 	void removeProjectExplorerEdgeItem(QString name = "", const QModelIndex = QModelIndex()); // TreeModel *model = 0, const QString name = "", const QModelIndex = QModelIndex());
 	void removeProjectExplorerEntityItem(QString name = "", const QModelIndex = QModelIndex()); // TreeModel *model = 0, const QString name = "", const QModelIndex = QModelIndex());
@@ -274,7 +241,7 @@ private:
 	int newBlockY(){
 		if (newBlockCounter > 6) newBlockCounter = 0;
 		return 750 + 70 * ++newBlockCounter;
-	};
+    }
 	int newBlockCounter = 0;
 
 signals:
