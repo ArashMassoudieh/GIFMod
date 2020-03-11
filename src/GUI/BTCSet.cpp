@@ -224,10 +224,19 @@ CTimeSeriesSet::CTimeSeriesSet(string filename, bool varytime)
 		file_not_found = true;
 		return;
 	}
+    bool start = true;
 	if (varytime == false)
 		while (file.eof() == false)
 		{
 			s = getline(file);
+            if (start)
+            {
+                if (s[0].substr(0, 2) == "//")
+                {
+                    for (unsigned int i = 1; i < s.size(); i+=2) names.push_back(s[i]);
+                }
+                start = false;
+            }
 			if (s.size())
 			{
 				if (tail(s[0],5) == "names" || tail(s[0], 4) == "name")
@@ -256,6 +265,14 @@ CTimeSeriesSet::CTimeSeriesSet(string filename, bool varytime)
 		while (file.eof() == false)
 		{
 			s = getline(file);
+            if (start)
+            {
+                if (s[0].substr(0, 2) == "//")
+                {
+                    for (unsigned int i = 1; i < s.size(); i+=2) names.push_back(s[i]);
+                }
+                start = false;
+            }
 			if (s.size() > 0)
 			{
 				if (tail(s[0],5) == "names" || tail(s[0], 4) == "name")
