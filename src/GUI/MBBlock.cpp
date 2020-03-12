@@ -1713,25 +1713,5 @@ string CMBBlock::tostring()
 	s += "   Light reduction factor = " + numbertostring(light_reduction_factor) + "\n";
 
 	return s;
-	/*else if (s.size()==2)
-	{
-		if (tolower(trim(s[0])) == "fp") {fs_params[atoi(s[1].c_str())] = val;success = true;}
-		if (tolower(trim(s[0])) == "p") {rxn_params[atoi(s[1].c_str())] = val;success = true;}
-		if (tolower(trim(s[0])) == "g") { initial_g_counter_p.push_back(s[1]); initial_g_counter_l.push_back("mobile"); initial_g.push_back(val); success = true;}
-		if (tolower(trim(s[0])) == "cg") { initial_cg_counter_p.push_back(""); initial_cg_counter_l.push_back(""); initial_cg_counter_c.push_back(s[1]);  initial_cg.push_back(val); success = true;}
-		if (tolower(trim(s[0])) == "hsc") { plant_prop.limiting_nutrients.push_back(s[1]);  plant_prop.half_saturation_constants.push_back(val); success = true;}
-	}
-	else if (s.size()==3)
-	{
-		if (tolower(trim(s[0])) == "g") {initial_g_counter_p.push_back(s[1]); initial_g_counter_l.push_back(s[2]); initial_g.push_back(val);success = true;}
-		if (tolower(trim(s[0])) == "cg") { initial_cg_counter_p.push_back(s[2]); initial_cg_counter_l.push_back(""); initial_cg_counter_c.push_back(s[1]);  initial_cg.push_back(val); success = true;}
-	}
-
-	else if (s.size() == 4)
-	{
-		if (tolower(trim(s[0])) == "cg") { initial_cg_counter_p.push_back(s[2]); initial_cg_counter_l.push_back(s[3]); initial_cg_counter_c.push_back(s[1]);  initial_cg.push_back(val); success = true;}
-	}
-
-    */
 
 }
