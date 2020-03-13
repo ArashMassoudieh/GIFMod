@@ -964,9 +964,9 @@ bool CMBBlock::set_val(const string &SS, const double &val)
 	vector<string> s = split(SS,del);
 	if (s.size()==1)
 	{
-		if (tolower(trim(s[0]))=="a" || tolower(trim(s[0]))=="area") {A = val; success = true;}
+		if (tolower(trim(s[0]))=="a" || tolower(trim(s[0]))=="area") {A = val; A_star = val; success = true;}
 		if (tolower(trim(s[0]))=="h") {H = val;success = true;}
-		if (tolower(trim(s[0]))=="v") {V = val;success = true;}
+		if (tolower(trim(s[0]))=="v") {V = val; V_star=val; success = true;}
 		if (tolower(trim(s[0]))=="s") {S = val;success = true;}
 		if (tolower(trim(s[0]))=="z0") {z0 = val;success = true;}
 		if (tolower(trim(s[0]))=="se") {S = V*(val*(fs_params[theta_s]-fs_params[theta_r]) + fs_params[theta_r]);success = true;}
@@ -1713,25 +1713,5 @@ string CMBBlock::tostring()
 	s += "   Light reduction factor = " + numbertostring(light_reduction_factor) + "\n";
 
 	return s;
-	/*else if (s.size()==2)
-	{
-		if (tolower(trim(s[0])) == "fp") {fs_params[atoi(s[1].c_str())] = val;success = true;}
-		if (tolower(trim(s[0])) == "p") {rxn_params[atoi(s[1].c_str())] = val;success = true;}
-		if (tolower(trim(s[0])) == "g") { initial_g_counter_p.push_back(s[1]); initial_g_counter_l.push_back("mobile"); initial_g.push_back(val); success = true;}
-		if (tolower(trim(s[0])) == "cg") { initial_cg_counter_p.push_back(""); initial_cg_counter_l.push_back(""); initial_cg_counter_c.push_back(s[1]);  initial_cg.push_back(val); success = true;}
-		if (tolower(trim(s[0])) == "hsc") { plant_prop.limiting_nutrients.push_back(s[1]);  plant_prop.half_saturation_constants.push_back(val); success = true;}
-	}
-	else if (s.size()==3)
-	{
-		if (tolower(trim(s[0])) == "g") {initial_g_counter_p.push_back(s[1]); initial_g_counter_l.push_back(s[2]); initial_g.push_back(val);success = true;}
-		if (tolower(trim(s[0])) == "cg") { initial_cg_counter_p.push_back(s[2]); initial_cg_counter_l.push_back(""); initial_cg_counter_c.push_back(s[1]);  initial_cg.push_back(val); success = true;}
-	}
-
-	else if (s.size() == 4)
-	{
-		if (tolower(trim(s[0])) == "cg") { initial_cg_counter_p.push_back(s[2]); initial_cg_counter_l.push_back(s[3]); initial_cg_counter_c.push_back(s[1]);  initial_cg.push_back(val); success = true;}
-	}
-
-    */
 
 }

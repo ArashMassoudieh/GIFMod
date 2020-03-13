@@ -38,8 +38,8 @@ void CMediumSet::SetDefaultSolverParameters()
     SP.solution_method="Partial Inverse Jacobian Evaluation";
     SP.max_dt = 1;
 
-    SP.nr_iteration_treshold_max = 8;
-	SP.nr_iteration_treshold_min = 4;
+    SP.nr_iteration_treshold_max = 20;
+	SP.nr_iteration_treshold_min = 10;
 	SP.dt_change_rate = 0.75;
 	SP.dt_change_failure = 0.1;
 	SP.nr_failure_criteria = 100;

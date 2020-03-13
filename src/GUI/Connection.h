@@ -41,7 +41,7 @@ public:
     vector<string> errors;
     string tostring();
 private:
-    CMedium *parent;
+    CMedium *parent = nullptr;
     vector<CSolid_Phase*> Solid_phase;
     vector<int> Solid_phase_id;
     vector <double> flow_params;
