@@ -964,9 +964,9 @@ bool CMBBlock::set_val(const string &SS, const double &val)
 	vector<string> s = split(SS,del);
 	if (s.size()==1)
 	{
-		if (tolower(trim(s[0]))=="a" || tolower(trim(s[0]))=="area") {A = val; success = true;}
+		if (tolower(trim(s[0]))=="a" || tolower(trim(s[0]))=="area") {A = val; A_star = val; success = true;}
 		if (tolower(trim(s[0]))=="h") {H = val;success = true;}
-		if (tolower(trim(s[0]))=="v") {V = val;success = true;}
+		if (tolower(trim(s[0]))=="v") {V = val; V_star=val; success = true;}
 		if (tolower(trim(s[0]))=="s") {S = val;success = true;}
 		if (tolower(trim(s[0]))=="z0") {z0 = val;success = true;}
 		if (tolower(trim(s[0]))=="se") {S = V*(val*(fs_params[theta_s]-fs_params[theta_r]) + fs_params[theta_r]);success = true;}
