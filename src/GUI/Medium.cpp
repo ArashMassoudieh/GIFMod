@@ -5807,7 +5807,7 @@ VTK_grid CMedium::VTK_get_snap_shot(const string &bodyname, ModelCreator *mcreat
     vector<_location> bodies = mcreate->BBody(bodyname);
     if (bodies.size() == 0)
     {
-        cout<<"No body names [" + bodyname + "] was found!"<<endl;
+        cout<<"No body named [" + bodyname + "] was found!"<<endl;
         return out;
     }
     if (fieldname!="")
