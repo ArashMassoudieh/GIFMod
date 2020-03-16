@@ -170,6 +170,8 @@ CConnection& CConnection::operator=(const CConnection &CC)
 	vapor_transport = CC.vapor_transport;
 	return *this;
 
+
+
 }
 
 double CConnection::calc(const CStringOP &term, int ii) //The function to calculate any expression
@@ -760,7 +762,7 @@ bool CConnection::set_val(const string &SS, const double &val)
 	vector<string> s = split(SS,',');
 	if (s.size()==1)
 	{
-		if (tolower(trim(s[0]))=="a" || tolower(trim(s[0])) == "area") {A = val; return true; }
+		if (tolower(trim(s[0]))=="a" || tolower(trim(s[0])) == "area") {A = val; A_star = val; return true; }
 		if (tolower(trim(s[0]))=="d") {d = val; return true; }
 		if (tolower(trim(s[0]))=="q") {Q = val;return true; }
 		if (tolower(trim(s[0]))=="vel") {v = val;return true; }

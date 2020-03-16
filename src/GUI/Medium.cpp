@@ -515,8 +515,8 @@ void CMedium::f_set_default_connector_expressions()
             if (Blocks[getblocksq(Connectors[ii].Block1ID)].z0 >= Blocks[getblocksq(Connectors[ii].Block2ID)].z0)
 			{
                 if (vaporTransport()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] == true)
-                {	Connectors[ii].flow_expression = CStringOP(formulasQ()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator]+ "+" + formulas()[Vapor]) ;
-                    Connectors[ii].flow_expression_strng = formulasQ()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator]+ "+" + formulas()[Vapor] ;
+                {	Connectors[ii].flow_expression = CStringOP("("+formulasQ()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator]+ ")+("+ formulas()[Vapor]+")") ;
+                    Connectors[ii].flow_expression_strng = "(" + formulasQ()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator]+ ")+(" + formulas()[Vapor] +")";
 
 				}
 				else
@@ -529,8 +529,8 @@ void CMedium::f_set_default_connector_expressions()
 			{
                 if (vaporTransport()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] == true)
 				{
-                    Connectors[ii].flow_expression = CStringOP(formulasQ2()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] + "+" + formulas()[Vapor]);
-                    Connectors[ii].flow_expression_strng = formulasQ2()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] + "+" + formulas()[Vapor];
+                    Connectors[ii].flow_expression = CStringOP("(" + formulasQ2()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] + ")+(" + formulas()[Vapor] + ")");
+                    Connectors[ii].flow_expression_strng = "(" + formulasQ2()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator] + ")+(" + formulas()[Vapor] + ")";
 				}
 				else
                 {	Connectors[ii].flow_expression = CStringOP(formulasQ2()[Blocks[getblocksq(Connectors[ii].Block1ID)].indicator][Blocks[getblocksq(Connectors[ii].Block2ID)].indicator]) ;
@@ -5807,7 +5807,7 @@ VTK_grid CMedium::VTK_get_snap_shot(const string &bodyname, ModelCreator *mcreat
     vector<_location> bodies = mcreate->BBody(bodyname);
     if (bodies.size() == 0)
     {
-        cout<<"No body names [" + bodyname + "] was found!"<<endl;
+        cout<<"No body named [" + bodyname + "] was found!"<<endl;
         return out;
     }
     if (fieldname!="")
