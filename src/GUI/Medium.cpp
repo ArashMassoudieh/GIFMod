@@ -4600,6 +4600,7 @@ vector<vector<bool>>& CMedium::settling()
 
 bool& CMedium::write_details()
 {
+	//cout<<"Setting write details ..." << endl;
 	return parent->FI.write_details;
 }
 
