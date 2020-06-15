@@ -1355,7 +1355,7 @@ QModelIndex MainWindow::addParameterIndex(const QModelIndex &index)
 void MainWindow::addParameter(QAction* item)
 {
 	QString parameter = item->text();
-	tableProp->model()->setData(addParameterIndex(), parameter, setParamRole);
+    tableProp->model()->setData(addParameterIndex(), parameter, setParamRole);
 }
 
 void MainWindow::getNumber(double initial)

@@ -65,7 +65,7 @@ QVariant PropModel<Node>::data(const QModelIndex & index, int role) const
 	{
 		if (index.row() >= rows()) return QVariant();
 		if (role == saveIndex)		{
-			save(index);
+            save(index);
 			return "index Saved";
 		}
 		if (role == loadIndexandInputMethodRole)		{
@@ -343,7 +343,7 @@ bool PropModel<Entity>::setData(const QModelIndex & index, const QVariant & valu
 			parent->parent->log(QString("Warning %1.%2 resolved.").arg(parent->Name()).arg(VariableName));
 		}
 		emit dataChanged(index, index);
-	}
+    }
 	return r;
 
 
