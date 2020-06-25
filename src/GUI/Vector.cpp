@@ -462,9 +462,10 @@ void CVector::writetofile(ofstream &f)
 
 void CVector::writetofile(string filename)
 {
-	FILE *f = fopen(filename.c_str(),"w");
-	writetofile(f);
-	fclose(f);
+	ofstream f(filename, std::ofstream::out);
+	if (f.good())
+		writetofile(f);
+	f.close();
 }
 
 void CVector::writetofile_app(string filename)

@@ -217,6 +217,7 @@ CTimeSeriesSet::CTimeSeriesSet(string filename, bool varytime)
 	unif = false;
 	vector<string> units;
 	ifstream file(filename);
+	
 	vector<string> s;
 	nvars = 0;
 	if (file.good() == false)
@@ -265,9 +266,11 @@ CTimeSeriesSet::CTimeSeriesSet(string filename, bool varytime)
 		while (file.eof() == false)
 		{
 			s = getline(file);
-            if (start)
+            
+			if (start)
             {
-                if (s[0].substr(0, 2) == "//")
+                if (s.size()>0)
+				if (s[0].substr(0, 2) == "//")
                 {
                     for (unsigned int i = 1; i < s.size(); i+=2) names.push_back(s[i]);
                 }

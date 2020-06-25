@@ -1,5 +1,5 @@
 #ifndef GIFMOD_VERSION
-#define GIFMOD_VERSION "1.0.1"
+#define GIFMOD_VERSION "1.0.2"
 #endif
 #ifndef GWA_VERSION
 #define GWA_VERSION "0.0.1"
