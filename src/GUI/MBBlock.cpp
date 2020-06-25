@@ -490,7 +490,8 @@ double CMBBlock::get_val_star(int i, const vector<int> &ii)
     if (i==state_vars::Volume) return V_star;
     if (i==state_vars::Storage) return S_star;
     if (i==state_vars::Bottom_Elev) return z0;
-    if (i==state_vars::Moisture_Content) return V_star/A_star;
+    if (i==state_vars::Moisture_Content) 
+		return V_star/A_star;
 	if (i==7) return 0;
     if (i==state_vars::Darcy_flux) return q;
     if (i==state_vars::Effective_Moisture)
