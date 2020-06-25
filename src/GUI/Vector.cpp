@@ -456,7 +456,8 @@ void CVector::writetofile(ofstream &f)
 {
 	for (int i=0; i<num-1; i++)
 		f<<vec[i]<<",";
-	f<<vec[num-1]<<endl;
+	if (vec.size()>0)
+		f<<vec[num-1]<<endl;
 
 }
 
