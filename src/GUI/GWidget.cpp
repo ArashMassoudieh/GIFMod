@@ -2756,7 +2756,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 									XString connectorLength = z0;
 									connectorLength.setNum(abs(deltaV.toFloat(z0.unit)) / (numberofRows - 1));
                                     //bool copyLength = true;
-                                    if (connectorLength > 0){
+                                    if (connectorLength.toDouble() > 0){
                                         e->setProp(e->variableName("d"), connectorLength.list(), XStringEditRole);
                                         //copyLength=false;
                                     }
@@ -2768,7 +2768,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 									Edge *e = new Edge(row[columnIndex - 1], n1, this);
 									treeModel->add(e); 
                                     bool copyLength=true;
-                                    if (length > 0){
+                                    if (length.toDouble() > 0){
                                         e->setProp(e->variableName("d"), length.list(), XStringEditRole);
                                         copyLength=false;
                                     }

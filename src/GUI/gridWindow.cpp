@@ -109,8 +109,8 @@ QMap<QString, XString> gridWindow::getGridInfo()
 	
 void gridWindow::on_buttonBox_clicked(QAbstractButton * button)
 {
-	//qDebug() << button->text();
-	if (button->text() == "OK")
+    qDebug() << button->text();
+    if (button->text() == "OK" || button->text() == "&OK")
 	{
 		accepted = true;
 		results["Number of Columns"] = ui->columnsSpin->text();
