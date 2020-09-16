@@ -3266,9 +3266,7 @@ void GraphWidget::edgeContextMenuRequested(Edge* e, QPointF pos, QMenu *menu)
 		menu->addAction("Plot Flow");
 		menu->addAction("Velocity");
 		menu->addAction("Area");
-		menu->addAction("Vapor exchange rate"); //NEW
-
-
+        menu->addAction("Vapor exchange rate");
 	}
 
 	QAction *selectedAction;
