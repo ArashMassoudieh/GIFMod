@@ -6,8 +6,10 @@
 #include <vector>
 #include "NormalDist.h"
 #include <string>
+#ifndef mac_version
 #include <omp.h>
-//Sassan
+#endif
+
 #include "qdebug.h"
 #include "runtimeWindow.h"
 #include "qcoreapplication.h"
@@ -469,8 +471,9 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
 		if (rtw->stopTriggered)
 			break;
         
+#ifndef mac_version
         omp_set_num_threads(numberOfThreads);
-
+#endif
 		
           
 #ifdef WIN64
@@ -481,6 +484,7 @@ bool CMCMC::step(int k, int nsamps, string filename, runtimeWindow *rtw)
 #endif
 
 #pragma omp parallel for
+
 		for (int jj = kk; jj < min(kk + n_chains, nsamples); jj++)
 		{
             QCoreApplication::processEvents(QEventLoop::AllEvents,10*1000);
@@ -956,7 +960,9 @@ void CMCMC::getrealizations(CBTCSet &MCMCout)
 #endif
 		for (int i = 0; i < numberOfThreads; i++) Sys1[i].resize(1);
 
+#ifndef mac_version
         omp_set_num_threads(numberOfThreads);
+#endif
 #pragma omp parallel for 
 		for (int j = 0; j < min(numberOfThreads, n_realizations - jj*numberOfThreads); j++)
 		{

@@ -8,17 +8,17 @@ CONFIG += c++14
 TARGET = GIFMod 
 TEMPLATE = app
 win32:QMAKE_CXXFLAGS += /MP
-QMAKE_CXXFLAGS += -fopenmp
-QMAKE_LFLAGS +=  -fopenmp
+!macx:QMAKE_CXXFLAGS += -fopenmp
+!macx:QMAKE_LFLAGS +=  -fopenmp
 # QMAKE_CFLAGS+=-pg
 # QMAKE_CXXFLAGS+=-pg
 # QMAKE_LFLAGS+=-pg
-LIBS += -lgomp -lpthread
-
+! macx: LIBS += -lgomp -lpthread
+macx: LIBS += -lpthread
 #defines
 DEFINES += UNICODE GIFMOD
 DEFINES += QT_version
-
+macx: DEFINES +=mac_version
 DESTDIR = $${BUILD_DIR}
 MOC_DIR = $${BUILD_DIR}/moc
 OBJECTS_DIR = $${BUILD_DIR}/obj

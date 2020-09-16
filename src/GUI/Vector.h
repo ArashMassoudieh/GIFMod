@@ -107,4 +107,8 @@ int lookup(vector<string> v, string val);
 double avg(CVector &);
 vector<double> create_vector(int i);
 vector<vector<double>> create_vector(int i, int j);
+#ifndef mac_version
 template<typename T> bool isfinite(T arg);
+#endif
+
+

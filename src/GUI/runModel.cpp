@@ -9,7 +9,9 @@
 #include "MCMC.h"
 #include "results.h"
 #include <QMessageBox>
+#ifndef mac_version
 #include <omp.h>
+#endif
 #include "Vector.h"
 #include "reactiontablemodel.h"
 #ifdef GIFMOD
@@ -747,7 +749,9 @@ void CGA::assignfitnesses(runtimeWindow* rtw)
 	vars["mode"] = "inverse";
 	int progress;
 */
-	omp_set_num_threads(numberOfThreads);
+#ifndef mac_version
+    omp_set_num_threads(numberOfThreads);
+#endif
 #pragma omp parallel for //private(ts,l) ATTENTION
 	for (int k = 0; k<maxpop; k++)
 	{

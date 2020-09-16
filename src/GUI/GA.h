@@ -17,7 +17,9 @@
 #include "math.h"
 #include <iostream>
 #include "Matrix.h"
-#include "omp.h"   
+#ifndef mac_version
+#include "omp.h"
+#endif
 #include <vector>
 
 //GUI

@@ -13,7 +13,11 @@ int main(int argc, char *argv[])
 //	QString q = argv[0];
 //	if (argc>1) modelfilename = argv[1];
 //	MainWindow mainGUIwindow(0, "Versatile Water Quality Modeling System", "GIFModers", "GIFMod", "GIFModGUIPropList.csv", q+"  "+ modelfilename.replace("\\","/"));
-	QString propertiesCatalog = QApplication::applicationDirPath()+QDir::separator()+ QString("GIFModGUIPropList.csv");
+//#ifndef mac_version
+    QString propertiesCatalog = QApplication::applicationDirPath()+QDir::separator()+ QString("GIFModGUIPropList.csv");
+//#else
+//    QString propertiesCatalog = QApplication::applicationDirPath().left(QApplication::applicationDirPath().length()-26)+QDir::separator()+ QString("GIFModGUIPropList.csv");
+//#endif
     MainWindow mainGUIwindow(nullptr, "Green Infrastructure Flexible Modeling System", "GIFMod", "GIFM", propertiesCatalog);
     ScriptingEngine::registerClass<JSTest>();	
     mainGUIwindow.show();

@@ -417,8 +417,11 @@ void CGA::assignfitnesses()
 	}
 
 
-omp_set_num_threads(numberOfThreads);
+#ifndef mac_version
+    omp_set_num_threads(numberOfThreads);
+
 #pragma omp parallel for //private(ts,l)
+#endif
 		for (int k=0; k<maxpop; k++)
 		{
 			//int ts,l;

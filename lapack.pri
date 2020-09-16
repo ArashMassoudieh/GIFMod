@@ -30,3 +30,9 @@ linux {
      DEFINES += ARMA_USE_LAPACK ARMA_USE_BLAS
      LIBS += -llapack -lblas
 }
+
+macx {
+    #sudo apt-get install libblas-dev liblapack-dev
+     DEFINES += ARMA_USE_LAPACK ARMA_USE_BLAS
+     LIBS += -llapack -lblas
+}
