@@ -2654,7 +2654,11 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 		if (selectedAction->text() == "Select")
 			n->setSelected(true);
 		if (selectedAction->text() == "Delete")
-			treeModel->deleteNode(n);
+        {
+            if (QMessageBox::question(this, tr("Delete"),
+                "Are you sure you want to delete Block '" + n->Name() + "'", QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+                    treeModel->deleteNode(n);
+        }
 #ifdef GIFMOD
 		if (selectedAction->text() == "Make array of blocks")
 		{
@@ -3277,7 +3281,11 @@ void GraphWidget::edgeContextMenuRequested(Edge* e, QPointF pos, QMenu *menu)
 		if (selectedAction->text() == "Select")
 			e->setSelected(true);
 		if (selectedAction->text() == "Delete")
-			treeModel->deleteEdge(e);
+        {
+            if (QMessageBox::question(this, tr("Delete"),
+                "Are you sure you want to delete connector '" + e->Name() + "'", QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+                     treeModel->deleteEdge(e);
+        }
 		if (selectedAction->text() == "Plot Flow")
 		{
 			plotformat format;
