@@ -1,4 +1,5 @@
 CONFIG += debug_and_release debug_and_release_target
+if==macx:CONFIG += staticlib
 include ($$PWD/build-config.pri)
 include ($$PWD/lapack.pri)
 
