@@ -1297,11 +1297,19 @@ void MainWindow::tablePropShowContextMenu(const QPoint&pos)
 		CBTCSet data;
 #ifdef GIFMOD
 		if (i1.data(TypeRole).toString().toLower().contains("precipitation"))
-			data = CPrecipitation(fullfile.toStdString()).getflow(1,1.0/24.0/4.0);
+			data = CPrecipitation(fullfile.toStdString()).getflow(1, 1.0 / 24.0 / 4.0);
 		else
 #endif
+			mainGraphWidget->log("Reading file: '" + fullfile + "'");
 			data = CBTCSet(fullfile.toStdString(), 1);
-
+			if (data.lasterror != "")
+			{
+				mainGraphWidget->log(QString::fromStdString(data.lasterror));
+				QString firstline;
+				for (int i = 0; i < data.firstline.size(); i++)
+					firstline += QString::fromStdString(data.firstline[i]) + ", ";
+				mainGraphWidget->log("First line: " + firstline);
+			}
         foreach (string name , data.names)
 		{
 			if (!graphNames.contains(QString::fromStdString(name)))
