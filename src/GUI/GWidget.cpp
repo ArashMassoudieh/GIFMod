@@ -2289,6 +2289,14 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
         for(QString file : inflowFileNamesofNode)
 		{
 			CBTCSet inflows = CBTCSet(file.replace("./", modelPathname().append('/')).toStdString(), 1);
+			if (inflows.lasterror != "")
+			{
+				log(QString::fromStdString("Error: " + inflows.lasterror));
+				QString firstline;
+				for (int i = 0; i < inflows.firstline.size(); i++)
+					firstline += QString::fromStdString(inflows.firstline[i]) + ", ";
+				log("First line: " + firstline);
+			}
             for (string name : inflows.names)
 			{
 				if (!inflowGraphNames.keys().contains(QString::fromStdString(name)))
@@ -3752,7 +3760,8 @@ bool validInflowFile(QString file)
 //	{
 	if (file.isEmpty())	return true;
 		CBTCSet inflows = CBTCSet(file.toStdString(), 1);
-		if (inflows.names.size() == 0) return false;
+		if (inflows.names.size() == 0) 
+			return false;
 		return true;
 //		for (string name in inflows.names)
 //		{

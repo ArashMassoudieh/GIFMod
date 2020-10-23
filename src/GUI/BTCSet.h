@@ -60,7 +60,8 @@ public:
 	vector<double> getrow(int a);
 	void setname(int i, string name);
 
-	//Sassan
+	string lasterror;
+	vector<string> firstline;
 	bool file_not_found=false;
 	CTimeSeries &operator[](int index);
 	CTimeSeries &operator[](string BTCName);
