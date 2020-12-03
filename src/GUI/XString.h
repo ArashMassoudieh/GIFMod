@@ -4,7 +4,7 @@
 #include "qmath.h"
 #include "qdebug.h"
 #include "enums.h"
-
+#include <iostream>
 class XString :
 	public QString
 {
@@ -219,21 +219,24 @@ public:
 			if (Operator == "~^3radic" || Operator == "~^3radical") return (coefficient(leftOperand) * qPow(coefficient(rightOperand), 1.0 / 3.0));
 		}
 		else{
-			if (leftOperand.toDouble()) return leftOperand.toDouble();
+            if (leftOperand.toDouble()) return leftOperand.toDouble();
 			QList <XString> UL;
 			QList <float> CL;
 			UL << "m" << "cm" << "mm" << "~microm" << "km" << "in" << "ft" << "yd" <<
 				"kg" << "g" << "ton" << "lb" << "kip" <<
 				"day" << "hr" << "min" << "s" << "wk" <<
 				"L" << "N" << 
-				"~degreeC" << "Pa" << "J" << "W" << "" << "" << "" << "" << "" << "" << "" << "" << "" << "" << "";
+                "~degreeC" << "Pa" << "J" << "W" << "si" << "SI" << "" << "" << "" << "" << "" << "" << "" << "" << "";
 			CL << 1.0 << 0.01 << 0.001 << 0.000001 << 1000 << 2.54 / 100 << 12 * 2.54 / 100 << 3 * 12 * 2.54 / 100 <<
 				1.0 << 0.001 << 1000 << 451.0 / 1000 << 451.0 <<
-				1.0 << 1.0 / 24.0 << 1.0 / 24 / 60 << 1.0 / 24 / 60 / 60 << 7.0 <<
-				.001 << 9.81 
-				<< 1.0 << 1.0 << 1.0 << 1.0;
+                1.0 << 1.0 / 24.0 << 1.0 / 24 / 60 << 1.0 / 24 / 60 / 60 << 7.0 <<
+                .001 << 9.81
+                << 1.0 << 1.0 << 1.0 << 1.0 << 1.0 << 1.0;
             //double a = CL[UL.indexOf(leftOperand)];
-			return CL[UL.indexOf(leftOperand)];
+            int _index = UL.indexOf(leftOperand);
+            if (_index==-1)
+                return 1;
+            return CL[UL.indexOf(leftOperand)];
 		};
         return 0;
     };

@@ -56,7 +56,9 @@ void CTimeSeries::setnumpoints(int n1)
 
 CTimeSeries::~CTimeSeries()
 {
-
+    t.clear();
+    C.clear();
+    D.clear();
 }
 
 CTimeSeries::CTimeSeries(const CTimeSeries &CC)

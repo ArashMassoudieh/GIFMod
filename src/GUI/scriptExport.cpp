@@ -9,19 +9,33 @@ QList<CCommand> GraphWidget::script() const
 {
 	QList<CCommand> commands;
 		
-	commands.append(sort_by_name(s_get_environmental_params())); // load environmental parameters
+    qDebug()<<1;
+    commands.append(sort_by_name(s_get_environmental_params())); // load environmental parameters
+    qDebug()<<2;
 	commands.append(sort_by_name(s_get_params())); //load charachterictics of unknown parameters *
+    qDebug()<<3;
 	commands.append(sort_by_name(s_get_observed())); // load properties of observed data *
+    qDebug()<<4;
 	commands.append(sort_by_name(s_get_model_blocks())); // load model structure (blocks)
+    qDebug()<<5;
 	commands.append(sort_by_name(s_get_model_connectors())); // load model structure (connectors)
+    qDebug()<<6;
 	commands.append(sort_by_name(s_get_particle_types())); // load particle types *
+    qDebug()<<7;
 	commands.append(sort_by_name(s_get_constituents())); // load constituent properties *
+    qDebug()<<8;
 	commands.append(sort_by_name(s_get_reactions())); // load reaction network
+    qDebug()<<9;
 	commands.append(sort_by_name(s_get_buildup())); // load buildup properties *
+    qDebug()<<10;
 	commands.append(sort_by_name(s_get_external_flux())); // load External fluxes *
+    qDebug()<<11;
 	commands.append(sort_by_name(s_get_genetic_algorithm())); // load genetic algorithm parameters *
+    qDebug()<<12;
 	commands.append(sort_by_name(s_get_MCMC())); // load MCMC parameters *
+    qDebug()<<13;
 	commands.append(sort_by_name(s_get_evapotranspiration())); // load evaportranspiration parameters *
+
 	
 	return commands; 
 }
