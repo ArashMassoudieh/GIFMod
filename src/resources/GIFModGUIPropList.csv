@@ -5,7 +5,7 @@
 1,Connector,*,*,Connector Name,Name,id,!,!,string,!,TextBox,Geometry,Input,Yes,100004,name,,,
 1,Connector,*,*,Connector Type,Type,connector_type,!,!,string,populate at runtime; Type,ComboBox,Geometry,Select,Yes,100005,type,,,
 1,Block,Soil,*,!,Bottom area,a,m~^2;cm~^2;ft~^2,m~^2,float+Estimate,0,UnitBox,Geometry,Input,Yes,100006,bottom area;area,>0,E,Area must be greater than zero
-1,Block,Catchment,Catchment,!,Area,a,m~^2;ft~^2,m~^2,float+Estimate,0,UnitBox,Geometry,Input,Yes,100006,area;Bottom area;bottom area,>0,E,Area must be greater than zero
+1,Block,Catchment,Catchment,!,Area,a,m~^2;ft~^2,m~^2,float+Estimate,0,UnitBox,Geometry,Input,Yes,100006,area,>0,E,Area must be greater than zero
 1,Block,Pond,Pond,!,Bottom area,a,m~^2;cm~^2;ft~^2,m~^2,float+Estimate,0,UnitBox,Geometry,Input,Yes,100006,bottom area;area,>0,E,Area must be greater than zero
 1,Block,Darcy,Darcy,!,Bottom area,a,m~^2;cm~^2;ft~^2,m~^2,float+Estimate,0,UnitBox,Geometry,Input,Yes,100006,bottom area;area,>0,E,Area must be greater than zero
 1,Block,Stream,Stream,!,Bottom area,a,m~^2;cm~^2;ft~^2,m~^2,float+Estimate,1,UnitBox,Geometry,Input,Yes,100006,bottom area;area,>0,E,Area must be greater than zero
@@ -31,7 +31,7 @@
 1,Block,*,*,!,Head-storage relationship,h_s_expression,!,!,string,!,expressionEditor,Global,Input,Yes,100025,head-storage relationship;hs_expression,,,
 1,Block,*,*,!,Inflow time series,inflow,!,!,filename,populate at runtime; blank+Inflow,Browser;time series,Environment,Select,Yes,100026,inflow time series,inflow format,E,Inflow file format is invalid.
 1,Block,Soil,*,!,moisture content (~theta),theta,!,!,float+Estimate,0.2,TextBox,Material,Input,Yes,100027,moisture content (~theta),>=0;<1,E;W,Moiture content must be non-negative; moisture content is greater than 1
-1,Block,Darcy,Darcy,!,Initial moisture content (~theta),Theta,!,!,float+Estimate,!,TextBox,Material,Input,Yes,100325,initial moisture content (~theta),>=0;={theta_s},E;W,Moiture content must be non-negative;moisture content is different than saturated moisture content for a Darcy block.
+1,Block,Darcy,Darcy,!,Initial moisture content (~theta),Theta,!,!,float+Estimate,!,TextBox,Material,Input,Yes,100325,initial moisture content (~theta),>=0;!={theta_s},E;W,Moiture content must be non-negative;moisture content is different than saturated moisture content for a Darcy block.
 1,Block,Catchment,Catchment,!,Initial water depth,h0,m;cm;ft;in,m,float+Estimate,0,UnitBox,Material,Input,Yes,100336,initial water depth;depth;ini_depth,>=0,E,Initial water depth must be non-negative
 1,Block,Pond,Pond,!,Initial water depth,h0,m;cm;ft;in,m,float+Estimate,0,UnitBox,Geometry,Input,Yes,100028,initial water depth,>=0,E,Initial water depth must be non-negative
 1,Block,Stream,Stream,!,Initial water depth,h0,m;cm;ft;in,m,float+Estimate,!,UnitBox,Geometry,Input,Yes,100340,initial water depth,>=0,E,Initial water depth must be non-negative

@@ -46,7 +46,7 @@
 #include <QScreen>
 #include <QMessageBox>
 #include <QMetaEnum>
-#include "qtimezone.h""
+#include "qtimezone.h"
 #include "qmenu.h"
 #include "GWidget.h"
 #include <QClipboard>
