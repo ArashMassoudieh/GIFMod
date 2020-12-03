@@ -783,16 +783,6 @@
     <string>Evaporation rate</string>
    </property>
   </action>
-  <action name="action123">
-   <property name="text">
-    <string>123</string>
-   </property>
-  </action>
-  <action name="actionAbout2">
-   <property name="text">
-    <string>About</string>
-   </property>
-  </action>
   <action name="actionRecent">
    <property name="text">
     <string>Recent</string>
@@ -854,6 +844,11 @@
    </property>
    <property name="toolTip">
     <string>Add Plant Block</string>
+   </property>
+  </action>
+  <action name="actionTest">
+   <property name="text">
+    <string>Test</string>
    </property>
   </action>
  </widget>

@@ -171,7 +171,7 @@ CTimeSeriesSet::CTimeSeriesSet(const CTimeSeriesSet &B)
 	names = B.names;
 	BTC = B.BTC;
 	unif = B.unif;
-
+	lasterror = B.lasterror;
 }
 
 CTimeSeriesSet::CTimeSeriesSet(const CTimeSeries &B)
@@ -190,6 +190,7 @@ CTimeSeriesSet& CTimeSeriesSet::operator = (const CTimeSeriesSet &B)
 	for (int i=0; i<nvars; i++)
 		BTC[i] = B.BTC[i];
 	unif = B.unif;
+	lasterror = B.lasterror;
 	return *this;
 
 }
@@ -225,6 +226,7 @@ CTimeSeriesSet::CTimeSeriesSet(string filename, bool varytime)
 	if (file.good() == false)
 	{
 		file_not_found = true;
+		lasterror = "File '" + filename + "' was not found!";
 		return;
 	}
     bool start = true;
@@ -232,6 +234,10 @@ CTimeSeriesSet::CTimeSeriesSet(string filename, bool varytime)
 		while (file.eof() == false)
 		{
 			s = getline(file);
+			if (firstline.size() == 0)
+			{
+				firstline = s;
+			}
             if (start)
             {
                 if (s[0].substr(0, 2) == "//")
@@ -268,7 +274,11 @@ CTimeSeriesSet::CTimeSeriesSet(string filename, bool varytime)
 		while (file.eof() == false)
 		{
 			s = getline(file);
-            
+			if (firstline.size() == 0)
+			{
+				firstline = s;
+			}
+
 			if (start)
             {
                 if (s.size()>0)
@@ -325,6 +335,10 @@ CTimeSeriesSet::CTimeSeriesSet(string filename, bool varytime)
 		for (int i = 0; i < nvars; i++)
 			if (names[i] == "")
 				names[i] = "Data (" + numbertostring(i) + ")";
+	if (nvars == 0)
+	{
+		lasterror = "No data was found!";
+	}
 }
 
 

@@ -3,7 +3,7 @@
  <class>ConstituentWindow</class>
  <widget class="QDialog" name="ConstituentWindow">
   <property name="windowModality">
-   <enum>Qt::WindowModal</enum>
+   <enum>Qt::ApplicationModal</enum>
   </property>
   <property name="geometry">
    <rect>
@@ -13,8 +13,14 @@
     <height>775</height>
    </rect>
   </property>
+  <property name="contextMenuPolicy">
+   <enum>Qt::ActionsContextMenu</enum>
+  </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Constituent Initial Conditions</string>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_4">
    <item>
