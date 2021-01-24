@@ -1483,12 +1483,15 @@ void MainWindow::removeProjectExplorerNodeItem(QString name, const QModelIndex i
 		QModelIndex j = projectExplorer->indexBelow(i);
 		bool connectors_expanded = projectExplorer->isExpanded(j);
 		projectExplorer->collapse(j);
-		projModel->deleteNode(_index.row(), i, _name);
-		if (projModel->itemFromIndex(i)->childCount())
-			projectExplorer->expand(i);
+        if (QMessageBox::question(this, tr("Delete"),
+            "Are you sure you want to delete '" + _name + "'", QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+        {   projModel->deleteNode(_index.row(), i, _name);
+            if (projModel->itemFromIndex(i)->childCount())
+                projectExplorer->expand(i);
 
-		if (connectors_expanded && projModel->connectors->childCount())
-			projectExplorer->expand(j);
+            if (connectors_expanded && projModel->connectors->childCount())
+                projectExplorer->expand(j);
+        }
 	}
 }
 void MainWindow::removeProjectExplorerEdgeItem(QString name, const QModelIndex index)
@@ -1506,9 +1509,12 @@ void MainWindow::removeProjectExplorerEdgeItem(QString name, const QModelIndex i
 	{
 		QModelIndex i = projectExplorer->indexAbove(_index.sibling(0, 0));
 		projectExplorer->collapse(i);
-		projModel->deleteEdge(_index.row(), i, _name);
-		if (projModel->itemFromIndex(i)->childCount())
-			projectExplorer->expand(i);
+        if (QMessageBox::question(this, tr("Delete"),
+            "Are you sure you want to delete '" + _name + "'", QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+        {   projModel->deleteEdge(_index.row(), i, _name);
+            if (projModel->itemFromIndex(i)->childCount())
+                projectExplorer->expand(i);
+        }
 	}
 }
 void MainWindow::removeProjectExplorerEntityItem(QString name, const QModelIndex index)
@@ -1527,9 +1533,12 @@ void MainWindow::removeProjectExplorerEntityItem(QString name, const QModelIndex
 		QModelIndex i = projectExplorer->indexAbove(_index.sibling(0, 0));
 		projectExplorer->collapse(i);
 		QString type = mainGraphWidget->entity(_name)->objectType.ObjectType;
-		projModel->deleteEntity(_index.row(), i, type, _name);
-		if (projModel->itemFromIndex(i)->childCount())
-			projectExplorer->expand(i);
+        if (QMessageBox::question(this, tr("Delete"),
+            "Are you sure you want to delete '" + _name + "'", QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
+        {   projModel->deleteEntity(_index.row(), i, type, _name);
+            if (projModel->itemFromIndex(i)->childCount())
+                projectExplorer->expand(i);
+        }
 	}
 }
 void MainWindow::plotPriorHistogram(CBTC histogram, QString name)
