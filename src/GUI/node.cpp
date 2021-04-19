@@ -1165,6 +1165,7 @@ void Node::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
 	QPointF p = QPointF(x() + event->pos().x(), y() + event->pos().y());
 	parent->nodeContextMenuRequested(this, p);
+    this->setZValue(qrand()%100-50);
 
 }
 QString Node::newNodeName(const QString name, QList<Node*> &nodes) const

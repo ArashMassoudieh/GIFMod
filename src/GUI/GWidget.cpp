@@ -16,6 +16,7 @@
 #include "qmessagebox.h"
 #include "qmenu.h"
 #include <QGraphicsSceneContextMenuEvent>
+#include <QWidgetAction>
 #include "plotWindow.h"
 #include "qinputdialog.h"
 #include "qtreeview.h"
@@ -455,14 +456,20 @@ void GraphWidget::update(bool fast)
 void GraphWidget::mousePressEvent(QMouseEvent *event)
 {
     tableProp->setModel(nullptr);
-	Node *node = qgraphicsitem_cast<Node*> (itemAt(event->pos())); //Get the item at the position
-	if (node)
-	{	//qDebug() << "Name: "<< node->Name()<<" Flag:" << node->flags() << "enabled:" << node->isEnabled() << "active:" << node->isActive();
-	}
-	Edge *edge = qgraphicsitem_cast<Edge*> (itemAt(event->pos())); //Get the item at the position
-	if (edge)
-	{	//qDebug() << "Name: " << edge->Name() << " Flag:" << edge->flags() << "enabled:" << edge->isEnabled() << "active:" << edge->isActive();
-	}
+    Edge *edge=nullptr;
+    Node *node=nullptr;
+    QList<QGraphicsItem*> nodeedges = items(event->pos());
+    if (nodeedges.size()>0)
+    {   int i=qrand()%nodeedges.size();
+        if (nodeedges[i]->type()==65537)
+        {   node = qgraphicsitem_cast<Node*> (nodeedges[i]); //Get the item at the position
+            qDebug()<<i<<nodeedges[i]->type()<<node->Name();
+        }
+        else if (nodeedges[i]->type()==65538)
+        {   edge = qgraphicsitem_cast<Edge*> (nodeedges[i]); //Get the item at the position
+            qDebug()<<i<<nodeedges[i]->type()<<edge->Name();
+        }
+    }
 
 	if (event->buttons() == Qt::MiddleButton && Operation_Mode == Operation_Modes::NormalMode)
 	{
@@ -725,9 +732,30 @@ void GraphWidget::mouseReleaseEvent(QMouseEvent *event)
 		{
 		
 		}
-		Node *node = qgraphicsitem_cast<Node*> (itemAt(event->pos())); //Get the item at the position
-		Edge *edge = qgraphicsitem_cast<Edge*> (itemAt(event->pos())); //Get the item at the position
-		if (event->button() == Qt::LeftButton && dragMode()!=DragMode::RubberBandDrag)
+        QList<QGraphicsItem*> nodeedges = items(event->pos());
+        QList<Edge*> edgelist;
+        QList<Node*> nodelist;
+
+        Edge *edge=nullptr;
+        Node *node=nullptr;
+        if (nodeedges.size()>0)
+        {
+            for (unsigned int i=0; i<nodeedges.size(); i++) {nodeedges[i]->setSelected(false);nodeedges[i]->setZValue(-2);}
+            int i=qrand()%nodeedges.size();
+            if (nodeedges[i]->type()==65537)
+            {   node = qgraphicsitem_cast<Node*> (nodeedges[i]); //Get the item at the position
+                qDebug()<<i<<nodeedges[i]->type()<<node->Name();
+                node->setSelected(true);
+                node->setZValue(100);
+            }
+            else if (nodeedges[i]->type()==65538)
+            {   edge = qgraphicsitem_cast<Edge*> (nodeedges[i]); //Get the item at the position
+                qDebug()<<i<<nodeedges[i]->type()<<edge->Name();
+                edge->setSelected(true);
+                edge->setZValue(100);
+            }
+        }
+        if (event->button() == Qt::LeftButton && dragMode()!=DragMode::RubberBandDrag)
 			if (event->modifiers() && Qt::ControlModifier) {
 				if (node)
 				{
@@ -2274,6 +2302,15 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 	bool called_by_clicking_on_graphical_object = false;
 	if (!menu) {
 		menu = new QMenu;
+        // label
+        QLabel *text = new QLabel(n->Name(), this);
+        text->setStyleSheet("color: blue");
+        // init widget action
+        QWidgetAction *widAct= new QWidgetAction(this);
+        widAct->setDefaultWidget(text);
+        menu->addAction(widAct);
+        menu->addSeparator();
+
 		menu->addAction("Delete");
 		called_by_clicking_on_graphical_object = true; 
 	}
@@ -3252,10 +3289,20 @@ void GraphWidget::edgeContextMenuRequested(Edge* e, QPointF pos, QMenu *menu)
 {
 	QAction *deleteAction;
 	bool called_by_clicking_on_graphical_object = false;
-	if (!menu) {
+
+    if (!menu) {
 		menu = new QMenu();
-		deleteAction = menu->addAction("Delete");
-		called_by_clicking_on_graphical_object = true; 
+        // label
+        QLabel *text = new QLabel(e->Name(), this);
+        text->setStyleSheet("color: blue");
+        // init widget action
+        QWidgetAction *widAct= new QWidgetAction(this);
+        widAct->setDefaultWidget(text);
+        menu->addAction(widAct);
+        menu->addSeparator();
+
+        deleteAction = menu->addAction("Delete");
+        called_by_clicking_on_graphical_object = true;
 	}
 	QAction *markAction = menu->addAction("Select");
 #ifdef GIFMOD
