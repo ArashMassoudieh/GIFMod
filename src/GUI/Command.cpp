@@ -18,7 +18,8 @@ CCommand::CCommand(QString s) //create command from script
 	 
 	command = extract_by_space_quote(list[0].trimmed().toLower())[0];
 	if (extract_by_space_quote(list[0].trimmed().toLower()).size() > 1) values = XString::reform(extract_by_space_quote(list[0].trimmed()));
-	values.removeAt(0);
+    if (values.count()>0)
+        values.removeAt(0);
 	for (int i = 0; i < values.count(); i++) values[i] = values[i].trimmed();
 	if (list.size() > 1)
 	{

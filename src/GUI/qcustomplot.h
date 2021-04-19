@@ -48,6 +48,7 @@
 #include <qnumeric.h>
 #include <QPrinter>
 #include <QPrintEngine>
+#include <QPainterPath>
 
 class QCPPainter;
 class QCustomPlot;

@@ -61,7 +61,7 @@ void CMediumSet::load(GraphWidget* gw, runtimeWindow *rtw)
 		//		Medium[i - 1].set_default_params();
 		Medium[i - 1].log_file_name() = "log.txt";
 	}
-	for (int i = 0; i < parameters.size(); i++)
+    for (unsigned int i = 0; i < parameters.size(); i++)
 	{
 		set_param(i, parameters[i].value);
 	}
@@ -94,7 +94,7 @@ CMediumSet::CMediumSet(GraphWidget* gw, runtimeWindow *rtw)
 	g_get_evapotranspiration();
 	
 
-	for (int i = 0; i<parameters.size(); i++)
+    for (unsigned int i = 0; i<parameters.size(); i++)
 		set_param(i, parameters[i].value);
 
 	
@@ -116,7 +116,7 @@ CMediumSet::CMediumSet(GraphWidget* gw, runtimeWindow *rtw)
 //		Medium[i - 1].set_default_params();
 		Medium[i - 1].log_file_name() = "log.txt";
 	}
-	for (int i = 0; i < parameters.size(); i++)
+    for (unsigned int i = 0; i < parameters.size(); i++)
 	{
 		set_param(i, parameters[i].value);
 	}
@@ -139,6 +139,7 @@ void MainWindow::forwardRun(CMediumSet *model, runtimeWindow* progress)
 	string a = model->FI.pathname;
 	runtime_file.open(model->FI.outputpathname + "Runing_times.txt");
 	model->solve(progress);
+
 #ifdef GIFMOD
 	//progress->setLabel(QString::fromStdString(model->fail_reason));
 #endif
@@ -150,7 +151,8 @@ void MainWindow::forwardRun(CMediumSet *model, runtimeWindow* progress)
 	runtime_file << "Run Time :  " << run_time << st << std::endl;
 	runtime_file << "Epoch count: " << model->epoch_count() << std::endl;
 
-	for (int i = 0; i < model->Medium.size(); i++)
+    log->append("Writing results...");
+    for (unsigned int i = 0; i < model->Medium.size(); i++)
 	{
         model->Medium[i].Results.ANS.writetofile(model->Medium[i].detoutfilename_hydro, true);
         model->Medium[i].Results.ANS_colloids.writetofile(model->Medium[i].detoutfilename_prtcle, true);
@@ -175,7 +177,7 @@ void MainWindow::forwardRun(CMediumSet *model, runtimeWindow* progress)
 	//mainGraphWidget->model = &model->Medium[0];
 	mainGraphWidget->experimentSelect(mainGraphWidget->experimentsList()[0]);
 	mainGraphWidget->hasResults = true;
-
+    QMessageBox::question(rtw, "Simulation Ended", "Simulation Finished!", QMessageBox::Ok);
 }
 #endif
 #ifdef GWA
@@ -2255,7 +2257,7 @@ void CMediumSet::solve(runtimeWindow *rtw)
 	ANS_colloids.clear();
 	ANS_constituents.clear();
 	ANS_control.clear();
-	for (int i = 0; i < Medium.size(); i++)
+    for (unsigned int i = 0; i < Medium.size(); i++)
 	{
 		if (rtw)
 			rtw->setExperiment( &Medium[i]);
@@ -2276,7 +2278,7 @@ void CMediumSet::solve(runtimeWindow *rtw)
 
 	ANS_obs = CBTCSet(measured_quan.size());
 	MSE_obs.clear(); 
-	for (int i = 0; i < measured_quan.size(); i++)
+    for (unsigned int i = 0; i < measured_quan.size(); i++)
 	{
 		if (lookup_medium(measured_quan[i].experiment) != -1)
 		{
@@ -2289,8 +2291,7 @@ void CMediumSet::solve(runtimeWindow *rtw)
 	}
 	CVector(MSE_obs).writetofile(FI.outputpathname + "MSE.txt");
 	gw->log("Simulation ended.");
-	QMessageBox::StandardButton reply;
-	QMessageBox::question(rtw, "Simulation Ended", "Simulation Finished!", QMessageBox::Ok);
+
 }
 
 
