@@ -13,11 +13,11 @@
     <ROW Property="ARPNOREPAIR" Value="1" MultiBuildValue="MsiBuild:1"/>
     <ROW Property="ARPPRODUCTICON" Value="GIFMod_1.exe" Type="8"/>
     <ROW Property="ARPURLINFOABOUT" Value="www.gifmod.com"/>
-    <ROW Property="Manufacturer" Value="GI"/>
-    <ROW Property="ProductCode" Value="1033:{64852ABB-1BC0-4FAD-9B44-0251258DDC41} " Type="16"/>
+    <ROW Property="Manufacturer" Value="EnviroInformatics, LLC"/>
+    <ROW Property="ProductCode" Value="1033:{49210F5B-A694-4839-849F-F3665CE25BAD} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="GIFMod"/>
-    <ROW Property="ProductVersion" Value="1.0.2" Type="32"/>
+    <ROW Property="ProductVersion" Value="1.0.4" Type="32"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND;AI_SETUPEXEPATH;SETUPEXEDIR"/>
     <ROW Property="UpgradeCode" Value="{FD3D1F38-573F-42DE-B2E8-D17DF8884298}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="x64_Release:Windows 9x/ME#MsiBuild:Windows 9x/ME" ValueLocId="-"/>
