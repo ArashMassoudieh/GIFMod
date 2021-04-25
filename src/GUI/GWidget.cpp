@@ -2417,7 +2417,7 @@ void GraphWidget::nodeContextMenuRequested(Node* n, QPointF pos, QMenu *menu)
 					if (p->getValue("Model").contains("Single"))
 					{
 						QStringList list;
-						list.append(("Particle"));
+                        list.append(("Particle"));
 						int BTCid = model->get_member_no(model->getblocksq(n->Name().toStdString()),
 							model->lookup_particle_type(p->Name().toStdString()), 0);
 						list.append(QString::number(BTCid));
