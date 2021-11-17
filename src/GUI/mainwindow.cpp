@@ -1,5 +1,5 @@
 #ifndef GIFMOD_VERSION
-#define GIFMOD_VERSION "1.0.3"
+#define GIFMOD_VERSION "1.0.4"
 #endif
 #ifndef GWA_VERSION
 #define GWA_VERSION "0.0.1"
@@ -270,9 +270,6 @@ MainWindow::MainWindow(QWidget *parent, QString applicationName, QString shortNa
 	QRect rect = mainGraphWidget->experiments->geometry();
 	rect.setLeft(rect.left() + 130);
 	rect.setWidth(140);
-	int i = ui->experimentsToolbar->height();
-	int j = mainGraphWidget->experiments->height();
-	int k = (ui->experimentsToolbar->height() - mainGraphWidget->experiments->height()) / 2;
 	rect.setTop((ui->experimentsToolbar->height() - mainGraphWidget->experiments->height()) / 2 + 8);
 
 	mainGraphWidget->experiments->setGeometry(rect);
@@ -334,18 +331,18 @@ void MainWindow::readRecentFilesList()
 void MainWindow::addToRecentFiles(QString fileName, bool addToFile) 
 {
 	bool rewriteFile = false;
-	if (recentFiles.contains(fileName.toLower()) && fileName.trimmed() != "")
-		if (recentFiles.indexOf(fileName.toLower()) != recentFiles.count()-1)
+    if (recentFiles.contains(fileName) && fileName.trimmed() != "")
+        if (recentFiles.indexOf(fileName) != recentFiles.count()-1)
 		{
-			ui->menuRecent->removeAction(ui->menuRecent->actions()[recentFiles.size() - 1 - recentFiles.indexOf(fileName.toLower())]);
-			recentFiles.removeOne(fileName.toLower());
+            ui->menuRecent->removeAction(ui->menuRecent->actions()[recentFiles.size() - 1 - recentFiles.indexOf(fileName)]);
+            recentFiles.removeOne(fileName);
 			addToFile = false;
 			rewriteFile = true;
 		}
 
-	if (!recentFiles.contains(fileName.toLower()) && fileName.trimmed() != "")
+    if (!recentFiles.contains(fileName) && fileName.trimmed() != "")
 	{
-		recentFiles.append(fileName.toLower());
+        recentFiles.append(fileName);
 		//		QAction * a = ui->menuRecent->addAction(fileName);// , this, SLOT(recentItem()));
         QAction * fileNameAction = new QAction(fileName, nullptr);
 		if (ui->menuRecent->actions().size())
