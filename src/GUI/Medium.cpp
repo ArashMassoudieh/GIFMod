@@ -1945,7 +1945,7 @@ void CMedium::solve_fts_m2(double dt)
 				return;
 			}
 
-            if (((((iii > 100) && ((Solution_State.t - Timemin) / double(iii) / dt0 < avg_dt_limit())) || (Solution_State.epoch_count > epoch_limit())) && dt <= dt_last) || (Solution_State.dtt<1e-20))
+            if (((((iii > 100) && ((Solution_State.t - Timemin) / double(iii) / dt0 < avg_dt_limit())) || (Solution_State.epoch_count > epoch_limit()))) || (Solution_State.dtt<1e-20))
 			{
 				if (write_details())
 				{
@@ -1972,12 +1972,12 @@ void CMedium::solve_fts_m2(double dt)
                     Solution_State.fail_reason = "dt = " + numbertostring(Solution_State.dtt) + " too small, epochs = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii);
                     show_message("dt = " + numbertostring(Solution_State.dtt) + " too small, epochs = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii));
                 }
-                if (Solution_State.epoch_count > epoch_limit())
+                if ((Solution_State.t - Timemin) / double(iii) / dt0 < avg_dt_limit())
                 {
                     Solution_State.fail_reason = "Average time step size smaller than the limit, dt = " + numbertostring(Solution_State.dtt) + " epochs = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii);
                     show_message("Average time step size smaller than the limit, dt = " + numbertostring(Solution_State.dtt) + " too small, epochs = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii));
                 }
-                if ((Solution_State.t - Timemin) / double(iii) / dt0 < avg_dt_limit())
+                if (Solution_State.epoch_count > epoch_limit())
                 {
                     Solution_State.fail_reason = "Number of matrix inversions exceeded the limit , epochs = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii);
                     show_message("Number of matrix inversion exceeded the limit, epochs = " + numbertostring(Solution_State.epoch_count) + ", average_dt = " + numbertostring((Solution_State.t - Timemin) / double(iii)) + "<" + numbertostring(avg_dt_limit()*dt0) + ", number of actual time-steps = " + numbertostring(iii));
@@ -5975,7 +5975,7 @@ void CMedium::write_grid_to_text(VTK_grid& grid, const string &filename, const v
 
 void CMedium::write_grid_to_vtp(VTK_grid& grid, const string &filename, const vector<string> &names)
 {
-    if (grid.p.size()==0) return;
+  if (grid.p.size()==0) return;
   // Create the geometry of a point (the coordinate)
   vtkSmartPointer<vtkPoints> points =
     vtkSmartPointer<vtkPoints>::New();
